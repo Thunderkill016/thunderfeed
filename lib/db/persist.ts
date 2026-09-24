@@ -22,6 +22,12 @@ import {
    60 clusters × ~3 evidence versions stays well under free-tier write
    budgets while covering the whole front page. */
 const PERSIST_TOP_CLUSTERS = 60;
+/* Two concurrent /api/edition builds run their own persist loops; without
+   serialization they interleave writes on shared sources/events rows —
+   the observed deadlock + duplicate-source failures. A session-level
+   advisory lock makes persist single-writer across ALL node processes and
+   releases automatically if the holder crashes. */
+const PERSIST_LOCK_KEY = 727274;
 
 /**
  * Publisher identity + discovery path for one article. `article.ingest` is
@@ -101,64 +107,76 @@ export async function persistEdition(
         return items.map((it) => v.get(it.id) ?? null);
       }
     : undefined;
-  for (const c of clusters) {
-    const llmClaims = extraClaims?.get(c.id) ?? [];
-    const deterministic = extractClaims(c);
-    const seen = new Set(
-      deterministic.map(
-        (d) => `${d.assertedBy}|${d.claimKey}|${JSON.stringify(d.value)}`,
-      ),
-    );
-    const claims = [
-      ...deterministic,
-      ...llmClaims.filter(
-        (l) =>
-          !seen.has(`${l.assertedBy}|${l.claimKey}|${JSON.stringify(l.value)}`),
-      ),
-    ];
-    try {
-      const r = await persistCluster(c, claims, { sourceMeta, embedder });
-      eventIds.set(c.id, r.eventId);
-      persisted++;
-      for (const i of r.ingested) {
-        let s = statsBySource.get(i.source);
-        if (!s) {
-          s = {
-            newVersions: 0,
-            reObserved: 0,
-            events: new Set(),
-            materialEvents: new Set(),
-            primaryAttached: 0,
-            origins: 0,
-            derived: 0,
-            unknown: 0,
-          };
-          statsBySource.set(i.source, s);
-        }
-        if (i.newVersion) s.newVersions++;
-        else s.reObserved++;
-        s.events.add(r.eventId);
-        if (r.materialChanges > 0) s.materialEvents.add(r.eventId);
-        if (i.primary) s.primaryAttached++;
-        if (i.relation === "original") s.origins++;
-        else if (i.relation && i.relation !== "unknown") s.derived++;
-        else s.unknown++;
-      }
-    } catch (error) {
-      failed++;
-      console.warn(
-        `persistCluster failed for "${c.title.slice(0, 60)}":`,
-        error instanceof Error ? error.message : error,
+  const pool = getPool();
+  const lockClient = await pool.connect();
+  try {
+    await lockClient.query("SELECT pg_advisory_lock($1)", [PERSIST_LOCK_KEY]);
+    for (const c of clusters) {
+      const llmClaims = extraClaims?.get(c.id) ?? [];
+      const deterministic = extractClaims(c);
+      const seen = new Set(
+        deterministic.map(
+          (d) => `${d.assertedBy}|${d.claimKey}|${JSON.stringify(d.value)}`,
+        ),
       );
+      const claims = [
+        ...deterministic,
+        ...llmClaims.filter(
+          (l) =>
+            !seen.has(
+              `${l.assertedBy}|${l.claimKey}|${JSON.stringify(l.value)}`,
+            ),
+        ),
+      ];
+      try {
+        const r = await persistCluster(c, claims, { sourceMeta, embedder });
+        eventIds.set(c.id, r.eventId);
+        persisted++;
+        for (const i of r.ingested) {
+          let s = statsBySource.get(i.source);
+          if (!s) {
+            s = {
+              newVersions: 0,
+              reObserved: 0,
+              events: new Set(),
+              materialEvents: new Set(),
+              primaryAttached: 0,
+              origins: 0,
+              derived: 0,
+              unknown: 0,
+            };
+            statsBySource.set(i.source, s);
+          }
+          if (i.newVersion) s.newVersions++;
+          else s.reObserved++;
+          s.events.add(r.eventId);
+          if (r.materialChanges > 0) s.materialEvents.add(r.eventId);
+          if (i.primary) s.primaryAttached++;
+          if (i.relation === "original") s.origins++;
+          else if (i.relation && i.relation !== "unknown") s.derived++;
+          else s.unknown++;
+        }
+      } catch (error) {
+        failed++;
+        console.warn(
+          `persistCluster failed for "${c.title.slice(0, 60)}":`,
+          error instanceof Error ? error.message : error,
+        );
+      }
     }
+    const resolved = await resolveStaleEvents().catch(() => 0);
+    if (resolved > 0)
+      console.log(`Event history: ${resolved} stale events resolved`);
+    if (opts.sources?.length)
+      await recordIngestCycle(opts.sources, statsBySource).catch((e) =>
+        console.warn("ingest telemetry failed:", e),
+      );
+  } finally {
+    await lockClient
+      .query("SELECT pg_advisory_unlock($1)", [PERSIST_LOCK_KEY])
+      .catch(() => {});
+    lockClient.release();
   }
-  const resolved = await resolveStaleEvents().catch(() => 0);
-  if (resolved > 0)
-    console.log(`Event history: ${resolved} stale events resolved`);
-  if (opts.sources?.length)
-    await recordIngestCycle(opts.sources, statsBySource).catch((e) =>
-      console.warn("ingest telemetry failed:", e),
-    );
   return { persisted, failed, eventIds };
 }
 

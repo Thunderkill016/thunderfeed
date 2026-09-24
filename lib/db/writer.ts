@@ -136,14 +136,40 @@ const RESOLVE_WINDOW = "72 hours";
 /* ----------------------------- step: source ------------------------------ */
 
 /**
- * Single-statement upsert — the no-op UPDATE keeps RETURNING usable on the
- * conflict path and avoids an in-process cache that could go stale.
+ * Upsert keyed on BOTH uniques the table owns: `name` and the partial
+ * `uq_sources_domain`. ON CONFLICT can only target one index, so we
+ * pre-resolve either key first — two display names sharing a domain
+ * ("BBC News" vs "BBC News Tiếng Việt") must attach to the same source
+ * row instead of crashing the cluster's transaction on 23505.
  */
 async function upsertSource(
   client: PoolClient,
   name: string,
   meta: SourceMeta = {},
 ): Promise<string> {
+  const domain = meta.domain ?? null;
+  const { rows: existing } = await client.query<{
+    id: string;
+    name: string;
+    domain: string | null;
+  }>(
+    `SELECT id, name, domain FROM sources
+      WHERE name = $1 OR domain = $2`,
+    [name, domain],
+  );
+  const nameRow = existing.find((r) => r.name === name);
+  const domainRow = domain ? existing.find((r) => r.domain === domain) : null;
+  if (nameRow || domainRow) {
+    const owner = nameRow ?? domainRow!;
+    // backfill only when no other row owns this domain — otherwise the
+    // UPDATE would itself trip uq_sources_domain inside the transaction
+    if (nameRow && !domainRow && nameRow.domain === null && domain)
+      await client.query(`UPDATE sources SET domain = $2 WHERE id = $1`, [
+        nameRow.id,
+        domain,
+      ]);
+    return owner.id;
+  }
   const { rows } = await client.query<{ id: string }>(
     `INSERT INTO sources (name, kind, region, language, country, domain)
      VALUES ($1, $2, $3, $4, $5, $6)
@@ -157,7 +183,7 @@ async function upsertSource(
       meta.region ?? "unknown",
       meta.language ?? null,
       meta.country ?? null,
-      meta.domain ?? null,
+      domain,
     ],
   );
   return rows[0].id;

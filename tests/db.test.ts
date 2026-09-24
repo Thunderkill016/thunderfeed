@@ -329,3 +329,61 @@ test("acceptance: coverage is not change; primary source updates the claim", asy
   assert.ok(upd);
   assert.equal(upd.materiality, "high");
 });
+
+test("two display names sharing one domain attach to one source row", async () => {
+  // regression: upsert used to ON CONFLICT (name) only — a second name
+  // resolving to an already-owned domain crashed on uq_sources_domain and
+  // aborted the cluster's transaction.
+  setupDb();
+  const meta = (n: string) => ({
+    [n]: { domain: "shared.example" },
+  });
+  const c1 = cluster([
+    art({ source: "Alpha News", url: "https://shared.example/a1" }),
+  ]);
+  await persistCluster(c1, extractClaims(c1), {
+    sourceMeta: meta("Alpha News"),
+  });
+  const c2 = cluster([
+    art({
+      source: "Beta News",
+      url: "https://shared.example/b2",
+      title: "entirely different story words no overlap",
+    }),
+  ]);
+  await persistCluster(c2, extractClaims(c2), {
+    sourceMeta: meta("Beta News"),
+  });
+  const { rows } = await getPool().query<{ name: string; domain: string }>(
+    `SELECT name, domain FROM sources WHERE domain = 'shared.example'`,
+  );
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].name, "Alpha News");
+});
+
+test("null-domain name row gets its domain backfilled, never stolen", async () => {
+  setupDb();
+  // first sighting carries no domain hint → name row with NULL domain
+  const c1 = cluster([
+    art({ source: "Gamma Daily", url: "https://g.example/g1" }),
+  ]);
+  await persistCluster(c1, extractClaims(c1), {
+    sourceMeta: { "Gamma Daily": {} },
+  });
+  // later sighting resolves the registry domain → backfill onto same row
+  const c2 = cluster([
+    art({
+      source: "Gamma Daily",
+      url: "https://g.example/g2",
+      title: "another distinct headline with unique wording",
+    }),
+  ]);
+  await persistCluster(c2, extractClaims(c2), {
+    sourceMeta: { "Gamma Daily": { domain: "g.example" } },
+  });
+  const { rows } = await getPool().query<{ domain: string | null }>(
+    `SELECT domain FROM sources WHERE name = 'Gamma Daily'`,
+  );
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].domain, "g.example");
+});
