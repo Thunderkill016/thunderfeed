@@ -5,9 +5,9 @@
  * Inert without DATABASE_URL — persistence is optional, like the cache.
  */
 
-import type { StoryCluster } from "../model";
+import type { Article, SourceStatus, StoryCluster } from "../model";
 import type { Feed } from "../feeds";
-import { dbEnabled } from "./pool";
+import { dbEnabled, getPool } from "./pool";
 import { extractClaims } from "./extract";
 import {
   persistCluster,
@@ -21,19 +21,23 @@ import {
    budgets while covering the whole front page. */
 const PERSIST_TOP_CLUSTERS = 60;
 
-function metaFor(feed: Feed | undefined, name: string): SourceMeta {
-  if (name === "Hacker News")
-    return {
-      kind: "community",
-      region: "global",
-      language: "en",
-      channel: "hn",
-    };
+/**
+ * Publisher identity + discovery path for one article. `article.ingest` is
+ * authoritative (fetchers tag every observation); feed registry only fills
+ * region/language/country gaps.
+ */
+function metaFor(article: Article, feed: Feed | undefined): SourceMeta {
+  const ingest = article.ingest;
   return {
-    kind: "publisher",
-    region: feed?.region === "vietnam" ? "vietnam" : "global",
-    language: feed?.language,
-    channel: "rss",
+    kind: ingest?.sourceKind ?? "publisher",
+    region:
+      feed?.region === "vietnam" || article.region === "vietnam"
+        ? "vietnam"
+        : "global",
+    language: feed?.language ?? article.language,
+    country: feed?.country,
+    domain: ingest?.sourceDomain,
+    channel: ingest?.discoveredVia,
   };
 }
 
@@ -50,6 +54,7 @@ export async function persistEdition(
   allClusters: StoryCluster[],
   feedByName: Map<string, Feed>,
   extraClaims?: Map<string, ExtractedClaim[]>,
+  opts: { sources?: SourceStatus[] } = {},
 ): Promise<{
   persisted: number;
   failed: number;
@@ -65,11 +70,22 @@ export async function persistEdition(
   const sourceMeta: Record<string, SourceMeta> = {};
   for (const c of clusters)
     for (const a of c.articles)
-      sourceMeta[a.source] ??= metaFor(feedByName.get(a.source), a.source);
+      sourceMeta[a.source] ??= metaFor(a, feedByName.get(a.source));
 
   let persisted = 0;
   let failed = 0;
   const eventIds = new Map<string, string>();
+  // coverage telemetry — which sources mint versions vs. just re-observing
+  const statsBySource = new Map<
+    string,
+    {
+      newVersions: number;
+      reObserved: number;
+      events: Set<string>;
+      materialEvents: Set<string>;
+      primaryAttached: number;
+    }
+  >();
   for (const c of clusters) {
     const llmClaims = extraClaims?.get(c.id) ?? [];
     const deterministic = extractClaims(c);
@@ -86,12 +102,27 @@ export async function persistEdition(
       ),
     ];
     try {
-      const r = await persistCluster(c, claims, {
-        channel: "rss",
-        sourceMeta,
-      });
+      const r = await persistCluster(c, claims, { sourceMeta });
       eventIds.set(c.id, r.eventId);
       persisted++;
+      for (const i of r.ingested) {
+        let s = statsBySource.get(i.source);
+        if (!s) {
+          s = {
+            newVersions: 0,
+            reObserved: 0,
+            events: new Set(),
+            materialEvents: new Set(),
+            primaryAttached: 0,
+          };
+          statsBySource.set(i.source, s);
+        }
+        if (i.newVersion) s.newVersions++;
+        else s.reObserved++;
+        s.events.add(r.eventId);
+        if (r.materialChanges > 0) s.materialEvents.add(r.eventId);
+        if (i.primary) s.primaryAttached++;
+      }
     } catch (error) {
       failed++;
       console.warn(
@@ -103,5 +134,66 @@ export async function persistEdition(
   const resolved = await resolveStaleEvents().catch(() => 0);
   if (resolved > 0)
     console.log(`Event history: ${resolved} stale events resolved`);
+  if (opts.sources?.length)
+    await recordIngestCycle(opts.sources, statsBySource).catch((e) =>
+      console.warn("ingest telemetry failed:", e),
+    );
   return { persisted, failed, eventIds };
+}
+
+/**
+ * Coverage telemetry — one ingest_cycles row + one ingest_source_stats row
+ * per source that reported in this cycle. The question it answers: does a
+ * source add intelligence (new versions, material events, primary evidence)
+ * or just volume?
+ */
+async function recordIngestCycle(
+  sources: SourceStatus[],
+  statsBySource: Map<
+    string,
+    {
+      newVersions: number;
+      reObserved: number;
+      events: Set<string>;
+      materialEvents: Set<string>;
+      primaryAttached: number;
+    }
+  >,
+): Promise<void> {
+  const pool = getPool();
+  const startedAt = sources
+    .map((s) => s.checkedAt)
+    .filter(Boolean)
+    .sort()[0];
+  const cyc = await pool.query<{ id: string }>(
+    `INSERT INTO ingest_cycles (started_at) VALUES ($1) RETURNING id`,
+    [startedAt ?? new Date().toISOString()],
+  );
+  const cycleId = cyc.rows[0].id;
+  for (const s of sources) {
+    const ev = statsBySource.get(s.name);
+    await pool.query(
+      `INSERT INTO ingest_source_stats
+         (cycle_id, source_key, channel, provider, fetched, accepted,
+          duplicate_docs, new_evidence_versions, events_contributed,
+          material_events, primary_attached, latency_ms, http_status, status)
+       VALUES ($1,$2,$3,$4,$5,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+      [
+        cycleId,
+        s.id,
+        null, // channel/provider resolved per-document, not per-source row
+        null,
+        s.count,
+        s.count,
+        ev?.reObserved ?? 0,
+        ev?.newVersions ?? 0,
+        ev?.events.size ?? 0,
+        ev?.materialEvents.size ?? 0,
+        ev?.primaryAttached ?? 0,
+        s.latencyMs ?? null,
+        s.httpStatus ?? null,
+        s.status,
+      ],
+    );
+  }
 }

@@ -3,6 +3,8 @@ import { decodeHTML } from "entities";
 import { createHash } from "node:crypto";
 import { get as httpsGet } from "node:https";
 import { feeds, type Feed } from "./feeds";
+import { fetchCongBao } from "./adapters/congbao";
+import { fetchSecEdgar } from "./adapters/secEdgar";
 import { mediaInfoFor } from "./mediaData";
 import { normalizeText, type Article, type SourceStatus } from "./model";
 
@@ -89,6 +91,16 @@ export function toArticle(
     language: feed.language ?? "vi",
     region: feed.region,
     wire: feed.wire ?? false,
+    ingest: {
+      sourceKind: feed.sourceKind ?? "publisher",
+      discoveredVia:
+        feed.format === "news-sitemap"
+          ? "news_sitemap"
+          : (feed.discovery ?? "rss"),
+      discoveryProvider: feed.discoveryProvider,
+      sourceDomain: canonical.hostname.replace(/^www\./, ""),
+      documentType: feed.documentType,
+    },
   };
 }
 
@@ -143,10 +155,31 @@ function decodeFeedBytes(buf: Buffer): string {
   return buf.toString("utf8");
 }
 
+/** Carrier for errors that must surface as a health status, not a stack. */
+class FetchHealthError extends Error {
+  constructor(
+    readonly kind: "rate_limited" | "timeout" | "error",
+    message: string,
+  ) {
+    super(message);
+  }
+}
+
 async function fetchFeed(
   feed: Feed,
 ): Promise<{ articles: Article[]; status: SourceStatus }> {
   const checkedAt = new Date().toISOString();
+  const t0 = Date.now();
+  let httpStatus: number | undefined;
+  let retryAfter: string | undefined;
+  const statusBase = {
+    id: feed.id,
+    name: feed.name,
+    topic: feed.topic,
+    url: feed.url,
+    checkedAt,
+    latencyMs: 0,
+  };
   try {
     const response = await fetch(feed.url, {
       signal: AbortSignal.timeout(FETCH_TIMEOUT),
@@ -155,6 +188,10 @@ async function fetchFeed(
         Accept: "application/rss+xml, application/xml, text/xml",
       },
     });
+    httpStatus = response.status;
+    retryAfter = response.headers.get("retry-after") ?? undefined;
+    if (response.status === 429)
+      throw new FetchHealthError("rate_limited", "HTTP 429");
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const reader = response.body?.getReader();
     if (!reader) throw new Error("Empty response");
@@ -178,30 +215,36 @@ async function fetchFeed(
         : (await parser.parseString(body)).items
             .map((item) => toArticle(item, feed))
             .filter((a): a is Article => a !== null);
-    if (!articles.length) throw new Error("No recent dated articles");
     return {
       articles,
       status: {
-        id: feed.id,
-        name: feed.name,
-        topic: feed.topic,
-        url: feed.url,
-        status: "ok",
+        ...statusBase,
+        latencyMs: Date.now() - t0,
+        httpStatus,
+        status: articles.length ? "ok" : "empty",
         count: articles.length,
-        checkedAt,
       },
     };
   } catch (error) {
+    // abort/timeout is its own class — the source may be slow, not dead
+    const aborted =
+      error instanceof Error &&
+      (error.name === "AbortError" || error.name === "TimeoutError");
+    const kind =
+      error instanceof FetchHealthError
+        ? error.kind
+        : aborted
+          ? "timeout"
+          : "error";
     return {
       articles: [],
       status: {
-        id: feed.id,
-        name: feed.name,
-        topic: feed.topic,
-        url: feed.url,
-        status: "error",
+        ...statusBase,
+        latencyMs: Date.now() - t0,
+        httpStatus,
+        retryAfter,
+        status: kind,
         count: 0,
-        checkedAt,
         error:
           error instanceof Error ? error.message.slice(0, 140) : "Fetch failed",
       },
@@ -276,6 +319,12 @@ export async function fetchHackerNews(): Promise<Article[]> {
             language: "en",
             region: "tech",
             wire: true,
+            ingest: {
+              sourceKind: "community",
+              discoveredVia: "hn",
+              discoveryProvider: "Hacker News API",
+              externalId: String(id),
+            },
           } satisfies Article;
         } catch {
           return null;
@@ -330,6 +379,14 @@ export async function fetchGdelt(): Promise<{
     "?query=vietnam&mode=artlist&maxrecords=75&format=json" +
     "&timespan=1d&sourcelang:vietnamese";
   const checkedAt = new Date().toISOString();
+  const t0 = Date.now();
+  const statusBase = {
+    id: "gdelt",
+    name: GDELT_SOURCE_NAME,
+    topic: "vietnam" as const,
+    url: "https://www.gdeltproject.org",
+    checkedAt,
+  };
   try {
     const text = await httpsGetText(url, 20_000);
     if (!text.startsWith("{")) throw new Error("GDELT rate limit");
@@ -388,34 +445,38 @@ export async function fetchGdelt(): Promise<{
         language: item.language === "English" ? "en" : "vi",
         region: "vietnam",
         wire: true,
+        // publisher vs discovery stay separate: source=org, GDELT is only
+        // the discovery provider — never the author of the document
+        ingest: {
+          sourceKind: "publisher",
+          discoveredVia: "gdelt",
+          discoveryProvider: GDELT_SOURCE_NAME,
+          sourceDomain: host,
+        },
       });
     }
     return {
       articles,
       status: {
-        id: "gdelt",
-        name: GDELT_SOURCE_NAME,
-        topic: "vietnam",
-        url: "https://www.gdeltproject.org",
-        status: articles.length ? "ok" : "error",
+        ...statusBase,
+        latencyMs: Date.now() - t0,
+        status: articles.length ? "ok" : "empty",
         count: articles.length,
-        checkedAt,
-        error: articles.length ? undefined : "No recent articles",
       },
     };
   } catch (error) {
+    // fail-open: rate limits and timeouts degrade the source, never the cycle
+    const msg = error instanceof Error ? error.message : "Fetch failed";
+    const rateLimited = /429/.test(msg);
     return {
       articles: [],
       status: {
-        id: "gdelt",
-        name: GDELT_SOURCE_NAME,
-        topic: "vietnam",
-        url: "https://www.gdeltproject.org",
-        status: "error",
+        ...statusBase,
+        latencyMs: Date.now() - t0,
+        httpStatus: rateLimited ? 429 : undefined,
+        status: rateLimited ? "rate_limited" : "error",
         count: 0,
-        checkedAt,
-        error:
-          error instanceof Error ? error.message.slice(0, 140) : "Fetch failed",
+        error: msg.slice(0, 140),
       },
     };
   }
@@ -428,16 +489,18 @@ export async function fetchAllNews(): Promise<RawNews> {
     results.push(
       ...(await Promise.all(feeds.slice(i, i + CONCURRENCY).map(fetchFeed))),
     );
-  const [hnArticles, gdelt] = await Promise.all([
+  const [hnArticles, gdelt, congbao, secEdgar] = await Promise.all([
     fetchHackerNews(),
     fetchGdelt(),
+    fetchCongBao(),
+    fetchSecEdgar(),
   ]);
   const rawArticles = results
     .flatMap((result) => result.articles)
-    .concat(hnArticles, gdelt.articles);
+    .concat(hnArticles, gdelt.articles, congbao.articles, secEdgar.articles);
   const articles = deduplicate(rawArticles);
   const sources = results.map((result) => result.status);
-  sources.push(gdelt.status);
+  sources.push(gdelt.status, congbao.status, secEdgar.status);
   if (hnArticles.length > 0) {
     sources.unshift({
       id: "hacker-news",

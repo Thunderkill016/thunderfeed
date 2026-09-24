@@ -236,7 +236,9 @@ async function buildEdition(): Promise<Edition> {
   const feedByName = new Map(feeds.map((f) => [f.name, f]));
   let eventIds: Record<string, string> | undefined;
   try {
-    const r = await persistEdition(clusters, feedByName, extractedMap);
+    const r = await persistEdition(clusters, feedByName, extractedMap, {
+      sources,
+    });
     if (r.eventIds.size > 0) eventIds = Object.fromEntries(r.eventIds);
     if (r.persisted > 0 || r.failed > 0)
       console.log(

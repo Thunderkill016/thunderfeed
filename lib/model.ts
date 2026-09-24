@@ -45,16 +45,28 @@ export type Article = {
   language?: "vi" | "en";
   region?: "world" | "vietnam" | "asia" | "europe" | "us" | "tech";
   wire?: boolean;
+  /** provenance of THIS observation — set by fetcher, consumed by persist */
+  ingest?: import("./ingest").IngestMetadata;
 };
+
+export type SourceStatusKind =
+  | "ok"
+  | "empty"
+  | "rate_limited"
+  | "timeout"
+  | "error";
 
 export type SourceStatus = {
   id: string;
   name: string;
   topic: Topic;
   url: string;
-  status: "ok" | "error";
+  status: SourceStatusKind;
   count: number;
   checkedAt: string;
+  latencyMs?: number;
+  httpStatus?: number;
+  retryAfter?: string;
   error?: string;
 };
 

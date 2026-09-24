@@ -13,6 +13,8 @@ export interface MediaInfo {
   owner: string;
   typology: string;
   description: string;
+  /** registered domains — the publisher's canonical identity domains */
+  domains: string[];
 }
 
 interface RawMediaEntry {
@@ -35,6 +37,7 @@ function register(entry: RawMediaEntry) {
     owner: entry.owner ?? "",
     typology: entry.typology ?? "",
     description: entry.description ?? "",
+    domains: entry.domains ?? [],
   };
   for (const domain of entry.domains) {
     byDomain.set(domain.toLowerCase(), info);
@@ -70,6 +73,16 @@ export function mediaInfoFor(
     }
   }
   return null;
+}
+
+/**
+ * Canonical publisher identity for a given name/url pair. Resolves through
+ * the ownership registry (organization is the canonical key); falls back to
+ * the raw name. Discovery providers are never returned — GDELT/EDGAR only
+ * exist on the document's discovery provenance, not as a source.
+ */
+export function canonicalSourceName(name: string, url?: string): string {
+  return mediaInfoFor(name, url)?.organization ?? name.trim();
 }
 
 export type OwnershipClass = "state" | "private" | "unknown";

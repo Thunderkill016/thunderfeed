@@ -1,3 +1,4 @@
+import type { DiscoveryChannel, SourceKind } from "./ingest";
 import type { Topic } from "./model";
 
 export type Feed = {
@@ -17,6 +18,16 @@ export type Feed = {
    * output on outlets whose RSS died (RFA Tiếng Việt, CafeBiz, Người Đưa Tin).
    */
   format?: "news-sitemap";
+  /** how we reach the document; default "rss" (or "news_sitemap" via format) */
+  discovery?: DiscoveryChannel;
+  /** publisher identity class; default "publisher" */
+  sourceKind?: SourceKind;
+  /** document_type for produced evidence; default "article" */
+  documentType?: string;
+  /** discovery-layer provider name (never the publisher) */
+  discoveryProvider?: string;
+  /** ISO-ish country for sources.country (primary sources, intl outlets) */
+  country?: string;
 };
 
 const vne = (path: string, topic: Topic): Feed => ({
@@ -364,6 +375,46 @@ export const feeds: Feed[] = [
     url: "https://www.cbc.ca/cmlink/rss-world",
     language: "en",
     region: "world",
+  },
+
+  /* ---------------- primary sources: official publications ------------- */
+  /* Federal Reserve — FOMC statements/press releases are primary evidence
+     for rate/monetary claims; speeches/testimony are primary transcripts. */
+  {
+    id: "fed-press",
+    name: "Federal Reserve",
+    topic: "business",
+    url: "https://www.federalreserve.gov/feeds/press_all.xml",
+    language: "en",
+    region: "us",
+    country: "US",
+    sourceKind: "primary",
+    discovery: "official_rss",
+    documentType: "press_release",
+  },
+  {
+    id: "fed-speeches",
+    name: "Federal Reserve",
+    topic: "business",
+    url: "https://www.federalreserve.gov/feeds/speeches.xml",
+    language: "en",
+    region: "us",
+    country: "US",
+    sourceKind: "primary",
+    discovery: "official_rss",
+    documentType: "transcript",
+  },
+  {
+    id: "fed-testimony",
+    name: "Federal Reserve",
+    topic: "business",
+    url: "https://www.federalreserve.gov/feeds/testimony.xml",
+    language: "en",
+    region: "us",
+    country: "US",
+    sourceKind: "primary",
+    discovery: "official_rss",
+    documentType: "transcript",
   },
 
   /* --------- Vietnamese-language international (framing contrast) -------- */

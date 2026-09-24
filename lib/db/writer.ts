@@ -17,13 +17,22 @@ import { createHash } from "node:crypto";
 import type { PoolClient } from "pg";
 import { getPool } from "./pool";
 import { normalizeText } from "../model";
+import { canonicalSourceName, mediaInfoFor } from "../mediaData";
 import { entitySignature } from "./entities";
 import type { Article, StoryCluster } from "../model";
 
 /* ------------------------------- inputs ---------------------------------- */
 
 export type IngestChannel =
-  "rss" | "gdelt" | "hn" | "api" | "crawler" | "manual";
+  | "rss"
+  | "news_sitemap"
+  | "gdelt"
+  | "official_rss"
+  | "official_api"
+  | "crawler"
+  | "hn"
+  | "api"
+  | "manual";
 
 export interface ExtractedClaim {
   /** subject|predicate|scope fingerprint — stable across value changes */
@@ -70,6 +79,8 @@ export interface SourceMeta {
   region?: "vietnam" | "global" | "unknown";
   language?: string;
   country?: string;
+  /** publisher domain — identity, distinct from any discovery provider */
+  domain?: string;
   /** per-source ingest channel override (e.g. 'hn' inside an rss batch) */
   channel?: IngestChannel;
 }
@@ -154,9 +165,11 @@ async function upsertSource(
   meta: SourceMeta = {},
 ): Promise<string> {
   const { rows } = await client.query<{ id: string }>(
-    `INSERT INTO sources (name, kind, region, language, country)
-     VALUES ($1, $2, $3, $4, $5)
-     ON CONFLICT (name) DO UPDATE SET updated_at = sources.updated_at
+    `INSERT INTO sources (name, kind, region, language, country, domain)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     ON CONFLICT (name) DO UPDATE
+       SET domain = COALESCE(sources.domain, EXCLUDED.domain),
+           updated_at = sources.updated_at
      RETURNING id`,
     [
       name,
@@ -164,6 +177,7 @@ async function upsertSource(
       meta.region ?? "unknown",
       meta.language ?? null,
       meta.country ?? null,
+      meta.domain ?? null,
     ],
   );
   return rows[0].id;
@@ -178,14 +192,43 @@ export interface EvidenceRef {
   newVersion: boolean;
 }
 
+/** document_type values the schema accepts — anything else maps to article. */
+const DOCUMENT_TYPES = new Set([
+  "article",
+  "press_release",
+  "transcript",
+  "report",
+  "blog",
+  "social_post",
+  "dataset",
+  "legal_document",
+  "filing",
+  "other",
+]);
+
 async function ingestEvidence(
   client: PoolClient,
   article: Article,
   channel: IngestChannel,
   meta: SourceMeta = {},
 ): Promise<EvidenceRef> {
-  const sourceId = await upsertSource(client, article.source, {
+  const ingest = article.ingest;
+  // publisher identity is canonical (org/domain), never the discovery layer
+  const sourceName = canonicalSourceName(article.source, article.url);
+  const docChannel: IngestChannel =
+    ingest?.discoveredVia ?? meta?.channel ?? channel;
+  const docType =
+    ingest?.documentType && DOCUMENT_TYPES.has(ingest.documentType)
+      ? ingest.documentType
+      : "article";
+  // sources.domain is publisher identity — only the registry's canonical
+  // domain may mint it. An article's host is provenance, not identity
+  // (test fixtures and multi-brand groups share hosts legitimately).
+  const registryDomain = mediaInfoFor(sourceName, article.url)?.domains[0];
+  const sourceId = await upsertSource(client, sourceName, {
     ...meta,
+    domain: meta.domain ?? registryDomain,
+    kind: meta.kind ?? ingest?.sourceKind,
     language: meta.language ?? article.language,
   });
   const url = canonicalUrl(article.url);
@@ -196,26 +239,53 @@ async function ingestEvidence(
     current_version_id: string | null;
   }>(
     `INSERT INTO evidence_documents
-       (source_id, canonical_url, document_type, published_at,
+       (source_id, canonical_url, external_id, document_type, published_at,
         first_seen_at, last_seen_at, discovered_via)
-     VALUES ($1, $2, 'article', $3, $4, $4, $5)
+     VALUES ($1, $2, $3, $4, $5, $6, $6, $7)
      ON CONFLICT (source_id, canonical_url)
      DO UPDATE SET last_seen_at = EXCLUDED.last_seen_at
      RETURNING id, current_version_id`,
-    [sourceId, url, article.publishedAt || null, now, meta.channel ?? channel],
+    [
+      sourceId,
+      url,
+      ingest?.externalId ?? null,
+      docType,
+      article.publishedAt || null,
+      now,
+      docChannel,
+    ],
   );
   const documentId = doc.rows[0].id;
   // the version this new observation supersedes — links the version chain
   const supersedes = doc.rows[0].current_version_id;
 
+  // discovery provenance — every channel that has ever surfaced this doc.
+  // Same path re-seen → bump last_seen_at; never mints an EvidenceVersion.
+  await client.query(
+    `INSERT INTO evidence_discoveries
+       (document_id, channel, provider, first_seen_at, last_seen_at,
+        external_id, metadata)
+     VALUES ($1, $2, $3, $4, $4, $5, $6)
+     ON CONFLICT (document_id, channel, provider)
+     DO UPDATE SET last_seen_at = EXCLUDED.last_seen_at`,
+    [
+      documentId,
+      docChannel,
+      ingest?.discoveryProvider ?? "",
+      now,
+      ingest?.externalId ?? null,
+      ingest?.structuredData ? JSON.stringify(ingest.structuredData) : "{}",
+    ],
+  );
+
   const hash = contentHash(article.title, article.summary);
   const ver = await client.query<{ id: string }>(
     `INSERT INTO evidence_versions
-       (document_id, version_no, title, summary, content_hash,
+       (document_id, version_no, title, summary, structured_data, content_hash,
         observed_at, source_updated_at, supersedes_version_id)
      SELECT $1,
             COALESCE(MAX(version_no), 0) + 1,
-            $2, $3, $4, $5::timestamptz, $6::timestamptz, $7::uuid
+            $2, $3, $8::jsonb, $4, $5::timestamptz, $6::timestamptz, $7::uuid
      FROM evidence_versions WHERE document_id = $1
      ON CONFLICT (document_id, content_hash) DO NOTHING
      RETURNING id`,
@@ -225,8 +295,9 @@ async function ingestEvidence(
       article.summary || null,
       hash,
       now,
-      article.publishedAt || null,
+      ingest?.sourceUpdatedAt ?? article.publishedAt ?? null,
       supersedes,
+      ingest?.structuredData ? JSON.stringify(ingest.structuredData) : null,
     ],
   );
 
@@ -1478,6 +1549,12 @@ export interface PersistResult {
   created: boolean;
   evidenceAttached: number;
   changes: string[];
+  /** per-article ingest outcomes for coverage telemetry */
+  ingested: { source: string; primary: boolean; newVersion: boolean }[];
+  /** count of material changes minted this call (EventVersion-worthy) */
+  materialChanges: number;
+  /** primary-source documents attached this call */
+  primaryAttached: number;
 }
 
 /**
@@ -1505,6 +1582,7 @@ export async function persistCluster(
     const evByArticle = new Map<string, string>();
     const evBySource = new Map<string, string>();
     const primarySources = new Set<string>();
+    const ingested: PersistResult["ingested"] = [];
     let leadEvidenceId = "";
     for (const article of cluster.articles) {
       const meta = opts.sourceMeta?.[article.source];
@@ -1516,7 +1594,9 @@ export async function persistCluster(
       );
       evByArticle.set(article.id, ev.evidenceVersionId);
       evBySource.set(article.source, ev.evidenceVersionId);
-      if (meta?.kind === "primary") primarySources.add(article.source);
+      const primary = meta?.kind === "primary";
+      if (primary) primarySources.add(article.source);
+      ingested.push({ source: article.source, primary, newVersion: ev.newVersion });
       if (article.id === cluster.leadArticle.id) {
         leadEvidenceId = ev.evidenceVersionId;
       }
@@ -1643,7 +1723,15 @@ export async function persistCluster(
 
     await flushChanges(client, eventId, pending, created);
     await client.query("COMMIT");
-    return { eventId, created, evidenceAttached: attached, changes };
+    return {
+      eventId,
+      created,
+      evidenceAttached: attached,
+      changes,
+      ingested,
+      materialChanges: pending.filter((p) => p.material !== false).length,
+      primaryAttached: ingested.filter((i) => i.primary).length,
+    };
   } catch (err) {
     await client.query("ROLLBACK");
     throw err;

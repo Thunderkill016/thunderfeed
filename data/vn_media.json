@@ -200,6 +200,14 @@
     "typology": "State Funded Media"
   },
   {
+    "country": "United States",
+    "organization": "Federal Reserve",
+    "domains": ["federalreserve.gov"],
+    "description": "Ngân hàng trung ương Hoa Kỳ — nguồn primary cho chính sách tiền tệ.",
+    "owner": "Federal Reserve System",
+    "typology": "Public agency (statutory, editorially independent)"
+  },
+  {
     "country": "Thailand",
     "organization": "Bangkok Post",
     "domains": ["bangkokpost.com"],
