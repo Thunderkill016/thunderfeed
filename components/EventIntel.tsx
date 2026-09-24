@@ -3,6 +3,7 @@
 import type { ChangeView, EventVersionView, EventView } from "../lib/db/read";
 
 const CHANGE_LABEL: Record<string, string> = {
+  event_created: "Sự kiện mới",
   new_claim: "Dữ kiện mới",
   claim_updated: "Cập nhật dữ kiện",
   claim_confirmed: "Xác nhận",
@@ -11,6 +12,7 @@ const CHANGE_LABEL: Record<string, string> = {
   claim_retracted: "Rút lại",
   new_primary_source: "Nguồn chính thức",
   new_coverage: "Thêm nguồn",
+  new_independent_evidence: "Nguồn độc lập",
   event_resolved: "Kết thúc",
   new_event: "Sự kiện mới",
 };

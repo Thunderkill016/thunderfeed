@@ -470,9 +470,12 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
 /** Feed of material changes across all live events — the "WHAT CHANGED" rail. */
 export async function getLatestChanges(
   limit = 30,
-): Promise<(ChangeView & { eventId: string; eventTitle: string })[]> {
+): Promise<
+  (ChangeView & { id: string; eventId: string; eventTitle: string })[]
+> {
   const pool = getPool();
   const { rows } = await pool.query<{
+    id: string;
     event_id: string;
     title: string;
     type: string;
@@ -480,7 +483,7 @@ export async function getLatestChanges(
     summary: string;
     detected_at: string;
   }>(
-    `SELECT ch.event_id, ev.title, ch.type, ch.materiality,
+    `SELECT ch.id, ch.event_id, ev.title, ch.type, ch.materiality,
             ch.summary, ch.detected_at
      FROM changes ch
      JOIN events e ON e.id = ch.event_id
@@ -492,6 +495,7 @@ export async function getLatestChanges(
     [limit],
   );
   return rows.map((r) => ({
+    id: r.id,
     eventId: r.event_id,
     eventTitle: r.title,
     type: r.type,
@@ -510,10 +514,13 @@ export async function getLatestChanges(
 export async function getChangesForEntities(
   entities: string[],
   limit = 30,
-): Promise<(ChangeView & { eventId: string; eventTitle: string })[]> {
+): Promise<
+  (ChangeView & { id: string; eventId: string; eventTitle: string })[]
+> {
   if (entities.length === 0) return [];
   const pool = getPool();
   const { rows } = await pool.query<{
+    id: string;
     event_id: string;
     title: string;
     type: string;
@@ -521,7 +528,7 @@ export async function getChangesForEntities(
     summary: string;
     detected_at: string;
   }>(
-    `SELECT ch.event_id, ev.title, ch.type, ch.materiality,
+    `SELECT ch.id, ch.event_id, ev.title, ch.type, ch.materiality,
             ch.summary, ch.detected_at
      FROM changes ch
      JOIN events e ON e.id = ch.event_id
@@ -537,6 +544,7 @@ export async function getChangesForEntities(
     [limit, ...entities],
   );
   return rows.map((r) => ({
+    id: r.id,
     eventId: r.event_id,
     eventTitle: r.title,
     type: r.type,
