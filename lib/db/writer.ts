@@ -19,6 +19,12 @@ import { getPool } from "./pool";
 import { normalizeText } from "../model";
 import { canonicalSourceName, mediaInfoFor } from "../mediaData";
 import { entitySignature } from "./entities";
+import {
+  classifyLineage,
+  resolveOrigins,
+  type LineageAssertion,
+  type LineageDoc,
+} from "../lineage";
 import type { Article, StoryCluster } from "../model";
 
 /* ------------------------------- inputs ---------------------------------- */
@@ -237,14 +243,15 @@ async function ingestEvidence(
   const doc = await client.query<{
     id: string;
     current_version_id: string | null;
+    metadata: Record<string, unknown>;
   }>(
     `INSERT INTO evidence_documents
        (source_id, canonical_url, external_id, document_type, published_at,
-        first_seen_at, last_seen_at, discovered_via)
-     VALUES ($1, $2, $3, $4, $5, $6, $6, $7)
+        first_seen_at, last_seen_at, discovered_via, metadata)
+     VALUES ($1, $2, $3, $4, $5, $6, $6, $7, $8::jsonb)
      ON CONFLICT (source_id, canonical_url)
      DO UPDATE SET last_seen_at = EXCLUDED.last_seen_at
-     RETURNING id, current_version_id`,
+     RETURNING id, current_version_id, metadata`,
     [
       sourceId,
       url,
@@ -253,21 +260,52 @@ async function ingestEvidence(
       article.publishedAt || null,
       now,
       docChannel,
+      ingest?.structuredData ? JSON.stringify(ingest.structuredData) : "{}",
     ],
   );
   const documentId = doc.rows[0].id;
   // the version this new observation supersedes — links the version chain
   const supersedes = doc.rows[0].current_version_id;
 
+  // metadata enrichment can arrive AFTER the editorial version (a detail
+  // fetch that timed out last cycle succeeds now). Editorial versions are
+  // immutable; the merged metadata lives on the document and every
+  // effective merge is audit-logged.
+  let mergedMeta: Record<string, unknown> | null = null;
+  if (ingest?.structuredData) {
+    const current = doc.rows[0].metadata ?? {};
+    const delta: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(ingest.structuredData)) {
+      if (v !== undefined && JSON.stringify(current[k]) !== JSON.stringify(v))
+        delta[k] = v;
+    }
+    if (Object.keys(delta).length) {
+      mergedMeta = { ...current, ...delta };
+      await client.query(
+        `UPDATE evidence_documents SET metadata = $2::jsonb WHERE id = $1`,
+        [documentId, JSON.stringify(mergedMeta)],
+      );
+      await client.query(
+        `INSERT INTO evidence_metadata_observations
+           (document_id, delta, snapshot)
+         VALUES ($1, $2::jsonb, $3::jsonb)`,
+        [documentId, JSON.stringify(delta), JSON.stringify(mergedMeta)],
+      );
+    }
+  }
+
   // discovery provenance — every channel that has ever surfaced this doc.
   // Same path re-seen → bump last_seen_at; never mints an EvidenceVersion.
+  // Enrichment also pushes the merged metadata forward so a stale first
+  // observation never wins over later detail.
   await client.query(
     `INSERT INTO evidence_discoveries
        (document_id, channel, provider, first_seen_at, last_seen_at,
         external_id, metadata)
-     VALUES ($1, $2, $3, $4, $4, $5, $6)
+     VALUES ($1, $2, $3, $4, $4, $5, $6::jsonb)
      ON CONFLICT (document_id, channel, provider)
-     DO UPDATE SET last_seen_at = EXCLUDED.last_seen_at`,
+     DO UPDATE SET last_seen_at = EXCLUDED.last_seen_at,
+                   metadata = $7::jsonb`,
     [
       documentId,
       docChannel,
@@ -275,6 +313,7 @@ async function ingestEvidence(
       now,
       ingest?.externalId ?? null,
       ingest?.structuredData ? JSON.stringify(ingest.structuredData) : "{}",
+      JSON.stringify(mergedMeta ?? ingest?.structuredData ?? {}),
     ],
   );
 
@@ -295,7 +334,9 @@ async function ingestEvidence(
       article.summary || null,
       hash,
       now,
-      ingest?.sourceUpdatedAt ?? article.publishedAt ?? null,
+      // published_at and source_updated_at are different facts — only an
+      // explicit upstream "updated/revised" timestamp belongs here
+      ingest?.sourceUpdatedAt ?? null,
       supersedes,
       ingest?.structuredData ? JSON.stringify(ingest.structuredData) : null,
     ],
@@ -928,6 +969,7 @@ const CHANGE_MATERIALITY: Record<string, "low" | "medium" | "high"> = {
   claim_corrected: "high",
   claim_retracted: "high",
   new_primary_source: "medium",
+  new_independent_evidence: "medium",
   new_coverage: "low",
   event_resolved: "medium",
 };
@@ -1017,6 +1059,7 @@ const REASON_PRIORITY = [
   "claim_corrected",
   "claim_disputed",
   "primary_confirmation",
+  "independent_origin",
   "new_material_claim",
   "event_resolved",
 ];
@@ -1550,7 +1593,17 @@ export interface PersistResult {
   evidenceAttached: number;
   changes: string[];
   /** per-article ingest outcomes for coverage telemetry */
-  ingested: { source: string; primary: boolean; newVersion: boolean }[];
+  ingested: {
+    source: string;
+    primary: boolean;
+    newVersion: boolean;
+    /** lineage relation of this article's document ('original' = own root) */
+    relation?: string;
+    /** the ingested article's id (telemetry join key) */
+    articleId?: string;
+  }[];
+  /** lineage outcomes for documents attached this call */
+  lineage: { original: number; derived: number; unknown: number };
   /** count of material changes minted this call (EventVersion-worthy) */
   materialChanges: number;
   /** primary-source documents attached this call */
@@ -1580,6 +1633,7 @@ export async function persistCluster(
     // keyed by article (not source) — one source can carry several
     // documents in a cluster and claims must resolve to the right doc
     const evByArticle = new Map<string, string>();
+    const docByArticle = new Map<string, string>();
     const evBySource = new Map<string, string>();
     const primarySources = new Set<string>();
     const ingested: PersistResult["ingested"] = [];
@@ -1593,10 +1647,16 @@ export async function persistCluster(
         meta,
       );
       evByArticle.set(article.id, ev.evidenceVersionId);
+      docByArticle.set(article.id, ev.documentId);
       evBySource.set(article.source, ev.evidenceVersionId);
-      const primary = meta?.kind === "primary";
+      const primary = meta?.kind === "primary" || article.ingest?.sourceKind === "primary";
       if (primary) primarySources.add(article.source);
-      ingested.push({ source: article.source, primary, newVersion: ev.newVersion });
+      ingested.push({
+        source: article.source,
+        primary,
+        newVersion: ev.newVersion,
+        articleId: article.id,
+      });
       if (article.id === cluster.leadArticle.id) {
         leadEvidenceId = ev.evidenceVersionId;
       }
@@ -1606,8 +1666,12 @@ export async function persistCluster(
     const { eventId, created } = await resolveEvent(client, cluster, claims);
 
     // 3) membership edges — one event_evidence row per DOCUMENT
-    const newEvidence: { evId: string; source: string; primary: boolean }[] =
-      [];
+    const newEvidence: {
+      evId: string;
+      articleId: string;
+      source: string;
+      primary: boolean;
+    }[] = [];
     let attached = 0;
     for (const article of cluster.articles) {
       const evId = evByArticle.get(article.id);
@@ -1627,8 +1691,164 @@ export async function persistCluster(
       ) {
         attached++;
         if (!isOrigin)
-          newEvidence.push({ evId, source: article.source, primary });
+          newEvidence.push({
+            evId,
+            articleId: article.id,
+            source: article.source,
+            primary,
+          });
       }
+    }
+
+    // 3.5) information lineage — every newly attached document gets an
+    // auditable origin assertion. A doc re-observed in a later cycle keeps
+    // its existing assertion (classifier changes mint new versions, never
+    // rewrite). Processed in publish order so same-cycle parents resolve.
+    const relByArticle = new Map<string, string>();
+    const sourceByArticle = new Map<string, string>();
+    let priorSources = new Set<string>();
+    const lineageStats = { original: 0, derived: 0, unknown: 0 };
+    {
+      const attachedArticles = cluster.articles.filter((a) =>
+        docByArticle.has(a.id),
+      );
+      // candidate pool = all live documents of this event (incl. this batch)
+      const candR = await client.query<{
+        id: string;
+        source: string;
+        kind: string;
+        title: string;
+        summary: string | null;
+        published_at: string | null;
+        canonical_url: string;
+      }>(
+        `SELECT DISTINCT d.id, s.name AS source, s.kind::text AS kind,
+                v.title, v.summary, d.published_at, d.canonical_url
+         FROM event_evidence ee
+         JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
+         JOIN evidence_documents d ON d.id = ev.document_id
+         JOIN evidence_versions v ON v.id = d.current_version_id
+         JOIN sources s ON s.id = d.source_id
+         WHERE ee.event_id = $1 AND ee.detached_at IS NULL`,
+        [eventId],
+      );
+      const candidates: LineageDoc[] = candR.rows.map((r) => ({
+        documentId: r.id,
+        source: r.source,
+        sourceKind: r.kind,
+        title: r.title,
+        summary: r.summary ?? "",
+        publishedAt: r.published_at ?? "",
+        url: r.canonical_url,
+      }));
+      // sources already on the event BEFORE this batch — a new document
+      // from one of them can never be a new independent origin, it's a
+      // same-organization re-report at best
+      const batchDocIds = new Set(
+        attachedArticles.map((a) => docByArticle.get(a.id)!),
+      );
+      priorSources = new Set(
+        candidates
+          .filter((c) => !batchDocIds.has(c.documentId))
+          .map((c) => c.source),
+      );
+      const candIds = candidates.map((c) => c.documentId);
+      // latest lineage assertion per candidate (chains resolve through it)
+      const existing = new Map<
+        string,
+        { parent: string | null; relation: string; version_no: number }
+      >();
+      if (candIds.length) {
+        const lr = await client.query<{
+          child_document_id: string;
+          parent_document_id: string | null;
+          relation: string;
+          version_no: number;
+        }>(
+          `SELECT DISTINCT ON (child_document_id)
+                  child_document_id, parent_document_id, relation::text,
+                  version_no
+           FROM evidence_lineage
+           WHERE child_document_id IN (${candIds.map((_, i) => `$${i + 1}`).join(",")})
+           ORDER BY child_document_id, version_no DESC`,
+          candIds,
+        );
+        for (const r of lr.rows)
+          existing.set(r.child_document_id, {
+            parent: r.parent_document_id,
+            relation: r.relation,
+            version_no: r.version_no,
+          });
+      }
+      // assertions used for origin walks — existing + new, chronological
+      const assertionMap = new Map<string, LineageAssertion>();
+      for (const [id, e] of existing)
+        assertionMap.set(id, {
+          parentDocumentId: e.parent,
+          relation: e.relation as LineageAssertion["relation"],
+          confidence: 0,
+          method: "rule",
+          evidence: {},
+        });
+      // two articles can resolve to the same canonical document — assert
+      // once per document, never twice
+      const asserted = new Set<string>();
+      for (const a of [...attachedArticles].sort((x, y) =>
+        x.publishedAt.localeCompare(y.publishedAt),
+      )) {
+        const docId = docByArticle.get(a.id)!;
+        const canonSource = canonicalSourceName(a.source, a.url);
+        sourceByArticle.set(a.id, canonSource);
+        if (asserted.has(docId)) {
+          relByArticle.set(a.id, assertionMap.get(docId)!.relation);
+          continue;
+        }
+        if (existing.has(docId)) {
+          relByArticle.set(a.id, existing.get(docId)!.relation);
+          continue; // prior assertion stands — append-only audit
+        }
+        const child: LineageDoc = {
+          documentId: docId,
+          source: canonSource,
+          sourceKind: a.ingest?.sourceKind ?? "publisher",
+          title: a.title,
+          summary: a.summary,
+          publishedAt: a.publishedAt,
+          url: a.url,
+          language: a.language,
+        };
+        const asrt = classifyLineage(
+          child,
+          candidates.filter((c) => c.documentId !== docId),
+        );
+        assertionMap.set(docId, asrt);
+        const origin = resolveOrigins(assertionMap).get(docId) ?? docId;
+        await client.query(
+          `INSERT INTO evidence_lineage
+             (child_document_id, version_no, parent_document_id,
+              origin_document_id, relation, confidence, method, evidence)
+           VALUES ($1, 1, $2, $3, $4::lineage_relation, $5, $6, $7::jsonb)`,
+          [
+            docId,
+            asrt.parentDocumentId,
+            asrt.parentDocumentId ? origin : null,
+            asrt.relation,
+            asrt.confidence,
+            asrt.method,
+            JSON.stringify(asrt.evidence),
+          ],
+        );
+        asserted.add(docId);
+        relByArticle.set(a.id, asrt.relation);
+        if (asrt.relation === "original") lineageStats.original++;
+        else if (asrt.relation === "unknown") lineageStats.unknown++;
+        else lineageStats.derived++;
+      }
+    }
+
+    // stamp lineage relations back onto the ingest outcomes for telemetry
+    for (const i of ingested) {
+      if (i.articleId) i.relation = relByArticle.get(i.articleId);
     }
 
     // 4) claims — diff against the event's current truth-state.
@@ -1706,19 +1926,41 @@ export async function persistCluster(
         reason: "primary_confirmation",
       });
     }
-    if (
-      pending.length === 0 &&
-      !created &&
-      newEvidence.some((e) => !e.primary)
-    ) {
-      const n = newEvidence.filter((e) => !e.primary).length;
-      const summary = `+${n} nguồn tường thuật lại cùng dữ kiện`;
-      changes.push(summary);
-      pending.push({
-        type: "new_coverage",
-        summary,
-        material: false,
-      });
+    // information origins vs coverage: a freshly attached document that is
+    // its own lineage root is INDEPENDENT corroboration (material);
+    // descendants of a known lineage are coverage (low materiality).
+    // an attached doc is independent only if it is its own lineage root
+    // AND its source isn't already on the event — same-org re-reports
+    // never mint a new origin
+    const independents = newEvidence.filter(
+      (e) =>
+        !e.primary &&
+        relByArticle.get(e.articleId) === "original" &&
+        !priorSources.has(sourceByArticle.get(e.articleId) ?? ""),
+    );
+    const independentIds = new Set(independents.map((e) => e.articleId));
+    const coverageOnly = newEvidence.filter(
+      (e) => !e.primary && !independentIds.has(e.articleId),
+    );
+    if (!created) {
+      for (const e of independents) {
+        const summary = `Nguồn độc lập mới xác nhận: ${e.source}`;
+        changes.push(summary);
+        pending.push({
+          type: "new_independent_evidence",
+          summary,
+          reason: "independent_origin",
+        });
+      }
+      if (pending.length === 0 && coverageOnly.length) {
+        const summary = `+${coverageOnly.length} nguồn tường thuật lại cùng dữ kiện`;
+        changes.push(summary);
+        pending.push({
+          type: "new_coverage",
+          summary,
+          material: false,
+        });
+      }
     }
 
     await flushChanges(client, eventId, pending, created);
@@ -1729,6 +1971,7 @@ export async function persistCluster(
       evidenceAttached: attached,
       changes,
       ingested,
+      lineage: lineageStats,
       materialChanges: pending.filter((p) => p.material !== false).length,
       primaryAttached: ingested.filter((i) => i.primary).length,
     };

@@ -128,7 +128,7 @@ test("matrix: 10 wire copies → one new_coverage, claim is NOT confirmed x10", 
   assert.equal(cs[0].state, "reported");
 });
 
-test("matrix: Reuters=20, BBC=20 → coverage added → NO material change", async () => {
+test("matrix: Reuters=20, BBC=20 independent → new_independent_evidence", async () => {
   setupDb();
   const a = cluster([
     art({ source: "Reuters", title: "Bão lớn: 20 chuyến bay bị hủy" }),
@@ -145,18 +145,18 @@ test("matrix: Reuters=20, BBC=20 → coverage added → NO material change", asy
   const r2 = await persistCluster(b, extractClaims(b));
   assert.equal(r2.eventId, r1.eventId);
 
+  // BBC is a NEW information origin — material, per lineage semantics.
+  // Still not a confirmation: corroboration is not primary evidence.
   const types = await changeTypes(r1.eventId);
-  assert.ok(types.includes("new_coverage"));
+  assert.ok(types.includes("new_independent_evidence"));
   assert.ok(!types.includes("claim_updated"));
   assert.ok(!types.includes("claim_confirmed"));
 
-  // no new event_version from coverage alone — and the creation cycle
-  // batches event_created + new_claim into one snapshot
   const { rows } = await getPool().query<{ c: string }>(
     `SELECT COUNT(*) AS c FROM event_versions WHERE event_id = $1`,
     [r1.eventId],
   );
-  assert.equal(Number(rows[0].c), 1);
+  assert.equal(Number(rows[0].c), 2);
 });
 
 test("matrix: primary confirms the same value → claim_confirmed", async () => {
@@ -355,10 +355,11 @@ test("matrix: headline changes, claim same → NO material change", async () => 
   const r2 = await persistCluster(b, extractClaims(b));
   assert.equal(r2.eventId, r1.eventId, "same claim_key → same event");
 
-  // only coverage is added — no material change
+  // a different outlet corroborating the same fact is a new independent
+  // origin — material under lineage semantics, though nothing else changed
   const after = await changeTypes(r1.eventId);
   const added = after.slice(before.length);
-  assert.deepEqual(added, ["new_coverage"]);
+  assert.deepEqual(added, ["new_independent_evidence"]);
 });
 
 test("matrix: explicit retraction → claim_retracted", async () => {

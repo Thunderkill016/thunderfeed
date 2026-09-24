@@ -116,8 +116,9 @@ test("persistCluster → EventView → claim diff → change log", async () => {
   // give the new article a different url (it is a new document)
   c3.articles[2].url = "https://tuoitre.vn/storm-35";
   const r3 = await persistCluster(c3, extractClaims(c3));
-  assert.equal(r3.changes.length, 1);
-  assert.match(r3.changes[0], /20.*35/);
+  // claim_disputed + new_independent_evidence (Tuổi Trẻ is a new origin)
+  assert.equal(r3.changes.length, 2);
+  assert.ok(r3.changes.some((s) => /20.*35/.test(s)));
 
   const view3 = await getEventView(r1.eventId);
   assert.ok(view3);
@@ -250,21 +251,25 @@ test("acceptance: coverage is not change; primary source updates the claim", asy
     materiality: string;
   }>(`SELECT type, materiality FROM changes ORDER BY detected_at`);
   const types = allChanges.map((c) => c.type);
-  assert.ok(types.includes("new_coverage"));
+  // BBC is a new INDEPENDENT origin under lineage semantics — material
+  // corroboration, not low-grade syndicated coverage
+  assert.ok(types.includes("new_independent_evidence"));
   assert.equal(
-    allChanges.find((c) => c.type === "new_coverage")?.materiality,
-    "low",
+    allChanges.find((c) => c.type === "new_independent_evidence")
+      ?.materiality,
+    "medium",
   );
   assert.ok(types.includes("claim_updated"));
   assert.ok(types.includes("new_primary_source"));
 
   // batched EventVersion: one snapshot per observation cycle —
   // v1 = creation (event_created + new_claim annotate it),
-  // v2 = the official-source cycle (claim_updated + primary_confirmation)
+  // v2 = BBC independent corroboration (independent_origin),
+  // v3 = the official-source cycle (claim_updated + primary_confirmation)
   const { rows: evs } = await pool.query<{ c: string }>(
     `SELECT COUNT(*) AS c FROM event_versions`,
   );
-  assert.equal(Number(evs[0].c), 2);
+  assert.equal(Number(evs[0].c), 3);
 
   // all material changes in one cycle point at the same snapshot
   // (creation-cycle changes annotate v1 and carry no from_version)
@@ -279,9 +284,12 @@ test("acceptance: coverage is not change; primary source updates the claim", asy
   const matTypes = matChanges.map((c) => c.type);
   assert.ok(matTypes.includes("claim_updated"));
   assert.ok(matTypes.includes("new_primary_source"));
+  assert.ok(matTypes.includes("new_independent_evidence"));
+  // two material cycles → two distinct snapshots, each cycle's changes
+  // pointing at exactly one version
   assert.equal(
     new Set(matChanges.map((c) => c.to_event_version_id)).size,
-    1,
+    2,
     "one EventVersion per observation cycle",
   );
 
@@ -311,11 +319,13 @@ test("acceptance: coverage is not change; primary source updates the claim", asy
   assert.equal(view.claims[0].value, 35);
   assert.equal(view.claims[0].previousValue, 20);
   assert.equal(view.evidence.primary.length, 1);
-  // the per-event timeline is complete — coverage appears, flagged low,
-  // while the cross-event feed (getLatestChanges) filters it out
-  const cov = view.latestChanges.find((c) => c.type === "new_coverage");
-  assert.ok(cov, "coverage is on the event timeline");
-  assert.equal(cov.materiality, "low");
+  // the per-event timeline is complete — BBC's independent corroboration
+  // appears as medium materiality under lineage semantics
+  const ind = view.latestChanges.find(
+    (c) => c.type === "new_independent_evidence",
+  );
+  assert.ok(ind, "independent corroboration is on the event timeline");
+  assert.equal(ind.materiality, "medium");
   const upd = view.latestChanges.find((c) => c.type === "claim_updated");
   assert.ok(upd);
   assert.equal(upd.materiality, "high");

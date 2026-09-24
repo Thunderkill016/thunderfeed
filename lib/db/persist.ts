@@ -84,6 +84,9 @@ export async function persistEdition(
       events: Set<string>;
       materialEvents: Set<string>;
       primaryAttached: number;
+      origins: number;
+      derived: number;
+      unknown: number;
     }
   >();
   for (const c of clusters) {
@@ -114,6 +117,9 @@ export async function persistEdition(
             events: new Set(),
             materialEvents: new Set(),
             primaryAttached: 0,
+            origins: 0,
+            derived: 0,
+            unknown: 0,
           };
           statsBySource.set(i.source, s);
         }
@@ -122,6 +128,9 @@ export async function persistEdition(
         s.events.add(r.eventId);
         if (r.materialChanges > 0) s.materialEvents.add(r.eventId);
         if (i.primary) s.primaryAttached++;
+        if (i.relation === "original") s.origins++;
+        else if (i.relation && i.relation !== "unknown") s.derived++;
+        else s.unknown++;
       }
     } catch (error) {
       failed++;
@@ -157,6 +166,9 @@ async function recordIngestCycle(
       events: Set<string>;
       materialEvents: Set<string>;
       primaryAttached: number;
+      origins: number;
+      derived: number;
+      unknown: number;
     }
   >,
 ): Promise<void> {
@@ -176,8 +188,9 @@ async function recordIngestCycle(
       `INSERT INTO ingest_source_stats
          (cycle_id, source_key, channel, provider, fetched, accepted,
           duplicate_docs, new_evidence_versions, events_contributed,
-          material_events, primary_attached, latency_ms, http_status, status)
-       VALUES ($1,$2,$3,$4,$5,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+          material_events, primary_attached, latency_ms, http_status, status,
+          detail)
+       VALUES ($1,$2,$3,$4,$5,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14::jsonb)`,
       [
         cycleId,
         s.id,
@@ -193,6 +206,18 @@ async function recordIngestCycle(
         s.latencyMs ?? null,
         s.httpStatus ?? null,
         s.status,
+        // information-lineage contribution: does the source bring new
+        // origins or only derivative volume? syndicationRatio > ~0.5 is a
+        // copy-forward outlet, not an intelligence source.
+        JSON.stringify({
+          origins: ev?.origins ?? 0,
+          derived: ev?.derived ?? 0,
+          unknown: ev?.unknown ?? 0,
+          syndicationRatio:
+            (ev?.origins ?? 0) + (ev?.derived ?? 0)
+              ? (ev?.derived ?? 0) / ((ev?.origins ?? 0) + (ev?.derived ?? 0))
+              : null,
+        }),
       ],
     );
   }

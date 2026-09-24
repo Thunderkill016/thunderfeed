@@ -100,7 +100,8 @@ export function filingsToArticles(
         sourceKind: "primary",
         discoveredVia: "official_api",
         discoveryProvider: "SEC EDGAR",
-        sourceDomain: "sec.gov",
+        // no sourceDomain: the issuer's canonical domain is unknown here —
+        // sec.gov is the repository's domain, never the issuer's identity
         externalId: accession,
         documentType: "filing",
         structuredData,

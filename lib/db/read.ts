@@ -58,7 +58,18 @@ export interface EventView {
   confidence: {
     state: "weak" | "moderate" | "strong";
     directEvidenceCount: number;
+    /** distinct information origins (lineage roots), not outlet count */
     independentOrigins: number;
+    /** all publisher/primary/community documents on the event */
+    rawSourceCount: number;
+    /** origins whose root document is a primary source */
+    primaryOrigins: number;
+    /** documents derived from another origin (wire copy/quote/rewrite) */
+    syndicatedSources: number;
+    /** documents with no resolved lineage assertion */
+    unknownOrigins: number;
+    /** fraction of event documents with a lineage assertion (0-1) */
+    lineageCoverage: number;
     /** claim_evidence rows asserting a conflicting value */
     contradictions: number;
   };
@@ -173,13 +184,38 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     [eventId],
   );
 
-  // Independent origins = distinct content lineages, not outlets:
-  // N wire copies of the same text share one content_hash → one origin;
-  // genuinely different reporting produces different hashes.
-  const originsQ = pool.query<{ n: string }>(
-    `SELECT COUNT(DISTINCT ev.content_hash) AS n
+  // Independent origins = lineage roots, not outlets and not content
+  // hashes: 9 copies of one wire share ONE root; two outlets covering the
+  // same event independently are TWO roots. Documents without a lineage
+  // assertion count as their own (unresolved) origin.
+  const originsQ = pool.query<{
+    doc_id: string;
+    source_id: string;
+    kind: string;
+    root: string | null;
+    relation: string | null;
+    root_kind: string | null;
+  }>(
+    `WITH lin AS (
+       SELECT l.child_document_id, l.relation::text AS relation,
+              COALESCE(l.origin_document_id, l.child_document_id) AS root
+       FROM evidence_lineage l
+       JOIN (
+         SELECT child_document_id, MAX(version_no) AS vn
+         FROM evidence_lineage GROUP BY child_document_id
+       ) m ON m.child_document_id = l.child_document_id
+          AND m.vn = l.version_no
+     )
+     SELECT DISTINCT d.id AS doc_id, s.id AS source_id, s.kind::text AS kind,
+            COALESCE(lin.root, d.id) AS root, lin.relation,
+            rs.kind::text AS root_kind
      FROM event_evidence ee
      JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
+     JOIN evidence_documents d ON d.id = ev.document_id
+     JOIN sources s ON s.id = d.source_id
+     LEFT JOIN lin ON lin.child_document_id = d.id
+     LEFT JOIN evidence_documents rd ON rd.id = lin.root
+     LEFT JOIN sources rs ON rs.id = rd.source_id
      WHERE ee.event_id = $1 AND ee.detached_at IS NULL`,
     [eventId],
   );
@@ -300,7 +336,31 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     (n, c) => n + c.primaryEvidenceCount,
     0,
   );
-  const independentOrigins = Number(originsR.rows[0]?.n ?? 0);
+  // aggregate lineage dimensions in JS — per-event doc counts are small
+  const originRows = originsR.rows;
+  const DERIVED_RELS = new Set([
+    "syndicated",
+    "quoted",
+    "rewritten",
+    "press_release_based",
+  ]);
+  const roots = new Map<string, string | null>(); // root → root kind
+  for (const r of originRows)
+    if (!roots.has(r.root!)) roots.set(r.root!, r.root_kind);
+  const origins = {
+    independentOrigins: roots.size,
+    rawSourceCount: new Set(originRows.map((r) => r.source_id)).size,
+    primaryOrigins: [...roots.values()].filter((k) => k === "primary")
+      .length,
+    syndicatedSources: originRows.filter(
+      (r) => r.relation && DERIVED_RELS.has(r.relation),
+    ).length,
+    unknownOrigins: originRows.filter(
+      (r) => !r.relation || r.relation === "unknown",
+    ).length,
+    total: originRows.length,
+  };
+  const independentOrigins = origins.independentOrigins;
   const state =
     directEvidenceCount >= 1 && independentOrigins >= 2
       ? "strong"
@@ -328,6 +388,13 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
       state,
       directEvidenceCount,
       independentOrigins,
+      rawSourceCount: origins.rawSourceCount,
+      primaryOrigins: origins.primaryOrigins,
+      syndicatedSources: origins.syndicatedSources,
+      unknownOrigins: origins.unknownOrigins,
+      lineageCoverage: origins.total
+        ? (origins.total - origins.unknownOrigins) / origins.total
+        : 0,
       contradictions: Number(contraR.rows[0]?.n ?? 0),
     },
   };

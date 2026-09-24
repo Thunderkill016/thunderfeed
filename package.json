@@ -15,6 +15,7 @@
     "test": "tsx --test tests/*.test.ts",
     "quality": "npm run typecheck && npm test && npm run build",
     "bench": "tsx scripts/bench/run.ts",
+    "bench:lineage": "tsx scripts/bench/lineage.ts",
     "bench:export": "tsx scripts/bench/export-pairs.ts",
     "bench:label": "tsx scripts/bench/label.ts"
   },
