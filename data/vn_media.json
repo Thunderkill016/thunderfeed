@@ -1,0 +1,162 @@
+[
+  {
+    "country": "Vietnam",
+    "organization": "VnExpress",
+    "domains": ["vnexpress.net", "e.vnexpress.net"],
+    "description": "Báo điện tử tiếng Việt lớn nhất Việt Nam, do FPT sở hữu.",
+    "owner": "FPT Corporation",
+    "typology": "Private Enterprise"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Tuổi Trẻ",
+    "domains": ["tuoitre.vn"],
+    "description": "Báo của Thành đoàn TP.HCM — cơ quan ngôn luận đoàn thể nhà nước.",
+    "owner": "Thành đoàn TP.HCM",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Thanh Niên",
+    "domains": ["thanhnien.vn"],
+    "description": "Báo của Hội Liên hiệp Thanh niên Việt Nam.",
+    "owner": "Hội Liên hiệp Thanh niên VN",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "VietnamNet",
+    "domains": ["vietnamnet.vn"],
+    "description": "Báo trực thuộc Bộ Thông tin và Truyền thông.",
+    "owner": "Bộ TT&TT",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Dân Trí",
+    "domains": ["dantri.com.vn"],
+    "description": "Báo trực thuộc Bộ Lao động — Thương binh và Xã hội.",
+    "owner": "Bộ LĐTB&XH",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Lao Động",
+    "domains": ["laodong.vn"],
+    "description": "Cơ quan của Tổng Liên đoàn Lao động Việt Nam.",
+    "owner": "Tổng LĐLĐ Việt Nam",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Người Lao Động",
+    "domains": ["nld.com.vn"],
+    "description": "Báo của Liên đoàn Lao động TP.HCM.",
+    "owner": "LĐLĐ TP.HCM",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Tiền Phong",
+    "domains": ["tienphong.vn"],
+    "description": "Báo của Trung ương Đoàn TNCS Hồ Chí Minh.",
+    "owner": "TƯ Đoàn",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Nhân Dân",
+    "domains": ["nhandan.vn"],
+    "description": "Cơ quan ngôn luận của Đảng Cộng sản Việt Nam.",
+    "owner": "TƯ Đảng CSVN",
+    "typology": "State Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Báo Chính Phủ",
+    "domains": ["baochinhphu.vn"],
+    "description": "Cơ quan ngôn luận của Chính phủ Việt Nam.",
+    "owner": "Văn phòng Chính phủ",
+    "typology": "State Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "VietnamPlus",
+    "domains": ["vietnamplus.vn", "en.vietnamplus.vn"],
+    "description": "Báo điện tử của Thông tấn xã Việt Nam.",
+    "owner": "TTXVN",
+    "typology": "State Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Vietnam News",
+    "domains": ["vietnamnews.vn"],
+    "description": "Báo tiếng Anh của Thông tấn xã Việt Nam.",
+    "owner": "TTXVN",
+    "typology": "State Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "VnEconomy",
+    "domains": ["vneconomy.vn", "en.vneconomy.vn"],
+    "description": "Tạp chí kinh tế trực thuộc Bộ Kế hoạch và Đầu tư.",
+    "owner": "Bộ KH&ĐT",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Vietnam Investment Review",
+    "domains": ["vir.com.vn"],
+    "description": "Báo đầu tư song ngữ trực thuộc Bộ Kế hoạch và Đầu tư.",
+    "owner": "Bộ KH&ĐT",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Saigon Times",
+    "domains": ["thesaigontimes.vn"],
+    "description": "Báo kinh tế của Thông tấn xã Việt Nam.",
+    "owner": "TTXVN",
+    "typology": "State Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Vietcetera",
+    "domains": ["vietcetera.com"],
+    "description": "Startup truyền thông tư nhân về kinh doanh và công nghệ.",
+    "owner": "Vietcetera Media",
+    "typology": "Private Enterprise"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Pháp Luật TP.HCM",
+    "domains": ["plo.vn"],
+    "description": "Báo của Ban Tuyên giáo Thành ủy TP.HCM.",
+    "owner": "Thành ủy TP.HCM",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Thể Thao 247",
+    "domains": ["thethao247.vn"],
+    "description": "Báo thể thao tư nhân.",
+    "owner": "Công ty cổ phần 247",
+    "typology": "Private Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Sức khỏe & Đời sống",
+    "domains": ["suckhoedoisong.vn", "giadinh.suckhoedoisong.vn"],
+    "description": "Cơ quan của Bộ Y tế.",
+    "owner": "Bộ Y tế",
+    "typology": "State Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Kiến Thức",
+    "domains": ["kienthuc.net.vn"],
+    "description": "Báo khoa học phổ thông của Viện Hàn lâm KH&CN.",
+    "owner": "Viện Hàn lâm KH&CN",
+    "typology": "State Funded Media"
+  }
+]

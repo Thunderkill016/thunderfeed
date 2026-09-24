@@ -1,0 +1,186 @@
+/**
+ * Claim-level analysis — the layer no consumer news product has.
+ *
+ * For each displayed cluster we ask Gemini for a structured matrix:
+ *   consensus — factual points ≥2 sources state
+ *   disputes  — topics where sources assert materially different things
+ *
+ * The model only ever sees the cluster's own headlines/summaries, and the
+ * output is validated mechanically before it can reach the UI: every named
+ * source must be a real cluster source and every number must already exist
+ * in the cluster corpus. Anything else is dropped wholesale (fail-closed),
+ * so a hallucinated claim can never ship as product content.
+ */
+
+import type { ClaimAnalysis, ClaimDispute, StoryCluster } from "./model";
+import { extractNumbers, geminiModel } from "./gemini";
+import { normalizeText } from "./model";
+
+const GEMINI_ENDPOINT =
+  "https://generativelanguage.googleapis.com/v1beta/models";
+const CALL_TIMEOUT = 15_000;
+
+const MAX_CONSENSUS = 6;
+const MAX_DISPUTES = 4;
+const MAX_POSITIONS = 6;
+const MAX_TEXT_LEN = 220;
+
+/** Per-source evidence text shown to the model — titles + summaries only. */
+function corpusFor(cluster: StoryCluster): string {
+  return cluster.articles
+    .slice(0, 10)
+    .map(
+      (a) =>
+        `[${a.source}] ${a.title}${a.summary ? ` — ${a.summary.slice(0, 260)}` : ""}`,
+    )
+    .join("\n");
+}
+
+function buildPrompt(cluster: StoryCluster): string {
+  return [
+    "Bạn là máy phân tích dữ kiện báo chí. Dưới đây là giật tít và tóm tắt của các nguồn đưa tin về CÙNG một sự kiện.",
+    "",
+    "Nhiệm vụ: trích ma trận dữ kiện.",
+    '- "consensus": các dữ kiện mà TỐI THIỂU 2 nguồn cùng nêu (tối đa 6 mục).',
+    '- "disputes": các điểm nguồn này nói khác nguồn kia — khác con số, khác kết luận, khác cách gọi/diễn giải (tối đa 4 mục, mỗi mục ≥2 nguồn).',
+    "",
+    "Quy tắc:",
+    "- Chỉ dùng thông tin trong các đoạn trích; không suy diễn thêm, không thêm con số nào không có sẵn.",
+    "- Tên nguồn phải khớp nguyên văn tên trong ngoặc vuông.",
+    '- Viết ngắn gọn bằng tiếng Việt; mỗi "point"/"claim" ≤ 160 ký tự.',
+    '- Chỉ trả JSON hợp lệ: {"consensus":[{"point":"…","sources":["…","…"]}],"disputes":[{"topic":"…","positions":[{"source":"…","claim":"…"}]}]}. Nếu không có disputes thì trả mảng rỗng.',
+    "",
+    "Các đoạn trích:",
+    corpusFor(cluster),
+  ].join("\n");
+}
+
+function isStr(v: unknown): v is string {
+  return typeof v === "string" && v.trim().length > 0;
+}
+
+/**
+ * Mechanical grounding gate. Returns a sanitized ClaimAnalysis or null.
+ * Rules: known sources only, numbers must exist in the corpus, sane
+ * cardinalities, disputes need ≥2 distinct sources.
+ */
+export function validateClaims(
+  raw: unknown,
+  sourceNames: Set<string>,
+  allowedNumbers: Set<number>,
+): ClaimAnalysis | null {
+  if (typeof raw !== "object" || raw === null) return null;
+  const obj = raw as Record<string, unknown>;
+  if (!Array.isArray(obj.consensus) || !Array.isArray(obj.disputes))
+    return null;
+
+  // LLMs casually drop diacritics — resolve "Tuoi Tre" back to "Tuổi Trẻ"
+  const canon = new Map<string, string>();
+  for (const s of sourceNames) canon.set(normalizeText(s), s);
+  const resolve = (s: string): string | null =>
+    sourceNames.has(s) ? s : (canon.get(normalizeText(s)) ?? null);
+
+  const grounded = (s: string) =>
+    s.length <= MAX_TEXT_LEN &&
+    extractNumbers(s).every((n) => allowedNumbers.has(n));
+
+  const consensus = obj.consensus
+    .slice(0, MAX_CONSENSUS)
+    .map((c): { point: string; sources: string[] } | null => {
+      if (typeof c !== "object" || c === null) return null;
+      const { point, sources } = c as Record<string, unknown>;
+      if (!isStr(point) || !grounded(point.trim())) return null;
+      if (!Array.isArray(sources)) return null;
+      const srcs = sources
+        .filter(isStr)
+        .map((s) => resolve(s.trim()))
+        .filter((s): s is string => s !== null);
+      if (new Set(srcs).size < 2) return null;
+      return { point: point.trim(), sources: [...new Set(srcs)] };
+    })
+    .filter((c): c is { point: string; sources: string[] } => c !== null);
+
+  const disputes: ClaimDispute[] = obj.disputes
+    .slice(0, MAX_DISPUTES)
+    .map((d): ClaimDispute | null => {
+      if (typeof d !== "object" || d === null) return null;
+      const { topic, positions } = d as Record<string, unknown>;
+      if (!isStr(topic) || !grounded(topic.trim())) return null;
+      if (!Array.isArray(positions)) return null;
+      const pos = positions
+        .slice(0, MAX_POSITIONS)
+        .map((p): { source: string; claim: string } | null => {
+          if (typeof p !== "object" || p === null) return null;
+          const { source, claim } = p as Record<string, unknown>;
+          const resolved = isStr(source) ? resolve(source.trim()) : null;
+          if (!resolved) return null;
+          if (!isStr(claim) || !grounded(claim.trim())) return null;
+          return { source: resolved, claim: claim.trim() };
+        })
+        .filter((p): p is { source: string; claim: string } => p !== null);
+      if (new Set(pos.map((p) => p.source)).size < 2) return null;
+      return { topic: topic.trim(), positions: pos };
+    })
+    .filter((d): d is ClaimDispute => d !== null);
+
+  if (!consensus.length && !disputes.length) return null;
+  return { consensus, disputes, origin: "gemini", model: geminiModel() };
+}
+
+export async function generateClaims(
+  apiKey: string,
+  cluster: StoryCluster,
+): Promise<ClaimAnalysis | null> {
+  if (cluster.sources.length < 2) return null;
+  const sourceNames = new Set(cluster.sources.map((s) => s.name));
+  const allowedNumbers = new Set(
+    extractNumbers(`${cluster.title} ${cluster.summary} ${corpusFor(cluster)}`),
+  );
+  const model = geminiModel();
+  const body = {
+    contents: [{ parts: [{ text: buildPrompt(cluster) }] }],
+    generationConfig: {
+      temperature: 0.1,
+      // thinking-model output budget: reasoning burns tokens before the JSON
+      maxOutputTokens: 4000,
+      responseMimeType: "application/json",
+    },
+  };
+
+  try {
+    const res = await fetch(
+      `${GEMINI_ENDPOINT}/${model}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(CALL_TIMEOUT),
+      },
+    );
+    if (!res.ok) return null;
+    const data = (await res.json()) as {
+      candidates?: {
+        finishReason?: string;
+        content?: { parts?: { text?: string; thought?: boolean }[] };
+      }[];
+    };
+    const candidate = data.candidates?.[0];
+    if (candidate?.finishReason && candidate.finishReason !== "STOP")
+      return null;
+    const text = (candidate?.content?.parts ?? [])
+      .filter((p) => p.thought !== true)
+      .map((p) => p.text ?? "")
+      .join("")
+      .trim();
+    if (!text) return null;
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return null;
+    }
+    return validateClaims(parsed, sourceNames, allowedNumbers);
+  } catch {
+    return null;
+  }
+}
