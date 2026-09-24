@@ -4,6 +4,12 @@
  * persisted. Messages are plain text (no parse_mode) so summaries can't
  * break formatting with stray HTML/markdown chars.
  */
+import {
+  dedupChanges,
+  groupChangesByEvent,
+  changeSummaryText,
+  type ChangeLike,
+} from "./changes";
 
 const API = "https://api.telegram.org";
 const SEND_TIMEOUT = 10_000;
@@ -52,35 +58,16 @@ export const CHANGE_LABEL: Record<string, string> = {
   new_event: "Sự kiện mới",
 };
 
-interface DigestChange {
-  eventId?: string;
-  eventTitle: string;
-  type: string;
-  materiality: string;
-  summary: string;
-  detectedAt: string;
-}
+type DigestChange = ChangeLike;
 
-const MAT_ORDER: Record<string, number> = { high: 0, medium: 1, low: 2 };
 /** grouped digest budget — beyond this, overflow becomes a footer line */
 const MAX_LINES = 24;
-/** change types that mean "another source confirmed" — collapse into one
- *  line per event instead of one line per source */
-const COVERAGE_TYPES = new Set(["new_independent_evidence", "new_coverage"]);
 
 /** One alert per message when few; a per-event grouped digest when many.
- *  Distinct change rows can carry identical (event, type, summary) — e.g.
- *  several evidence versions of the same article — so lines are deduped on
- *  that triple first. Coverage-type changes collapse to "N nguồn: A, B". */
+ *  Dedup + grouping live in lib/changes.ts — shared with the web rail so
+ *  coverage collapses to "N nguồn: A, B" on every surface. */
 export function formatAlertMessages(changes: DigestChange[]): string[] {
-  const deduped: DigestChange[] = [];
-  const seen = new Set<string>();
-  for (const c of changes) {
-    const k = `${c.eventId ?? c.eventTitle}|${c.type}|${c.summary}`;
-    if (seen.has(k)) continue;
-    seen.add(k);
-    deduped.push(c);
-  }
+  const deduped = dedupChanges(changes);
   if (deduped.length === 0) return [];
 
   const distinctEvents = new Set(deduped.map((c) => c.eventId ?? c.eventTitle))
@@ -93,48 +80,19 @@ export function formatAlertMessages(changes: DigestChange[]): string[] {
     );
   }
 
-  // group by event — one block per event, coverage collapsed
-  const groups = new Map<
-    string,
-    { title: string; items: DigestChange[]; rank: number; latest: number }
-  >();
-  for (const c of deduped) {
-    const key = c.eventId ?? c.eventTitle;
-    let g = groups.get(key);
-    if (!g) {
-      g = { title: c.eventTitle, items: [], rank: 9, latest: 0 };
-      groups.set(key, g);
-    }
-    g.items.push(c);
-    g.rank = Math.min(g.rank, MAT_ORDER[c.materiality] ?? 1);
-    g.latest = Math.max(g.latest, Date.parse(c.detectedAt) || 0);
-  }
-  const ordered = [...groups.values()].sort(
-    (a, b) => a.rank - b.rank || b.latest - a.latest,
-  );
-
+  const ordered = groupChangesByEvent(deduped);
   const lines: string[] = [];
   let skippedEvents = 0;
   for (const g of ordered) {
-    const block = [`▸ ${g.title}`];
-    const coverage: string[] = [];
-    for (const c of g.items) {
-      if (COVERAGE_TYPES.has(c.type)) {
-        // "…xác nhận: Source" / "…đưa tin: Source" — keep the source name
-        const m = c.summary.match(/:\s*([^:]+)$/);
-        coverage.push(m?.[1]?.trim() ?? c.summary);
-      } else {
-        const label = CHANGE_LABEL[c.type] ?? c.type;
-        // writer already prefixes some summaries with the same label —
-        // "Dữ kiện mới: 519 triệu USD" — don't double it
-        const summary = c.summary.startsWith(`${label}:`)
-          ? c.summary.slice(label.length + 1).trim()
-          : c.summary;
-        block.push(`  • ${label}: ${summary}`);
-      }
+    const block = [`▸ ${g.eventTitle}`];
+    for (const c of g.substantive) {
+      const label = CHANGE_LABEL[c.type] ?? c.type;
+      block.push(`  • ${label}: ${changeSummaryText(c, label)}`);
     }
-    if (coverage.length)
-      block.push(`  • ${coverage.length} nguồn: ${coverage.join(", ")}`);
+    if (g.coverageSources.length)
+      block.push(
+        `  • ${g.coverageSources.length} nguồn: ${g.coverageSources.join(", ")}`,
+      );
     if (lines.length + block.length > MAX_LINES) {
       skippedEvents++;
       continue;

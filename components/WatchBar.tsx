@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { topics, type Topic } from "../lib/model";
+import { entityLabel } from "../lib/entities";
 import { changeLabel } from "./EventIntel";
 import type { ChangeView } from "../lib/db/read";
 
@@ -184,10 +185,32 @@ export default function WatchBar({
                   className={`chip ${watch.entities.includes(e) ? "on" : ""}`}
                   onClick={() => toggle("entities", e)}
                 >
-                  {e}
+                  {entityLabel(e)}
                 </button>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {!editing && !active && (
+        <div className="watch-suggest">
+          <span className="watch-label">Gợi ý theo dõi nhanh</span>
+          <div className="watch-chips">
+            {available.slice(0, 6).map((e) => (
+              <button
+                key={e}
+                className="chip"
+                onClick={() => toggle("entities", e)}
+              >
+                {entityLabel(e)}
+              </button>
+            ))}
+            {available.length === 0 && (
+              <span className="watch-empty">
+                Chọn "theo dõi chủ đề" để nhận tin theo sự kiện bạn quan tâm.
+              </span>
+            )}
           </div>
         </div>
       )}
@@ -216,7 +239,7 @@ export default function WatchBar({
               <span className="watch-item-title">{r.title}</span>
               {r.matchedEntities.length > 0 && (
                 <span className="watch-matched">
-                  {r.matchedEntities.join(" · ")}
+                  {r.matchedEntities.map(entityLabel).join(" · ")}
                 </span>
               )}
             </button>

@@ -57,37 +57,9 @@ function extractKeywords(text: string): Set<string> {
   return keywords;
 }
 
-/** Display names for entity_ aliases — used by the trending strip. */
-export const ENTITY_DISPLAY: Record<string, string> = {
-  entity_saudi: "Ả Rập Xê Út",
-  entity_pipeline: "đường ống dầu",
-  entity_oil: "dầu thô",
-  entity_drone: "UAV",
-  entity_ai: "AI",
-  entity_semiconductor: "bán dẫn",
-  entity_putin: "Putin",
-  entity_zelensky: "Zelensky",
-  entity_trump: "Donald Trump",
-  entity_anthropic: "Anthropic",
-  entity_vinfast: "VinFast",
-  entity_lam: "Tô Lâm",
-  entity_pm: "Thủ tướng",
-  entity_brics: "BRICS",
-  entity_g20: "G20",
-  entity_yemen: "Yemen",
-  entity_redsea: "Biển Đỏ",
-  entity_nine_eleven: "11/9",
-  entity_trade_surplus: "thặng dư thương mại",
-  entity_song_hong: "sông Hồng",
-  entity_russia: "Nga",
-  entity_china: "Trung Quốc",
-  entity_us: "Mỹ",
-  entity_iran: "Iran",
-  entity_israel: "Israel",
-  entity_tesla: "Elon Musk",
-  entity_openai: "OpenAI",
-  entity_vietnam: "Việt Nam",
-};
+/** Display names for entity_ tokens live in lib/entities.ts (entityLabel)
+ *  — the gazetteer owns both matching and labeling so trending, the watch
+ *  editor and alerts share one naming source. */
 
 /**
  * Inject canonical entity_<slug> tokens into normalized text — the ONE

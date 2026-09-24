@@ -5,8 +5,8 @@ import {
   clusterRepText,
   extractBigrams,
   mergeClustersBySimilarity,
-  ENTITY_DISPLAY,
 } from "./cluster";
+import { entityLabel } from "./entities";
 import { isNoise, normalizeText, STOP_WORDS } from "./model";
 import { analyzeCluster, deterministicNhanDinh } from "./analysis";
 import { generateNhanDinh, geminiEnabled } from "./gemini";
@@ -121,7 +121,7 @@ function computeTrending(
     .slice(0, TRENDING_COUNT)
     .map(([term, count]) => ({
       term: term.startsWith("entity_")
-        ? (ENTITY_DISPLAY[term] ?? term.replace("entity_", ""))
+        ? entityLabel(term)
         : titleCase(forms.get(term) ?? term),
       count,
     }));

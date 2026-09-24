@@ -539,3 +539,100 @@ export function injectEntityTokens(normText: string): string {
   }
   return out.replace(/\s+/g, " ").trim();
 }
+
+/* ------------------------- display labels ------------------------- */
+
+/** Curated display names — where the known short form is an acronym
+ *  ("federal_reserve" → "FED"), the common Vietnamese name beats the first
+ *  English alias ("germany" → "Đức"), or the diacritic-bearing alias would
+ *  mislead ("palestine" → "dải gaza" is only part of the story). */
+const LABEL_OVERRIDES: Record<string, string> = {
+  // institutions — the acronym is the known form
+  federal_reserve: "FED",
+  nhnn: "NHNN",
+  ecb: "ECB",
+  boj: "BOJ",
+  imf: "IMF",
+  worldbank: "Ngân hàng Thế giới",
+  wto: "WTO",
+  who: "WHO",
+  nato: "NATO",
+  eu: "EU",
+  asean: "ASEAN",
+  aseancup: "ASEAN Cup",
+  asiad: "ASIAD",
+  g20: "G20",
+  brics: "BRICS",
+  uae: "UAE",
+  ai: "AI",
+  drone: "UAV",
+  // countries — the short Vietnamese name beats the first English alias
+  us: "Mỹ",
+  uk: "Anh",
+  russia: "Nga",
+  france: "Pháp",
+  germany: "Đức",
+  italy: "Ý",
+  austria: "Áo",
+  belgium: "Bỉ",
+  czech: "Séc",
+  australia: "Úc",
+  saudi: "Ả Rập Xê Út",
+  turkey: "Thổ Nhĩ Kỳ",
+  morocco: "Ma Rốc",
+  // diacritic-alias traps: the vi alias names only part of the entity
+  palestine: "Palestine",
+  israel: "Israel",
+  kimjongun: "Kim Jong-un",
+  vonderleyen: "Von der Leyen",
+  // vietnamese short forms
+  hcmc: "TP.HCM",
+  dbscl: "ĐBSCL",
+  // recurring story entities — what readers call them
+  tesla: "Elon Musk",
+  pm: "Thủ tướng",
+  lam: "Tô Lâm",
+  trump: "Donald Trump",
+  pipeline: "đường ống dầu",
+  oil: "dầu thô",
+  semiconductor: "bán dẫn",
+  trade_surplus: "thặng dư thương mại",
+  song_hong: "sông Hồng",
+  nine_eleven: "11/9",
+  // brand casing the generic title-case would flatten
+  vinfast: "VinFast",
+  openai: "OpenAI",
+  spacex: "SpaceX",
+  bytedance: "ByteDance",
+  nvidia: "NVIDIA",
+  viettel: "Viettel",
+};
+
+const DEFS_BY_SLUG = new Map(GAZETTEER.map((d) => [d.slug, d]));
+
+const VI_MARK =
+  /[ăâđêôơưáàảãạấầẩẫậắằẳẵặéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ]/i;
+
+function viTitleCase(s: string): string {
+  // gazetteer aliases are overwhelmingly proper nouns — Vietnamese name
+  // convention capitalizes every syllable ("hà nội" → "Hà Nội")
+  return s.replace(
+    /(^|\s)(\p{L})/gu,
+    (_m, sp: string, ch: string) => sp + ch.toUpperCase(),
+  );
+}
+
+/** Human-readable label for a canonical slug — "entity_" prefixes and
+ *  unknown slugs degrade gracefully instead of leaking raw tokens to UI. */
+export function entityLabel(slug: string): string {
+  const bare = slug.startsWith("entity_") ? slug.slice(7) : slug;
+  const override = LABEL_OVERRIDES[bare];
+  if (override) return override;
+  const def = DEFS_BY_SLUG.get(bare);
+  if (def) {
+    // the diacritic-bearing alias is usually the canonical vi form
+    const alias = def.aliases.find((a) => VI_MARK.test(a)) ?? def.aliases[0];
+    if (alias) return viTitleCase(alias);
+  }
+  return viTitleCase(bare.replace(/_/g, " "));
+}
