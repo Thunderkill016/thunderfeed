@@ -202,7 +202,7 @@ async function recordIngestCycle(
           duplicate_docs, new_evidence_versions, events_contributed,
           material_events, primary_attached, latency_ms, http_status, status,
           detail)
-       VALUES ($1,$2,$3,$4,$5,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14::jsonb)`,
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15::jsonb)`,
       [
         cycleId,
         s.id,
