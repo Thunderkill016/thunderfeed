@@ -447,30 +447,45 @@ export interface ResolverEval {
   decision: ResolverDecision;
 }
 
-async function resolveEvent(
+type CandidateRow = {
+  id: string;
+  signature: string;
+  entity_signature: string;
+  entity_signature_core: string;
+  current_version_id: string;
+  occurred_at: string | null;
+  topic: string;
+  title: string;
+  summary: string | null;
+};
+
+type CandidateSideEntry = {
+  row: CandidateRow;
+  cand: CandidateSide;
+  rep: string;
+  hash: string;
+};
+
+interface PreparedResolve {
+  inc: ReturnType<typeof buildIncomingSide>;
+  sides: CandidateSideEntry[];
+  incRep: string;
+}
+
+/**
+ * Stage A read phase — pure reads (candidate events + their claim space +
+ * rep construction). Runs identically inside or outside a transaction, so
+ * persistCluster can pre-run it before BEGIN to warm embeddings without
+ * holding the lock.
+ */
+async function prepareResolve(
   client: PoolClient,
   cluster: StoryCluster,
   claims: ExtractedClaim[],
-  opts: {
-    embedder?: (texts: string[]) => Promise<(number[] | null)[]>;
-  } = {},
-): Promise<{ ref: EventRef; evals: ResolverEval[] }> {
+): Promise<PreparedResolve> {
   const inc = buildIncomingSide(cluster, claims);
-  const signature = inc.signature;
-  const entSig = [...inc.entTokens].sort().join(" ");
-  const entCoreSig = [...inc.entCoreTokens].sort().join(" ");
 
-  const cands = await client.query<{
-    id: string;
-    signature: string;
-    entity_signature: string;
-    entity_signature_core: string;
-    current_version_id: string;
-    occurred_at: string | null;
-    topic: string;
-    title: string;
-    summary: string | null;
-  }>(
+  const cands = await client.query<CandidateRow>(
     `SELECT e.id, e.signature, e.entity_signature, e.entity_signature_core,
             e.current_version_id, e.occurred_at, e.topic,
             ev.title, ev.summary
@@ -480,7 +495,6 @@ async function resolveEvent(
        AND e.last_seen_at > now() - interval '${RESOLVER_MAX_WINDOW_HOURS} hours'`,
   );
 
-  const evals: ResolverEval[] = [];
   // claim space for ALL candidates in one round trip — per-candidate
   // queries made each persistCluster O(candidates) round trips, which is
   // what made a single persist transaction hold for minutes
@@ -507,12 +521,7 @@ async function resolveEvent(
     arr.push(r);
   }
   // stage A-side feature state per candidate (claim space + rep text)
-  const sides: {
-    row: (typeof cands.rows)[number];
-    cand: CandidateSide;
-    rep: string;
-    hash: string;
-  }[] = [];
+  const sides: CandidateSideEntry[] = [];
   for (const c of cands.rows) {
     // candidate's claim space: every versioned value (all positions),
     // so a cluster asserting an earlier position still matches
@@ -549,69 +558,113 @@ async function resolveEvent(
     });
   }
 
-  // stage A recall filter — semantic retrieval widens the pool but never
-  // merges on its own: it only earns the pair a scored evaluation.
   const incRep = clusterRepTextV2(cluster, claims);
-  if (opts.embedder) {
-    const cached = sides.length
-      ? await client
-          .query<{
-            event_id: string;
-            representation_hash: string;
-            vector: number[];
-          }>(
-            `SELECT event_id, representation_hash, vector
+  return { inc, sides, incRep };
+}
+
+/**
+ * Embedding resolution — tx-agnostic: candidate vectors come from the
+ * persisted event_embeddings cache; only cache misses hit the network
+ * embedder. When persistCluster pre-warms before BEGIN, the in-tx call
+ * sees all candidates cached and (with incVec supplied) performs no
+ * network call at all.
+ */
+async function ensureEmbeddings(
+  client: PoolClient,
+  prepared: PreparedResolve,
+  embedder: (texts: string[]) => Promise<(number[] | null)[]>,
+  incVec?: number[],
+): Promise<number[] | undefined> {
+  const { sides, incRep } = prepared;
+  const cached = sides.length
+    ? await client
+        .query<{
+          event_id: string;
+          representation_hash: string;
+          vector: number[];
+        }>(
+          `SELECT event_id, representation_hash, vector
            FROM event_embeddings
            WHERE (event_id, representation_hash) IN (
              ${sides.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(",")})`,
-            sides.flatMap((x) => [x.row.id, x.hash]),
-          )
-          .catch(() => ({ rows: [] as never[] }))
-      : {
-          rows: [] as {
-            event_id: string;
-            representation_hash: string;
-            vector: number[];
-          }[],
-        };
-    const cacheHit = new Map(
-      cached.rows.map((r) => [
-        `${r.event_id}|${r.representation_hash}`,
-        r.vector,
-      ]),
-    );
-    const missing = sides.filter((x) => !cacheHit.has(`${x.row.id}|${x.hash}`));
-    const texts = [incRep, ...missing.map((x) => x.rep)];
-    const vectors = await opts.embedder(texts).catch(() => []);
-    inc.embedding = vectors[0] ?? undefined;
-    for (let i = 0; i < missing.length; i++) {
-      const v = vectors[i + 1];
-      if (!v) continue;
-      missing[i].cand.embedding = v;
-      await client
-        .query(
-          `INSERT INTO event_embeddings
-             (event_id, representation_hash, model, dims, vector, representation)
-           VALUES ($1, $2, $3, $4, $5::jsonb, $6)
-           ON CONFLICT (event_id, representation_hash) DO NOTHING`,
-          [
-            missing[i].row.id,
-            missing[i].hash,
-            embedModel(),
-            v.length,
-            JSON.stringify(v),
-            missing[i].rep,
-          ],
+          sides.flatMap((x) => [x.row.id, x.hash]),
         )
-        .catch(() => {});
-    }
-    for (const x of sides) {
-      const hit = cacheHit.get(`${x.row.id}|${x.hash}`);
-      if (hit) x.cand.embedding = hit;
-    }
+        .catch(() => ({ rows: [] as never[] }))
+    : {
+        rows: [] as {
+          event_id: string;
+          representation_hash: string;
+          vector: number[];
+        }[],
+      };
+  const cacheHit = new Map(
+    cached.rows.map((r) => [
+      `${r.event_id}|${r.representation_hash}`,
+      r.vector,
+    ]),
+  );
+  const missing = sides.filter((x) => !cacheHit.has(`${x.row.id}|${x.hash}`));
+  const texts = [...(incVec ? [] : [incRep]), ...missing.map((x) => x.rep)];
+  const vectors = texts.length ? await embedder(texts).catch(() => []) : [];
+  const off = incVec ? 0 : 1;
+  for (let i = 0; i < missing.length; i++) {
+    const v = vectors[i + off];
+    if (!v) continue;
+    missing[i].cand.embedding = v;
+    await client
+      .query(
+        `INSERT INTO event_embeddings
+           (event_id, representation_hash, model, dims, vector, representation)
+         VALUES ($1, $2, $3, $4, $5::jsonb, $6)
+         ON CONFLICT (event_id, representation_hash) DO NOTHING`,
+        [
+          missing[i].row.id,
+          missing[i].hash,
+          embedModel(),
+          v.length,
+          JSON.stringify(v),
+          missing[i].rep,
+        ],
+      )
+      .catch(() => {});
+  }
+  for (const x of sides) {
+    const hit = cacheHit.get(`${x.row.id}|${x.hash}`);
+    if (hit) x.cand.embedding = hit;
+  }
+  return incVec ?? vectors[0] ?? undefined;
+}
+
+async function resolveEvent(
+  client: PoolClient,
+  cluster: StoryCluster,
+  claims: ExtractedClaim[],
+  opts: {
+    embedder?: (texts: string[]) => Promise<(number[] | null)[]>;
+    /** incoming rep vector pre-computed outside the tx — skips the in-tx
+     *  network call when set */
+    incEmbedding?: number[];
+  } = {},
+): Promise<{ ref: EventRef; evals: ResolverEval[] }> {
+  const prepared = await prepareResolve(client, cluster, claims);
+  const { inc, sides } = prepared;
+  const signature = inc.signature;
+  const entSig = [...inc.entTokens].sort().join(" ");
+  const entCoreSig = [...inc.entCoreTokens].sort().join(" ");
+
+  const evals: ResolverEval[] = [];
+  // stage A recall filter — semantic retrieval widens the pool but never
+  // merges on its own: it only earns the pair a scored evaluation.
+  if (opts.embedder) {
+    inc.embedding = await ensureEmbeddings(
+      client,
+      prepared,
+      opts.embedder,
+      opts.incEmbedding,
+    );
   }
 
-  let best: (typeof cands.rows)[number] | null = null;
+  let best: CandidateRow | null = null;
   let bestScore = 0;
   for (const { row: c, cand } of sides) {
     const d = decide(inc, cand);
@@ -1378,6 +1431,21 @@ export async function persistCluster(
   const pool = getPool();
   const client = await pool.connect();
   try {
+    // 0) warm resolve embeddings OUTSIDE the tx — embedder is a network
+    //    call; inside the edition-wide advisory lock it serializes every
+    //    concurrent build on Gemini latency. Pre-run the identical read
+    //    phase in autocommit, embed the misses, then the in-tx resolve
+    //    sees only cache hits.
+    let incEmbedding: number[] | undefined;
+    if (opts.embedder) {
+      const prepared = await prepareResolve(client, cluster, claims);
+      incEmbedding = await ensureEmbeddings(
+        client,
+        prepared,
+        opts.embedder,
+      ).catch(() => undefined);
+    }
+
     await client.query("BEGIN");
 
     // 1) every member article becomes an observed evidence version.
@@ -1419,7 +1487,7 @@ export async function persistCluster(
       client,
       cluster,
       claims,
-      { embedder: opts.embedder },
+      { embedder: opts.embedder, incEmbedding },
     );
     const { eventId, created } = evRef;
 
