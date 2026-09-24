@@ -25,6 +25,16 @@ export function embedModel(): string {
 /** request shape: gemini-embedding-* supports embedContent only (no batch) */
 const EMBED_CONCURRENCY = 6; // free tier ≈100 req/min — bursts trigger 429s
 const REQUEST_TIMEOUT = 12_000;
+// A 429 "retry in Xs" can mean daily-quota exhaustion, where X is hours.
+// Sleeping that long would hang the edition forever — the semantic layer is
+// optional, so waits beyond this bound mean "no vector", not "retry later".
+const MAX_RETRY_WAIT_MS = 20_000;
+// Overall budget for one embedArticles call: the stage must never hold an
+// edition build hostage, so workers stop dequeuing once it elapses.
+const EMBED_BUDGET_MS = 45_000;
+// Daily-quota trips the breaker for at most this long; after it expires one
+// cheap probe call decides whether to re-block or resume embedding.
+const QUOTA_BLOCK_MAX_MS = 15 * 60_000;
 const OUTPUT_DIMS = 768;
 const CACHE_TTL_MS = 48 * 3_600_000;
 const CACHE_MAX_ENTRIES = 12_000;
@@ -63,6 +73,11 @@ function saveCache(cache: Map<string, CacheEntry>): void {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+// Process-level breaker: a quota-exhaustion 429 (daily limit, "retry in
+// hours") means every later call will also fail — without it, each
+// persistCluster pre-warm would burn the whole stage budget on sleeps.
+let quotaBlockedUntil = 0;
+
 async function embedOnce(
   apiKey: string,
   text: string,
@@ -86,7 +101,10 @@ async function embedOnce(
         error?: { message?: string };
       } | null;
       const m = body?.error?.message?.match(/retry in ([\d.]+)s/i);
-      return { v: null, retryAfterMs: m ? Number(m[1]) * 1000 : 5000 };
+      const wait = m ? Number(m[1]) * 1000 : 5000;
+      if (wait > MAX_RETRY_WAIT_MS)
+        quotaBlockedUntil = Date.now() + Math.min(wait, QUOTA_BLOCK_MAX_MS);
+      return { v: null, retryAfterMs: wait };
     }
     if (!res.ok) return { v: null };
     const data = (await res.json()) as { embedding?: { values?: number[] } };
@@ -103,7 +121,7 @@ async function embedOne(
 ): Promise<number[] | null> {
   const first = await embedOnce(apiKey, text);
   if (first.v) return first.v;
-  if (first.retryAfterMs !== undefined) {
+  if (first.retryAfterMs !== undefined && first.retryAfterMs <= MAX_RETRY_WAIT_MS) {
     await sleep(first.retryAfterMs + 500);
     const second = await embedOnce(apiKey, text);
     return second.v;
@@ -129,9 +147,13 @@ export async function embedArticles(
     else queue.push(item);
   }
 
+  if (Date.now() < quotaBlockedUntil) return vectors;
+
   let cursor = 0;
+  const deadline = Date.now() + EMBED_BUDGET_MS;
   const worker = async () => {
-    while (cursor < queue.length) {
+    while (cursor < queue.length && Date.now() < deadline) {
+      if (Date.now() < quotaBlockedUntil) return;
       const item = queue[cursor++];
       const v = await embedOne(apiKey, item.text);
       if (v) {
