@@ -1,6 +1,6 @@
 "use client";
 
-import type { ChangeView, EventView } from "../lib/db/read";
+import type { ChangeView, EventVersionView, EventView } from "../lib/db/read";
 
 const CHANGE_LABEL: Record<string, string> = {
   new_claim: "Dữ kiện mới",
@@ -13,6 +13,24 @@ const CHANGE_LABEL: Record<string, string> = {
   new_coverage: "Thêm nguồn",
   event_resolved: "Kết thúc",
   new_event: "Sự kiện mới",
+};
+
+const VERSION_REASON_LABEL: Record<string, string> = {
+  event_created: "Tạo mới",
+  new_material_claim: "Dữ kiện mới",
+  claim_updated: "Cập nhật dữ kiện",
+  claim_corrected: "Chỉnh sửa",
+  claim_disputed: "Mâu thuẫn",
+  primary_confirmation: "Xác nhận chính thức",
+  event_resolved: "Kết thúc",
+  manual: "Thủ công",
+};
+
+const VERSION_STATUS_LABEL: Record<string, string> = {
+  emerging: "mới nổi",
+  active: "đang diễn",
+  stable: "ổn định",
+  resolved: "kết thúc",
 };
 
 const STATE_LABEL: Record<string, string> = {
@@ -147,11 +165,58 @@ export default function EventIntel({ view }: { view: EventView }) {
           </ul>
         </section>
       )}
+
+      {view.versions.length > 1 && (
+        <section className="detail-section">
+          <h3>Phiên bản</h3>
+          <ul className="changes-timeline">
+            {view.versions.map((v, i) => (
+              <VersionRow
+                key={v.versionNo}
+                version={v}
+                prev={view.versions[i + 1]}
+              />
+            ))}
+          </ul>
+        </section>
+      )}
     </>
   );
 }
 
+function VersionRow({
+  version,
+  prev,
+}: {
+  version: EventVersionView;
+  prev?: EventVersionView;
+}) {
+  const titleChanged = prev && prev.title !== version.title;
+  return (
+    <li className="change-row">
+      <span className="change-badge">v{version.versionNo}</span>
+      <span className="change-summary">
+        {VERSION_STATUS_LABEL[version.status] ?? version.status} ·{" "}
+        {VERSION_REASON_LABEL[version.changeReason] ?? version.changeReason}
+        {titleChanged && (
+          <span className="version-title"> — “{version.title}”</span>
+        )}
+      </span>
+      <span className="change-time">
+        {new Date(version.effectiveAt).toLocaleString("vi-VN", {
+          day: "2-digit",
+          month: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      </span>
+    </li>
+  );
+}
+
 export function ChangeRow({ change }: { change: ChangeView }) {
+  const at = new Date(change.detectedAt);
+  const isToday = at.toDateString() === new Date().toDateString();
   return (
     <li className={`change-row ${change.materiality}`}>
       <span className={`change-badge ${change.materiality}`}>
@@ -159,10 +224,17 @@ export function ChangeRow({ change }: { change: ChangeView }) {
       </span>
       <span className="change-summary">{change.summary}</span>
       <span className="change-time">
-        {new Date(change.detectedAt).toLocaleTimeString("vi-VN", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}
+        {isToday
+          ? at.toLocaleTimeString("vi-VN", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : at.toLocaleString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
       </span>
     </li>
   );

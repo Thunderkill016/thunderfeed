@@ -1308,6 +1308,148 @@ button {
   color: var(--ink-faint);
 }
 
+/* ---------- watch bar (dành cho bạn) ---------- */
+.watch-bar {
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  background: var(--bg-elev);
+  padding: 10px 12px;
+}
+.watch-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.watch-head .rail-title {
+  margin: 0;
+}
+.alert-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+}
+.watch-edit {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dom);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 0;
+}
+.watch-edit:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.watch-editor {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.watch-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 5px;
+}
+.watch-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.chip {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    border-color 0.12s ease,
+    color 0.12s ease,
+    background 0.12s ease;
+}
+.chip:hover {
+  border-color: var(--ink-faint);
+}
+.chip.on {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.watch-body {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.watch-alert {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  font-size: 12.5px;
+  color: var(--ink);
+  font-family: var(--sans);
+}
+.watch-alert:hover {
+  color: var(--accent);
+}
+.watch-item {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+.watch-score {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  min-width: 20px;
+}
+.watch-item-title {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.35;
+}
+.watch-item:hover .watch-item-title {
+  color: var(--accent);
+}
+.watch-matched {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.watch-empty {
+  font-size: 12px;
+  color: var(--ink-faint);
+  padding: 4px 0;
+}
+
 /* ---------- canonical claims + positions ---------- */
 .conf-badge {
   font-family: var(--mono);
@@ -1451,4 +1593,8 @@ button {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--ink-faint);
+}
+.version-title {
+  color: var(--ink-faint);
+  font-style: italic;
 }

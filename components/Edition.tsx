@@ -12,6 +12,7 @@ import EventDetail from "./EventDetail";
 import EventModal from "./EventModal";
 import ChangesRail from "./ChangesRail";
 import SearchPalette from "./SearchPalette";
+import WatchBar, { loadWatch, type WatchList } from "./WatchBar";
 
 const READ_KEY = "thunderfeed:read";
 const THEME_KEY = "thunderfeed:theme";
@@ -32,9 +33,11 @@ export default function Edition({ initial }: { initial: Edition }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [read, setRead] = useState<Set<string>>(new Set());
   const [dark, setDark] = useState(false);
+  const [watch, setWatch] = useState<WatchList>({ entities: [], topics: [] });
 
   useEffect(() => {
     setRead(loadRead());
+    setWatch(loadWatch());
     const theme = localStorage.getItem(THEME_KEY);
     const prefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)",
@@ -109,16 +112,28 @@ export default function Edition({ initial }: { initial: Edition }) {
   );
 
   const openAnalysis = edition.analyses[openId ?? ""] ?? null;
-  const openEvent = useMemo(() => {
-    if (!openId) return null;
-    const all = [
+  const allClusters = useMemo(
+    () => [
       ...(edition.hero ? [edition.hero] : []),
       ...edition.pillars.flatMap((p) => p.events),
       ...edition.blindspots.internationalOnly,
       ...edition.blindspots.domesticOnly,
-    ];
-    return all.find((c) => c.id === openId) ?? null;
-  }, [edition, openId]);
+    ],
+    [edition],
+  );
+
+  const openEvent = useMemo(() => {
+    if (!openId) return null;
+    return allClusters.find((c) => c.id === openId) ?? null;
+  }, [allClusters, openId]);
+
+  const openClusterById = useCallback(
+    (clusterId: string) => {
+      const c = allClusters.find((x) => x.id === clusterId);
+      if (c) openCluster(c);
+    },
+    [allClusters, openCluster],
+  );
 
   const newCount = useMemo(() => {
     const seen = new Set(read);
@@ -179,6 +194,14 @@ export default function Edition({ initial }: { initial: Edition }) {
       </header>
 
       <ChangesRail onOpenEvent={setOpenEventId} />
+
+      <WatchBar
+        watch={watch}
+        setWatch={setWatch}
+        editionVersion={edition.updatedAt ?? ""}
+        onOpenCluster={openClusterById}
+        onOpenEvent={setOpenEventId}
+      />
 
       <StatusBar
         updatedAt={edition.updatedAt}

@@ -334,5 +334,45 @@
     "description": "Đài phát thanh - truyền hình công cộng Canada.",
     "owner": "Canadian Broadcasting Corporation",
     "typology": "Public Broadcaster"
+  },
+  {
+    "country": "United States",
+    "organization": "VOA Tiếng Việt",
+    "domains": ["voatiengviet.com"],
+    "description": "Dịch vụ tiếng Việt của Voice of America, đài phát thanh chính phủ Hoa Kỳ.",
+    "owner": "USAGM",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Công An Nhân Dân",
+    "domains": ["cand.com.vn"],
+    "description": "Báo chí của Bộ Công an Việt Nam — cực an ninh - nhà nước trong phổ nguồn.",
+    "owner": "Bộ Công an Việt Nam",
+    "typology": "State Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Luật Khoa",
+    "domains": ["luatkhoa.com"],
+    "description": "Tạp chí phân tích pháp luật - chính trị độc lập, tài trợ bởi Asia Centre và người sáng lập.",
+    "owner": "Asia Centre / founding editors",
+    "typology": "Private Independent Media"
+  },
+  {
+    "country": "United States",
+    "organization": "The Vietnamese",
+    "domains": ["thevietnamese.org"],
+    "description": "Ấn phẩm tiếng Việt của cộng đồng di cư — góc nhìn nhân quyền, đối lập.",
+    "owner": "Vietnamese American contributors",
+    "typology": "Private Independent Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Tia Sáng",
+    "domains": ["tiasang.com.vn"],
+    "description": "Tạp chí trí thức - tư tưởng độc lập trong nước, đăng ký dưới Trung tâm Khoa học và Công nghệ Tia Sáng.",
+    "owner": "Trung tâm Khoa học và Công nghệ Tia Sáng",
+    "typology": "Private Independent Media"
   }
 ]

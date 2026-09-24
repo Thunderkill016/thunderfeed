@@ -40,6 +40,14 @@ export interface ChangeView {
   detectedAt: string;
 }
 
+export interface EventVersionView {
+  versionNo: number;
+  title: string;
+  status: string;
+  effectiveAt: string;
+  changeReason: string;
+}
+
 export interface EventView {
   id: string;
   title: string;
@@ -50,6 +58,8 @@ export interface EventView {
   lastUpdatedAt: string;
   claims: ClaimView[];
   latestChanges: ChangeView[];
+  /** canonical state history — append-only event_versions, newest first */
+  versions: EventVersionView[];
   evidence: {
     primary: EvidenceView[];
     publishers: EvidenceView[];
@@ -152,6 +162,19 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     [eventId],
   );
 
+  const versionsQ = pool.query<{
+    version_no: number;
+    title: string;
+    status: string;
+    effective_at: string;
+    change_reason: string;
+  }>(
+    `SELECT version_no, title, status::text, effective_at, change_reason::text
+     FROM event_versions WHERE event_id = $1
+     ORDER BY version_no DESC`,
+    [eventId],
+  );
+
   const evidenceQ = pool.query<{
     source: string;
     kind: string;
@@ -220,6 +243,7 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     claimsR,
     claimCountsR,
     changesR,
+    versionsR,
     evidenceR,
     positionsR,
     docsR,
@@ -228,6 +252,7 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     claimsQ,
     claimCountsQ,
     changesQ,
+    versionsQ,
     evidenceQ,
     positionsQ,
     docsQ,
@@ -415,6 +440,13 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
       summary: r.summary,
       detectedAt: r.detected_at,
     })),
+    versions: versionsR.rows.map((r) => ({
+      versionNo: r.version_no,
+      title: r.title,
+      status: r.status,
+      effectiveAt: r.effective_at,
+      changeReason: r.change_reason,
+    })),
     evidence: bucket,
     confidence: {
       state,
@@ -456,6 +488,51 @@ export async function getLatestChanges(
      ORDER BY ch.detected_at DESC
      LIMIT $1`,
     [limit],
+  );
+  return rows.map((r) => ({
+    eventId: r.event_id,
+    eventTitle: r.title,
+    type: r.type,
+    materiality: r.materiality,
+    summary: r.summary,
+    detectedAt: r.detected_at,
+  }));
+}
+
+/**
+ * Material changes on events whose canonical entity signature intersects
+ * the user's watched slugs — the alert layer of the personal-mission loop.
+ * `entity_signature` is a space-joined slug list, so a plain IN on the
+ * exploded array matches exactly (no substring false positives).
+ */
+export async function getChangesForEntities(
+  entities: string[],
+  limit = 30,
+): Promise<(ChangeView & { eventId: string; eventTitle: string })[]> {
+  if (entities.length === 0) return [];
+  const pool = getPool();
+  const { rows } = await pool.query<{
+    event_id: string;
+    title: string;
+    type: string;
+    materiality: string;
+    summary: string;
+    detected_at: string;
+  }>(
+    `SELECT ch.event_id, ev.title, ch.type, ch.materiality,
+            ch.summary, ch.detected_at
+     FROM changes ch
+     JOIN events e ON e.id = ch.event_id
+     JOIN event_versions ev ON ev.id = e.current_version_id
+     WHERE e.status NOT IN ('merged', 'archived')
+       AND ch.materiality IN ('medium', 'high')
+       AND EXISTS (
+         SELECT 1 FROM unnest(string_to_array(e.entity_signature, ' ')) s
+         WHERE s IN (${entities.map((_, i) => `$${i + 2}`).join(",")})
+       )
+     ORDER BY ch.detected_at DESC
+     LIMIT $1`,
+    [limit, ...entities],
   );
   return rows.map((r) => ({
     eventId: r.event_id,

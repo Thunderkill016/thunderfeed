@@ -436,6 +436,41 @@ export const feeds: Feed[] = [
     region: "asia",
     wire: true,
   },
+  {
+    id: "voa-vi",
+    name: "VOA Tiếng Việt",
+    topic: "world",
+    url: "https://www.voatiengviet.com/rss/default.aspx",
+    language: "vi",
+    region: "world",
+    wire: true,
+  },
+  /* independent/diaspora VN analysis — the blindspot pole state and
+     mainstream outlets structurally can't supply */
+  {
+    id: "luatkhoa",
+    name: "Luật Khoa",
+    topic: "vietnam",
+    url: "https://luatkhoa.com/feed/",
+    language: "vi",
+    region: "vietnam",
+  },
+  {
+    id: "thevietnamese",
+    name: "The Vietnamese",
+    topic: "vietnam",
+    url: "https://thevietnamese.org/feed/",
+    language: "vi",
+    region: "world",
+  },
+  {
+    id: "tiasang-dien-dan",
+    name: "Tia Sáng",
+    topic: "vietnam",
+    url: "https://tiasang.com.vn/rss/dien-dan.rss",
+    language: "vi",
+    region: "vietnam",
+  },
   /* Google News sitemaps — only live machine-readable surface on outlets
      whose RSS died (RFA: USAGM cuts 2025; CafeBiz/Người Đưa Tin: RSS gone). */
   {
@@ -550,6 +585,14 @@ export const feeds: Feed[] = [
     name: "Nhân Dân",
     topic: "vietnam",
     url: "https://nhandan.vn/rss/home.rss",
+    language: "vi",
+    region: "vietnam",
+  },
+  {
+    id: "cand-home",
+    name: "Công An Nhân Dân",
+    topic: "vietnam",
+    url: "https://cand.com.vn/rss/home.rss",
     language: "vi",
     region: "vietnam",
   },
