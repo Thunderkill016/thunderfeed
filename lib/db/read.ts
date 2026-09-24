@@ -5,6 +5,8 @@
  */
 
 import { getPool } from "./pool";
+import { extractEntitiesNormalized } from "../entities";
+import { normalizeText } from "../model";
 
 export interface EvidenceView {
   source: string;
@@ -627,4 +629,84 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
       lastMaterialAt: m?.detected_at,
     };
   });
+}
+
+export interface EventSearchHit {
+  id: string;
+  title: string;
+  summary: string;
+  status: string;
+  topic: string;
+  lastUpdatedAt: string;
+  /** 0-1 deterministic rank — entity hits dominate, token overlap breaks ties */
+  score: number;
+}
+
+/**
+ * Deterministic event search for Ask — canonical events only (never raw
+ * articles). Entity slugs from the query are matched against the persisted
+ * entity_signature; remaining query tokens must appear in the normalized
+ * title+summary. Resolved events decay out unless nothing else matches.
+ */
+export async function searchEvents(
+  query: string,
+  limit = 6,
+): Promise<EventSearchHit[]> {
+  const pool = getPool();
+  const norm = normalizeText(query);
+  if (!norm) return [];
+  const queryEntities = new Set(extractEntitiesNormalized(norm));
+  const tokens = norm.split(" ").filter((t) => t.length >= 3);
+
+  const r = await pool.query<{
+    id: string;
+    title: string;
+    summary: string;
+    status: string;
+    topic: string;
+    last_seen_at: string;
+    entity_signature: string;
+  }>(
+    `SELECT e.id, v.title, v.summary, e.status::text, e.topic::text,
+            e.last_seen_at, e.entity_signature
+     FROM events e
+     JOIN event_versions v ON v.id = e.current_version_id
+     WHERE e.status <> 'resolved'
+        OR e.last_seen_at > now() - interval '14 days'`,
+  );
+
+  const scored = r.rows
+    .map((row) => {
+      const sig = new Set(row.entity_signature.split(" ").filter(Boolean));
+      let entityHits = 0;
+      for (const s of queryEntities) if (sig.has(s)) entityHits++;
+      const hay = normalizeText(`${row.title} ${row.summary}`);
+      const tokenHits = tokens.filter((t) => hay.includes(t)).length;
+      // no entity in query → require at least one token hit to rank at all
+      if (entityHits === 0 && (queryEntities.size > 0 || tokenHits === 0))
+        return null;
+      const tokenRatio = tokens.length ? tokenHits / tokens.length : 0;
+      const entityRatio = queryEntities.size
+        ? entityHits / queryEntities.size
+        : 0;
+      const score = Math.min(
+        1,
+        entityRatio * 0.7 + tokenRatio * 0.3 + (entityHits > 0 ? 0.15 : 0),
+      );
+      if (score < 0.2) return null;
+      return { row, score };
+    })
+    .filter((x): x is { row: (typeof r.rows)[number]; score: number } => !!x)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+
+  return scored.map(({ row, score }) => ({
+    id: row.id,
+    title: row.title,
+    summary: row.summary,
+    status: row.status,
+    topic: row.topic,
+    lastUpdatedAt: row.last_seen_at,
+    score,
+  }));
 }

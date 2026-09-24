@@ -29,6 +29,23 @@ export function saveWatch(w: WatchList) {
   localStorage.setItem(WATCH_KEY, JSON.stringify(w));
 }
 
+/** URL `?e=a,b&t=x,y` overrides storage so a link is shareable. */
+export function watchFromUrl(search: string): WatchList | null {
+  const p = new URLSearchParams(search);
+  const e = p.get("e");
+  const t = p.get("t");
+  if (!e && !t) return null;
+  const entities = (e ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const topicsList = (t ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s): s is Topic => topics.some((x) => x.id === s));
+  return { entities, topics: topicsList };
+}
+
 interface RankedItem {
   id: string;
   title: string;

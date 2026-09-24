@@ -1147,6 +1147,38 @@ button {
   color: var(--ink-faint);
   font-size: 14px;
 }
+.ask-result {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--accent-soft);
+}
+.ask-loading {
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+.ask-answer {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.ask-events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
+.ask-event {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  text-align: left;
+  font-size: 12px;
+  color: var(--ink);
+  padding: 0;
+}
+.ask-event:hover {
+  text-decoration: underline;
+}
 .search-hit {
   display: flex;
   flex-direction: column;

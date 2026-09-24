@@ -12,7 +12,12 @@ import EventDetail from "./EventDetail";
 import EventModal from "./EventModal";
 import ChangesRail from "./ChangesRail";
 import SearchPalette from "./SearchPalette";
-import WatchBar, { loadWatch, type WatchList } from "./WatchBar";
+import WatchBar, {
+  loadWatch,
+  saveWatch,
+  watchFromUrl,
+  type WatchList,
+} from "./WatchBar";
 
 const READ_KEY = "thunderfeed:read";
 const THEME_KEY = "thunderfeed:theme";
@@ -37,7 +42,13 @@ export default function Edition({ initial }: { initial: Edition }) {
 
   useEffect(() => {
     setRead(loadRead());
-    setWatch(loadWatch());
+    const shared = watchFromUrl(window.location.search);
+    if (shared) {
+      setWatch(shared);
+      saveWatch(shared);
+    } else {
+      setWatch(loadWatch());
+    }
     const theme = localStorage.getItem(THEME_KEY);
     const prefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)",
@@ -255,6 +266,7 @@ export default function Edition({ initial }: { initial: Edition }) {
           edition={edition}
           onClose={() => setSearchOpen(false)}
           onOpen={openCluster}
+          onOpenEvent={setOpenEventId}
           normalizeText={normalizeText}
         />
       )}
