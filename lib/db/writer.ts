@@ -481,6 +481,31 @@ async function resolveEvent(
   );
 
   const evals: ResolverEval[] = [];
+  // claim space for ALL candidates in one round trip — per-candidate
+  // queries made each persistCluster O(candidates) round trips, which is
+  // what made a single persist transaction hold for minutes
+  const claimRows = cands.rows.length
+    ? await client.query<{
+        event_id: string;
+        claim_key: string;
+        value: unknown;
+      }>(
+        `SELECT DISTINCT c.event_id, c.claim_key, cv.value
+         FROM claims c
+         JOIN claim_versions cv ON cv.claim_id = c.id
+         WHERE c.event_id IN (${cands.rows.map((_, i) => `$${i + 1}`).join(",")})`,
+        cands.rows.map((c) => c.id),
+      )
+    : { rows: [] as { event_id: string; claim_key: string; value: unknown }[] };
+  const claimsByEvent = new Map<
+    string,
+    { claim_key: string; value: unknown }[]
+  >();
+  for (const r of claimRows.rows) {
+    let arr = claimsByEvent.get(r.event_id);
+    if (!arr) claimsByEvent.set(r.event_id, (arr = []));
+    arr.push(r);
+  }
   // stage A-side feature state per candidate (claim space + rep text)
   const sides: {
     row: (typeof cands.rows)[number];
@@ -491,16 +516,7 @@ async function resolveEvent(
   for (const c of cands.rows) {
     // candidate's claim space: every versioned value (all positions),
     // so a cluster asserting an earlier position still matches
-    const ck = await client.query<{
-      claim_key: string;
-      value: unknown;
-    }>(
-      `SELECT DISTINCT c.claim_key, cv.value
-       FROM claims c
-       JOIN claim_versions cv ON cv.claim_id = c.id
-       WHERE c.event_id = $1`,
-      [c.id],
-    );
+    const ck = { rows: claimsByEvent.get(c.id) ?? [] };
     const claimLabels = ck.rows
       .map((r) => `${r.claim_key}=${JSON.stringify(r.value)}`)
       .slice(0, 6);

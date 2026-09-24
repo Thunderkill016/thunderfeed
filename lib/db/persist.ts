@@ -7,10 +7,11 @@
 
 import type { Article, SourceStatus, StoryCluster } from "../model";
 import type { Feed } from "../feeds";
+import type { Pool, PoolClient } from "pg";
 import { dbEnabled, getPool } from "./pool";
 import { extractClaims } from "./extract";
 import { embedArticles } from "../embed";
-import { repHash } from "../resolver";
+import { clusterRepTextV2, repHash } from "../resolver";
 import {
   persistCluster,
   resolveStaleEvents,
@@ -28,6 +29,30 @@ const PERSIST_TOP_CLUSTERS = 60;
    advisory lock makes persist single-writer across ALL node processes and
    releases automatically if the holder crashes. */
 const PERSIST_LOCK_KEY = 727274;
+/* Waiters must NOT hold a pool connection while queued: the pool is small
+   (max 4), so N queued blocking locks would starve the lock holder of the
+   connection it needs to finish — a Node-level deadlock. try-lock + sleep
+   keeps waiters connectionless; ~2.5 polls/sec is negligible load. */
+const PERSIST_LOCK_RETRY_MS = 400;
+
+/**
+ * Take the edition-persist advisory lock without starving the pool.
+ * A plain `pg_advisory_lock` holds its connection while queued — with a
+ * small pool, a few waiters exhaust it and the lock holder never gets a
+ * working connection (Node-level deadlock). try-lock + sleep instead.
+ */
+async function acquirePersistLock(pool: Pool): Promise<PoolClient> {
+  for (;;) {
+    const c = await pool.connect();
+    const { rows } = await c.query<{ ok: boolean }>(
+      "SELECT pg_try_advisory_lock($1) AS ok",
+      [PERSIST_LOCK_KEY],
+    );
+    if (rows[0].ok) return c;
+    c.release();
+    await new Promise((r) => setTimeout(r, PERSIST_LOCK_RETRY_MS));
+  }
+}
 
 /**
  * Publisher identity + discovery path for one article. `article.ingest` is
@@ -107,27 +132,37 @@ export async function persistEdition(
         return items.map((it) => v.get(it.id) ?? null);
       }
     : undefined;
+  /* Claim extraction is deterministic — compute it up front so every
+     incoming rep can be embedded BEFORE the advisory lock is taken. The
+     embedder is a network call; running it inside the lock serializes all
+     builds on Gemini latency. The in-transaction embedder then hits the
+     warmed file cache for incoming reps. */
+  const claimsByCluster = new Map<string, ExtractedClaim[]>();
+  for (const c of clusters) {
+    const llmClaims = extraClaims?.get(c.id) ?? [];
+    const deterministic = extractClaims(c);
+    const seen = new Set(
+      deterministic.map(
+        (d) => `${d.assertedBy}|${d.claimKey}|${JSON.stringify(d.value)}`,
+      ),
+    );
+    claimsByCluster.set(c.id, [
+      ...deterministic,
+      ...llmClaims.filter(
+        (l) =>
+          !seen.has(`${l.assertedBy}|${l.claimKey}|${JSON.stringify(l.value)}`),
+      ),
+    ]);
+  }
+  if (embedder)
+    await embedder(
+      clusters.map((c) => clusterRepTextV2(c, claimsByCluster.get(c.id)!)),
+    ).catch(() => []);
   const pool = getPool();
-  const lockClient = await pool.connect();
+  const lockClient = await acquirePersistLock(pool);
   try {
-    await lockClient.query("SELECT pg_advisory_lock($1)", [PERSIST_LOCK_KEY]);
     for (const c of clusters) {
-      const llmClaims = extraClaims?.get(c.id) ?? [];
-      const deterministic = extractClaims(c);
-      const seen = new Set(
-        deterministic.map(
-          (d) => `${d.assertedBy}|${d.claimKey}|${JSON.stringify(d.value)}`,
-        ),
-      );
-      const claims = [
-        ...deterministic,
-        ...llmClaims.filter(
-          (l) =>
-            !seen.has(
-              `${l.assertedBy}|${l.claimKey}|${JSON.stringify(l.value)}`,
-            ),
-        ),
-      ];
+      const claims = claimsByCluster.get(c.id)!;
       try {
         const r = await persistCluster(c, claims, { sourceMeta, embedder });
         eventIds.set(c.id, r.eventId);
