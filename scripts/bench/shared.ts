@@ -80,7 +80,7 @@ export function setupBenchDb(): Pool {
       "",
     )
     .replace("CREATE EXTENSION IF NOT EXISTS pgcrypto;", "")
-    .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/, "");
+    .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/g, "");
   db.public.registerFunction({
     name: "uuid_v7",
     returns: DataType.uuid,

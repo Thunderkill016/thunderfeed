@@ -34,7 +34,7 @@ function setupDb() {
       "",
     )
     .replace("CREATE EXTENSION IF NOT EXISTS pgcrypto;", "")
-    .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/, "");
+    .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/g, "");
   db.public.registerFunction({
     name: "uuid_v7",
     returns: DataType.uuid,
@@ -138,7 +138,10 @@ test("matrix: Reuters=20, BBC=20 independent → new_independent_evidence", asyn
   const b = cluster([
     art({
       source: "BBC World News",
-      title: "Storm grounds travel — 20 flights cancelled",
+      title: "Storm grounds travel — 20 flights cancelled, 15000 stranded",
+      summary:
+        "Airports confirmed 20 cancellations and roughly 15000 stranded " +
+        "passengers after the storm made landfall.",
       language: "en",
     }),
   ]);
@@ -355,11 +358,14 @@ test("matrix: headline changes, claim same → NO material change", async () => 
   const r2 = await persistCluster(b, extractClaims(b));
   assert.equal(r2.eventId, r1.eventId, "same claim_key → same event");
 
-  // a different outlet corroborating the same fact is a new independent
-  // origin — material under lineage semantics, though nothing else changed
+  // a different outlet corroborating the same fact confirms the event's
+  // origin (unknown → original upgrade) — material under lineage
+  // semantics; the new doc itself is unresolved → low-materiality
+  // coverage. No claim changes fire.
   const after = await changeTypes(r1.eventId);
   const added = after.slice(before.length);
-  assert.deepEqual(added, ["new_independent_evidence"]);
+  assert.ok(added.includes("new_independent_evidence"));
+  assert.ok(!added.some((t) => t.startsWith("claim_")));
 });
 
 test("matrix: explicit retraction → claim_retracted", async () => {

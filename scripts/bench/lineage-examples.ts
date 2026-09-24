@@ -1,9 +1,12 @@
 /**
- * Produces the three deliverable example outputs against an in-memory
- * pg database: (1) ten Reuters copies, (2) Reuters+BBC independent,
- * (3) Fed -> Reuters -> local rewrite. Prints rawSources,
- * independentOrigins, primaryOrigins, the lineage graph, and the
- * claim confidence dimensions as EventView exposes them.
+ * Produces the three deliverable hardening scenarios against an in-memory
+ * pg database:
+ *   1) late Reuters parent arrives after a local copy (unknown v1 -> v2)
+ *   2) Fed -> Reuters -> local rewrite with parent re-rooting
+ *   3) primary source + ambiguous publisher (unresolved never inflates)
+ * Prints lineage VERSIONS, the effective graph, confirmedIndependentOrigins,
+ * unresolvedOrigins, primaryOrigins and confidence.state as EventView
+ * exposes them.
  * Run: npx tsx scripts/bench/lineage-examples.ts
  */
 import { randomUUID } from "node:crypto";
@@ -15,6 +18,7 @@ import { getEventView } from "../../lib/db/read";
 import { getPool, injectPool } from "../../lib/db/pool";
 import { persistCluster } from "../../lib/db/writer";
 import { extractClaims } from "../../lib/db/extract";
+import { resolveOrigins } from "../../lib/lineage";
 import type { Article, StoryCluster } from "../../lib/model";
 
 function setupDb() {
@@ -30,7 +34,7 @@ function setupDb() {
       "",
     )
     .replace("CREATE EXTENSION IF NOT EXISTS pgcrypto;", "")
-    .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/, "");
+    .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/g, "");
   db.public.registerFunction({
     name: "uuid_v7",
     returns: DataType.uuid,
@@ -76,15 +80,18 @@ const WIRE_TITLE = "Fed giữ lãi suất ở mức 4.25% trong tháng 9";
 const WIRE_SUM =
   "Ngân hàng dự trữ liên bang quyết định giữ nguyên lãi suất cơ bản ở mức 4.25% trong cuộc họp tháng 9. Chủ tịch Fed cho biết lạm phát vẫn còn cao so với mục tiêu 2% và cần thêm dữ liệu trước khi cân nhắc nới lỏng.";
 
-async function lineageGraph(eventId: string) {
+async function printReport(label: string, eventId: string) {
   const pool = getPool();
-  const { rows } = await pool.query<{
+  const view = await getEventView(eventId);
+  const { rows: versions } = await pool.query<{
     child: string;
     parent: string | null;
     relation: string;
-    confidence: number;
+    version_no: number;
+    classifier_version: string;
   }>(
-    `SELECT cs.name AS child, ps.name AS parent, l.relation, l.confidence
+    `SELECT cs.name AS child, ps.name AS parent, l.relation,
+            l.version_no, l.classifier_version
        FROM evidence_lineage l
        JOIN evidence_documents cd ON cd.id = l.child_document_id
        JOIN sources cs ON cs.id = cd.source_id
@@ -94,148 +101,159 @@ async function lineageGraph(eventId: string) {
         SELECT ev.document_id FROM event_evidence ee
         JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
         WHERE ee.event_id = $1)
-      ORDER BY l.detected_at`,
+      ORDER BY cs.name, l.version_no`,
     [eventId],
   );
-  return rows;
-}
+  // effective roots resolved dynamically from the LATEST assertion map —
+  // the stored origin_document_id cache is never consulted. Rows arrive
+  // ordered by version_no so the last write per child wins; parent links
+  // are already rendered as source names.
+  const latest = new Map<
+    string,
+    { parentDocumentId: string | null; relation: string }
+  >();
+  for (const v of versions)
+    latest.set(v.child, {
+      parentDocumentId: v.parent,
+      relation: v.relation,
+    });
+  const roots = resolveOrigins(latest as never) as unknown as Map<
+    string,
+    string
+  >;
 
-async function report(label: string, c: StoryCluster) {
-  const r = await persistCluster(c, extractClaims(c));
-  const view = await getEventView(r.eventId);
-  const graph = await lineageGraph(r.eventId);
   console.log(`\n═══ ${label} ═══`);
-  console.log(`eventId: ${r.eventId}`);
-  console.log(`rawSources:          ${view?.confidence.rawSourceCount}`);
-  console.log(`independentOrigins:  ${view?.confidence.independentOrigins}`);
-  console.log(`primaryOrigins:      ${view?.confidence.primaryOrigins}`);
-  console.log(`syndicatedSources:   ${view?.confidence.syndicatedSources}`);
-  console.log(`unknownOrigins:      ${view?.confidence.unknownOrigins}`);
-  console.log(`lineageCoverage:     ${view?.confidence.lineageCoverage}`);
-  console.log(`directEvidence:      ${view?.confidence.directEvidenceCount}`);
-  console.log(`contradictions:      ${view?.confidence.contradictions}`);
-  console.log(`confidence state:    ${view?.confidence.state}`);
-  console.log("lineage graph:");
-  for (const g of graph)
+  console.log(`eventId: ${eventId}`);
+  console.log("lineage versions (append-only):");
+  for (const v of versions)
     console.log(
-      `  ${g.relation.padEnd(20)} ${g.child.slice(0, 42)}` +
-        (g.parent ? `  <- ${g.parent.slice(0, 40)}` : "  (root)"),
+      `  v${v.version_no} [${v.classifier_version}] ` +
+        `${v.child.slice(0, 26).padEnd(26)} ${v.relation.padEnd(20)}` +
+        (v.parent ? ` → ${v.parent.slice(0, 30)}` : " (no parent)"),
     );
-  console.log("claim confidence dims:");
-  for (const cl of view?.claims ?? [])
+  console.log("effective graph (latest assertions, dynamic root):");
+  for (const [child, cur] of latest) {
+    const root = roots.get(child);
     console.log(
-      `  ${cl.predicate}=${JSON.stringify(cl.value)} state=${cl.state} ` +
-        `evidence=${cl.evidenceCount} primaryEvidence=${cl.primaryEvidenceCount}`,
+      `  ${child.slice(0, 26).padEnd(26)} latest=${cur.relation.padEnd(20)}` +
+        ` root=${root === child || !root ? "self" : root}`,
     );
-  console.log(`changes: ${r.changes.length ? r.changes.join(" | ") : "(none)"}`);
+  }
+  const c = view?.confidence;
+  console.log(`confirmedIndependentOrigins: ${c?.confirmedIndependentOrigins}`);
+  console.log(`unresolvedOrigins:           ${c?.unresolvedOrigins}`);
+  console.log(`primaryOrigins:              ${c?.primaryOrigins}`);
+  console.log(`rawSourceCount:              ${c?.rawSourceCount}`);
+  console.log(`derivedDocuments:            ${c?.derivedDocuments}`);
+  console.log(`lineageCoverage:             ${c?.lineageCoverage}`);
+  console.log(`confidence.state:            ${c?.state}`);
 }
 
 async function main() {
   const t0 = Date.parse("2026-09-24T08:00:00Z");
 
-  // ── 1. Ten Reuters copies ────────────────────────────────────────────
+  // ── 1. Late Reuters parent appears after local copy ─────────────────
   setupDb();
-
-  // ── 1. Ten Reuters copies ────────────────────────────────────────────
-  const copies: Article[] = [
+  const c1 = cluster([
+    art({
+      source: "LocalSite",
+      title: WIRE_TITLE,
+      summary: WIRE_SUM,
+      url: "https://localsite.vn/fed-rate",
+      publishedAt: new Date(t0 + 900_000).toISOString(), // observed 08:15
+      language: "vi",
+    }),
+  ]);
+  const r1 = await persistCluster(c1, extractClaims(c1));
+  await printReport("1) LATE REUTERS PARENT — after cycle 1", r1.eventId);
+  const c2 = cluster([
     art({
       source: "Reuters",
       title: WIRE_TITLE,
       summary: WIRE_SUM,
       url: "https://reuters.com/fed-rate",
+      publishedAt: new Date(t0).toISOString(), // published 08:00, seen later
+      language: "vi",
+    }),
+  ]);
+  await persistCluster(c2, extractClaims(c2));
+  await printReport("1) LATE REUTERS PARENT — after wire arrives", r1.eventId);
+
+  // ── 2. Fed → Reuters → local rewrite with parent re-rooting ─────────
+  setupDb();
+  // cycle 1: Reuters cites a statement we can't see yet; Tuổi Trẻ copies
+  // Reuters verbatim → Tuổi Trẻ → Reuters, Reuters unresolved
+  const s1 = cluster([
+    art({
+      source: "Reuters",
+      title: WIRE_TITLE,
+      summary: WIRE_SUM + " The Federal Reserve said in a statement.",
+      url: "https://reuters.com/fed-rate",
       publishedAt: new Date(t0).toISOString(),
       language: "vi",
     }),
-  ];
-  const outlets = [
-    "Báo Đầu Tư",
-    "CafeF",
-    "VietStock",
-    "Tinnhanhchungkhoan",
-    "Thanh Niên",
-    "Lao Động",
-    "Báo Mới",
-    "VTC News",
-    "Dân Trí",
-  ];
-  outlets.forEach((o, i) =>
-    copies.push(
-      art({
-        source: o,
-        title: WIRE_TITLE,
-        summary: WIRE_SUM,
-        url: `https://copy${i}.vn/fed-rate`,
-        publishedAt: new Date(t0 + (i + 1) * 600_000).toISOString(),
-        language: "vi",
-      }),
-    ),
-  );
-  await report("1) TEN COPIES OF ONE REUTERS WIRE", cluster(copies));
+    art({
+      source: "Tuổi Trẻ",
+      title: WIRE_TITLE,
+      summary: WIRE_SUM,
+      url: "https://tuoitre.vn/fed-copy",
+      publishedAt: new Date(t0 + 1_800_000).toISOString(),
+      language: "vi",
+    }),
+  ]);
+  const r2 = await persistCluster(s1, extractClaims(s1));
+  await printReport("2) FED → REUTERS → LOCAL — before Fed arrives", r2.eventId);
+  // cycle 2: the FOMC statement itself shows up; Reuters re-points to the
+  // primary doc and Tuổi Trẻ re-roots through it without a new assertion
+  const s2 = cluster([
+    art({
+      source: "Federal Reserve",
+      title: "Federal Reserve issues FOMC statement — rate held at 4.25%",
+      summary:
+        "The Committee decided to maintain the target range for the federal funds rate at 4.25 percent. Inflation remains somewhat elevated.",
+      url: "https://federalreserve.gov/fomc-statement",
+      publishedAt: new Date(t0 - 3_600_000).toISOString(),
+      language: "en",
+      ingest: {
+        sourceKind: "primary",
+        discoveredVia: "official_rss",
+        documentType: "press_release",
+      },
+    }),
+  ]);
+  await persistCluster(s2, extractClaims(s2));
+  await printReport("2) FED → REUTERS → LOCAL — after Fed arrives", r2.eventId);
 
-  // ── 2. Reuters + BBC independent ─────────────────────────────────────
+  // ── 3. Primary source + ambiguous publisher ─────────────────────────
   setupDb();
-  await report(
-    "2) REUTERS + BBC INDEPENDENT",
-    cluster([
-      art({
-        source: "Reuters",
-        title: WIRE_TITLE,
-        summary: WIRE_SUM,
-        url: "https://reuters.com/fed-rate",
-        publishedAt: new Date(t0).toISOString(),
-        language: "vi",
-      }),
-      art({
-        source: "BBC World News",
-        title: "Federal Reserve holds rates at 4.25% amid inflation concerns",
-        summary:
-          "The US central bank kept its benchmark rate at 4.25%, citing persistent inflation and a resilient labour market, in a decision widely anticipated by economists.",
-        url: "https://bbc.com/fed-hold",
-        publishedAt: new Date(t0 + 1_800_000).toISOString(),
-        language: "en",
-      }),
-    ]),
-  );
-
-  // ── 3. Fed → Reuters → local rewrite ─────────────────────────────────
-  setupDb();
-  await report(
-    "3) FED PRIMARY -> REUTERS -> LOCAL REWRITE",
-    cluster([
-      art({
-        source: "Federal Reserve",
-        title: "Federal Reserve issues FOMC statement — rate held at 4.25%",
-        summary:
-          "The Committee decided to maintain the target range for the federal funds rate at 4.25 percent. Inflation remains somewhat elevated.",
-        url: "https://federalreserve.gov/fomc-statement",
-        publishedAt: new Date(t0 - 3_600_000).toISOString(),
-        language: "en",
-        ingest: {
-          sourceKind: "primary",
-          discoveredVia: "official_rss",
-          documentType: "press_release",
-        },
-      }),
-      art({
-        source: "Reuters",
-        title: WIRE_TITLE,
-        summary:
-          "Ngân hàng dự trữ liên bang quyết định giữ nguyên lãi suất cơ bản ở mức 4.25% trong cuộc họp tháng 9, the Federal Reserve said in a statement.",
-        url: "https://reuters.com/fed-rate",
-        publishedAt: new Date(t0).toISOString(),
-        language: "vi",
-      }),
-      art({
-        source: "Tuổi Trẻ",
-        title: "Fed giữ nguyên lãi suất 4.25%, lạm phát vẫn cao",
-        summary:
-          "Theo Reuters, Fed quyết định giữ lãi suất ở mức 4.25%. Lạm phát tại Mỹ vẫn cao hơn mục tiêu 2% và Fed cần thêm dữ liệu.",
-        url: "https://tuoitre.vn/fed-giu-lai-suat",
-        publishedAt: new Date(t0 + 3_600_000).toISOString(),
-        language: "vi",
-      }),
-    ]),
-  );
+  const s3 = cluster([
+    art({
+      source: "Federal Reserve",
+      title: "Federal Reserve keeps federal funds rate at 4.25 percent",
+      summary:
+        "The Committee maintained the target range at 4.25 percent, the Federal Reserve said in a statement.",
+      url: "https://federalreserve.gov/fomc-3",
+      publishedAt: new Date(t0).toISOString(),
+      language: "en",
+      ingest: {
+        sourceKind: "primary",
+        discoveredVia: "official_rss",
+        documentType: "press_release",
+      },
+    }),
+    art({
+      // gray-zone wording: related enough to suspect, not enough to
+      // derive — must remain unresolved, never a second origin
+      source: "VnEconomy",
+      title: "Federal Reserve keeps rate at 4.25% — markets react",
+      summary: "Markets moved after the Federal Reserve decision.",
+      url: "https://vneconomy.vn/fed-markets",
+      publishedAt: new Date(t0 + 7_200_000).toISOString(),
+      language: "en",
+    }),
+  ]);
+  const r3 = await persistCluster(s3, extractClaims(s3));
+  await printReport("3) PRIMARY + AMBIGUOUS PUBLISHER", r3.eventId);
 }
 
 main().catch((e) => {

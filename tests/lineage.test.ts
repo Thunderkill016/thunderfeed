@@ -35,7 +35,7 @@ function setupDb() {
       "",
     )
     .replace("CREATE EXTENSION IF NOT EXISTS pgcrypto;", "")
-    .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/, "");
+    .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/g, "");
   db.public.registerFunction({
     name: "uuid_v7",
     returns: DataType.uuid,
@@ -120,8 +120,8 @@ test("case 1: Reuters + 9 near-copies → 10 raw, 1 independent origin", async (
 
   const view = await getEventView(r1.eventId);
   assert.equal(view!.confidence.rawSourceCount, 10);
-  assert.equal(view!.confidence.independentOrigins, 1);
-  assert.equal(view!.confidence.syndicatedSources, 9);
+  assert.equal(view!.confidence.confirmedIndependentOrigins, 1);
+  assert.equal(view!.confidence.derivedDocuments, 9);
 });
 
 test("case 2: Reuters + BBC independent → 2 raw, 2 independent origins", async () => {
@@ -139,11 +139,11 @@ test("case 2: Reuters + BBC independent → 2 raw, 2 independent origins", async
   const c2 = cluster([
     art({
       source: "BBC World News",
-      title: "Storm grounds travel — 20 flights cancelled",
+      title: "Storm grounds travel — 20 flights cancelled, 15000 stranded",
       summary:
         "The BBC has confirmed 20 flights were cancelled as the storm " +
-        "made landfall, in what airports called the worst disruption " +
-        "this year.",
+        "made landfall, with 15000 passengers stranded in what airports " +
+        "called the worst disruption this year.",
       url: "https://bbc.com/y2",
       language: "en",
     }),
@@ -151,8 +151,8 @@ test("case 2: Reuters + BBC independent → 2 raw, 2 independent origins", async
   await persistCluster(c2, extractClaims(c2));
   const view = await getEventView(r1.eventId);
   assert.equal(view!.confidence.rawSourceCount, 2);
-  assert.equal(view!.confidence.independentOrigins, 2);
-  assert.equal(view!.confidence.syndicatedSources, 0);
+  assert.equal(view!.confidence.confirmedIndependentOrigins, 2);
+  assert.equal(view!.confidence.derivedDocuments, 0);
 });
 
 test("case 3: 'Theo Reuters' attribution links to the Reuters document", async () => {
@@ -217,7 +217,7 @@ test("case 4: Reuters + official agency → 2 origins, 1 primary, claim confirme
     sourceMeta: { "Cục Hàng không": { kind: "primary" } },
   });
   const view = await getEventView(r1.eventId);
-  assert.equal(view!.confidence.independentOrigins, 2);
+  assert.equal(view!.confidence.confirmedIndependentOrigins, 2);
   assert.equal(view!.confidence.primaryOrigins, 1);
   assert.equal(view!.claims[0].state, "confirmed");
 });
@@ -268,9 +268,9 @@ test("case 5: Fed → Reuters → local rewrite — chain, not 3 independents", 
   // the whole chain is ONE information origin rooted at the Fed —
   // Reuters and the local rewrite are derivatives, not independent
   // confirmations. Three sources ≠ three origins.
-  assert.equal(view!.confidence.independentOrigins, 1);
+  assert.equal(view!.confidence.confirmedIndependentOrigins, 1);
   assert.equal(view!.confidence.primaryOrigins, 1);
-  assert.equal(view!.confidence.syndicatedSources, 2);
+  assert.equal(view!.confidence.derivedDocuments, 2);
 
   const { rows } = await getPool().query<{
     child: string;
@@ -517,8 +517,279 @@ test("independence(): math on mixed graph", () => {
   ]);
   const ind = independence(docs, asrts);
   assert.equal(ind.rawSources, 5);
-  assert.equal(ind.independentOrigins, 3); // Reuters-tree, BBC, Fed
+  assert.equal(ind.confirmedIndependentOrigins, 3); // Reuters-tree, BBC, Fed
   assert.equal(ind.primaryOrigins, 1);
-  assert.equal(ind.syndicatedSources, 2);
-  assert.equal(ind.unknownOrigins, 0);
+  assert.equal(ind.derivedDocuments, 2);
+  assert.equal(ind.unresolvedOrigins, 0);
+});
+
+/* ---------------- hardening: uncertainty, re-eval, re-root ------------- */
+
+async function latestLineage() {
+  const { rows } = await getPool().query<{
+    child: string;
+    relation: string;
+    parent: string | null;
+    version_no: number;
+    classifier_version: string;
+    doc: string;
+  }>(
+    `SELECT cs.name AS child, l.relation::text, ps.name AS parent,
+            l.version_no, l.classifier_version, l.child_document_id AS doc
+     FROM evidence_lineage l
+     JOIN evidence_documents cd ON cd.id = l.child_document_id
+     JOIN sources cs ON cs.id = cd.source_id
+     LEFT JOIN evidence_documents pd ON pd.id = l.parent_document_id
+     LEFT JOIN sources ps ON ps.id = pd.source_id
+     ORDER BY cs.name, l.version_no`,
+  );
+  const latest = new Map<string, (typeof rows)[number]>();
+  for (const r of rows) {
+    const cur = latest.get(r.doc);
+    if (!cur || r.version_no > cur.version_no) latest.set(r.doc, r);
+  }
+  return [...latest.values()].sort((a, b) => a.child.localeCompare(b.child));
+}
+
+test("unknown does not inflate confidence: Fed primary + ambiguous publisher", async () => {
+  setupDb();
+  const c = cluster([
+    art({
+      source: "Federal Reserve",
+      title: "Federal Reserve keeps federal funds rate at 4.25 percent",
+      summary:
+        "The Committee maintained the target range at 4.25 percent, " +
+        "the Federal Reserve said in a statement.",
+      url: "https://federalreserve.gov/fomc-1",
+      language: "en",
+      publishedAt: "2026-09-24T07:00:00Z",
+      ingest: {
+        sourceKind: "primary",
+        discoveredVia: "official_rss",
+        documentType: "press_release",
+      },
+    }),
+    // gray-zone wording: related enough to be suspect, not enough to
+    // derive — must stay unresolved, never count as a second origin
+    art({
+      source: "VnEconomy",
+      title: "Federal Reserve keeps rate at 4.25% — markets react",
+      summary: "Markets moved after the Federal Reserve decision.",
+      url: "https://vneconomy.vn/fed-markets",
+      language: "en",
+      publishedAt: "2026-09-24T09:00:00Z",
+    }),
+  ]);
+  const r = await persistCluster(c, extractClaims(c));
+  const view = await getEventView(r.eventId);
+  assert.equal(view!.confidence.confirmedIndependentOrigins, 1);
+  assert.equal(view!.confidence.primaryOrigins, 1);
+  assert.equal(view!.confidence.unresolvedOrigins, 1);
+  assert.notEqual(view!.confidence.state, "strong");
+});
+
+test("late parent: child asserted unknown, wire arrives later → derived v2", async () => {
+  setupDb();
+  // LocalSite publishes 08:00 and is ingested first — alone, it is unknown
+  const c1 = cluster([
+    art({
+      source: "LocalSite",
+      title: WIRE_TITLE,
+      summary: WIRE_SUMMARY,
+      url: "https://localsite.vn/storm",
+      publishedAt: "2026-09-24T08:00:00Z",
+    }),
+  ]);
+  const r1 = await persistCluster(c1, extractClaims(c1));
+  let lin = await latestLineage();
+  assert.deepEqual(
+    lin.map((l) => [l.child, l.relation, l.version_no]),
+    [["LocalSite", "unknown", 1]],
+  );
+
+  // 08:30 the Reuters wire (published 07:45) arrives — LocalSite gets
+  // re-evaluated against the now-visible senior parent
+  const c2 = cluster([
+    art({
+      source: "Reuters",
+      title: WIRE_TITLE,
+      summary: WIRE_SUMMARY,
+      url: "https://reuters.com/wire-late",
+      publishedAt: "2026-09-24T07:45:00Z",
+    }),
+  ]);
+  const r2 = await persistCluster(c2, extractClaims(c2));
+  assert.equal(r2.eventId, r1.eventId);
+
+  lin = await latestLineage();
+  const local = lin.find((l) => l.child === "LocalSite")!;
+  const wire = lin.find((l) => l.child === "Reuters")!;
+  assert.equal(local.relation, "syndicated");
+  assert.equal(local.parent, "Reuters");
+  assert.equal(local.version_no, 2); // v1 preserved, v2 appended
+  assert.equal(wire.relation, "original");
+
+  const { rows } = await getPool().query<{ n: string }>(
+    `SELECT COUNT(*) AS n FROM evidence_lineage l
+     JOIN evidence_documents d ON d.id = l.child_document_id
+     JOIN sources s ON s.id = d.source_id WHERE s.name = 'LocalSite'`,
+  );
+  assert.equal(Number(rows[0].n), 2); // both versions retained
+
+  const view = await getEventView(r1.eventId);
+  assert.equal(view!.confidence.confirmedIndependentOrigins, 1);
+  assert.equal(view!.confidence.derivedDocuments, 1);
+  assert.equal(view!.confidence.unresolvedOrigins, 0);
+});
+
+test("recursive re-root: B→A rewritten, then A→Fed — B's root is Fed", async () => {
+  setupDb();
+  const c1 = cluster([
+    art({
+      source: "VnExpress",
+      title: "NHNN giữ lãi suất điều hành ở mức 4.25% theo thông cáo",
+      summary: "Ngân hàng Nhà nước giữ nguyên lãi suất 4.25% theo thông cáo.",
+      url: "https://vnexpress.net/nhnn-rate",
+      publishedAt: "2026-09-24T08:00:00Z",
+    }),
+    art({
+      source: "Tuổi Trẻ",
+      title: "NHNN giữ lãi suất điều hành ở mức 4.25% theo thông cáo",
+      summary: "Ngân hàng Nhà nước giữ nguyên lãi suất 4.25% theo thông cáo.",
+      url: "https://tuoitre.vn/nhnn-copy",
+      publishedAt: "2026-09-24T09:00:00Z",
+    }),
+  ]);
+  const r1 = await persistCluster(c1, extractClaims(c1));
+  let lin = await latestLineage();
+  // B rewrote A; A itself is unresolved until the primary shows up
+  assert.equal(lin.find((l) => l.child === "Tuổi Trẻ")!.parent, "VnExpress");
+
+  // the NHNN statement arrives — A re-points to the primary document
+  const c2 = cluster([
+    art({
+      source: "Ngân hàng Nhà nước",
+      title: "Ngân hàng Nhà nước giữ nguyên lãi suất điều hành ở mức 4.25%",
+      summary:
+        "Thông cáo chính thức: giữ nguyên lãi suất điều hành ở mức 4.25%.",
+      url: "https://sbv.gov.vn/thong-cao-lai-suat",
+      publishedAt: "2026-09-24T07:00:00Z",
+      ingest: {
+        sourceKind: "primary",
+        discoveredVia: "official_rss",
+        documentType: "press_release",
+      },
+    }),
+  ]);
+  const r2 = await persistCluster(c2, extractClaims(c2));
+  assert.equal(r2.eventId, r1.eventId);
+
+  lin = await latestLineage();
+  assert.equal(
+    lin.find((l) => l.child === "VnExpress")!.relation,
+    "press_release_based",
+  );
+  const view = await getEventView(r1.eventId);
+  // effective graph: NHNN → VnExpress → Tuổi Trẻ — ONE origin, primary
+  assert.equal(view!.confidence.confirmedIndependentOrigins, 1);
+  assert.equal(view!.confidence.primaryOrigins, 1);
+  assert.equal(view!.confidence.derivedDocuments, 2);
+});
+
+test("ordering: same docs ingested in either order converge to one graph", async () => {
+  const mk = () => ({
+    parent: art({
+      source: "Reuters",
+      title: WIRE_TITLE,
+      summary: WIRE_SUMMARY,
+      url: "https://reuters.com/ord-wire",
+      publishedAt: "2026-09-24T07:00:00Z",
+    }),
+    child: art({
+      source: "LocalSite",
+      title: WIRE_TITLE,
+      summary: WIRE_SUMMARY,
+      url: "https://localsite.vn/ord-storm",
+      publishedAt: "2026-09-24T08:00:00Z",
+    }),
+  });
+
+  // order 1: parent first, child second
+  setupDb();
+  const { parent: p1, child: c1 } = mk();
+  const r1a = await persistCluster(cluster([p1]), extractClaims(cluster([p1])));
+  await persistCluster(cluster([c1]), extractClaims(cluster([c1])));
+  const g1 = (await latestLineage())
+    .map((l) => `${l.child}:${l.relation}:${l.parent}`)
+    .sort();
+  void r1a;
+
+  // order 2: child first (unknown), parent later
+  setupDb();
+  const { parent: p2, child: c2 } = mk();
+  await persistCluster(cluster([c2]), extractClaims(cluster([c2])));
+  await persistCluster(cluster([p2]), extractClaims(cluster([p2])));
+  const g2 = (await latestLineage())
+    .map((l) => `${l.child}:${l.relation}:${l.parent}`)
+    .sort();
+
+  assert.deepEqual(g1, g2);
+  assert.deepEqual(g1, [
+    "LocalSite:syndicated:Reuters",
+    "Reuters:original:null",
+  ]);
+});
+
+test("unknown → confirmed: peer coverage upgrades an origin once", async () => {
+  setupDb();
+  const c1 = cluster([
+    art({
+      source: "VnExpress",
+      title: "Bão lớn: 20 chuyến bay bị hủy",
+      url: "https://vnexpress.net/lone",
+      publishedAt: "2026-09-24T08:00:00Z",
+    }),
+  ]);
+  const r1 = await persistCluster(c1, extractClaims(c1));
+  let view = await getEventView(r1.eventId);
+  assert.equal(view!.confidence.confirmedIndependentOrigins, 0);
+  assert.equal(view!.confidence.unresolvedOrigins, 1);
+
+  // a second, clearly-independent outlet arrives — the first doc's
+  // evaluation now has evidence and confirms as an origin
+  const c2 = cluster([
+    art({
+      source: "Thanh Niên",
+      title: "Hàng không tê liệt: 20 chuyến bay bị hủy vì bão",
+      summary: "Hãng hàng không tạm ngừng khai thác do siêu bão đổ bộ.",
+      url: "https://thanhnien.vn/storm-2",
+      publishedAt: "2026-09-24T09:00:00Z",
+    }),
+  ]);
+  const r2 = await persistCluster(c2, extractClaims(c2));
+  assert.equal(r2.eventId, r1.eventId);
+
+  const lin = await latestLineage();
+  const vne = lin.find((l) => l.child === "VnExpress")!;
+  assert.equal(vne.relation, "original");
+  assert.equal(vne.version_no, 2); // upgraded via new version, not rewrite
+
+  view = await getEventView(r1.eventId);
+  // VnExpress upgraded unknown→original (+1 exactly once); the new doc
+  // shares the numeric claim with a senior lookalike, so it stays
+  // unresolved rather than minting a second origin
+  assert.equal(view!.confidence.confirmedIndependentOrigins, 1);
+  assert.equal(view!.confidence.unresolvedOrigins, 1);
+});
+
+test("mutation guard: lineage + metadata observations are append-only in schema", () => {
+  const dir = fileURLToPath(new URL("../db/migrations", import.meta.url));
+  const mig = readFileSync(`${dir}/0006_lineage_hardening.sql`, "utf8");
+  // pg-mem cannot execute triggers; assert the schema declares them so a
+  // real Postgres rejects UPDATE/DELETE on both tables
+  assert.match(mig, /CREATE TRIGGER evidence_lineage_append_only/);
+  assert.match(mig, /BEFORE UPDATE OR DELETE ON evidence_lineage/);
+  assert.match(mig, /CREATE TRIGGER evidence_metadata_observations_append_only/);
+  assert.match(mig, /BEFORE UPDATE OR DELETE ON evidence_metadata_observations/);
+  assert.match(mig, /reject_history_mutation\(\)/);
 });

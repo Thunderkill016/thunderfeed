@@ -58,16 +58,20 @@ export interface EventView {
   confidence: {
     state: "weak" | "moderate" | "strong";
     directEvidenceCount: number;
-    /** distinct information origins (lineage roots), not outlet count */
+    /** roots carrying a positive 'original' assertion — unresolved
+     *  documents NEVER inflate this */
+    confirmedIndependentOrigins: number;
+    /** backwards compat: alias of confirmedIndependentOrigins */
     independentOrigins: number;
+    /** documents whose lineage is unresolved ('unknown'/no assertion) —
+     *  each is an unresolved root until evidence says otherwise */
+    unresolvedOrigins: number;
     /** all publisher/primary/community documents on the event */
     rawSourceCount: number;
-    /** origins whose root document is a primary source */
+    /** roots whose root document is a primary source */
     primaryOrigins: number;
-    /** documents derived from another origin (wire copy/quote/rewrite) */
-    syndicatedSources: number;
-    /** documents with no resolved lineage assertion */
-    unknownOrigins: number;
+    /** documents derived from another document in the lineage graph */
+    derivedDocuments: number;
     /** fraction of event documents with a lineage assertion (0-1) */
     lineageCoverage: number;
     /** claim_evidence rows asserting a conflicting value */
@@ -184,38 +188,21 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     [eventId],
   );
 
-  // Independent origins = lineage roots, not outlets and not content
-  // hashes: 9 copies of one wire share ONE root; two outlets covering the
-  // same event independently are TWO roots. Documents without a lineage
-  // assertion count as their own (unresolved) origin.
-  const originsQ = pool.query<{
+  // Origins resolve from the LATEST lineage graph: each doc's newest
+  // assertion gives its parent, roots are found by walking the chain —
+  // the stored origin_document_id is a cache, never the source of truth.
+  // A doc re-pointed to a primary (original → press_release_based)
+  // re-roots every descendant automatically.
+  const docsQ = pool.query<{
     doc_id: string;
     source_id: string;
     kind: string;
-    root: string | null;
-    relation: string | null;
-    root_kind: string | null;
   }>(
-    `WITH lin AS (
-       SELECT l.child_document_id, l.relation::text AS relation,
-              COALESCE(l.origin_document_id, l.child_document_id) AS root
-       FROM evidence_lineage l
-       JOIN (
-         SELECT child_document_id, MAX(version_no) AS vn
-         FROM evidence_lineage GROUP BY child_document_id
-       ) m ON m.child_document_id = l.child_document_id
-          AND m.vn = l.version_no
-     )
-     SELECT DISTINCT d.id AS doc_id, s.id AS source_id, s.kind::text AS kind,
-            COALESCE(lin.root, d.id) AS root, lin.relation,
-            rs.kind::text AS root_kind
+    `SELECT DISTINCT d.id AS doc_id, s.id AS source_id, s.kind::text AS kind
      FROM event_evidence ee
      JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
      JOIN evidence_documents d ON d.id = ev.document_id
      JOIN sources s ON s.id = d.source_id
-     LEFT JOIN lin ON lin.child_document_id = d.id
-     LEFT JOIN evidence_documents rd ON rd.id = lin.root
-     LEFT JOIN sources rs ON rs.id = rd.source_id
      WHERE ee.event_id = $1 AND ee.detached_at IS NULL`,
     [eventId],
   );
@@ -235,7 +222,7 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     changesR,
     evidenceR,
     positionsR,
-    originsR,
+    docsR,
     contraR,
   ] = await Promise.all([
     claimsQ,
@@ -243,9 +230,36 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     changesQ,
     evidenceQ,
     positionsQ,
-    originsQ,
+    docsQ,
     contradictionsQ,
   ]);
+
+  // latest lineage assertions for this event's documents — IN-list
+  // params instead of ANY($1) for pg-mem compatibility
+  const docIds = docsR.rows.map((r) => r.doc_id);
+  const latestLin = new Map<
+    string,
+    { parent: string | null; relation: string }
+  >();
+  if (docIds.length) {
+    const linR = await pool.query<{
+      child_document_id: string;
+      parent_document_id: string | null;
+      relation: string;
+    }>(
+      `SELECT DISTINCT ON (child_document_id)
+              child_document_id, parent_document_id, relation::text
+       FROM evidence_lineage
+       WHERE child_document_id IN (${docIds.map((_, i) => `$${i + 1}`).join(",")})
+       ORDER BY child_document_id, version_no DESC`,
+      docIds,
+    );
+    for (const r of linR.rows)
+      latestLin.set(r.child_document_id, {
+        parent: r.parent_document_id,
+        relation: r.relation,
+      });
+  }
 
   const counts = new Map(
     claimCountsR.rows.map((r) => [
@@ -336,35 +350,53 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     (n, c) => n + c.primaryEvidenceCount,
     0,
   );
-  // aggregate lineage dimensions in JS — per-event doc counts are small
-  const originRows = originsR.rows;
+  // resolve each doc's effective root by walking latest parent links —
+  // cycle-safe, depth-capped; stored origin_document_id is only a cache
   const DERIVED_RELS = new Set([
     "syndicated",
     "quoted",
     "rewritten",
     "press_release_based",
   ]);
-  const roots = new Map<string, string | null>(); // root → root kind
-  for (const r of originRows)
-    if (!roots.has(r.root!)) roots.set(r.root!, r.root_kind);
-  const origins = {
-    independentOrigins: roots.size,
-    rawSourceCount: new Set(originRows.map((r) => r.source_id)).size,
-    primaryOrigins: [...roots.values()].filter((k) => k === "primary")
-      .length,
-    syndicatedSources: originRows.filter(
-      (r) => r.relation && DERIVED_RELS.has(r.relation),
-    ).length,
-    unknownOrigins: originRows.filter(
-      (r) => !r.relation || r.relation === "unknown",
-    ).length,
-    total: originRows.length,
+  const rootOf = (id: string): string => {
+    const seen = new Set<string>();
+    let cur = id;
+    for (let depth = 0; depth < 8; depth++) {
+      if (seen.has(cur)) return cur;
+      seen.add(cur);
+      const a = latestLin.get(cur);
+      if (!a || !a.parent || !DERIVED_RELS.has(a.relation)) return cur;
+      cur = a.parent;
+    }
+    return cur;
   };
-  const independentOrigins = origins.independentOrigins;
+  const docById = new Map(docsR.rows.map((r) => [r.doc_id, r]));
+  const rootIds = new Set(docsR.rows.map((r) => rootOf(r.doc_id)));
+  // one newsroom = one origin: multiple asserted-original docs from the
+  // same source still count as a single confirmed origin
+  const confirmedSources = new Set<string>();
+  const primarySources = new Set<string>();
+  for (const rootId of rootIds) {
+    const rootDoc = docById.get(rootId);
+    if (!rootDoc) continue;
+    if (latestLin.get(rootId)?.relation === "original")
+      confirmedSources.add(rootDoc.source_id);
+    if (rootDoc.kind === "primary") primarySources.add(rootDoc.source_id);
+  }
+  const confirmedIndependentOrigins = confirmedSources.size;
+  const primaryOrigins = primarySources.size;
+  let derivedDocuments = 0;
+  let unresolvedOrigins = 0;
+  for (const r of docsR.rows) {
+    const rel = latestLin.get(r.doc_id)?.relation;
+    if (rel && DERIVED_RELS.has(rel)) derivedDocuments++;
+    else if (!rel || rel === "unknown") unresolvedOrigins++;
+  }
+  const rawSourceCount = new Set(docsR.rows.map((r) => r.source_id)).size;
   const state =
-    directEvidenceCount >= 1 && independentOrigins >= 2
+    directEvidenceCount >= 1 && confirmedIndependentOrigins >= 2
       ? "strong"
-      : claims.length >= 2 || independentOrigins >= 1
+      : claims.length >= 2 || confirmedIndependentOrigins >= 1
         ? "moderate"
         : "weak";
 
@@ -387,13 +419,14 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     confidence: {
       state,
       directEvidenceCount,
-      independentOrigins,
-      rawSourceCount: origins.rawSourceCount,
-      primaryOrigins: origins.primaryOrigins,
-      syndicatedSources: origins.syndicatedSources,
-      unknownOrigins: origins.unknownOrigins,
-      lineageCoverage: origins.total
-        ? (origins.total - origins.unknownOrigins) / origins.total
+      confirmedIndependentOrigins,
+      independentOrigins: confirmedIndependentOrigins,
+      unresolvedOrigins,
+      rawSourceCount,
+      primaryOrigins,
+      derivedDocuments,
+      lineageCoverage: docsR.rows.length
+        ? latestLin.size / docsR.rows.length
         : 0,
       contradictions: Number(contraR.rows[0]?.n ?? 0),
     },

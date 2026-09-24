@@ -7,10 +7,11 @@
  * inflates confidence far more than a missed lineage link.
  *
  * V1 uses no LLM: attribution phrases (rule), text fingerprinting
- * (similarity), and primary-document presence (rule). Unsure → original
- * is NOT asserted; relation stays 'unknown' when signals conflict, and
- * 'original' only when a document evaluated cleanly against all
- * candidates.
+ * (similarity), and primary-document presence (rule). 'original' is a
+ * POSITIVE assertion of independence — a doc earns it only after being
+ * evaluated against other coverage with no senior doc looking related.
+ * Nothing to compare, an unresolvable citation, or gray-zone similarity
+ * all yield 'unknown'; "no detected parent" is never independence.
  */
 
 export type LineageRelation =
@@ -144,6 +145,10 @@ export interface SimScores {
   /** both docs carry figures but share none — the child disputes the
    *  parent's facts, which a copy/rewrite does not do */
   numberConflict: boolean;
+  /** every figure in the child is explained by the parent — across
+   *  languages this is the translation fingerprint; within one language
+   *  it corroborates derivation */
+  numbersContained: boolean;
   lagHours: number; // child.publishedAt − candidate.publishedAt
 }
 
@@ -161,6 +166,7 @@ export function similarity(child: LineageDoc, cand: LineageDoc): SimScores {
     summarySim,
     sharedNumbers,
     numberConflict: cn.size > 0 && pn.size > 0 && sharedNumbers === 0,
+    numbersContained: cn.size > 0 && sharedNumbers === cn.size,
     lagHours,
   };
 }
@@ -176,6 +182,12 @@ const REWRITTEN_TITLE_SIM = 0.55;
 const REWRITTEN_SUMMARY_SIM = 0.35;
 const ATTR_CONF = 0.9;
 const PRIMARY_ATTR_CONF = 0.85;
+// Independence-clear zone: a senior doc above this similarity but under
+// the derivation bar is conflicting evidence → 'unknown', never 'original'.
+const INDEPENDENT_CLEAR_TITLE_SIM = 0.35;
+// Bump when classification semantics change — stamped on every assertion
+// row so audit can tell which rules produced it.
+export const CLASSIFIER_VERSION = "v2";
 
 /**
  * Classify one document against candidate parents. Candidates must come
@@ -204,10 +216,12 @@ export function classifyLineage(
   // even when the copied text itself attributes elsewhere (chain keeps
   // the true parent, not the parent-of-the-parent)
   let best: { cand: LineageDoc; s: SimScores } | null = null;
+  let maxSeniorSim = 0;
   for (const cand of candidates) {
     if (cand.documentId === child.documentId) continue;
     if (!eligibleParent(child, cand)) continue;
     const s = similarity(child, cand);
+    if (s.titleSim > maxSeniorSim) maxSeniorSim = s.titleSim;
     if (
       s.titleSim >= REWRITTEN_TITLE_SIM &&
       (!best || s.titleSim > best.s.titleSim)
@@ -234,7 +248,16 @@ export function classifyLineage(
   }
 
   // --- rule: explicit attribution -------------------------------------
-  const attr = detectAttribution(text);
+  // a doc "citing" its own outlet ("The BBC has confirmed…") is not
+  // attributing a parent — self-references never constrain lineage
+  let attr = detectAttribution(text);
+  if (
+    attr?.outlet &&
+    (child.source.toLowerCase().includes(attr.outlet.toLowerCase()) ||
+      attr.outlet.toLowerCase().includes(child.source.toLowerCase()))
+  ) {
+    attr = null;
+  }
   if (attr) {
     if (attr.primary) {
       const prim = candidates.find(
@@ -286,12 +309,90 @@ export function classifyLineage(
     };
   }
 
+  // --- origin vs unknown -------------------------------------------------
+  // 'original' is a positive assertion: the doc was compared against
+  // other coverage and NO senior doc looks related (similarity below the
+  // gray zone). Weaker evidence stays 'unknown' — it must never inflate
+  // the confirmed-origin count.
+  const others = candidates.filter((c) => c.documentId !== child.documentId);
+  if (others.length === 0) {
+    return {
+      parentDocumentId: null,
+      relation: "unknown",
+      confidence: 0.3,
+      method: "rule",
+      evidence: { reason: "no_evidence", evaluated: 0 },
+    };
+  }
+  if (attr) {
+    // cites an outlet/primary we can't resolve to a candidate — the true
+    // parent may exist but is unobserved; independence is unproven
+    return {
+      parentDocumentId: null,
+      relation: "unknown",
+      confidence: 0.35,
+      method: "rule",
+      evidence: {
+        reason: "dangling_attribution",
+        outlet: attr.outlet,
+        phrase: attr.phrase,
+      },
+    };
+  }
+  // cross-language suspicion: a translation carries every figure of the
+  // source text while the surface tokens no longer match. Lexically we
+  // can't prove derivation — but we CAN'T confirm independence either,
+  // so the doc stays unresolved rather than minting a false origin.
+  const suspectTranslation = candidates.some((c) => {
+    if (!eligibleParent(child, c)) return false;
+    if ((c.language ?? "vi") === (child.language ?? "vi")) return false;
+    return similarity(child, c).numbersContained;
+  });
+  if (suspectTranslation) {
+    return {
+      parentDocumentId: null,
+      relation: "unknown",
+      confidence: 0.4,
+      method: "rule",
+      evidence: { reason: "possible_translation", evaluated: others.length },
+    };
+  }
+  // conflicting figures: a senior doc on the same event carrying a
+  // disjoint set of numbers means the texts disagree on facts — neither
+  // derivation nor independence can be proven → unresolved
+  const seniorConflict = candidates.some(
+    (c) => eligibleParent(child, c) && similarity(child, c).numberConflict,
+  );
+  if (seniorConflict) {
+    return {
+      parentDocumentId: null,
+      relation: "unknown",
+      confidence: 0.4,
+      method: "rule",
+      evidence: { reason: "conflicting_figures", evaluated: others.length },
+    };
+  }
+  if (maxSeniorSim >= INDEPENDENT_CLEAR_TITLE_SIM) {
+    // gray zone: similar enough to a senior doc to be related, not
+    // similar enough to derive — includes disputed-figure near-copies
+    return {
+      parentDocumentId: null,
+      relation: "unknown",
+      confidence: 0.4,
+      method: "rule",
+      evidence: {
+        reason: "conflicting_similarity",
+        titleSim: maxSeniorSim,
+        evaluated: others.length,
+      },
+    };
+  }
   return {
     parentDocumentId: null,
     relation: "original",
-    confidence: 0.5,
+    confidence: 0.6,
     method: "rule",
-    evidence: { evaluated: candidates.length },
+    evidence: { evaluated: others.length, maxSeniorSim },
   };
 }
 
@@ -341,10 +442,16 @@ export function resolveOrigins(
 
 export interface EvidenceIndependence {
   rawSources: number;
-  independentOrigins: number;
+  /** lineage roots whose root doc carries a positive 'original'
+   *  assertion — 'unknown' roots NEVER count here */
+  confirmedIndependentOrigins: number;
+  /** documents with unresolved lineage ('unknown' or no assertion) —
+   *  each is its own unresolved root until evidence says otherwise */
+  unresolvedOrigins: number;
+  /** roots whose root document is a primary source */
   primaryOrigins: number;
-  syndicatedSources: number;
-  unknownOrigins: number;
+  /** documents derived from another document in the graph */
+  derivedDocuments: number;
 }
 
 const DERIVED = new Set<LineageRelation>([
@@ -361,22 +468,29 @@ export function independence(
   const origins = resolveOrigins(assertions);
   const byId = new Map(docs.map((d) => [d.documentId, d]));
   const rootIds = new Set(origins.values());
-  let primaryOrigins = 0;
+  // one newsroom = one information origin: several asserted-original
+  // documents from the same source still count once
+  const confirmedSources = new Set<string>();
+  const primarySources = new Set<string>();
   for (const rootId of rootIds) {
-    if (byId.get(rootId)?.sourceKind === "primary") primaryOrigins++;
+    const rootDoc = byId.get(rootId);
+    if (!rootDoc) continue;
+    if (assertions.get(rootId)?.relation === "original")
+      confirmedSources.add(rootDoc.source);
+    if (rootDoc.sourceKind === "primary") primarySources.add(rootDoc.source);
   }
-  let syndicated = 0;
-  let unknown = 0;
+  let derived = 0;
+  let unresolved = 0;
   for (const d of docs) {
     const rel = assertions.get(d.documentId)?.relation;
-    if (rel && DERIVED.has(rel)) syndicated++;
-    else if (!rel || rel === "unknown") unknown++;
+    if (rel && DERIVED.has(rel)) derived++;
+    else if (!rel || rel === "unknown") unresolved++;
   }
   return {
     rawSources: new Set(docs.map((d) => d.source)).size,
-    independentOrigins: rootIds.size,
-    primaryOrigins,
-    syndicatedSources: syndicated,
-    unknownOrigins: unknown,
+    confirmedIndependentOrigins: confirmedSources.size,
+    unresolvedOrigins: unresolved,
+    primaryOrigins: primarySources.size,
+    derivedDocuments: derived,
   };
 }
