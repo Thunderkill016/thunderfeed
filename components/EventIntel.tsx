@@ -1,6 +1,7 @@
 "use client";
 
 import type { ChangeView, EventVersionView, EventView } from "../lib/db/read";
+import { TIER_LABEL, useReliability } from "./ReliabilityContext";
 
 const CHANGE_LABEL: Record<string, string> = {
   event_created: "Sự kiện mới",
@@ -67,6 +68,7 @@ export function changeLabel(t: string): string {
 /** Canonical intelligence — claims, positions, evidence buckets, timeline. */
 export default function EventIntel({ view }: { view: EventView }) {
   const conf = view.confidence;
+  const reliability = useReliability();
   return (
     <>
       <section className="detail-section">
@@ -142,14 +144,35 @@ export default function EventIntel({ view }: { view: EventView }) {
                   {label} · {items.length}
                 </span>
                 <ul>
-                  {items.slice(0, 6).map((e) => (
-                    <li key={e.url}>
-                      <a href={e.url} target="_blank" rel="noopener noreferrer">
-                        {e.title}
-                      </a>
-                      <span className="ev-src">{e.source}</span>
-                    </li>
-                  ))}
+                  {items.slice(0, 6).map((e) => {
+                    const tier = reliability.get(e.source);
+                    return (
+                      <li key={e.url}>
+                        <a
+                          href={e.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {e.title}
+                        </a>
+                        <span className="ev-src">
+                          {e.source}
+                          {tier && tier !== "insufficient" && (
+                            <em
+                              className={`tier-badge ${tier}`}
+                              title={TIER_LABEL[tier]}
+                            >
+                              {tier === "strong"
+                                ? "●●●"
+                                : tier === "moderate"
+                                  ? "●●○"
+                                  : "●○○"}
+                            </em>
+                          )}
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             );

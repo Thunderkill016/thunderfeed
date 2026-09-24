@@ -718,3 +718,146 @@ export async function searchEvents(
     score,
   }));
 }
+
+export interface SourceReliability {
+  sourceId: string;
+  name: string;
+  kind: string;
+  documents: number;
+  /** lineage roots carrying 'original' — genuinely own reporting */
+  originals: number;
+  /** syndicated/quoted/rewritten/press_release_based documents */
+  derived: number;
+  /** 'unknown' relation or no lineage assertion at all */
+  unknownLineage: number;
+  /** assertions this source made on claims (claim_evidence rows) */
+  claimsAsserted: number;
+  /** of those claims, CURRENT state distribution */
+  confirmed: number;
+  disputed: number;
+  corrected: number;
+  /** 0-1 composite; see formula below — deterministic, explainable */
+  score: number;
+  tier: "strong" | "moderate" | "weak" | "insufficient";
+}
+
+const RELIABILITY_MIN_DOCS = 5;
+
+/**
+ * Per-source reliability from observed behavior only — no external ratings.
+ *   originality   = lineage 'original' roots / documents
+ *   unknownShare  = unresolved provenance / documents        (penalty)
+ *   confirmRate   = claims now 'confirmed' / assertions
+ *   correctedRate = claims now corrected|retracted / assertions (penalty)
+ *   score = 0.5·originality + 0.5·confirmRate − 0.5·correctedRate − 0.25·unknownShare
+ * Sources under RELIABILITY_MIN_DOCS get tier 'insufficient' — a score on
+ * thin evidence would be noise presented as signal.
+ */
+export async function getSourceReliability(): Promise<SourceReliability[]> {
+  const pool = getPool();
+  const docsQ = pool.query<{
+    source_id: string;
+    name: string;
+    kind: string;
+    docs: string;
+    originals: string;
+    derived: string;
+    unknown: string;
+  }>(
+    `WITH latest_lin AS (
+       SELECT DISTINCT ON (child_document_id)
+              child_document_id, relation::text AS relation
+       FROM evidence_lineage
+       ORDER BY child_document_id, version_no DESC
+     )
+     SELECT s.id AS source_id, s.name, s.kind::text,
+            COUNT(d.id) AS docs,
+            COUNT(*) FILTER (WHERE ll.relation = 'original') AS originals,
+            COUNT(*) FILTER (WHERE ll.relation IN
+              ('syndicated','quoted','rewritten','press_release_based')) AS derived,
+            COUNT(*) FILTER (WHERE ll.relation IS NULL
+                             OR ll.relation = 'unknown') AS unknown
+     FROM sources s
+     JOIN evidence_documents d ON d.source_id = s.id
+     LEFT JOIN latest_lin ll ON ll.child_document_id = d.id
+     GROUP BY s.id, s.name, s.kind`,
+  );
+  // claim state resolves via claims.current_version_id — the asserting
+  // version's state is irrelevant, what matters is where the claim ended
+  const claimsQ2 = pool.query<{
+    source_id: string;
+    asserted: string;
+    confirmed: string;
+    disputed: string;
+    corrected: string;
+  }>(
+    `SELECT s.id AS source_id,
+            COUNT(*) AS asserted,
+            COUNT(*) FILTER (WHERE cur.state = 'confirmed') AS confirmed,
+            COUNT(*) FILTER (WHERE cur.state = 'disputed') AS disputed,
+            COUNT(*) FILTER (WHERE cur.state IN ('corrected','retracted')) AS corrected
+     FROM claim_evidence ce
+     JOIN claim_versions v ON v.id = ce.claim_version_id
+     JOIN claims c ON c.id = v.claim_id
+     JOIN claim_versions cur ON cur.id = c.current_version_id
+     JOIN evidence_versions ev ON ev.id = ce.evidence_version_id
+     JOIN evidence_documents d ON d.id = ev.document_id
+     JOIN sources s ON s.id = d.source_id
+     GROUP BY s.id`,
+  );
+  const [docsR, claimsR] = await Promise.all([docsQ, claimsQ2]);
+
+  const claimStats = new Map(claimsR.rows.map((r) => [r.source_id, r]));
+  return docsR.rows
+    .map((r) => {
+      const cs = claimStats.get(r.source_id);
+      const docs = Number(r.docs);
+      const originals = Number(r.originals);
+      const derived = Number(r.derived);
+      const unknown = Number(r.unknown);
+      const asserted = Number(cs?.asserted ?? 0);
+      const confirmed = Number(cs?.confirmed ?? 0);
+      const disputed = Number(cs?.disputed ?? 0);
+      const corrected = Number(cs?.corrected ?? 0);
+
+      const originality = docs ? originals / docs : 0;
+      const unknownShare = docs ? unknown / docs : 0;
+      const confirmRate = asserted ? confirmed / asserted : 0;
+      const correctedRate = asserted ? corrected / asserted : 0;
+      const score = Math.max(
+        0,
+        Math.min(
+          1,
+          0.5 * originality +
+            0.5 * confirmRate -
+            0.5 * correctedRate -
+            0.25 * unknownShare,
+        ),
+      );
+      const tier: SourceReliability["tier"] =
+        docs < RELIABILITY_MIN_DOCS
+          ? "insufficient"
+          : score >= 0.6
+            ? "strong"
+            : score >= 0.35
+              ? "moderate"
+              : "weak";
+
+      return {
+        sourceId: r.source_id,
+        name: r.name,
+        kind: r.kind,
+        documents: docs,
+        originals,
+        derived,
+        unknownLineage: unknown,
+        claimsAsserted: asserted,
+        confirmed,
+        disputed,
+        corrected,
+        score: Math.round(score * 100) / 100,
+        tier,
+      };
+    })
+    .sort((a, b) => b.score - a.score || b.documents - a.documents);
+}

@@ -1630,3 +1630,18 @@ button {
   color: var(--ink-faint);
   font-style: italic;
 }
+.tier-badge {
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 1px;
+  margin-left: 6px;
+}
+.tier-badge.strong {
+  color: #2e7d32;
+}
+.tier-badge.moderate {
+  color: #b8860b;
+}
+.tier-badge.weak {
+  color: #b04030;
+}
