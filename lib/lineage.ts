@@ -85,9 +85,11 @@ export interface Attribution {
 
 export function detectAttribution(text: string): Attribution | null {
   for (const [re, canonical] of ATTRIBUTABLE_SOURCES) {
-    if (re.test(text)) return { outlet: canonical, primary: false, phrase: re.source };
+    if (re.test(text))
+      return { outlet: canonical, primary: false, phrase: re.source };
   }
-  const pr = text.match(PRESS_RELEASE_PHRASE) ?? text.match(EN_PRESS_RELEASE_PHRASE);
+  const pr =
+    text.match(PRESS_RELEASE_PHRASE) ?? text.match(EN_PRESS_RELEASE_PHRASE);
   if (pr) return { outlet: "", primary: true, phrase: pr[0] };
   const vi = text.match(VI_ATTRIBUTION);
   if (vi?.[1]) return { outlet: vi[1].trim(), primary: false, phrase: vi[0] };
@@ -153,7 +155,10 @@ export interface SimScores {
 }
 
 export function similarity(child: LineageDoc, cand: LineageDoc): SimScores {
-  const titleSim = jaccard(new Set(tokens(child.title)), new Set(tokens(cand.title)));
+  const titleSim = jaccard(
+    new Set(tokens(child.title)),
+    new Set(tokens(cand.title)),
+  );
   const summarySim = jaccard(shingles(child.summary), shingles(cand.summary));
   const cn = numbers(child.title + " " + child.summary);
   const pn = numbers(cand.title + " " + cand.summary);

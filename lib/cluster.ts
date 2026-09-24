@@ -10,6 +10,7 @@ import {
   type StrategicDomain,
 } from "./model";
 import { mediaInfoFor, ownershipClass } from "./mediaData";
+import { injectEntityTokens } from "./entities";
 
 export function classifyStrategicDomain(text: string): StrategicDomain {
   const norm = normalizeText(text);
@@ -69,13 +70,13 @@ export const ENTITY_DISPLAY: Record<string, string> = {
   entity_trump: "Donald Trump",
   entity_anthropic: "Anthropic",
   entity_vinfast: "VinFast",
-  entity_tolam: "Tô Lâm",
+  entity_lam: "Tô Lâm",
   entity_pm: "Thủ tướng",
   entity_brics: "BRICS",
   entity_g20: "G20",
-  entity_houthi: "Houthi",
+  entity_yemen: "Yemen",
   entity_redsea: "Biển Đỏ",
-  entity_911: "11/9",
+  entity_nine_eleven: "11/9",
   entity_trade_surplus: "thặng dư thương mại",
   entity_song_hong: "sông Hồng",
   entity_russia: "Nga",
@@ -83,68 +84,17 @@ export const ENTITY_DISPLAY: Record<string, string> = {
   entity_us: "Mỹ",
   entity_iran: "Iran",
   entity_israel: "Israel",
-  entity_musk: "Elon Musk",
+  entity_tesla: "Elon Musk",
   entity_openai: "OpenAI",
   entity_vietnam: "Việt Nam",
 };
 
+/**
+ * Inject canonical entity_<slug> tokens into normalized text — the ONE
+ * entity ontology (lib/entities.ts) shared with the persistent resolver.
+ */
 function mapEntityAliases(text: string): string {
-  let norm = normalizeText(text);
-  const replacements: [RegExp, string][] = [
-    [/\b(arab saudi|saudi arabia|saudi|arap xeut)\b/g, " entity_saudi "],
-    [/\b(duong ong|pipeline|tuyen ong)\b/g, " entity_pipeline "],
-    [/\b(dan dau|oil|dau tho|dau brent|xuat khau dau)\b/g, " entity_oil "],
-    [/\b(uav|drone|may bay khong nguoi lai)\b/g, " entity_drone "],
-    [
-      /\b(tri tue nhan tao|artificial intelligence|mo hinh ai|ai)\b/g,
-      " entity_ai ",
-    ],
-    [/\b(ban dan|semiconductor|chips|vi mach)\b/g, " entity_semiconductor "],
-    [/\b(tong thong nga|putin|vladimir putin)\b/g, " entity_putin "],
-    [/\b(zelensky|volodymyr zelensky)\b/g, " entity_zelensky "],
-    [/\b(donald trump|ong trump|trump)\b/g, " entity_trump "],
-    [/\b(anthropic|claude|dario amodei|amodei)\b/g, " entity_anthropic "],
-    [/\b(pham nhat vuong|vinfast|green sm)\b/g, " entity_vinfast "],
-    [/\b(to lam|tong bi thu to lam)\b/g, " entity_tolam "],
-    [/\b(le minh hung|thu tuong)\b/g, " entity_pm "],
-    [/\b(brics|thuong dinh brics)\b/g, " entity_brics "],
-    [/\b(g20|thuong dinh g20)\b/g, " entity_g20 "],
-    [/\b(houthi|yemen)\b/g, " entity_houthi "],
-    [
-      /\b(bien do|red sea|bab al mandab|mayun|yet hau bien do)\b/g,
-      " entity_redsea ",
-    ],
-    [
-      /\b(khung bo 11 9|vu 11 9|tham kich 11 9|tuong niem 11 9|vu 11 thang 9|9 11 attacks|al qaida 9 11|thap doi 11 9)\b/g,
-      " entity_911 ",
-    ],
-    [
-      /\b(thang du thuong mai|can can thuong mai|trade surplus)\b/g,
-      " entity_trade_surplus ",
-    ],
-    [
-      /\b(tai dinh cu|ven song hong|song hong|khu tai dinh cu)\b/g,
-      " entity_song_hong ",
-    ],
-    [/\b(nga|russia|kremlin|matxcova|moscow)\b/g, " entity_russia "],
-    [/\b(trung quoc|china|bac kinh|beijing|trung hoa)\b/g, " entity_china "],
-    [
-      /\b(my|hoa ky|washington|white house|nha trang|pentagon|lau nam goc|united states|usa|america)\b/g,
-      " entity_us ",
-    ],
-    [/\b(iran|tehran)\b/g, " entity_iran "],
-    [/\b(israel|netanyahu|tel aviv|gaza)\b/g, " entity_israel "],
-    [/\b(elon musk|musk|tesla|spacex|x corp)\b/g, " entity_musk "],
-    [/\b(openai|chatgpt|sam altman)\b/g, " entity_openai "],
-    [
-      /\b(viet nam|vietnam|ha noi|tphcm|tp ho chi minh|sai gon|da nang)\b/g,
-      " entity_vietnam ",
-    ],
-  ];
-  for (const [pattern, repl] of replacements) {
-    norm = norm.replace(pattern, repl);
-  }
-  return norm;
+  return injectEntityTokens(normalizeText(text));
 }
 
 function calculateSimilarity(

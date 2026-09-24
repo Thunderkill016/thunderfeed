@@ -18,7 +18,9 @@
     "bench:lineage": "tsx scripts/bench/lineage.ts",
     "bench:lineage:real": "tsx scripts/bench/lineage.ts bench/lineage-real.jsonl",
     "bench:export": "tsx scripts/bench/export-pairs.ts",
-    "bench:label": "tsx scripts/bench/label.ts"
+    "bench:label": "tsx scripts/bench/label.ts",
+    "bench:resolver:v2": "tsx scripts/bench/resolver-v2.ts",
+    "bench:semantic": "tsx scripts/bench/semantic-dist.ts"
   },
   "dependencies": {
     "entities": "^8.1.0",

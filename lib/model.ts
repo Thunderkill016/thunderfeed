@@ -50,11 +50,7 @@ export type Article = {
 };
 
 export type SourceStatusKind =
-  | "ok"
-  | "empty"
-  | "rate_limited"
-  | "timeout"
-  | "error";
+  "ok" | "empty" | "rate_limited" | "timeout" | "error";
 
 export type SourceStatus = {
   id: string;

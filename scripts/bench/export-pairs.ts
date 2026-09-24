@@ -155,10 +155,15 @@ async function main() {
 
   writeFileSync(`${BENCH_DIR}/pairs.candidates.jsonl`, "");
   for (const p of pairs)
-    appendFileSync(`${BENCH_DIR}/pairs.candidates.jsonl`, `${JSON.stringify(p)}\n`);
+    appendFileSync(
+      `${BENCH_DIR}/pairs.candidates.jsonl`,
+      `${JSON.stringify(p)}\n`,
+    );
 
   const stats = { same, diff, events: events.length, docs: rows.length };
-  console.log(`mined ${pairs.length} candidate pairs → bench/pairs.candidates.jsonl`);
+  console.log(
+    `mined ${pairs.length} candidate pairs → bench/pairs.candidates.jsonl`,
+  );
   console.log(JSON.stringify(stats));
   console.log(
     `traps: ${pairs.filter((p) => p.trap?.some((t) => t.startsWith("generic:"))).length} generic-claim, ` +

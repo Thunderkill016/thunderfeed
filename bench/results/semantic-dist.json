@@ -1,0 +1,3552 @@
+{
+ "model": "gemini-embedding-001",
+ "semanticAvailable": 1,
+ "apiFailures": 0,
+ "table": [
+  {
+   "name": "same/all",
+   "n": 88,
+   "min": 0.613564013315846,
+   "p05": 0.6289687928947505,
+   "p10": 0.6477915844366549,
+   "p25": 0.7100612917254833,
+   "p50": 0.8192710712415547,
+   "p75": 0.8893070177029562,
+   "p90": 0.953308195592375,
+   "p95": 0.9708536720194779,
+   "max": 0.9861559092431813
+  },
+  {
+   "name": "same/cross-lang",
+   "n": 4,
+   "min": 0.8360390926089581,
+   "p05": 0.8360390926089581,
+   "p10": 0.8360390926089581,
+   "p25": 0.8540818893214105,
+   "p50": 0.9011145792013173,
+   "p75": 0.9333499312260017,
+   "p90": 0.9333499312260017,
+   "p95": 0.9333499312260017,
+   "max": 0.9333499312260017
+  },
+  {
+   "name": "diff/all",
+   "n": 407,
+   "min": 0.3973219990915277,
+   "p05": 0.44030266798482537,
+   "p10": 0.4554926881271432,
+   "p25": 0.4982568261095387,
+   "p50": 0.5620063636670959,
+   "p75": 0.6309139714031914,
+   "p90": 0.6979373807441043,
+   "p95": 0.7337351379733138,
+   "max": 0.8609629928853999
+  },
+  {
+   "name": "diff/same-topic",
+   "n": 2,
+   "min": 0.5773050210645687,
+   "p05": 0.5773050210645687,
+   "p10": 0.5773050210645687,
+   "p25": 0.5773050210645687,
+   "p50": 0.6749330171553393,
+   "p75": 0.6749330171553393,
+   "p90": 0.6749330171553393,
+   "p95": 0.6749330171553393,
+   "max": 0.6749330171553393
+  },
+  {
+   "name": "diff/cross-lang",
+   "n": 162,
+   "min": 0.3973219990915277,
+   "p05": 0.41899152446340066,
+   "p10": 0.42747734636151274,
+   "p25": 0.4556131778801638,
+   "p50": 0.49549538659484593,
+   "p75": 0.5497411086803862,
+   "p90": 0.5906238022091467,
+   "p95": 0.6205928264229459,
+   "max": 0.6749330171553393
+  },
+  {
+   "name": "diff/same-source",
+   "n": 102,
+   "min": 0.4768570259249287,
+   "p05": 0.4977687557820779,
+   "p10": 0.5160913824316322,
+   "p25": 0.5578642731304111,
+   "p50": 0.5964642350676771,
+   "p75": 0.6582780404622021,
+   "p90": 0.7012585201550443,
+   "p95": 0.7568538464247826,
+   "max": 0.8609629928853999
+  }
+ ],
+ "rows": [
+  {
+   "id": "01a0d188-8ae7-7162-af23-dd8068c8b5ac|01a0d1ab-640b-7ec2-bac2-86ef0da90007",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8735753186180409
+  },
+  {
+   "id": "01a0d188-8ae3-7513-90ae-b2b456aec9c3|01a0d1ab-640b-7ec2-bac2-86ef0da90007",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9861559092431813
+  },
+  {
+   "id": "01a0d188-8ae3-7513-90ae-b2b456aec9c3|01a0d188-8ae7-7162-af23-dd8068c8b5ac",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8697736407803646
+  },
+  {
+   "id": "01a0d188-8a98-7189-865b-28af3324d564|01a0d1ab-635b-7ac4-a4cb-b9e19f53ff57",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8874516238781057
+  },
+  {
+   "id": "01a0d188-8a93-7bb4-927f-6f2b6225d674|01a0d1ab-635b-7ac4-a4cb-b9e19f53ff57",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9419467927189186
+  },
+  {
+   "id": "01a0d188-8a8f-71f8-995a-16dd4e721877|01a0d1ab-635b-7ac4-a4cb-b9e19f53ff57",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8185667756593427
+  },
+  {
+   "id": "01a0d188-8a8a-709d-9a49-143a379de5f0|01a0d1ab-635b-7ac4-a4cb-b9e19f53ff57",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8651840508418389
+  },
+  {
+   "id": "01a0d188-8a93-7bb4-927f-6f2b6225d674|01a0d188-8a98-7189-865b-28af3324d564",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8192710712415547
+  },
+  {
+   "id": "01a0d188-8a8f-71f8-995a-16dd4e721877|01a0d188-8a98-7189-865b-28af3324d564",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8355846052845759
+  },
+  {
+   "id": "01a0d188-8a8a-709d-9a49-143a379de5f0|01a0d188-8a98-7189-865b-28af3324d564",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9279537555909769
+  },
+  {
+   "id": "01a0d188-8a8f-71f8-995a-16dd4e721877|01a0d188-8a93-7bb4-927f-6f2b6225d674",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7735402452727029
+  },
+  {
+   "id": "01a0d188-8a8a-709d-9a49-143a379de5f0|01a0d188-8a93-7bb4-927f-6f2b6225d674",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8419155461195228
+  },
+  {
+   "id": "01a0d188-8a8a-709d-9a49-143a379de5f0|01a0d188-8a8f-71f8-995a-16dd4e721877",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8436952084682158
+  },
+  {
+   "id": "01a0d188-8976-7942-a9da-4573d33c5bc7|01a0d1ab-6323-7dfc-bff5-607aeb4fa6d8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9207635922265489
+  },
+  {
+   "id": "01a0d188-8971-73cf-ae5a-bf53f32d63cb|01a0d1ab-6323-7dfc-bff5-607aeb4fa6d8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9250175363369484
+  },
+  {
+   "id": "01a0d188-8971-73cf-ae5a-bf53f32d63cb|01a0d188-8976-7942-a9da-4573d33c5bc7",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8963900553727893
+  },
+  {
+   "id": "01a0d1ab-625b-7825-8500-3762e6ab6851|01a0d1ab-625d-724f-88ef-f38206550cda",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.678355822472934
+  },
+  {
+   "id": "01a0d1ab-6259-7ab9-a12c-b2533c7a0db4|01a0d1ab-625d-724f-88ef-f38206550cda",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7027725227800904
+  },
+  {
+   "id": "01a0d1ab-6256-70c8-b080-0ac9e6aec10d|01a0d1ab-625d-724f-88ef-f38206550cda",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7143823997447645
+  },
+  {
+   "id": "01a0d1ab-6259-7ab9-a12c-b2533c7a0db4|01a0d1ab-625b-7825-8500-3762e6ab6851",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8609629928853999
+  },
+  {
+   "id": "01a0d1ab-6256-70c8-b080-0ac9e6aec10d|01a0d1ab-625b-7825-8500-3762e6ab6851",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7566734274098419
+  },
+  {
+   "id": "01a0d1ab-6256-70c8-b080-0ac9e6aec10d|01a0d1ab-6259-7ab9-a12c-b2533c7a0db4",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7659653187101324
+  },
+  {
+   "id": "01a0d188-8a42-7e4f-87bd-1b6b64c9fe22|01a0d1ab-613a-72a7-b4e8-0e7328d63ae9",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6524423323539538
+  },
+  {
+   "id": "01a0d188-8a3d-7919-b82e-bfc015a7bf5c|01a0d1ab-613a-72a7-b4e8-0e7328d63ae9",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6728004067130616
+  },
+  {
+   "id": "01a0d176-5deb-7a30-9189-07d0454b90ad|01a0d1ab-613a-72a7-b4e8-0e7328d63ae9",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6565539842297247
+  },
+  {
+   "id": "01a0d188-8a3d-7919-b82e-bfc015a7bf5c|01a0d188-8a42-7e4f-87bd-1b6b64c9fe22",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7012585201550443
+  },
+  {
+   "id": "01a0d176-5deb-7a30-9189-07d0454b90ad|01a0d188-8a42-7e4f-87bd-1b6b64c9fe22",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6864428458349193
+  },
+  {
+   "id": "01a0d176-5deb-7a30-9189-07d0454b90ad|01a0d188-8a3d-7919-b82e-bfc015a7bf5c",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7553621127633999
+  },
+  {
+   "id": "01a0d188-8997-7697-adb1-e68381cf4f7e|01a0d1ab-6100-7d09-b587-bc5105f593a7",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6858730641019413
+  },
+  {
+   "id": "01a0d188-899b-7647-a7df-3dcdb214c972|01a0d1ab-6100-7d09-b587-bc5105f593a7",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6401490240926678
+  },
+  {
+   "id": "01a0d188-8997-7697-adb1-e68381cf4f7e|01a0d188-899b-7647-a7df-3dcdb214c972",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8530572285930903
+  },
+  {
+   "id": "01a0d188-8561-7cb9-9ae7-0dba77c5ca6a|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.755520436527725
+  },
+  {
+   "id": "01a0d188-8542-7e00-a818-bd26ceb53d8b|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7103594133092023
+  },
+  {
+   "id": "01a0d188-82e7-75ce-be13-f99229ea0465|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7273890494904305
+  },
+  {
+   "id": "01a0d188-82ce-7581-ad1e-59be96a5ea0d|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8181631496331784
+  },
+  {
+   "id": "01a0d188-82c5-7539-9619-419270edaae8|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8311242779587104
+  },
+  {
+   "id": "01a0d188-82c1-78b5-9911-2a9fdfca4d21|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8254272046140506
+  },
+  {
+   "id": "01a0d188-8542-7e00-a818-bd26ceb53d8b|01a0d188-8561-7cb9-9ae7-0dba77c5ca6a",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9324355862116911
+  },
+  {
+   "id": "01a0d188-82e7-75ce-be13-f99229ea0465|01a0d188-8561-7cb9-9ae7-0dba77c5ca6a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7483526451803761
+  },
+  {
+   "id": "01a0d188-82ce-7581-ad1e-59be96a5ea0d|01a0d188-8561-7cb9-9ae7-0dba77c5ca6a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7601054693633134
+  },
+  {
+   "id": "01a0d188-82c5-7539-9619-419270edaae8|01a0d188-8561-7cb9-9ae7-0dba77c5ca6a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7216608845585264
+  },
+  {
+   "id": "01a0d188-82c1-78b5-9911-2a9fdfca4d21|01a0d188-8561-7cb9-9ae7-0dba77c5ca6a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7285766995452252
+  },
+  {
+   "id": "01a0d188-82bd-7605-81e4-7a0fa87e47d8|01a0d188-8561-7cb9-9ae7-0dba77c5ca6a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7285460949261925
+  },
+  {
+   "id": "01a0d188-82e7-75ce-be13-f99229ea0465|01a0d188-8542-7e00-a818-bd26ceb53d8b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7545415977849935
+  },
+  {
+   "id": "01a0d188-82ce-7581-ad1e-59be96a5ea0d|01a0d188-8542-7e00-a818-bd26ceb53d8b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7470622822451422
+  },
+  {
+   "id": "01a0d188-82c5-7539-9619-419270edaae8|01a0d188-8542-7e00-a818-bd26ceb53d8b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7066083042860831
+  },
+  {
+   "id": "01a0d188-82c1-78b5-9911-2a9fdfca4d21|01a0d188-8542-7e00-a818-bd26ceb53d8b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6942878765875089
+  },
+  {
+   "id": "01a0d188-82bd-7605-81e4-7a0fa87e47d8|01a0d188-8542-7e00-a818-bd26ceb53d8b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7353980642904104
+  },
+  {
+   "id": "01a0d188-82b0-7bc4-9d35-2958e42ec766|01a0d188-8542-7e00-a818-bd26ceb53d8b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6551864737590977
+  },
+  {
+   "id": "01a0d188-82ce-7581-ad1e-59be96a5ea0d|01a0d188-82e7-75ce-be13-f99229ea0465",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7253283424353163
+  },
+  {
+   "id": "01a0d188-82c5-7539-9619-419270edaae8|01a0d188-82e7-75ce-be13-f99229ea0465",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.665332870372245
+  },
+  {
+   "id": "01a0d188-82c1-78b5-9911-2a9fdfca4d21|01a0d188-82e7-75ce-be13-f99229ea0465",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.684714958565741
+  },
+  {
+   "id": "01a0d188-82bd-7605-81e4-7a0fa87e47d8|01a0d188-82e7-75ce-be13-f99229ea0465",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7735117213010259
+  },
+  {
+   "id": "01a0d188-82b0-7bc4-9d35-2958e42ec766|01a0d188-82e7-75ce-be13-f99229ea0465",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6649896596407757
+  },
+  {
+   "id": "01a0d188-82c5-7539-9619-419270edaae8|01a0d188-82ce-7581-ad1e-59be96a5ea0d",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8031536277222574
+  },
+  {
+   "id": "01a0d188-82c1-78b5-9911-2a9fdfca4d21|01a0d188-82ce-7581-ad1e-59be96a5ea0d",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8189578717543121
+  },
+  {
+   "id": "01a0d188-82bd-7605-81e4-7a0fa87e47d8|01a0d188-82ce-7581-ad1e-59be96a5ea0d",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8409343444967052
+  },
+  {
+   "id": "01a0d188-82b0-7bc4-9d35-2958e42ec766|01a0d188-82ce-7581-ad1e-59be96a5ea0d",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7949823104041257
+  },
+  {
+   "id": "01a0d188-82c1-78b5-9911-2a9fdfca4d21|01a0d188-82c5-7539-9619-419270edaae8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8312289402007398
+  },
+  {
+   "id": "01a0d188-82bd-7605-81e4-7a0fa87e47d8|01a0d188-82c5-7539-9619-419270edaae8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8116153627817282
+  },
+  {
+   "id": "01a0d188-82b0-7bc4-9d35-2958e42ec766|01a0d188-82c5-7539-9619-419270edaae8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.79719201124307
+  },
+  {
+   "id": "01a0d188-82bd-7605-81e4-7a0fa87e47d8|01a0d188-82c1-78b5-9911-2a9fdfca4d21",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7512119346550726
+  },
+  {
+   "id": "01a0d188-82b0-7bc4-9d35-2958e42ec766|01a0d188-82c1-78b5-9911-2a9fdfca4d21",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7742127122362525
+  },
+  {
+   "id": "01a0d188-82b0-7bc4-9d35-2958e42ec766|01a0d188-82bd-7605-81e4-7a0fa87e47d8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8520799858037462
+  },
+  {
+   "id": "01a0d188-8658-75b5-8d8d-6201962cf30a|01a0d1ab-5e5f-7a17-b1ad-107f6fd0f6d8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8717369407610629
+  },
+  {
+   "id": "01a0d188-8653-7717-a4b2-132734e2c45c|01a0d1ab-5e5f-7a17-b1ad-107f6fd0f6d8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.833928544542946
+  },
+  {
+   "id": "01a0d176-5d5f-7bd6-b701-d078ad58a5a2|01a0d1ab-5e5f-7a17-b1ad-107f6fd0f6d8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8233035927890185
+  },
+  {
+   "id": "01a0d188-8653-7717-a4b2-132734e2c45c|01a0d188-8658-75b5-8d8d-6201962cf30a",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8893070177029562
+  },
+  {
+   "id": "01a0d176-5d5f-7bd6-b701-d078ad58a5a2|01a0d188-8658-75b5-8d8d-6201962cf30a",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9024379229369356
+  },
+  {
+   "id": "01a0d176-5d5f-7bd6-b701-d078ad58a5a2|01a0d188-8653-7717-a4b2-132734e2c45c",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9112085335372238
+  },
+  {
+   "id": "01a0d188-825d-773a-94cc-43cd3639163d|01a0d1ab-5c3f-77ef-8464-dffe3ec544dc",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5968357035206316
+  },
+  {
+   "id": "01a0d188-8259-7cd8-b983-acc7a021641b|01a0d1ab-5c3f-77ef-8464-dffe3ec544dc",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6513756354963414
+  },
+  {
+   "id": "01a0d188-8255-7064-89f6-e360fbf13fdf|01a0d1ab-5c3f-77ef-8464-dffe3ec544dc",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5758268031508694
+  },
+  {
+   "id": "01a0d188-8250-7102-944a-3defc6989976|01a0d1ab-5c3f-77ef-8464-dffe3ec544dc",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7272806769679048
+  },
+  {
+   "id": "01a0d188-824b-77bf-b0b3-9d73e1316166|01a0d1ab-5c3f-77ef-8464-dffe3ec544dc",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7466234292215187
+  },
+  {
+   "id": "01a0d188-8247-7ddd-9bf4-d085d9da20fd|01a0d1ab-5c3f-77ef-8464-dffe3ec544dc",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7315644357989993
+  },
+  {
+   "id": "01a0d188-8259-7cd8-b983-acc7a021641b|01a0d188-825d-773a-94cc-43cd3639163d",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.6038753579809766
+  },
+  {
+   "id": "01a0d188-8255-7064-89f6-e360fbf13fdf|01a0d188-825d-773a-94cc-43cd3639163d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5252519369245108
+  },
+  {
+   "id": "01a0d188-8250-7102-944a-3defc6989976|01a0d188-825d-773a-94cc-43cd3639163d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5521074407524978
+  },
+  {
+   "id": "01a0d188-824b-77bf-b0b3-9d73e1316166|01a0d188-825d-773a-94cc-43cd3639163d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6061114588898134
+  },
+  {
+   "id": "01a0d188-8247-7ddd-9bf4-d085d9da20fd|01a0d188-825d-773a-94cc-43cd3639163d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5559784286442758
+  },
+  {
+   "id": "01a0d188-8244-77c8-a8cb-cde0ae96821a|01a0d188-825d-773a-94cc-43cd3639163d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6214633731115362
+  },
+  {
+   "id": "01a0d188-8255-7064-89f6-e360fbf13fdf|01a0d188-8259-7cd8-b983-acc7a021641b",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.48650844706567886
+  },
+  {
+   "id": "01a0d188-8250-7102-944a-3defc6989976|01a0d188-8259-7cd8-b983-acc7a021641b",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5544531660206977
+  },
+  {
+   "id": "01a0d188-824b-77bf-b0b3-9d73e1316166|01a0d188-8259-7cd8-b983-acc7a021641b",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6084617262395956
+  },
+  {
+   "id": "01a0d188-8247-7ddd-9bf4-d085d9da20fd|01a0d188-8259-7cd8-b983-acc7a021641b",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5853821082483232
+  },
+  {
+   "id": "01a0d188-8244-77c8-a8cb-cde0ae96821a|01a0d188-8259-7cd8-b983-acc7a021641b",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5602883616886113
+  },
+  {
+   "id": "01a0d188-823b-761f-a2ba-b952291826a2|01a0d188-8259-7cd8-b983-acc7a021641b",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5906238022091467
+  },
+  {
+   "id": "01a0d188-8250-7102-944a-3defc6989976|01a0d188-8255-7064-89f6-e360fbf13fdf",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.589056556963388
+  },
+  {
+   "id": "01a0d188-824b-77bf-b0b3-9d73e1316166|01a0d188-8255-7064-89f6-e360fbf13fdf",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5944562621334377
+  },
+  {
+   "id": "01a0d188-8247-7ddd-9bf4-d085d9da20fd|01a0d188-8255-7064-89f6-e360fbf13fdf",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5648690834770167
+  },
+  {
+   "id": "01a0d188-8244-77c8-a8cb-cde0ae96821a|01a0d188-8255-7064-89f6-e360fbf13fdf",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5966904534124353
+  },
+  {
+   "id": "01a0d188-823b-761f-a2ba-b952291826a2|01a0d188-8255-7064-89f6-e360fbf13fdf",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5698212097145683
+  },
+  {
+   "id": "01a0d188-8232-7057-afba-3a6fcc59663b|01a0d188-8255-7064-89f6-e360fbf13fdf",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5666833940584663
+  },
+  {
+   "id": "01a0d188-824b-77bf-b0b3-9d73e1316166|01a0d188-8250-7102-944a-3defc6989976",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6582780404622021
+  },
+  {
+   "id": "01a0d188-8247-7ddd-9bf4-d085d9da20fd|01a0d188-8250-7102-944a-3defc6989976",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6673030563916772
+  },
+  {
+   "id": "01a0d188-8244-77c8-a8cb-cde0ae96821a|01a0d188-8250-7102-944a-3defc6989976",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6514331299561611
+  },
+  {
+   "id": "01a0d188-823b-761f-a2ba-b952291826a2|01a0d188-8250-7102-944a-3defc6989976",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6088672748999819
+  },
+  {
+   "id": "01a0d188-8232-7057-afba-3a6fcc59663b|01a0d188-8250-7102-944a-3defc6989976",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5985805266920389
+  },
+  {
+   "id": "01a0d188-8225-7d0d-8a73-e92d4730994c|01a0d188-8250-7102-944a-3defc6989976",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.625060916711891
+  },
+  {
+   "id": "01a0d188-8247-7ddd-9bf4-d085d9da20fd|01a0d188-824b-77bf-b0b3-9d73e1316166",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6907157641102184
+  },
+  {
+   "id": "01a0d188-8244-77c8-a8cb-cde0ae96821a|01a0d188-824b-77bf-b0b3-9d73e1316166",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7568538464247826
+  },
+  {
+   "id": "01a0d188-823b-761f-a2ba-b952291826a2|01a0d188-824b-77bf-b0b3-9d73e1316166",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6854088173475318
+  },
+  {
+   "id": "01a0d188-8232-7057-afba-3a6fcc59663b|01a0d188-824b-77bf-b0b3-9d73e1316166",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7048013262277707
+  },
+  {
+   "id": "01a0d188-8225-7d0d-8a73-e92d4730994c|01a0d188-824b-77bf-b0b3-9d73e1316166",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6851081582855763
+  },
+  {
+   "id": "01a0d188-8221-7f0a-ac0b-a1b9bf76910f|01a0d188-824b-77bf-b0b3-9d73e1316166",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6226740845294703
+  },
+  {
+   "id": "01a0d188-8244-77c8-a8cb-cde0ae96821a|01a0d188-8247-7ddd-9bf4-d085d9da20fd",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6453852582425426
+  },
+  {
+   "id": "01a0d188-823b-761f-a2ba-b952291826a2|01a0d188-8247-7ddd-9bf4-d085d9da20fd",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6512977202594312
+  },
+  {
+   "id": "01a0d188-8232-7057-afba-3a6fcc59663b|01a0d188-8247-7ddd-9bf4-d085d9da20fd",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7272229666905093
+  },
+  {
+   "id": "01a0d188-8225-7d0d-8a73-e92d4730994c|01a0d188-8247-7ddd-9bf4-d085d9da20fd",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6248972335667311
+  },
+  {
+   "id": "01a0d188-8221-7f0a-ac0b-a1b9bf76910f|01a0d188-8247-7ddd-9bf4-d085d9da20fd",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5996123227324565
+  },
+  {
+   "id": "01a0d188-821d-7ee8-978f-6f90885b3512|01a0d188-8247-7ddd-9bf4-d085d9da20fd",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6530773448215066
+  },
+  {
+   "id": "01a0d188-823b-761f-a2ba-b952291826a2|01a0d188-8244-77c8-a8cb-cde0ae96821a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6955453296916247
+  },
+  {
+   "id": "01a0d188-8232-7057-afba-3a6fcc59663b|01a0d188-8244-77c8-a8cb-cde0ae96821a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6942908675774303
+  },
+  {
+   "id": "01a0d188-8225-7d0d-8a73-e92d4730994c|01a0d188-8244-77c8-a8cb-cde0ae96821a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6833523934097843
+  },
+  {
+   "id": "01a0d188-8221-7f0a-ac0b-a1b9bf76910f|01a0d188-8244-77c8-a8cb-cde0ae96821a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5888510291899853
+  },
+  {
+   "id": "01a0d188-821d-7ee8-978f-6f90885b3512|01a0d188-8244-77c8-a8cb-cde0ae96821a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6444900176825642
+  },
+  {
+   "id": "01a0d188-8217-7aea-be54-31e37ccad1ac|01a0d188-8244-77c8-a8cb-cde0ae96821a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6320167259268559
+  },
+  {
+   "id": "01a0d188-8232-7057-afba-3a6fcc59663b|01a0d188-823b-761f-a2ba-b952291826a2",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6859336723239696
+  },
+  {
+   "id": "01a0d188-8225-7d0d-8a73-e92d4730994c|01a0d188-823b-761f-a2ba-b952291826a2",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6339164277248082
+  },
+  {
+   "id": "01a0d188-8221-7f0a-ac0b-a1b9bf76910f|01a0d188-823b-761f-a2ba-b952291826a2",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.57133648601576
+  },
+  {
+   "id": "01a0d188-821d-7ee8-978f-6f90885b3512|01a0d188-823b-761f-a2ba-b952291826a2",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5918826452657978
+  },
+  {
+   "id": "01a0d188-8217-7aea-be54-31e37ccad1ac|01a0d188-823b-761f-a2ba-b952291826a2",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6181211922142749
+  },
+  {
+   "id": "01a0d176-5d87-7fbd-9dbe-83d2a91e09b3|01a0d188-823b-761f-a2ba-b952291826a2",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6426101900969263
+  },
+  {
+   "id": "01a0d188-8225-7d0d-8a73-e92d4730994c|01a0d188-8232-7057-afba-3a6fcc59663b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6987898500024078
+  },
+  {
+   "id": "01a0d188-8221-7f0a-ac0b-a1b9bf76910f|01a0d188-8232-7057-afba-3a6fcc59663b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6214225984118418
+  },
+  {
+   "id": "01a0d188-821d-7ee8-978f-6f90885b3512|01a0d188-8232-7057-afba-3a6fcc59663b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5893431553293826
+  },
+  {
+   "id": "01a0d188-8217-7aea-be54-31e37ccad1ac|01a0d188-8232-7057-afba-3a6fcc59663b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5769019165027116
+  },
+  {
+   "id": "01a0d176-5d87-7fbd-9dbe-83d2a91e09b3|01a0d188-8232-7057-afba-3a6fcc59663b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6354772802310553
+  },
+  {
+   "id": "01a0d176-5a1c-7313-8ac1-136da45518e7|01a0d188-8232-7057-afba-3a6fcc59663b",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7069872771975997
+  },
+  {
+   "id": "01a0d188-8221-7f0a-ac0b-a1b9bf76910f|01a0d188-8225-7d0d-8a73-e92d4730994c",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6672003202481993
+  },
+  {
+   "id": "01a0d188-821d-7ee8-978f-6f90885b3512|01a0d188-8225-7d0d-8a73-e92d4730994c",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6396085762337448
+  },
+  {
+   "id": "01a0d188-8217-7aea-be54-31e37ccad1ac|01a0d188-8225-7d0d-8a73-e92d4730994c",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.613564013315846
+  },
+  {
+   "id": "01a0d176-5d87-7fbd-9dbe-83d2a91e09b3|01a0d188-8225-7d0d-8a73-e92d4730994c",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.649593932684271
+  },
+  {
+   "id": "01a0d176-5a1c-7313-8ac1-136da45518e7|01a0d188-8225-7d0d-8a73-e92d4730994c",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.965262278815323
+  },
+  {
+   "id": "01a0d176-5a19-746d-8a69-638f835ecf98|01a0d188-8225-7d0d-8a73-e92d4730994c",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9596033936220177
+  },
+  {
+   "id": "01a0d188-821d-7ee8-978f-6f90885b3512|01a0d188-8221-7f0a-ac0b-a1b9bf76910f",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5766264610317274
+  },
+  {
+   "id": "01a0d188-8217-7aea-be54-31e37ccad1ac|01a0d188-8221-7f0a-ac0b-a1b9bf76910f",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5487494351090773
+  },
+  {
+   "id": "01a0d176-5d87-7fbd-9dbe-83d2a91e09b3|01a0d188-8221-7f0a-ac0b-a1b9bf76910f",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6226610676074499
+  },
+  {
+   "id": "01a0d176-5a1c-7313-8ac1-136da45518e7|01a0d188-8221-7f0a-ac0b-a1b9bf76910f",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.68399044746171
+  },
+  {
+   "id": "01a0d176-5a19-746d-8a69-638f835ecf98|01a0d188-8221-7f0a-ac0b-a1b9bf76910f",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6859908900411961
+  },
+  {
+   "id": "01a0d176-5a15-71dd-b004-b1a3701165da|01a0d188-8221-7f0a-ac0b-a1b9bf76910f",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6322772651104652
+  },
+  {
+   "id": "01a0d188-8217-7aea-be54-31e37ccad1ac|01a0d188-821d-7ee8-978f-6f90885b3512",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7228272295353135
+  },
+  {
+   "id": "01a0d176-5d87-7fbd-9dbe-83d2a91e09b3|01a0d188-821d-7ee8-978f-6f90885b3512",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7418556445451274
+  },
+  {
+   "id": "01a0d176-5a1c-7313-8ac1-136da45518e7|01a0d188-821d-7ee8-978f-6f90885b3512",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6410478324437328
+  },
+  {
+   "id": "01a0d176-5a19-746d-8a69-638f835ecf98|01a0d188-821d-7ee8-978f-6f90885b3512",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6699171950679792
+  },
+  {
+   "id": "01a0d176-5a15-71dd-b004-b1a3701165da|01a0d188-821d-7ee8-978f-6f90885b3512",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7233158827232187
+  },
+  {
+   "id": "01a0d176-5d87-7fbd-9dbe-83d2a91e09b3|01a0d188-8217-7aea-be54-31e37ccad1ac",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6884998391256929
+  },
+  {
+   "id": "01a0d176-5a1c-7313-8ac1-136da45518e7|01a0d188-8217-7aea-be54-31e37ccad1ac",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6159588635133494
+  },
+  {
+   "id": "01a0d176-5a19-746d-8a69-638f835ecf98|01a0d188-8217-7aea-be54-31e37ccad1ac",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6485116993219847
+  },
+  {
+   "id": "01a0d176-5a15-71dd-b004-b1a3701165da|01a0d188-8217-7aea-be54-31e37ccad1ac",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6793343487489929
+  },
+  {
+   "id": "01a0d176-5a1c-7313-8ac1-136da45518e7|01a0d176-5d87-7fbd-9dbe-83d2a91e09b3",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6529430100825773
+  },
+  {
+   "id": "01a0d176-5a19-746d-8a69-638f835ecf98|01a0d176-5d87-7fbd-9dbe-83d2a91e09b3",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6713111058264828
+  },
+  {
+   "id": "01a0d176-5a15-71dd-b004-b1a3701165da|01a0d176-5d87-7fbd-9dbe-83d2a91e09b3",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7433729686739072
+  },
+  {
+   "id": "01a0d176-5a19-746d-8a69-638f835ecf98|01a0d176-5a1c-7313-8ac1-136da45518e7",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9773057666276739
+  },
+  {
+   "id": "01a0d176-5a15-71dd-b004-b1a3701165da|01a0d176-5a1c-7313-8ac1-136da45518e7",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9072966079517051
+  },
+  {
+   "id": "01a0d176-5a15-71dd-b004-b1a3701165da|01a0d176-5a19-746d-8a69-638f835ecf98",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.923487958786134
+  },
+  {
+   "id": "01a0d1ab-59dc-731d-b0b5-eaf20974d350|01a0d1ab-59e0-7b32-9755-0deb4c7aa047",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5996482675541556
+  },
+  {
+   "id": "01a0d1ab-59ab-79ea-a352-8d690bb40672|01a0d1ab-59e0-7b32-9755-0deb4c7aa047",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5516510888695123
+  },
+  {
+   "id": "01a0d1ab-59a6-730c-b2f4-32945e79c78a|01a0d1ab-59e0-7b32-9755-0deb4c7aa047",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.953308195592375
+  },
+  {
+   "id": "01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98|01a0d1ab-59e0-7b32-9755-0deb4c7aa047",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7216255110173267
+  },
+  {
+   "id": "01a0d1ab-599d-7134-8fb9-5ecb006c2b7a|01a0d1ab-59e0-7b32-9755-0deb4c7aa047",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.701119432198479
+  },
+  {
+   "id": "01a0d1ab-5978-7250-95ca-c2c6dfbc9577|01a0d1ab-59e0-7b32-9755-0deb4c7aa047",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5925584642406005
+  },
+  {
+   "id": "01a0d1ab-59ab-79ea-a352-8d690bb40672|01a0d1ab-59dc-731d-b0b5-eaf20974d350",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6189777192785113
+  },
+  {
+   "id": "01a0d1ab-59a6-730c-b2f4-32945e79c78a|01a0d1ab-59dc-731d-b0b5-eaf20974d350",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6471341261045852
+  },
+  {
+   "id": "01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98|01a0d1ab-59dc-731d-b0b5-eaf20974d350",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.580089580827779
+  },
+  {
+   "id": "01a0d1ab-599d-7134-8fb9-5ecb006c2b7a|01a0d1ab-59dc-731d-b0b5-eaf20974d350",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6771568761962389
+  },
+  {
+   "id": "01a0d1ab-5978-7250-95ca-c2c6dfbc9577|01a0d1ab-59dc-731d-b0b5-eaf20974d350",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5786677746196123
+  },
+  {
+   "id": "01a0d1ab-596e-722a-8523-b33359f0e8e5|01a0d1ab-59dc-731d-b0b5-eaf20974d350",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6154899456049958
+  },
+  {
+   "id": "01a0d1ab-59a6-730c-b2f4-32945e79c78a|01a0d1ab-59ab-79ea-a352-8d690bb40672",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5654399871746404
+  },
+  {
+   "id": "01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98|01a0d1ab-59ab-79ea-a352-8d690bb40672",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5981629533434366
+  },
+  {
+   "id": "01a0d1ab-599d-7134-8fb9-5ecb006c2b7a|01a0d1ab-59ab-79ea-a352-8d690bb40672",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.621330728247723
+  },
+  {
+   "id": "01a0d1ab-5978-7250-95ca-c2c6dfbc9577|01a0d1ab-59ab-79ea-a352-8d690bb40672",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5715220940823241
+  },
+  {
+   "id": "01a0d1ab-596e-722a-8523-b33359f0e8e5|01a0d1ab-59ab-79ea-a352-8d690bb40672",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5878877723676802
+  },
+  {
+   "id": "01a0d188-87fe-7221-8549-bb4c2d6897d8|01a0d1ab-59ab-79ea-a352-8d690bb40672",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5322783773088887
+  },
+  {
+   "id": "01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98|01a0d1ab-59a6-730c-b2f4-32945e79c78a",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7044602133285404
+  },
+  {
+   "id": "01a0d1ab-599d-7134-8fb9-5ecb006c2b7a|01a0d1ab-59a6-730c-b2f4-32945e79c78a",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7225927094427363
+  },
+  {
+   "id": "01a0d1ab-5978-7250-95ca-c2c6dfbc9577|01a0d1ab-59a6-730c-b2f4-32945e79c78a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5909380492413439
+  },
+  {
+   "id": "01a0d1ab-596e-722a-8523-b33359f0e8e5|01a0d1ab-59a6-730c-b2f4-32945e79c78a",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7540372993535156
+  },
+  {
+   "id": "01a0d188-87fe-7221-8549-bb4c2d6897d8|01a0d1ab-59a6-730c-b2f4-32945e79c78a",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6477915844366549
+  },
+  {
+   "id": "01a0d188-85cf-7dc6-b78b-2746d2adaf41|01a0d1ab-59a6-730c-b2f4-32945e79c78a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6115153706972992
+  },
+  {
+   "id": "01a0d1ab-599d-7134-8fb9-5ecb006c2b7a|01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8182263225949641
+  },
+  {
+   "id": "01a0d1ab-5978-7250-95ca-c2c6dfbc9577|01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5448375570202568
+  },
+  {
+   "id": "01a0d1ab-596e-722a-8523-b33359f0e8e5|01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6359590423223236
+  },
+  {
+   "id": "01a0d188-87fe-7221-8549-bb4c2d6897d8|01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6951429692507903
+  },
+  {
+   "id": "01a0d188-85cf-7dc6-b78b-2746d2adaf41|01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6621356486389152
+  },
+  {
+   "id": "01a0d188-85cb-7bb6-8654-be7c24943e9e|01a0d1ab-59a0-7ee8-9f6f-ff613aaa9c98",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6419527962336105
+  },
+  {
+   "id": "01a0d1ab-5978-7250-95ca-c2c6dfbc9577|01a0d1ab-599d-7134-8fb9-5ecb006c2b7a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5731799487093119
+  },
+  {
+   "id": "01a0d1ab-596e-722a-8523-b33359f0e8e5|01a0d1ab-599d-7134-8fb9-5ecb006c2b7a",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7100612917254833
+  },
+  {
+   "id": "01a0d188-87fe-7221-8549-bb4c2d6897d8|01a0d1ab-599d-7134-8fb9-5ecb006c2b7a",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7264152048897276
+  },
+  {
+   "id": "01a0d188-85cf-7dc6-b78b-2746d2adaf41|01a0d1ab-599d-7134-8fb9-5ecb006c2b7a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6838292897961805
+  },
+  {
+   "id": "01a0d188-85cb-7bb6-8654-be7c24943e9e|01a0d1ab-599d-7134-8fb9-5ecb006c2b7a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6979373807441043
+  },
+  {
+   "id": "01a0d188-831b-7938-9152-2198f24ac1ba|01a0d1ab-599d-7134-8fb9-5ecb006c2b7a",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5877035005754492
+  },
+  {
+   "id": "01a0d1ab-596e-722a-8523-b33359f0e8e5|01a0d1ab-5978-7250-95ca-c2c6dfbc9577",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5711145811381757
+  },
+  {
+   "id": "01a0d188-87fe-7221-8549-bb4c2d6897d8|01a0d1ab-5978-7250-95ca-c2c6dfbc9577",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.56310577714368
+  },
+  {
+   "id": "01a0d188-85cf-7dc6-b78b-2746d2adaf41|01a0d1ab-5978-7250-95ca-c2c6dfbc9577",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5523155290560852
+  },
+  {
+   "id": "01a0d188-85cb-7bb6-8654-be7c24943e9e|01a0d1ab-5978-7250-95ca-c2c6dfbc9577",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6220009086066726
+  },
+  {
+   "id": "01a0d188-831b-7938-9152-2198f24ac1ba|01a0d1ab-5978-7250-95ca-c2c6dfbc9577",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.49574063289765624
+  },
+  {
+   "id": "01a0d188-8316-71ca-9eed-2ab911ce438b|01a0d1ab-5978-7250-95ca-c2c6dfbc9577",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5617879580471975
+  },
+  {
+   "id": "01a0d188-87fe-7221-8549-bb4c2d6897d8|01a0d1ab-596e-722a-8523-b33359f0e8e5",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6289687928947505
+  },
+  {
+   "id": "01a0d188-85cf-7dc6-b78b-2746d2adaf41|01a0d1ab-596e-722a-8523-b33359f0e8e5",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5749759272410614
+  },
+  {
+   "id": "01a0d188-85cb-7bb6-8654-be7c24943e9e|01a0d1ab-596e-722a-8523-b33359f0e8e5",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6076278719012914
+  },
+  {
+   "id": "01a0d188-831b-7938-9152-2198f24ac1ba|01a0d1ab-596e-722a-8523-b33359f0e8e5",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5771559754208148
+  },
+  {
+   "id": "01a0d188-8316-71ca-9eed-2ab911ce438b|01a0d1ab-596e-722a-8523-b33359f0e8e5",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5590065282421453
+  },
+  {
+   "id": "01a0d188-8310-7d16-83f8-d63870a88257|01a0d1ab-596e-722a-8523-b33359f0e8e5",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5415575715364305
+  },
+  {
+   "id": "01a0d188-85cf-7dc6-b78b-2746d2adaf41|01a0d188-87fe-7221-8549-bb4c2d6897d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.592017606442533
+  },
+  {
+   "id": "01a0d188-85cb-7bb6-8654-be7c24943e9e|01a0d188-87fe-7221-8549-bb4c2d6897d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5929083266095181
+  },
+  {
+   "id": "01a0d188-831b-7938-9152-2198f24ac1ba|01a0d188-87fe-7221-8549-bb4c2d6897d8",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5114738205685683
+  },
+  {
+   "id": "01a0d188-8316-71ca-9eed-2ab911ce438b|01a0d188-87fe-7221-8549-bb4c2d6897d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5208197190703132
+  },
+  {
+   "id": "01a0d188-8310-7d16-83f8-d63870a88257|01a0d188-87fe-7221-8549-bb4c2d6897d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5377886248094789
+  },
+  {
+   "id": "01a0d188-830b-7c81-88ab-7f35c918b763|01a0d188-87fe-7221-8549-bb4c2d6897d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5256496154205376
+  },
+  {
+   "id": "01a0d188-85cb-7bb6-8654-be7c24943e9e|01a0d188-85cf-7dc6-b78b-2746d2adaf41",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6804826156845465
+  },
+  {
+   "id": "01a0d188-831b-7938-9152-2198f24ac1ba|01a0d188-85cf-7dc6-b78b-2746d2adaf41",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5215826685701008
+  },
+  {
+   "id": "01a0d188-8316-71ca-9eed-2ab911ce438b|01a0d188-85cf-7dc6-b78b-2746d2adaf41",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5515726404993463
+  },
+  {
+   "id": "01a0d188-8310-7d16-83f8-d63870a88257|01a0d188-85cf-7dc6-b78b-2746d2adaf41",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5620063636670959
+  },
+  {
+   "id": "01a0d188-830b-7c81-88ab-7f35c918b763|01a0d188-85cf-7dc6-b78b-2746d2adaf41",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5320888914957695
+  },
+  {
+   "id": "01a0d188-8306-7856-8eb3-0cdc74564515|01a0d188-85cf-7dc6-b78b-2746d2adaf41",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5303018131578807
+  },
+  {
+   "id": "01a0d1ab-635b-7ac4-a4cb-b9e19f53ff57|01a0d1ab-640b-7ec2-bac2-86ef0da90007",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.4996615634977405
+  },
+  {
+   "id": "01a0d188-8ae7-7162-af23-dd8068c8b5ac|01a0d188-c144-766d-a48c-6de87d6e497c",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5960036613264506
+  },
+  {
+   "id": "01a0d188-8ae7-7162-af23-dd8068c8b5ac|01a0d188-c081-755d-ac56-8df878d840f7",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5737339779865649
+  },
+  {
+   "id": "01a0d188-8ae7-7162-af23-dd8068c8b5ac|01a0d188-bfc4-7d28-be92-9e797128ff69",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5520867260965556
+  },
+  {
+   "id": "01a0d1ab-6323-7dfc-bff5-607aeb4fa6d8|01a0d1ab-635b-7ac4-a4cb-b9e19f53ff57",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5540416614959918
+  },
+  {
+   "id": "01a0d1ab-6100-7d09-b587-bc5105f593a7|01a0d1ab-635b-7ac4-a4cb-b9e19f53ff57",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7511315627614653
+  },
+  {
+   "id": "01a0d188-8561-7cb9-9ae7-0dba77c5ca6a|01a0d1ab-635b-7ac4-a4cb-b9e19f53ff57",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7843150924738461
+  },
+  {
+   "id": "01a0d188-c15c-7dbb-98c4-bba21473e868|01a0d1ab-635b-7ac4-a4cb-b9e19f53ff57",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5019906233593948
+  },
+  {
+   "id": "01a0d1ab-625d-724f-88ef-f38206550cda|01a0d1ab-6323-7dfc-bff5-607aeb4fa6d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6221516256377574
+  },
+  {
+   "id": "01a0d188-8976-7942-a9da-4573d33c5bc7|01a0d188-8997-7697-adb1-e68381cf4f7e",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5672097652599993
+  },
+  {
+   "id": "01a0d188-8976-7942-a9da-4573d33c5bc7|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5160913824316322
+  },
+  {
+   "id": "01a0d188-8976-7942-a9da-4573d33c5bc7|01a0d1ab-5e5f-7a17-b1ad-107f6fd0f6d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5401035397397561
+  },
+  {
+   "id": "01a0d1ab-6100-7d09-b587-bc5105f593a7|01a0d1ab-625d-724f-88ef-f38206550cda",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.4911052036338213
+  },
+  {
+   "id": "01a0d188-85dc-7f3c-b029-f7cd29c611c2|01a0d1ab-625b-7825-8500-3762e6ab6851",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5948926612531712
+  },
+  {
+   "id": "01a0d188-8b23-793e-ae10-3b6572eea391|01a0d1ab-625d-724f-88ef-f38206550cda",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6474771293188174
+  },
+  {
+   "id": "01a0d188-8923-738e-b8f3-88707c4a0d80|01a0d1ab-625b-7825-8500-3762e6ab6851",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5599048844744356
+  },
+  {
+   "id": "01a0d1ab-59e0-7b32-9755-0deb4c7aa047|01a0d1ab-613a-72a7-b4e8-0e7328d63ae9",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.41770529403745477
+  },
+  {
+   "id": "01a0d1ab-59dc-731d-b0b5-eaf20974d350|01a0d1ab-613a-72a7-b4e8-0e7328d63ae9",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4350437672971501
+  },
+  {
+   "id": "01a0d188-8865-7a77-bddb-12cfb77a54fd|01a0d188-8a42-7e4f-87bd-1b6b64c9fe22",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4971039940263553
+  },
+  {
+   "id": "01a0d176-5aaa-7aac-bc10-5f57a0d28c90|01a0d188-8a42-7e4f-87bd-1b6b64c9fe22",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.48180684595561674
+  },
+  {
+   "id": "01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9|01a0d1ab-6100-7d09-b587-bc5105f593a7",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7495940864291278
+  },
+  {
+   "id": "01a0d188-8561-7cb9-9ae7-0dba77c5ca6a|01a0d1ab-6100-7d09-b587-bc5105f593a7",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8018357122374393
+  },
+  {
+   "id": "01a0d188-8997-7697-adb1-e68381cf4f7e|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6678935178554941
+  },
+  {
+   "id": "01a0d188-8997-7697-adb1-e68381cf4f7e|01a0d1ab-5e5f-7a17-b1ad-107f6fd0f6d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5711879942300777
+  },
+  {
+   "id": "01a0d1ab-5e5f-7a17-b1ad-107f6fd0f6d8|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5950619554289935
+  },
+  {
+   "id": "01a0d188-8561-7cb9-9ae7-0dba77c5ca6a|01a0d188-c15c-7dbb-98c4-bba21473e868",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5212814209739721
+  },
+  {
+   "id": "01a0d188-8561-7cb9-9ae7-0dba77c5ca6a|01a0d188-89cf-75c2-8895-cc1b88655f01",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5667370355706567
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d1ab-5ea8-78dc-8841-920ebfe1d2b9",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5250867327204247
+  },
+  {
+   "id": "01a0d188-c15c-7dbb-98c4-bba21473e868|01a0d1ab-5e5f-7a17-b1ad-107f6fd0f6d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5426159184177725
+  },
+  {
+   "id": "01a0d188-8658-75b5-8d8d-6201962cf30a|01a0d188-c149-77c6-a453-37cb0f7d8e02",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6321006435696449
+  },
+  {
+   "id": "01a0d188-8658-75b5-8d8d-6201962cf30a|01a0d188-8877-75d0-a435-c29e5017eb63",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5988269112118196
+  },
+  {
+   "id": "01a0d188-8658-75b5-8d8d-6201962cf30a|01a0d188-893f-7356-bc15-9cc8ee90b7ca",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5490094502686925
+  },
+  {
+   "id": "01a0d188-8afb-706e-8481-cef94f80e458|01a0d1ab-5c3f-77ef-8464-dffe3ec544dc",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5152346546464591
+  },
+  {
+   "id": "01a0d188-825d-773a-94cc-43cd3639163d|01a0d188-8afb-706e-8481-cef94f80e458",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4684598889415463
+  },
+  {
+   "id": "01a0d188-825d-773a-94cc-43cd3639163d|01a0d188-8af6-7725-8658-74e8ee2e7e1e",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4519706411634149
+  },
+  {
+   "id": "01a0d188-825d-773a-94cc-43cd3639163d|01a0d188-89b4-7c78-a267-d2220cfa2b04",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4916473625427912
+  },
+  {
+   "id": "01a0d188-825d-773a-94cc-43cd3639163d|01a0d188-89ae-70c2-9f26-3e833062fdff",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.49002100261091586
+  },
+  {
+   "id": "01a0d188-8865-7a77-bddb-12cfb77a54fd|01a0d1ab-59e0-7b32-9755-0deb4c7aa047",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5058349765696001
+  },
+  {
+   "id": "01a0d176-5aaa-7aac-bc10-5f57a0d28c90|01a0d1ab-59e0-7b32-9755-0deb4c7aa047",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5012463630330352
+  },
+  {
+   "id": "01a0d188-8865-7a77-bddb-12cfb77a54fd|01a0d1ab-59dc-731d-b0b5-eaf20974d350",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.44377951801356735
+  },
+  {
+   "id": "01a0d176-5aaa-7aac-bc10-5f57a0d28c90|01a0d1ab-59dc-731d-b0b5-eaf20974d350",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4428533551113602
+  },
+  {
+   "id": "01a0d176-5cee-7531-8448-6944d775555d|01a0d1ab-587e-7410-85fc-8761e855497f",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6079958763952342
+  },
+  {
+   "id": "01a0d176-5cee-7531-8448-6944d775555d|01a0d1ab-5874-7c5a-93c3-4a8b04a9f189",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5959281992938266
+  },
+  {
+   "id": "01a0d176-5cd1-7c9c-ac3b-b1e3956519ce|01a0d1ab-5874-7c5a-93c3-4a8b04a9f189",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.603416636574585
+  },
+  {
+   "id": "01a0d188-c149-77c6-a453-37cb0f7d8e02|01a0d188-c15c-7dbb-98c4-bba21473e868",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6037883551482645
+  },
+  {
+   "id": "01a0d188-89e5-77eb-91cd-03ecd313f8e8|01a0d188-c158-72c6-ad63-bda74e2382e0",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5332941612632597
+  },
+  {
+   "id": "01a0d188-89cf-75c2-8895-cc1b88655f01|01a0d188-c15c-7dbb-98c4-bba21473e868",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.545710732864151
+  },
+  {
+   "id": "01a0d188-8939-73a7-8fc2-4ee496035a55|01a0d188-c158-72c6-ad63-bda74e2382e0",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.589163551881725
+  },
+  {
+   "id": "01a0d188-c081-755d-ac56-8df878d840f7|01a0d188-c149-77c6-a453-37cb0f7d8e02",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6247768279014965
+  },
+  {
+   "id": "01a0d188-8877-75d0-a435-c29e5017eb63|01a0d188-c149-77c6-a453-37cb0f7d8e02",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.671413521754354
+  },
+  {
+   "id": "01a0d188-c081-755d-ac56-8df878d840f7|01a0d188-c144-766d-a48c-6de87d6e497c",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6849326158653969
+  },
+  {
+   "id": "01a0d188-bfc4-7d28-be92-9e797128ff69|01a0d188-c144-766d-a48c-6de87d6e497c",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6309139714031914
+  },
+  {
+   "id": "01a0d176-5d32-7a61-8488-7b60aa1b4a80|01a0d188-c135-7e56-880d-356800ef6298",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5561595849577651
+  },
+  {
+   "id": "01a0d176-5d32-7a61-8488-7b60aa1b4a80|01a0d188-c131-7a64-95ab-9ab957891b09",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5288917581946228
+  },
+  {
+   "id": "01a0d188-bfc4-7d28-be92-9e797128ff69|01a0d188-c081-755d-ac56-8df878d840f7",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6030270770411944
+  },
+  {
+   "id": "01a0d188-8b3d-73a2-8442-d14e3290fd45|01a0d188-c081-755d-ac56-8df878d840f7",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6606988337921328
+  },
+  {
+   "id": "01a0d188-8b27-73be-b6e4-8bda863129bf|01a0d188-c081-755d-ac56-8df878d840f7",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6029196824637533
+  },
+  {
+   "id": "01a0d188-8b3d-73a2-8442-d14e3290fd45|01a0d188-bfc4-7d28-be92-9e797128ff69",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6445051028367453
+  },
+  {
+   "id": "01a0d188-8b27-73be-b6e4-8bda863129bf|01a0d188-bfc4-7d28-be92-9e797128ff69",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6568089278317351
+  },
+  {
+   "id": "01a0d188-89e0-7368-a48b-1b38572a3fc4|01a0d188-bfc4-7d28-be92-9e797128ff69",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5829527637820286
+  },
+  {
+   "id": "01a0d188-8b27-73be-b6e4-8bda863129bf|01a0d188-8b3d-73a2-8442-d14e3290fd45",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8212291220673447
+  },
+  {
+   "id": "01a0d188-89e0-7368-a48b-1b38572a3fc4|01a0d188-8b3d-73a2-8442-d14e3290fd45",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6012452108481792
+  },
+  {
+   "id": "01a0d188-89e0-7368-a48b-1b38572a3fc4|01a0d188-8b27-73be-b6e4-8bda863129bf",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6125479673536547
+  },
+  {
+   "id": "01a0d188-8a04-7372-bc36-0213c2fd7c67|01a0d188-8b3d-73a2-8442-d14e3290fd45",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.554869950084387
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-8b3d-73a2-8442-d14e3290fd45",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5321542026285775
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-8b23-793e-ae10-3b6572eea391",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5284715506159592
+  },
+  {
+   "id": "01a0d188-8a98-7189-865b-28af3324d564|01a0d188-8b14-7f9d-a1d6-16292e5b4928",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6031034806774316
+  },
+  {
+   "id": "01a0d188-8827-734d-b4cd-eff6759b2f0a|01a0d188-8b14-7f9d-a1d6-16292e5b4928",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6909367490391982
+  },
+  {
+   "id": "01a0d188-8822-7827-a6dc-0892649c271f|01a0d188-8b14-7f9d-a1d6-16292e5b4928",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6777921854205633
+  },
+  {
+   "id": "01a0d188-89b4-7c78-a267-d2220cfa2b04|01a0d188-8afb-706e-8481-cef94f80e458",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5776528907566147
+  },
+  {
+   "id": "01a0d188-8951-7f69-b316-7eabcc2a758e|01a0d188-8afb-706e-8481-cef94f80e458",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.628328097369995
+  },
+  {
+   "id": "01a0d188-8956-785a-a645-6cf0342fd5aa|01a0d188-8af6-7725-8658-74e8ee2e7e1e",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.623930708379181
+  },
+  {
+   "id": "01a0d188-888d-7d63-8748-6cc654a52c0c|01a0d188-8af6-7725-8658-74e8ee2e7e1e",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6206967113823231
+  },
+  {
+   "id": "01a0d188-8827-734d-b4cd-eff6759b2f0a|01a0d188-8a98-7189-865b-28af3324d564",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8318269628707264
+  },
+  {
+   "id": "01a0d188-8822-7827-a6dc-0892649c271f|01a0d188-8a98-7189-865b-28af3324d564",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7599768174607004
+  },
+  {
+   "id": "01a0d188-89e5-77eb-91cd-03ecd313f8e8|01a0d188-8a04-7372-bc36-0213c2fd7c67",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.526825081460473
+  },
+  {
+   "id": "01a0d188-8927-771f-8313-d0e6e7650271|01a0d188-8a04-7372-bc36-0213c2fd7c67",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.4768570259249287
+  },
+  {
+   "id": "01a0d188-88d1-71e3-9e4b-e4d935e63545|01a0d188-8a04-7372-bc36-0213c2fd7c67",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5079493675924682
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-8a04-7372-bc36-0213c2fd7c67",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5494894983060634
+  },
+  {
+   "id": "01a0d188-89cf-75c2-8895-cc1b88655f01|01a0d188-89e5-77eb-91cd-03ecd313f8e8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5596048731698909
+  },
+  {
+   "id": "01a0d188-8939-73a7-8fc2-4ee496035a55|01a0d188-89e5-77eb-91cd-03ecd313f8e8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5580424504596778
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-89e5-77eb-91cd-03ecd313f8e8",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4839746822850807
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-89e0-7368-a48b-1b38572a3fc4",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4866584713910377
+  },
+  {
+   "id": "01a0d188-893f-7356-bc15-9cc8ee90b7ca|01a0d188-89cf-75c2-8895-cc1b88655f01",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6151498300368836
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-89cf-75c2-8895-cc1b88655f01",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4939145263358936
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-89c9-7c79-86b1-381615290213",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5077560141307369
+  },
+  {
+   "id": "01a0d176-5cc6-7ba2-9d4f-1bc33976507d|01a0d188-89c9-7c79-86b1-381615290213",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6881208840970351
+  },
+  {
+   "id": "01a0d188-8956-785a-a645-6cf0342fd5aa|01a0d188-89b4-7c78-a267-d2220cfa2b04",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5907858362794342
+  },
+  {
+   "id": "01a0d188-8951-7f69-b316-7eabcc2a758e|01a0d188-89b4-7c78-a267-d2220cfa2b04",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6030873662297657
+  },
+  {
+   "id": "01a0d188-8913-7ee7-b541-772b0df7ff2d|01a0d188-89ae-70c2-9f26-3e833062fdff",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5296536081446851
+  },
+  {
+   "id": "01a0d188-88d1-71e3-9e4b-e4d935e63545|01a0d188-89ae-70c2-9f26-3e833062fdff",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5536963663530368
+  },
+  {
+   "id": "01a0d188-8916-7741-9183-f8678013ea05|01a0d188-8956-785a-a645-6cf0342fd5aa",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5346453115848632
+  },
+  {
+   "id": "01a0d188-888d-7d63-8748-6cc654a52c0c|01a0d188-8956-785a-a645-6cf0342fd5aa",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6456480923123364
+  },
+  {
+   "id": "01a0d188-84ec-734b-9684-afa7c1d57952|01a0d188-8956-785a-a645-6cf0342fd5aa",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5583566698130695
+  },
+  {
+   "id": "01a0d188-84ec-734b-9684-afa7c1d57952|01a0d188-8951-7f69-b316-7eabcc2a758e",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.557667087469905
+  },
+  {
+   "id": "01a0d188-8927-771f-8313-d0e6e7650271|01a0d188-893f-7356-bc15-9cc8ee90b7ca",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.45469722839194054
+  },
+  {
+   "id": "01a0d188-88d6-76ee-9386-5def2b536b6d|01a0d188-893f-7356-bc15-9cc8ee90b7ca",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.48530406284982525
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-893f-7356-bc15-9cc8ee90b7ca",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4982568261095387
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-8939-73a7-8fc2-4ee496035a55",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5019097643461728
+  },
+  {
+   "id": "01a0d188-88d6-76ee-9386-5def2b536b6d|01a0d188-8927-771f-8313-d0e6e7650271",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7585167102640641
+  },
+  {
+   "id": "01a0d188-88d1-71e3-9e4b-e4d935e63545|01a0d188-8927-771f-8313-d0e6e7650271",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8448272318100941
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-8927-771f-8313-d0e6e7650271",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.44112192602461847
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-8923-738e-b8f3-88707c4a0d80",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4799063705957188
+  },
+  {
+   "id": "01a0d188-88d6-76ee-9386-5def2b536b6d|01a0d188-8916-7741-9183-f8678013ea05",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5384822588485404
+  },
+  {
+   "id": "01a0d188-88d1-71e3-9e4b-e4d935e63545|01a0d188-8913-7ee7-b541-772b0df7ff2d",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5442063324508098
+  },
+  {
+   "id": "01a0d188-84ec-734b-9684-afa7c1d57952|01a0d188-8916-7741-9183-f8678013ea05",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4578797661304579
+  },
+  {
+   "id": "01a0d188-84ec-734b-9684-afa7c1d57952|01a0d188-8913-7ee7-b541-772b0df7ff2d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4587582992203264
+  },
+  {
+   "id": "01a0d188-888d-7d63-8748-6cc654a52c0c|01a0d188-88d6-76ee-9386-5def2b536b6d",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5347467830543422
+  },
+  {
+   "id": "01a0d188-84ec-734b-9684-afa7c1d57952|01a0d188-88d6-76ee-9386-5def2b536b6d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.47321576521940834
+  },
+  {
+   "id": "01a0d188-84ec-734b-9684-afa7c1d57952|01a0d188-88d1-71e3-9e4b-e4d935e63545",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4905499620244273
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-88d6-76ee-9386-5def2b536b6d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.44385045701573006
+  },
+  {
+   "id": "01a0d188-88bd-7e29-a216-92c8a4c18d9e|01a0d188-88d1-71e3-9e4b-e4d935e63545",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4781793832982424
+  },
+  {
+   "id": "01a0d188-872a-7e9d-b6e7-78008d570818|01a0d188-88d6-76ee-9386-5def2b536b6d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5077406090375014
+  },
+  {
+   "id": "01a0d188-872a-7e9d-b6e7-78008d570818|01a0d188-88d1-71e3-9e4b-e4d935e63545",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.49549538659484593
+  },
+  {
+   "id": "01a0d188-88a3-76d9-83ec-72172f2b441a|01a0d188-88bd-7e29-a216-92c8a4c18d9e",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4833617046913768
+  },
+  {
+   "id": "01a0d176-5cc6-7ba2-9d4f-1bc33976507d|01a0d188-88bd-7e29-a216-92c8a4c18d9e",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.491429150615874
+  },
+  {
+   "id": "01a0d188-8843-738f-8c99-84b247ff1aa9|01a0d188-88bd-7e29-a216-92c8a4c18d9e",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.48477160096546645
+  },
+  {
+   "id": "01a0d188-883e-7753-995f-21af03e861c1|01a0d188-88bd-7e29-a216-92c8a4c18d9e",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4662257530998884
+  },
+  {
+   "id": "01a0d188-8843-738f-8c99-84b247ff1aa9|01a0d188-88a3-76d9-83ec-72172f2b441a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.4660614614628264
+  },
+  {
+   "id": "01a0d176-5ac0-7e0a-b8ac-f4caf6c540e6|01a0d188-88a3-76d9-83ec-72172f2b441a",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.4977687557820779
+  },
+  {
+   "id": "01a0d188-872a-7e9d-b6e7-78008d570818|01a0d188-88a3-76d9-83ec-72172f2b441a",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4973388556420646
+  },
+  {
+   "id": "01a0d176-5cc6-7ba2-9d4f-1bc33976507d|01a0d188-872a-7e9d-b6e7-78008d570818",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5022634147570277
+  },
+  {
+   "id": "01a0d188-84f1-7a0e-bd04-fe5bc0702327|01a0d188-888d-7d63-8748-6cc654a52c0c",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5331623440787845
+  },
+  {
+   "id": "01a0d188-84ec-734b-9684-afa7c1d57952|01a0d188-888d-7d63-8748-6cc654a52c0c",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5502411043015962
+  },
+  {
+   "id": "01a0d188-84ec-734b-9684-afa7c1d57952|01a0d188-8889-750c-9938-566a5adee8a9",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5393722692986876
+  },
+  {
+   "id": "01a0d176-5bba-72b6-8978-d0dbb794c7b2|01a0d188-888d-7d63-8748-6cc654a52c0c",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6027204602096848
+  },
+  {
+   "id": "01a0d188-8709-7e7c-9431-1ed7361ae6f6|01a0d188-8865-7a77-bddb-12cfb77a54fd",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.4949698867824603
+  },
+  {
+   "id": "01a0d188-8465-74a5-aa87-52c5dea94a46|01a0d188-8865-7a77-bddb-12cfb77a54fd",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4953023353207902
+  },
+  {
+   "id": "01a0d188-845f-79cb-a6d4-02351a19bd31|01a0d188-8865-7a77-bddb-12cfb77a54fd",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4648251054422682
+  },
+  {
+   "id": "01a0d176-5aaa-7aac-bc10-5f57a0d28c90|01a0d188-8465-74a5-aa87-52c5dea94a46",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.46272753631408803
+  },
+  {
+   "id": "01a0d176-5aaa-7aac-bc10-5f57a0d28c90|01a0d188-845f-79cb-a6d4-02351a19bd31",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.44482968629776093
+  },
+  {
+   "id": "01a0d188-883e-7753-995f-21af03e861c1|01a0d188-8843-738f-8c99-84b247ff1aa9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7254502256303188
+  },
+  {
+   "id": "01a0d188-875a-7560-9d34-47364dce6715|01a0d188-8843-738f-8c99-84b247ff1aa9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6292100403314661
+  },
+  {
+   "id": "01a0d188-8755-7dfc-b48b-03e29a3434a7|01a0d188-8843-738f-8c99-84b247ff1aa9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5964642350676771
+  },
+  {
+   "id": "01a0d188-87fe-7221-8549-bb4c2d6897d8|01a0d188-8843-738f-8c99-84b247ff1aa9",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5489352126364239
+  },
+  {
+   "id": "01a0d188-872a-7e9d-b6e7-78008d570818|01a0d188-8843-738f-8c99-84b247ff1aa9",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5679746264820021
+  },
+  {
+   "id": "01a0d188-875a-7560-9d34-47364dce6715|01a0d188-87fe-7221-8549-bb4c2d6897d8",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6582009369115457
+  },
+  {
+   "id": "01a0d188-872a-7e9d-b6e7-78008d570818|01a0d188-87fe-7221-8549-bb4c2d6897d8",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6017959509781382
+  },
+  {
+   "id": "01a0d176-5ac0-7e0a-b8ac-f4caf6c540e6|01a0d188-872a-7e9d-b6e7-78008d570818",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5121129804378663
+  },
+  {
+   "id": "01a0d188-86ea-746c-9dfb-256de4b06475|01a0d188-87fe-7221-8549-bb4c2d6897d8",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5582798685682542
+  },
+  {
+   "id": "01a0d188-872a-7e9d-b6e7-78008d570818|01a0d188-875a-7560-9d34-47364dce6715",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6205928264229459
+  },
+  {
+   "id": "01a0d188-872a-7e9d-b6e7-78008d570818|01a0d188-8755-7dfc-b48b-03e29a3434a7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5792216238857633
+  },
+  {
+   "id": "01a0d188-86b1-790a-ad36-2ff912def091|01a0d188-875a-7560-9d34-47364dce6715",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.591176407431567
+  },
+  {
+   "id": "01a0d188-86b1-790a-ad36-2ff912def091|01a0d188-8755-7dfc-b48b-03e29a3434a7",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.554752393213703
+  },
+  {
+   "id": "01a0d188-86ea-746c-9dfb-256de4b06475|01a0d188-872a-7e9d-b6e7-78008d570818",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5286676293499323
+  },
+  {
+   "id": "01a0d188-86e5-7f98-a4be-382c4ae0d8dd|01a0d188-872a-7e9d-b6e7-78008d570818",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5297299180524756
+  },
+  {
+   "id": "01a0d188-86e5-7f98-a4be-382c4ae0d8dd|01a0d188-8724-7b13-abe1-bae5be19f4b0",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5848818719567525
+  },
+  {
+   "id": "01a0d188-86d1-7c86-b9c6-e08cf071633f|01a0d188-872a-7e9d-b6e7-78008d570818",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5394441026089476
+  },
+  {
+   "id": "01a0d188-86cd-76da-ac69-d5e6ed5a7ff7|01a0d188-872a-7e9d-b6e7-78008d570818",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5483838116117458
+  },
+  {
+   "id": "01a0d188-858c-77d1-8468-1f55c8018b5d|01a0d188-8709-7e7c-9431-1ed7361ae6f6",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.5026580772485443
+  },
+  {
+   "id": "01a0d188-8465-74a5-aa87-52c5dea94a46|01a0d188-8709-7e7c-9431-1ed7361ae6f6",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.49816637153189
+  },
+  {
+   "id": "01a0d188-845f-79cb-a6d4-02351a19bd31|01a0d188-8709-7e7c-9431-1ed7361ae6f6",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5948480319786582
+  },
+  {
+   "id": "01a0d188-8465-74a5-aa87-52c5dea94a46|01a0d188-8706-7bd5-94e9-209c708e4cc2",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5122713647550309
+  },
+  {
+   "id": "01a0d188-845f-79cb-a6d4-02351a19bd31|01a0d188-8706-7bd5-94e9-209c708e4cc2",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5922876605454307
+  },
+  {
+   "id": "01a0d188-86d1-7c86-b9c6-e08cf071633f|01a0d188-86ea-746c-9dfb-256de4b06475",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5820268024491151
+  },
+  {
+   "id": "01a0d188-86cd-76da-ac69-d5e6ed5a7ff7|01a0d188-86e5-7f98-a4be-382c4ae0d8dd",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5776966277489657
+  },
+  {
+   "id": "01a0d188-85fa-7c3c-ad65-84501e8ecf7f|01a0d188-86ea-746c-9dfb-256de4b06475",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4238017182081919
+  },
+  {
+   "id": "01a0d188-85f5-70d5-8834-3fe9e2ea5a44|01a0d188-86ea-746c-9dfb-256de4b06475",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.40872401193842445
+  },
+  {
+   "id": "01a0d188-86b1-790a-ad36-2ff912def091|01a0d188-86d1-7c86-b9c6-e08cf071633f",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.609393350087571
+  },
+  {
+   "id": "01a0d188-85fa-7c3c-ad65-84501e8ecf7f|01a0d188-86d1-7c86-b9c6-e08cf071633f",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.40930837382874924
+  },
+  {
+   "id": "01a0d188-85f5-70d5-8834-3fe9e2ea5a44|01a0d188-86d1-7c86-b9c6-e08cf071633f",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.45395879290579866
+  },
+  {
+   "id": "01a0d188-85fa-7c3c-ad65-84501e8ecf7f|01a0d188-86cd-76da-ac69-d5e6ed5a7ff7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.41915669283285734
+  },
+  {
+   "id": "01a0d188-85f5-70d5-8834-3fe9e2ea5a44|01a0d188-86cd-76da-ac69-d5e6ed5a7ff7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.44574668645768034
+  },
+  {
+   "id": "01a0d188-85fa-7c3c-ad65-84501e8ecf7f|01a0d188-86b1-790a-ad36-2ff912def091",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4327754654798857
+  },
+  {
+   "id": "01a0d188-85f5-70d5-8834-3fe9e2ea5a44|01a0d188-86b1-790a-ad36-2ff912def091",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.44030266798482537
+  },
+  {
+   "id": "01a0d188-85fa-7c3c-ad65-84501e8ecf7f|01a0d188-86ac-7419-bafb-8ba379270e43",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.419006576967429
+  },
+  {
+   "id": "01a0d188-85f5-70d5-8834-3fe9e2ea5a44|01a0d188-86ac-7419-bafb-8ba379270e43",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.41944027210685836
+  },
+  {
+   "id": "01a0d188-8658-75b5-8d8d-6201962cf30a|01a0d188-8692-7161-9f9d-d3f26efad78c",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4191916816911534
+  },
+  {
+   "id": "01a0d188-8653-7717-a4b2-132734e2c45c|01a0d188-8692-7161-9f9d-d3f26efad78c",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.3973219990915277
+  },
+  {
+   "id": "01a0d188-8658-75b5-8d8d-6201962cf30a|01a0d188-868c-7953-8f52-a5d4332c553b",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.397347553546012
+  },
+  {
+   "id": "01a0d188-8653-7717-a4b2-132734e2c45c|01a0d188-868c-7953-8f52-a5d4332c553b",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4019249570174963
+  },
+  {
+   "id": "01a0d188-85dc-7f3c-b029-f7cd29c611c2|01a0d188-85fa-7c3c-ad65-84501e8ecf7f",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.41885020502674836
+  },
+  {
+   "id": "01a0d188-85d7-7bee-839e-3a72acb00635|01a0d188-85fa-7c3c-ad65-84501e8ecf7f",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4066462365811534
+  },
+  {
+   "id": "01a0d188-85dc-7f3c-b029-f7cd29c611c2|01a0d188-85f5-70d5-8834-3fe9e2ea5a44",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4695968652047495
+  },
+  {
+   "id": "01a0d188-85d7-7bee-839e-3a72acb00635|01a0d188-85f5-70d5-8834-3fe9e2ea5a44",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4268601416421369
+  },
+  {
+   "id": "01a0d188-856d-7c1a-83c9-29ab956aff6f|01a0d188-85dc-7f3c-b029-f7cd29c611c2",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5216578535847128
+  },
+  {
+   "id": "01a0d188-8293-76af-9af4-acb5789d1338|01a0d188-85dc-7f3c-b029-f7cd29c611c2",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.41899152446340066
+  },
+  {
+   "id": "01a0d188-828f-765c-a2a3-383300dd2213|01a0d188-85dc-7f3c-b029-f7cd29c611c2",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.504633406701369
+  },
+  {
+   "id": "01a0d188-8293-76af-9af4-acb5789d1338|01a0d188-85d7-7bee-839e-3a72acb00635",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4542370574805314
+  },
+  {
+   "id": "01a0d188-828f-765c-a2a3-383300dd2213|01a0d188-85d7-7bee-839e-3a72acb00635",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5223668499799122
+  },
+  {
+   "id": "01a0d188-852e-70e5-a761-28178db06e93|01a0d188-858c-77d1-8468-1f55c8018b5d",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.5269884388429169
+  },
+  {
+   "id": "01a0d188-852e-70e5-a761-28178db06e93|01a0d188-8587-7d7d-abf9-a46dfa1352da",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.6688000821955021
+  },
+  {
+   "id": "01a0d188-8529-7baf-9ef2-3f29a9d125f8|01a0d188-8587-7d7d-abf9-a46dfa1352da",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.683574848034688
+  },
+  {
+   "id": "01a0d188-8465-74a5-aa87-52c5dea94a46|01a0d188-858c-77d1-8468-1f55c8018b5d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.48266946428982976
+  },
+  {
+   "id": "01a0d188-845f-79cb-a6d4-02351a19bd31|01a0d188-858c-77d1-8468-1f55c8018b5d",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5177709865093921
+  },
+  {
+   "id": "01a0d188-8293-76af-9af4-acb5789d1338|01a0d188-856d-7c1a-83c9-29ab956aff6f",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4260592902746005
+  },
+  {
+   "id": "01a0d188-828f-765c-a2a3-383300dd2213|01a0d188-856d-7c1a-83c9-29ab956aff6f",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4554926881271432
+  },
+  {
+   "id": "01a0d188-8293-76af-9af4-acb5789d1338|01a0d188-8569-7065-95ea-800ad427c8c8",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.43714229436044966
+  },
+  {
+   "id": "01a0d188-828f-765c-a2a3-383300dd2213|01a0d188-8569-7065-95ea-800ad427c8c8",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4508904330560263
+  },
+  {
+   "id": "01a0d188-8465-74a5-aa87-52c5dea94a46|01a0d188-852e-70e5-a761-28178db06e93",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4581995039782233
+  },
+  {
+   "id": "01a0d188-845f-79cb-a6d4-02351a19bd31|01a0d188-852e-70e5-a761-28178db06e93",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5190731696487123
+  },
+  {
+   "id": "01a0d188-8465-74a5-aa87-52c5dea94a46|01a0d188-8529-7baf-9ef2-3f29a9d125f8",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.47523542255356577
+  },
+  {
+   "id": "01a0d188-845f-79cb-a6d4-02351a19bd31|01a0d188-8529-7baf-9ef2-3f29a9d125f8",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5243017049859757
+  },
+  {
+   "id": "01a0d176-5bc9-76c1-9581-407f4f8a9c1a|01a0d188-84f1-7a0e-bd04-fe5bc0702327",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.569196550188308
+  },
+  {
+   "id": "01a0d176-5bc9-76c1-9581-407f4f8a9c1a|01a0d188-84ec-734b-9684-afa7c1d57952",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5565056872811089
+  },
+  {
+   "id": "01a0d176-5bba-72b6-8978-d0dbb794c7b2|01a0d188-84ec-734b-9684-afa7c1d57952",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5598114058691012
+  },
+  {
+   "id": "01a0d188-83ba-7e08-9c00-33b30482abdf|01a0d188-8465-74a5-aa87-52c5dea94a46",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5481527879824193
+  },
+  {
+   "id": "01a0d188-83b6-7283-8e7b-c9a68158d3c8|01a0d188-8465-74a5-aa87-52c5dea94a46",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5763637259956635
+  },
+  {
+   "id": "01a0d188-83ba-7e08-9c00-33b30482abdf|01a0d188-845f-79cb-a6d4-02351a19bd31",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6178391223724576
+  },
+  {
+   "id": "01a0d188-83b6-7283-8e7b-c9a68158d3c8|01a0d188-845f-79cb-a6d4-02351a19bd31",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6316940517423824
+  },
+  {
+   "id": "01a0d188-7f3b-7fa4-98ab-23167855e898|01a0d188-83ba-7e08-9c00-33b30482abdf",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.548260329925552
+  },
+  {
+   "id": "01a0d188-7f2f-7cff-833a-b47e94d3e93b|01a0d188-83b6-7283-8e7b-c9a68158d3c8",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.6813936425135946
+  },
+  {
+   "id": "01a0d188-5330-7ff0-a51d-acda3a691520|01a0d188-83ba-7e08-9c00-33b30482abdf",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4790143452148564
+  },
+  {
+   "id": "01a0d176-5dd7-7042-9a70-8f40655987c7|01a0d188-83ba-7e08-9c00-33b30482abdf",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.49630068871736255
+  },
+  {
+   "id": "01a0d188-81f5-76bc-b11c-5331a31e8188|01a0d188-8293-76af-9af4-acb5789d1338",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5175732942061207
+  },
+  {
+   "id": "01a0d188-81ea-74a5-a3d8-05f13c0e3ac7|01a0d188-8293-76af-9af4-acb5789d1338",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5154151605536765
+  },
+  {
+   "id": "01a0d188-81f5-76bc-b11c-5331a31e8188|01a0d188-828f-765c-a2a3-383300dd2213",
+   "gold": "same",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.8540818893214105
+  },
+  {
+   "id": "01a0d188-81ea-74a5-a3d8-05f13c0e3ac7|01a0d188-828f-765c-a2a3-383300dd2213",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5895242014975679
+  },
+  {
+   "id": "01a0d188-7e30-7b26-af65-b115d706dbc0|01a0d188-81f5-76bc-b11c-5331a31e8188",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5525210511013373
+  },
+  {
+   "id": "01a0d188-7e2c-7add-b054-6010926d34c0|01a0d188-81f5-76bc-b11c-5331a31e8188",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5547203517859974
+  },
+  {
+   "id": "01a0d188-7e30-7b26-af65-b115d706dbc0|01a0d188-81ea-74a5-a3d8-05f13c0e3ac7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5901587288486556
+  },
+  {
+   "id": "01a0d188-7e2c-7add-b054-6010926d34c0|01a0d188-81ea-74a5-a3d8-05f13c0e3ac7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5623174188017132
+  },
+  {
+   "id": "01a0d188-7e30-7b26-af65-b115d706dbc0|01a0d188-7f3b-7fa4-98ab-23167855e898",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.5082950517369129
+  },
+  {
+   "id": "01a0d188-561d-7e9b-84dd-3face7408cc7|01a0d188-7f3b-7fa4-98ab-23167855e898",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.4934131957360557
+  },
+  {
+   "id": "01a0d188-5330-7ff0-a51d-acda3a691520|01a0d188-7f3b-7fa4-98ab-23167855e898",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4556131778801638
+  },
+  {
+   "id": "01a0d176-5dd7-7042-9a70-8f40655987c7|01a0d188-7f3b-7fa4-98ab-23167855e898",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4426811880827457
+  },
+  {
+   "id": "01a0d188-561d-7e9b-84dd-3face7408cc7|01a0d188-7e30-7b26-af65-b115d706dbc0",
+   "gold": "diff",
+   "langPair": "en-en",
+   "crossLang": false,
+   "cosine": 0.4766076966216737
+  },
+  {
+   "id": "01a0d188-5330-7ff0-a51d-acda3a691520|01a0d188-7e30-7b26-af65-b115d706dbc0",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.49701533598531444
+  },
+  {
+   "id": "01a0d176-5dd7-7042-9a70-8f40655987c7|01a0d188-7e30-7b26-af65-b115d706dbc0",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5099445704886728
+  },
+  {
+   "id": "01a0d188-5330-7ff0-a51d-acda3a691520|01a0d188-7e13-7c55-99b2-b2856468bf12",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4556955928997103
+  },
+  {
+   "id": "01a0d176-5dd7-7042-9a70-8f40655987c7|01a0d188-7e13-7c55-99b2-b2856468bf12",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.44844510636245744
+  },
+  {
+   "id": "01a0d188-560e-7fe5-9f3e-a55af7b15cf4|01a0d188-7e30-7b26-af65-b115d706dbc0",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5127549692735422
+  },
+  {
+   "id": "01a0d188-560e-7fe5-9f3e-a55af7b15cf4|01a0d188-7e2c-7add-b054-6010926d34c0",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.48370897726107476
+  },
+  {
+   "id": "01a0d176-5d1a-7475-b475-5f7faaf6023b|01a0d188-7e30-7b26-af65-b115d706dbc0",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5098227709988669
+  },
+  {
+   "id": "01a0d176-5d1a-7475-b475-5f7faaf6023b|01a0d188-7e2c-7add-b054-6010926d34c0",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4456620798645212
+  },
+  {
+   "id": "01a0d188-5330-7ff0-a51d-acda3a691520|01a0d188-561d-7e9b-84dd-3face7408cc7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4765456494973028
+  },
+  {
+   "id": "01a0d176-5dd7-7042-9a70-8f40655987c7|01a0d188-561d-7e9b-84dd-3face7408cc7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.47221241313500256
+  },
+  {
+   "id": "01a0d17a-98eb-7b87-9e33-ff2934a52080|01a0d188-561d-7e9b-84dd-3face7408cc7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4546707542890574
+  },
+  {
+   "id": "01a0d17a-98d5-720a-a8f1-202ddc11365f|01a0d188-561d-7e9b-84dd-3face7408cc7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4528625992805228
+  },
+  {
+   "id": "01a0d176-5d1a-7475-b475-5f7faaf6023b|01a0d188-560e-7fe5-9f3e-a55af7b15cf4",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6683292054988572
+  },
+  {
+   "id": "01a0d176-5c67-7718-b744-33bebf8cb464|01a0d188-560e-7fe5-9f3e-a55af7b15cf4",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.586145860997242
+  },
+  {
+   "id": "01a0d176-5bd4-7bc4-9fcd-3177bbfb288f|01a0d188-560e-7fe5-9f3e-a55af7b15cf4",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5317071761344284
+  },
+  {
+   "id": "01a0d176-5c2e-7dcc-8156-a701eb96a4f8|01a0d176-5d32-7a61-8488-7b60aa1b4a80",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5578642731304111
+  },
+  {
+   "id": "01a0d176-5c2e-7dcc-8156-a701eb96a4f8|01a0d176-5c40-7dbb-a8d4-1c40ef89c4d2",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.49332875365207923
+  },
+  {
+   "id": "01a0d176-5c0c-725a-a146-b06401530d32|01a0d176-5c2e-7dcc-8156-a701eb96a4f8",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4727103973148292
+  },
+  {
+   "id": "01a0d17a-98eb-7b87-9e33-ff2934a52080|01a0d188-5330-7ff0-a51d-acda3a691520",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5279537536820929
+  },
+  {
+   "id": "01a0d176-5dd7-7042-9a70-8f40655987c7|01a0d176-5e15-7de8-9b15-f97871f04c22",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5067650980944232
+  },
+  {
+   "id": "01a0d176-5dd7-7042-9a70-8f40655987c7|01a0d176-5df5-70c4-bb66-20e2cb12f027",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5292650336502397
+  },
+  {
+   "id": "01a0d176-5de0-762b-a749-365d122246f0|01a0d188-5330-7ff0-a51d-acda3a691520",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.503092678219219
+  },
+  {
+   "id": "01a0d176-5e15-7de8-9b15-f97871f04c22|01a0d17a-98eb-7b87-9e33-ff2934a52080",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5268934205967856
+  },
+  {
+   "id": "01a0d176-5deb-7a30-9189-07d0454b90ad|01a0d17a-98d5-720a-a8f1-202ddc11365f",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.49512329158710755
+  },
+  {
+   "id": "01a0d176-5dcf-7f0a-a24c-35cebaf44fcb|01a0d17a-98eb-7b87-9e33-ff2934a52080",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.45288139600709
+  },
+  {
+   "id": "01a0d176-5dcf-7f0a-a24c-35cebaf44fcb|01a0d17a-98d5-720a-a8f1-202ddc11365f",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.46130036085460535
+  },
+  {
+   "id": "01a0d176-5df5-70c4-bb66-20e2cb12f027|01a0d176-5e15-7de8-9b15-f97871f04c22",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5591925205275412
+  },
+  {
+   "id": "01a0d176-5dcf-7f0a-a24c-35cebaf44fcb|01a0d176-5e15-7de8-9b15-f97871f04c22",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4470223941113707
+  },
+  {
+   "id": "01a0d176-5db7-7182-8e52-cf39775d0eb9|01a0d176-5e15-7de8-9b15-f97871f04c22",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4603285160620977
+  },
+  {
+   "id": "01a0d176-5deb-7a30-9189-07d0454b90ad|01a0d176-5df5-70c4-bb66-20e2cb12f027",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.5249273180741143
+  },
+  {
+   "id": "01a0d176-5dcf-7f0a-a24c-35cebaf44fcb|01a0d176-5df5-70c4-bb66-20e2cb12f027",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.567595750873424
+  },
+  {
+   "id": "01a0d176-5db7-7182-8e52-cf39775d0eb9|01a0d176-5df5-70c4-bb66-20e2cb12f027",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4815741536366411
+  },
+  {
+   "id": "01a0d176-5de0-762b-a749-365d122246f0|01a0d176-5deb-7a30-9189-07d0454b90ad",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.49592406092495606
+  },
+  {
+   "id": "01a0d176-5dcf-7f0a-a24c-35cebaf44fcb|01a0d176-5deb-7a30-9189-07d0454b90ad",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.42747734636151274
+  },
+  {
+   "id": "01a0d176-5db7-7182-8e52-cf39775d0eb9|01a0d176-5deb-7a30-9189-07d0454b90ad",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4535050608681159
+  },
+  {
+   "id": "01a0d176-5d94-79a1-9e7a-0655e645a5fd|01a0d176-5deb-7a30-9189-07d0454b90ad",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.48092896291057097
+  },
+  {
+   "id": "01a0d176-5dd7-7042-9a70-8f40655987c7|01a0d176-5de0-762b-a749-365d122246f0",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.4949428912035628
+  },
+  {
+   "id": "01a0d176-5dcf-7f0a-a24c-35cebaf44fcb|01a0d176-5de0-762b-a749-365d122246f0",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4606082455831354
+  },
+  {
+   "id": "01a0d176-5db7-7182-8e52-cf39775d0eb9|01a0d176-5de0-762b-a749-365d122246f0",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4677335069430393
+  },
+  {
+   "id": "01a0d176-5d8e-742a-aa6a-bf6ab9fdd7d7|01a0d176-5de0-762b-a749-365d122246f0",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5497411086803862
+  },
+  {
+   "id": "01a0d176-5dcf-7f0a-a24c-35cebaf44fcb|01a0d176-5dd7-7042-9a70-8f40655987c7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4655541760357337
+  },
+  {
+   "id": "01a0d176-5db7-7182-8e52-cf39775d0eb9|01a0d176-5dd7-7042-9a70-8f40655987c7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.46537368313256
+  },
+  {
+   "id": "01a0d176-5d8e-742a-aa6a-bf6ab9fdd7d7|01a0d176-5dd7-7042-9a70-8f40655987c7",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.4837374483147819
+  },
+  {
+   "id": "seed-01",
+   "gold": "same",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.9333499312260017
+  },
+  {
+   "id": "seed-02",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6859696492623457
+  },
+  {
+   "id": "seed-03",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.7337351379733138
+  },
+  {
+   "id": "seed-04",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9643220081164628
+  },
+  {
+   "id": "seed-05",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9708536720194779
+  },
+  {
+   "id": "seed-06",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8195310253477333
+  },
+  {
+   "id": "seed-07",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6749330171553393
+  },
+  {
+   "id": "seed-08",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.6604809222782619
+  },
+  {
+   "id": "seed-09",
+   "gold": "same",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.8360390926089581
+  },
+  {
+   "id": "seed-10",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8102372089971287
+  },
+  {
+   "id": "seed-11",
+   "gold": "same",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.9011145792013173
+  },
+  {
+   "id": "seed-12",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.5773050210645687
+  },
+  {
+   "id": "seed-13",
+   "gold": "diff",
+   "langPair": "en-vi",
+   "crossLang": true,
+   "cosine": 0.6721929216099513
+  },
+  {
+   "id": "seed-14",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9712059434673522
+  },
+  {
+   "id": "seed-15",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.70003184722943
+  },
+  {
+   "id": "seed-16",
+   "gold": "diff",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.704949365660238
+  },
+  {
+   "id": "seed-17",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.9729465525686154
+  },
+  {
+   "id": "seed-18",
+   "gold": "same",
+   "langPair": "vi-vi",
+   "crossLang": false,
+   "cosine": 0.8650517764192903
+  }
+ ]
+}

@@ -255,8 +255,7 @@ test("acceptance: coverage is not change; primary source updates the claim", asy
   // corroboration, not low-grade syndicated coverage
   assert.ok(types.includes("new_independent_evidence"));
   assert.equal(
-    allChanges.find((c) => c.type === "new_independent_evidence")
-      ?.materiality,
+    allChanges.find((c) => c.type === "new_independent_evidence")?.materiality,
     "medium",
   );
   assert.ok(types.includes("claim_updated"));

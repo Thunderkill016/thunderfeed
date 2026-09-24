@@ -77,7 +77,11 @@ function cluster(articles: Article[]): StoryCluster {
 test("provenance: same document via RSS then GDELT → 1 doc, 1 version, 2 discovery paths", async () => {
   setupDb();
   const url = `https://x.vn/${randomUUID()}`;
-  const base = { url, title: "Giá xăng tăng 500 đồng/lít", source: "VnExpress" };
+  const base = {
+    url,
+    title: "Giá xăng tăng 500 đồng/lít",
+    source: "VnExpress",
+  };
   const viaRss = cluster([
     art({
       ...base,

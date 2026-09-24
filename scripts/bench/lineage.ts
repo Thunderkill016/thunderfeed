@@ -95,7 +95,8 @@ for (const c of cases) {
 
 const precision = dTP + dFP ? dTP / (dTP + dFP) : 1;
 const recall = dTP + dFN ? dTP / (dTP + dFN) : 1;
-const f1 = precision + recall ? (2 * precision * recall) / (precision + recall) : 0;
+const f1 =
+  precision + recall ? (2 * precision * recall) / (precision + recall) : 0;
 const origPrecision = oTP + oFP ? oTP / (oTP + oFP) : 1;
 const falseIndepRate = labeledDerived ? falseIndep / labeledDerived : 0;
 const falseSyndRate = labeledOriginal ? falseSynd / labeledOriginal : 0;
@@ -103,14 +104,24 @@ const unknownRate = cases.length ? predUnknown / cases.length : 0;
 
 console.log(`corpus:           ${path}`);
 console.log(`cases:            ${cases.length}`);
-console.log(`labels:           derived=${labeledDerived} original=${labeledOriginal} unknown=${labeledUnknown}`);
-console.log(`predicted:        derived=${predDerived} original=${predOriginal} unknown=${predUnknown}`);
+console.log(
+  `labels:           derived=${labeledDerived} original=${labeledOriginal} unknown=${labeledUnknown}`,
+);
+console.log(
+  `predicted:        derived=${predDerived} original=${predOriginal} unknown=${predUnknown}`,
+);
 console.log(`precision (der.): ${(precision * 100).toFixed(1)}%  (gate ≥95%)`);
 console.log(`recall (der.):    ${(recall * 100).toFixed(1)}%`);
 console.log(`F1:               ${(f1 * 100).toFixed(1)}%`);
-console.log(`precision (orig): ${(origPrecision * 100).toFixed(1)}%  (gate ≥95%)`);
-console.log(`false-independent: ${(falseIndepRate * 100).toFixed(1)}%  (gate <5%)`);
-console.log(`false-syndication: ${(falseSyndRate * 100).toFixed(1)}%  (gate <2%)`);
+console.log(
+  `precision (orig): ${(origPrecision * 100).toFixed(1)}%  (gate ≥95%)`,
+);
+console.log(
+  `false-independent: ${(falseIndepRate * 100).toFixed(1)}%  (gate <5%)`,
+);
+console.log(
+  `false-syndication: ${(falseSyndRate * 100).toFixed(1)}%  (gate <2%)`,
+);
 console.log(`unknown rate:     ${(unknownRate * 100).toFixed(1)}%`);
 console.log(`exact relation:   ${relationOk}/${cases.length}`);
 if (misses.length) {

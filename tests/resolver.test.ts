@@ -43,7 +43,12 @@ function setupDb() {
 
 function cluster(
   title: string,
-  opts: { summary?: string; language?: "vi" | "en"; source?: string } = {},
+  opts: {
+    summary?: string;
+    language?: "vi" | "en";
+    source?: string;
+    publishedAt?: string;
+  } = {},
 ): StoryCluster {
   const a: Article = {
     id: randomUUID(),
@@ -51,7 +56,7 @@ function cluster(
     summary: opts.summary ?? "",
     url: `https://x.vn/${randomUUID()}`,
     image: null,
-    publishedAt: new Date().toISOString(),
+    publishedAt: opts.publishedAt ?? new Date().toISOString(),
     source: opts.source ?? "VnExpress",
     topic: "world",
     headline: false,
@@ -186,4 +191,183 @@ test("wire copies of one story merge", async () => {
   const a = cluster("Ông Tập lên đường thăm Mỹ", { source: "VnExpress" });
   const b = cluster("Ông Tập lên đường thăm Mỹ", { source: "Tuổi Trẻ" });
   assert.equal(await sameEvent(a, b), true);
+});
+
+/* ------------- named V2 regression cases (pure layer + DB) ------------------ */
+
+import { buildIncomingSide, decide, type CandidateSide } from "../lib/resolver";
+
+/** candidate view of a cluster — mirrors what the DB layer builds */
+function candOf(c: StoryCluster, embedding?: number[]): CandidateSide {
+  const inc = buildIncomingSide(c, extractClaims(c));
+  return {
+    id: c.id,
+    signature: inc.signature,
+    entitySignature: [...inc.entTokens].join(" "),
+    entitySignatureCore: [...inc.entCoreTokens].join(" "),
+    claimKeys: new Set(
+      [...inc.distinctiveKeys, ...inc.genericFps].map((k) => k.split("|")[0]),
+    ),
+    claimFps: new Set(inc.genericFps),
+    topic: c.topic,
+    publishedAt: inc.publishedAt,
+    language: inc.language,
+    embedding,
+  };
+}
+
+/** unit-ish 2-D vectors whose cosine equals `cos` */
+function vecPair(cos: number): [number[], number[]] {
+  return [
+    [1, 0],
+    [cos, Math.sqrt(Math.max(0, 1 - cos * cos))],
+  ];
+}
+
+test("cross-language paraphrase merges on semantic+entity support", () => {
+  setupDb();
+  const a = cluster("Triều Tiên phóng tên lửa đạn đạo ra biển Nhật Bản", {
+    summary: "Triều Tiên vừa phóng tên lửa đạn đạo về phía biển Nhật Bản.",
+    language: "vi",
+  });
+  const b = cluster("North Korea fires ballistic missile toward Sea of Japan", {
+    summary: "Pyongyang launched a ballistic missile toward the Sea of Japan.",
+    language: "en",
+  });
+  const [va, vb] = vecPair(0.84); // measured corpus cosine for this pair
+  const d = decide(buildIncomingSide(b, extractClaims(b)), candOf(a, va));
+  // embedding must reach the incoming side too — inject directly
+  const inc = buildIncomingSide(b, extractClaims(b));
+  inc.embedding = vb;
+  const d2 = decide(inc, candOf(a, va));
+  assert.equal(d2.decision, "merge");
+  assert.equal(d2.path, "semantic_xlang");
+  assert.ok(!d2.hardBlocks.length);
+});
+
+test("same actor, different incidents: NK missile vs military parade", () => {
+  const a = cluster(
+    "North Korea launches ballistic missile into Sea of Japan",
+    {
+      language: "en",
+      publishedAt: "2026-03-02T01:00:00Z",
+    },
+  );
+  const b = cluster("North Korea holds massive military parade in Pyongyang", {
+    language: "en",
+    publishedAt: "2026-03-03T01:00:00Z",
+  });
+  const [va, vb] = vecPair(0.8);
+  const inc = buildIncomingSide(b, extractClaims(b));
+  inc.embedding = vb;
+  const d = decide(inc, candOf(a, va));
+  // shared country + topic-class vocabulary is a beat, not an incident:
+  // medium cosine with no distinctive anchor may not merge
+  assert.notEqual(d.decision, "merge");
+});
+
+test("numeric evolution merges: 20 → 35 flights cancelled", async () => {
+  setupDb();
+  const a = cluster("Typhoon Ragasa: 20 flights cancelled in Japan", {
+    language: "en",
+    summary: "Typhoon Ragasa grounded 20 flights in southern Japan.",
+  });
+  const b = cluster("Typhoon Ragasa grounds 35 flights in Japan", {
+    language: "en",
+    summary: "The storm forced cancellation of 35 flights across Japan.",
+  });
+  // same storm, updated figure → one event; the figure change is a
+  // ClaimVersion dispute, not a second event
+  assert.equal(await sameEvent(a, b), true);
+});
+
+test("recurring meetings stay separate: Fed June vs September", async () => {
+  setupDb();
+  const a = cluster("Fed holds rates steady at June meeting", {
+    language: "en",
+    publishedAt: "2026-06-18T18:00:00Z",
+  });
+  const b = cluster("Fed cuts rates at September meeting", {
+    language: "en",
+    publishedAt: "2026-09-17T18:00:00Z",
+  });
+  // same institution + same rate predicate, different meeting period —
+  // 91 days apart exceeds any incident window
+  assert.equal(await sameEvent(a, b), false);
+});
+
+test("route evolution does not split a strong storm identity", async () => {
+  setupDb();
+  const a = cluster("Bão Kalmaegi đổ bộ Quảng Trị gây mưa lớn", {
+    summary: "Bão Kalmaegi đổ bộ vào đất liền Quảng Trị.",
+  });
+  const b = cluster("Bão Kalmaegi gây ngập nặng tại Hà Tĩnh", {
+    summary: "Sau Quảng Trị, bão Kalmaegi tiếp tục gây mưa lớn ở Hà Tĩnh.",
+  });
+  // same named storm — location progression is the story, not a veto
+  assert.equal(await sameEvent(a, b), true);
+});
+
+test("generic fatalities never merge across events", async () => {
+  setupDb();
+  const a = cluster("Japan earthquake: 20 dead in Hokkaido", {
+    language: "en",
+    summary: "A magnitude 6 quake killed 20 people in Hokkaido.",
+  });
+  const b = cluster("Indonesia flood: 20 dead in Jakarta", {
+    language: "en",
+    summary: "Flooding in Jakarta left 20 people dead.",
+  });
+  // identical generic figure, disjoint event arguments
+  assert.equal(await sameEvent(a, b), false);
+});
+
+test("headline drift merges on semantic+argument support", () => {
+  const a = cluster(
+    "Ông Đào Thanh Trường được bầu giữ chức Phó Chủ tịch UBND tỉnh Bắc Ninh",
+    {
+      summary:
+        "Ông Đào Thanh Trường, Phó giám đốc ĐH Quốc gia Hà Nội, được bầu làm Phó Chủ tịch UBND tỉnh Bắc Ninh.",
+    },
+  );
+  const b = cluster(
+    "Phó giám đốc ĐH Quốc gia Hà Nội làm Phó chủ tịch Bắc Ninh",
+    {
+      summary:
+        "Tân Phó Chủ tịch UBND tỉnh Bắc Ninh là Phó giám đốc Đại học Quốc gia Hà Nội.",
+    },
+  );
+  const [va, vb] = vecPair(0.93); // measured corpus cosine for this pair
+  const inc = buildIncomingSide(b, extractClaims(b));
+  inc.embedding = vb;
+  const d = decide(inc, candOf(a, va));
+  assert.equal(d.decision, "merge");
+});
+
+test("topic siblings: two Ukraine drone incidents inside 72h stay split", async () => {
+  setupDb();
+  const a = cluster("Nga bắn hạ gần 200 UAV Ukraine ở Kursk", {
+    summary: "Phòng không Nga bắn hạ gần 200 UAV của Ukraine tại Kursk.",
+  });
+  const b = cluster("Video UAV Ukraine bắn cháy xe tăng T-72 của Nga", {
+    summary: "Đoạn video cho thấy UAV Ukraine tập kích xe tăng T-72.",
+  });
+  assert.equal(await sameEvent(a, b), false);
+});
+
+test("edition number is not a numeric conflict: ASEAN 47 merges", async () => {
+  setupDb();
+  const a = cluster("Hội nghị thượng đỉnh ASEAN khai mạc tại Kuala Lumpur", {
+    summary:
+      "Hội nghị thượng đỉnh ASEAN lần thứ 47 khai mạc tại Kuala Lumpur, Malaysia.",
+  });
+  const b = cluster("Thượng đỉnh ASEAN 47 chính thức mở đầu ở Malaysia", {
+    summary: "Các nhà lãnh đạo ASEAN hội tụ tại Kuala Lumpur.",
+  });
+  const [va, vb] = vecPair(0.97);
+  const inc = buildIncomingSide(b, extractClaims(b));
+  inc.embedding = vb;
+  const d = decide(inc, candOf(a, va));
+  // one-sided edition marker (47) is missing evidence, not contradiction
+  assert.equal(d.decision, "merge");
 });

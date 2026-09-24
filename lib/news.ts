@@ -264,10 +264,13 @@ function parseNewsSitemap(xml: string, feed: Feed, now: number): Article[] {
     const imageUrl = /<image:loc>([^<]+)<\/image:loc>/.exec(block)?.[1];
     const item: Parser.Item = {
       link: /<loc>([^<]+)<\/loc>/.exec(block)?.[1],
-      title: /<news:title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/news:title>/
-        .exec(block)?.[1],
-      isoDate: /<news:publication_date>([^<]+)<\/news:publication_date>/
-        .exec(block)?.[1],
+      title:
+        /<news:title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/news:title>/.exec(
+          block,
+        )?.[1],
+      isoDate: /<news:publication_date>([^<]+)<\/news:publication_date>/.exec(
+        block,
+      )?.[1],
       ...(imageUrl ? { enclosure: { url: imageUrl } } : {}),
     };
     const article = toArticle(item, feed, now);
@@ -346,20 +349,16 @@ const GDELT_SOURCE_NAME = "GDELT";
  */
 function httpsGetText(url: string, timeoutMs: number): Promise<string> {
   return new Promise((resolve, reject) => {
-    const req = httpsGet(
-      url,
-      { family: 4, timeout: timeoutMs },
-      (res) => {
-        if (res.statusCode && res.statusCode >= 400) {
-          res.resume();
-          reject(new Error(`HTTP ${res.statusCode}`));
-          return;
-        }
-        const chunks: Buffer[] = [];
-        res.on("data", (c: Buffer) => chunks.push(c));
-        res.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
-      },
-    );
+    const req = httpsGet(url, { family: 4, timeout: timeoutMs }, (res) => {
+      if (res.statusCode && res.statusCode >= 400) {
+        res.resume();
+        reject(new Error(`HTTP ${res.statusCode}`));
+        return;
+      }
+      const chunks: Buffer[] = [];
+      res.on("data", (c: Buffer) => chunks.push(c));
+      res.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
+    });
     req.on("timeout", () => req.destroy(new Error("Request timeout")));
     req.on("error", reject);
   });

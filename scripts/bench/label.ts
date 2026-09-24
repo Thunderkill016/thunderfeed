@@ -30,9 +30,7 @@ function show(doc: EventPair["a"], tag: string) {
   const date = doc.publishedAt
     ? new Date(doc.publishedAt).toISOString().slice(0, 16).replace("T", " ")
     : "?";
-  console.log(
-    `  ${tag}  [${doc.source} · ${doc.language ?? "?"} · ${date}]`,
-  );
+  console.log(`  ${tag}  [${doc.source} · ${doc.language ?? "?"} · ${date}]`);
   console.log(`      ${doc.title}`);
   if (doc.summary) console.log(`      ${doc.summary.slice(0, 200)}`);
 }
@@ -52,9 +50,9 @@ async function main() {
     show(p.a, "A");
     show(p.b, "B");
     const hint = p.label === "same" ? "s" : "d";
-    const ans = (
-      await ask(`  same/diff/unsure [${hint}] or q: `)
-    ).trim().toLowerCase();
+    const ans = (await ask(`  same/diff/unsure [${hint}] or q: `))
+      .trim()
+      .toLowerCase();
     const pick = ans === "" ? hint : ans;
     if (pick === "q") break;
     if (pick !== "s" && pick !== "d") continue;

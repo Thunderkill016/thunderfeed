@@ -9,6 +9,8 @@ import type { Article, SourceStatus, StoryCluster } from "../model";
 import type { Feed } from "../feeds";
 import { dbEnabled, getPool } from "./pool";
 import { extractClaims } from "./extract";
+import { embedArticles } from "../embed";
+import { repHash } from "../resolver";
 import {
   persistCluster,
   resolveStaleEvents,
@@ -89,6 +91,16 @@ export async function persistEdition(
       unknown: number;
     }
   >();
+  // semantic scorer for the persistent resolver — absent key ⇒ the
+  // resolver runs its deterministic lexical path (never a hard dep)
+  const apiKey = process.env.GEMINI_API_KEY;
+  const embedder = apiKey
+    ? async (texts: string[]) => {
+        const items = texts.map((t) => ({ id: repHash(t), text: t }));
+        const v = await embedArticles(apiKey, items);
+        return items.map((it) => v.get(it.id) ?? null);
+      }
+    : undefined;
   for (const c of clusters) {
     const llmClaims = extraClaims?.get(c.id) ?? [];
     const deterministic = extractClaims(c);
@@ -105,7 +117,7 @@ export async function persistEdition(
       ),
     ];
     try {
-      const r = await persistCluster(c, claims, { sourceMeta });
+      const r = await persistCluster(c, claims, { sourceMeta, embedder });
       eventIds.set(c.id, r.eventId);
       persisted++;
       for (const i of r.ingested) {

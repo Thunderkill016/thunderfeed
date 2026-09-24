@@ -11,6 +11,7 @@
  *   order-invariance  = 100%   (dispute state must not depend on order)
  */
 
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import {
   BENCH_DIR,
   detectLang,
@@ -22,41 +23,180 @@ import {
   type OrderCase,
 } from "./shared";
 import { persistCluster } from "../../lib/db/writer";
+import { repHash, type PairFeatures } from "../../lib/resolver";
+import { embedArticles } from "../../lib/embed";
 import { extractClaims } from "../../lib/db/extract";
 
 const MIN_STRATUM = 5;
 
 /* --------------------------------- pairs ----------------------------------- */
 
-async function runPairs(pairs: EventPair[]) {
+/** semantic scorer for bench runs — disk-cached vectors first, live API
+ *  only for misses (THUNDERFEED_BENCH_LIVE_EMBED=1 to enable) */
+function benchEmbedder() {
+  const file = `${BENCH_DIR}/results/semantic-vectors.json`;
+  const cache = new Map<string, number[]>(
+    existsSync(file)
+      ? Object.entries(
+          JSON.parse(readFileSync(file, "utf8")) as Record<string, number[]>,
+        )
+      : [],
+  );
+  const live = process.env.THUNDERFEED_BENCH_LIVE_EMBED === "1";
+  const apiKey = process.env.GEMINI_API_KEY;
+  return async (texts: string[]): Promise<(number[] | null)[]> => {
+    const hashes = texts.map(repHash);
+    const out: (number[] | null)[] = hashes.map((h) => cache.get(h) ?? null);
+    const missIdx = hashes
+      .map((h, i) => (out[i] ? -1 : i))
+      .filter((i) => i >= 0);
+    if (live && apiKey && missIdx.length) {
+      const got = await embedArticles(
+        apiKey,
+        missIdx.map((i) => ({ id: hashes[i], text: texts[i] })),
+      );
+      for (const i of missIdx) {
+        const v = got.get(hashes[i]);
+        if (v) {
+          out[i] = v;
+          cache.set(hashes[i], v);
+        }
+      }
+      writeFileSync(file, JSON.stringify(Object.fromEntries(cache)));
+    }
+    return out;
+  };
+}
+
+async function runPairs(
+  pairs: EventPair[],
+  embedder?: ReturnType<typeof benchEmbedder>,
+) {
   const labeled = pairs.filter((p) => p.label === "same" || p.label === "diff");
   const rows: {
     pair: EventPair;
     gold: "same" | "diff";
     pred: "same" | "diff";
     langPair: string;
+    eval?: {
+      decision: string;
+      path: string;
+      score: number;
+      reasons: string[];
+      hardBlocks: string[];
+      features?: PairFeatures;
+    };
   }[] = [];
 
   for (const p of labeled) {
     setupBenchDb(); // fresh event store per pair — isolation, no bleed
     const a = docToCluster(p.a);
     const b = docToCluster(p.b);
-    const ra = await persistCluster(a, extractClaims(a));
-    const rb = await persistCluster(b, extractClaims(b));
+    const ra = await persistCluster(a, extractClaims(a), { embedder });
+    const rb = await persistCluster(b, extractClaims(b), { embedder });
     const langPair = [
       p.a.language ?? detectLang(p.a.title),
       p.b.language ?? detectLang(p.b.title),
     ]
       .sort()
       .join("-");
+    // the evaluation of B against A's event — the decision that matters
+    const ev = (rb.resolverEvals ?? []).find(
+      (e) => e.candidateId === ra.eventId,
+    );
     rows.push({
       pair: p,
       gold: p.label as "same" | "diff",
       pred: ra.eventId === rb.eventId ? "same" : "diff",
       langPair,
+      eval: ev
+        ? {
+            decision: ev.decision.decision,
+            path: ev.decision.path,
+            score: ev.decision.score,
+            reasons: ev.decision.reasons,
+            hardBlocks: ev.decision.hardBlocks,
+            features: ev.decision.features,
+          }
+        : undefined,
     });
   }
   return rows;
+}
+
+/** failure-class taxonomy for split misses (Phase 0) */
+function classifySplit(r: {
+  langPair: string;
+  eval?: {
+    path?: string;
+    features?: {
+      lexicalSimilarity?: number;
+      sharedCoreEntities?: string[];
+      nonHubSharedCore?: string[];
+      sharedEntities?: string[];
+      numberConflict?: boolean;
+      distinctiveClaimOverlap?: number;
+      genericClaimOverlap?: number;
+      sharedRareTokens?: string[];
+      sharedBigrams?: string[];
+    };
+  };
+}): string {
+  const f = r.eval?.features;
+  if (!f) return "other";
+  if (r.langPair === "en-vi") return "cross-language paraphrase";
+  if (f.numberConflict) return "same event / changing numeric facts";
+  if ((f.nonHubSharedCore?.length ?? 0) > 0)
+    return "same actor but lexical drift";
+  if ((f.sharedCoreEntities?.length ?? 0) > 0)
+    return "same event / different location wording";
+  if ((f.sharedEntities?.length ?? 0) === 0) return "missing entity alias";
+  if (
+    (f.distinctiveClaimOverlap ?? 0) === 0 &&
+    (f.genericClaimOverlap ?? 0) === 0
+  )
+    return "no deterministic claim extracted";
+  if ((f.lexicalSimilarity ?? 0) >= 0.3) return "headline drift";
+  return "other";
+}
+
+/** Phase 0 — machine-readable export of every pair decision. */
+function exportBaseline(
+  rows: Awaited<ReturnType<typeof runPairs>>,
+  file: string,
+) {
+  const out = rows.map((r) => ({
+    id: r.pair.id,
+    gold: r.gold,
+    prediction: r.pred,
+    langPair: r.langPair,
+    trap: r.pair.trap ?? [],
+    titleA: r.pair.a.title,
+    titleB: r.pair.b.title,
+    publishedA: r.pair.a.publishedAt ?? null,
+    publishedB: r.pair.b.publishedAt ?? null,
+    timeDeltaHours:
+      r.pair.a.publishedAt && r.pair.b.publishedAt
+        ? Math.abs(
+            Date.parse(r.pair.a.publishedAt) - Date.parse(r.pair.b.publishedAt),
+          ) / 3_600_000
+        : null,
+    decision: r.eval ?? null,
+    failureClass:
+      r.gold === "same" && r.pred === "diff" ? classifySplit(r) : null,
+  }));
+  mkdirSync(`${BENCH_DIR}/results`, { recursive: true });
+  writeFileSync(`${BENCH_DIR}/results/${file}`, JSON.stringify(out, null, 1));
+  const taxonomy = new Map<string, number>();
+  for (const r of out) {
+    if (r.failureClass)
+      taxonomy.set(r.failureClass, (taxonomy.get(r.failureClass) ?? 0) + 1);
+  }
+  if (taxonomy.size) {
+    console.log(`  ── split taxonomy (${file}):`);
+    for (const [k, n] of [...taxonomy.entries()].sort((a, b) => b[1] - a[1]))
+      console.log(`    ${k.padEnd(42)} ${n}`);
+  }
 }
 
 interface Stratum {
@@ -311,7 +451,15 @@ async function main() {
   );
 
   let fail = false;
-  if (pairs.length) fail = (await reportPairs(await runPairs(pairs))) || fail;
+  if (pairs.length) {
+    const embedder =
+      process.env.THUNDERFEED_BENCH_NO_EMBED === "1"
+        ? undefined
+        : benchEmbedder();
+    const rows = await runPairs(pairs, embedder);
+    exportBaseline(rows, "resolver-baseline.json");
+    fail = (await reportPairs(rows)) || fail;
+  }
   if (claims.length) await runClaims(claims);
   if (orders.length) {
     console.log(`\n══ ORDER-INVARIANCE — dispute must not depend on order`);

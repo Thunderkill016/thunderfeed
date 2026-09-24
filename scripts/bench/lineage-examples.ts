@@ -202,7 +202,10 @@ async function main() {
     }),
   ]);
   const r2 = await persistCluster(s1, extractClaims(s1));
-  await printReport("2) FED → REUTERS → LOCAL — before Fed arrives", r2.eventId);
+  await printReport(
+    "2) FED → REUTERS → LOCAL — before Fed arrives",
+    r2.eventId,
+  );
   // cycle 2: the FOMC statement itself shows up; Reuters re-points to the
   // primary doc and Tuổi Trẻ re-roots through it without a new assertion
   const s2 = cluster([

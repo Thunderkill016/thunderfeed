@@ -147,16 +147,19 @@ for (const p of [...samePairs, ...diffPairs]) {
   if (p.label === "diff") {
     label = "original";
     why = "different event — nothing to derive from";
-    if (titleSim >= 0.5) why = `trap: similar wording (titleSim=${titleSim.toFixed(2)}) but different event`;
+    if (titleSim >= 0.5)
+      why = `trap: similar wording (titleSim=${titleSim.toFixed(2)}) but different event`;
   } else if (toks(second.title).length < 3) {
     label = "unknown";
     why = "insufficient text to evaluate";
   } else if (langDiff && contained) {
     label = "unknown";
-    why = "cross-language, child's figures fully inside parent's — possible translation";
+    why =
+      "cross-language, child's figures fully inside parent's — possible translation";
   } else if (conflict) {
     label = "unknown";
-    why = "same event, zero shared figures — corrupted copy or independent report, can't tell";
+    why =
+      "same event, zero shared figures — corrupted copy or independent report, can't tell";
   } else if (citesParent) {
     label = "quoted";
     why = `explicit citation "${attr![0].slice(0, 40)}"`;

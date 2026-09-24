@@ -18,7 +18,21 @@ import type { PoolClient } from "pg";
 import { getPool } from "./pool";
 import { normalizeText } from "../model";
 import { canonicalSourceName, mediaInfoFor } from "../mediaData";
-import { entitySignature } from "./entities";
+import { entitySignature } from "../entities";
+import {
+  buildIncomingSide,
+  clusterRepTextV2,
+  decide,
+  detectLanguage,
+  eventRepText,
+  repHash,
+  RESOLVER_MAX_WINDOW_HOURS,
+  eventSignature,
+  type CandidateSide,
+  type IncomingSide,
+  type ResolverDecision,
+} from "../resolver";
+import { embedModel } from "../embed";
 import {
   CLASSIFIER_VERSION,
   classifyLineage,
@@ -101,47 +115,6 @@ export function contentHash(title: string, body: string): string {
     .update(normalizeText(body))
     .digest("hex")
     .slice(0, 32);
-}
-
-/**
- * Resolver fingerprint — sorted normalized keywords of the lead headline.
- * Exact-match only in v1; the column exists so the matcher can be swapped to
- * pgvector similarity without a schema change.
- */
-export function eventSignature(topic: string, title: string): string {
-  const raw = normalizeText(title).split(" ").filter(Boolean);
-  const toks = raw.filter((t) => t.length >= 3 && !/^\d+$/.test(t)).sort();
-  // number tokens ride in a third segment — "46%" is identity evidence
-  // across languages even when no lexical token survives translation.
-  // bare years are edition noise, not identity
-  const nums = raw
-    .filter((t) => /^\d{2,3}$/.test(t) && !/^(19|20)\d\d$/.test(t))
-    .sort();
-  // consecutive-token bigrams capture phrases unigrams lose:
-  // "bóng đá nam" is one facet of a story, not three loose words
-  const bigrams: string[] = [];
-  for (let i = 0; i + 1 < raw.length; i++) {
-    const bg = `${raw[i]}_${raw[i + 1]}`;
-    if (bg.length < 7) continue;
-    if (BIGRAM_FORMULA.has(raw[i]) && BIGRAM_FORMULA.has(raw[i + 1])) {
-      continue;
-    }
-    // numeric bigrams are dates/editions ("asiad_2026"), not identity
-    if (/^\d+$/.test(raw[i]) || /^\d+$/.test(raw[i + 1])) continue;
-    // a bigram that is just a place or person name adds nothing over the
-    // entity signature — "viet_nam", "trung_quoc", "ong_trump" name beats
-    const bgEnts = entitySignature(`${raw[i]} ${raw[i + 1]}`)
-      .split(" ")
-      .filter(Boolean);
-    if (
-      bgEnts.length > 0 &&
-      bgEnts.every((e) => HUB_ENTITIES.has(e) || PERSON_ENTITIES.has(e))
-    ) {
-      continue;
-    }
-    bigrams.push(bg);
-  }
-  return `${topic}|${toks.join(" ")}|${nums.join(" ")}|${bigrams.sort().join(" ")}`;
 }
 
 /** Strip tracking params so the same article dedupes across channels. */
@@ -436,309 +409,30 @@ async function createEvent(
   return { eventId, eventVersionId, created: true };
 }
 
-/*
- * Merge paths — any one is sufficient, all are gated by entity
- * compatibility (a shared generic claim can never join two events that
- * name different places):
- *
- *   HEADLINE    signature-token Jaccard ≥ 0.55 (same story, drifted title)
- *   ENTITY+SIG  entity Jaccard ≥ 0.5 AND signature ≥ 0.15 — paraphrase or
- *               partial translation keeps some tokens and the same places
- *   ENTITY≥2    ≥2 shared entities with Jaccard ≥ 0.6 — cross-language
- *               coverage with ZERO shared tokens ("Triều Tiên phóng tên
- *               lửa…" ⇄ "North Korea fires missile…"): two specific
- *               entities co-occurring twice in the window is one story
- *   DISTINCTIVE ≥50% of the cluster's subject-qualified claim keys already
- *               asserted on the event ("fed|interest_rate" is identity,
- *               even when the value differs — that's a dispute, same event)
- *   GENERIC     ≥50% of the cluster's generic claims match claim_key+VALUE
- *               exactly ("deaths|20" ≠ "deaths|15"), AND corroboration:
- *               shared entity, signature ≥ 0.3, OR — only when every
- *               generic claim is incident-scoped (a fact type bound to
- *               ONE incident, like flights_cancelled) — both sides
- *               simply name no place. Recurring metrics (sentence_years,
- *               victims, money) share values across thousands of cases
- *               and must never self-merge without context.
- *
- * Entity contradiction is a HARD BLOCK on every path. Over-splitting
- * beats wrong-merge: siblings can be merged later, split history
- * cannot be un-split.
- */
-const MERGE_JACCARD = 0.55;
-const MERGE_CLAIM_OVERLAP = 0.5;
-/** signature floor that lets an exact generic-claim match merge */
-const GENERIC_SIG_FLOOR = 0.3;
-/** signature floor that lets a located pair merge on entity+tokens */
-const ENTITY_SIG_FLOOR = 0.2;
-/** ≥2 shared entities + Jaccard ≥ 0.6 merges even with no shared tokens */
-const ENTITY_STRONG_SHARED = 2;
-const ENTITY_STRONG_SIM = 0.6;
-/** high-frequency geopolitical actors — sharing ONLY these carries no
- *  event identity ("every second story is US-China"); a hub-only overlap
- *  still needs headline support */
 /**
- * geographic entities name a beat, never an event — every VN outlet covers
- * "us + china" daily. only non-geo entities (people, orgs, competitions,
- * companies) may serve as identity evidence.
+ * Match a cluster to a live event. Stage A: candidate retrieval — live
+ * events inside the widest domain window plus their versioned claim
+ * space. Stage B: the pure scorer (lib/resolver.ts) evaluates features
+ * per candidate — the best merge decision wins; ambiguous counts as
+ * split (precision-safe) but is flagged in telemetry.
  */
-const HUB_ENTITIES = new Set([
-  "us",
-  "un",
-  "europe",
-  "middleeast",
-  "baltic",
-  "mientrung",
-  "mienbac",
-  "miennam",
-  "taynguyen",
-  // countries
-  "vietnam",
-  "china",
-  "japan",
-  "southkorea",
-  "northkorea",
-  "taiwan",
-  "hongkong",
-  "thailand",
-  "myanmar",
-  "laos",
-  "cambodia",
-  "malaysia",
-  "singapore",
-  "indonesia",
-  "philippines",
-  "india",
-  "pakistan",
-  "bangladesh",
-  "australia",
-  "newzealand",
-  "israel",
-  "palestine",
-  "iran",
-  "iraq",
-  "syria",
-  "lebanon",
-  "yemen",
-  "saudi",
-  "uae",
-  "qatar",
-  "russia",
-  "ukraine",
-  "uk",
-  "france",
-  "germany",
-  "italy",
-  "spain",
-  "poland",
-  "netherlands",
-  "belgium",
-  "switzerland",
-  "sweden",
-  "norway",
-  "denmark",
-  "finland",
-  "austria",
-  "greece",
-  "portugal",
-  "ireland",
-  "hungary",
-  "czech",
-  "romania",
-  "canada",
-  "mexico",
-  "brazil",
-  "argentina",
-  "chile",
-  "peru",
-  "colombia",
-  "venezuela",
-  "cuba",
-  "panama",
-  "haiti",
-  "egypt",
-  "southafrica",
-  "nigeria",
-  "kenya",
-  "sudan",
-  "ethiopia",
-  "morocco",
-  "libya",
-  "congo",
-  "southsudan",
-  // vn cities & provinces
-  "hanoi",
-  "hcmc",
-  "danang",
-  "haiphong",
-  "cantho",
-  "hue",
-  "nhatrang",
-  "dalat",
-  "quangninh",
-  "hatinh",
-  "nghean",
-  "thanhhoa",
-  "laocai",
-  "langson",
-  "caobang",
-  "dienbien",
-  "sonla",
-  "gialai",
-  "daklak",
-  "angiang",
-  "kiengiang",
-  "camau",
-  "binhduong",
-  "dongnai",
-  "bariavungtau",
-  "bacninh",
-  "phuquoc",
-  "quangtri",
-  "khanhhoa",
-  "lamdong",
-  "halong",
-]);
-/** signature floor for entity merges whose shared entities are all hubs */
-const HUB_SIG_FLOOR = 0.3;
-/** a single shared hub entity needs strong headline support to merge */
-const HUB_SINGLE_SIG_FLOOR = 0.4;
-/** named individuals anchor an event — a shared person entity plus
- *  modest headline overlap is same-story evidence */
-const PERSON_ENTITIES = new Set([
-  "trump",
-  "putin",
-  "zelensky",
-  "xijinping",
-  "kimjongun",
-  "netanyahu",
-  "modi",
-  "milei",
-  "lam",
-  "biden",
-  "macron",
-  "hunsen",
-  "kimsangsik",
-]);
-const PERSON_SIG_FLOOR = 0.2;
-/** institutional/civic vocabulary repeats across UNRELATED stories —
- *  it can never be a "rare" identity token */
-const RARE_TOKEN_EXCLUDE = new Set([
-  "thuong",
-  "truc",
-  "trung",
-  "quoc",
-  "viet",
-  "dang",
-  "chinh",
-  "nguoi",
-  "cong",
-  "giao",
-  "thong",
-  "duong",
-  "benh",
-  "vien",
-  "truong",
-  "sinh",
-  "doanh",
-  "nghiep",
-  "kinh",
-  "thanh",
-  "tinh",
-  "huyen",
-  "ngay",
-  "sang",
-  "chieu",
-  "tuan",
-  "thang",
-  // country/geo names recur across unrelated incidents — they are
-  // entities, not identity tokens
-  "ukraine",
-  "russia",
-  "vietnam",
-  "trungquoc",
-  "asean",
-]);
-/** a shared uncommon token (storm name, codename) + modest overlap merges */
-const RARE_TOKEN_MIN_LEN = 5;
-const RARE_SIG_FLOOR = 0.2;
-/** schedule/wire formula vocabulary — a bigram made only of these is
- *  boilerplate ("lịch thi đấu"), not event identity */
-const BIGRAM_FORMULA = new Set([
-  "lich",
-  "thi",
-  "dau",
-  "ngay",
-  "gio",
-  "truc",
-  "tiep",
-  "ket",
-  "qua",
-  "cap",
-  "nhat",
-  "moi",
-  "video",
-  "anh",
-  "bai",
-  "hoi",
-  "nghi",
-  "tin",
-]);
-/** numbers that identify an event across languages — years and round
- *  figures are too common to count */
-const isDistinctiveNumber = (t: string) =>
-  /^\d{2,3}$/.test(t) &&
-  !/^(1[0-9]|[2-9]0|25|50|100|200|300|400|500|1000|202\d)$/.test(t);
-/** fact types bound to ONE incident — identical value + no location on
- *  either side is legitimate same-event evidence; recurring metrics are not */
-const INCIDENT_SCOPED = new Set([
-  "deaths",
-  "injured",
-  "missing",
-  "evacuated",
-  "flights_cancelled",
-  "magnitude",
-]);
+export interface ResolverEval {
+  candidateId: string;
+  decision: ResolverDecision;
+}
 
-const jaccard = (a: Set<string>, b: Set<string>): number => {
-  let inter = 0;
-  for (const t of a) if (b.has(t)) inter++;
-  return inter / (a.size + b.size - inter || 1);
-};
-
-const isDistinctiveKey = (key: string) => key.includes("|");
-const genericFingerprint = (c: ExtractedClaim) =>
-  `${c.claimKey}|${JSON.stringify(c.value)}`;
-
-/**
- * Match a cluster to a live event. Candidates are events in the same
- * topic inside the resolver window; the merge decision weighs headline
- * tokens, distinctive claim keys, and exact generic-claim values under
- * an entity-compatibility gate.
- */
 async function resolveEvent(
   client: PoolClient,
   cluster: StoryCluster,
   claims: ExtractedClaim[],
-): Promise<EventRef> {
-  const signature = eventSignature(cluster.topic, cluster.title);
-  const sigParts = signature.split("|");
-  const sigTokens = new Set((sigParts[1] ?? "").split(" ").filter(Boolean));
-  const numTokens = new Set((sigParts[2] ?? "").split(" ").filter(Boolean));
-  const bigTokens = new Set((sigParts[3] ?? "").split(" ").filter(Boolean));
-  const entSig = entitySignature(`${cluster.title} ${cluster.summary}`);
-  const entTokens = new Set(entSig.split(" ").filter(Boolean));
-  // title-only entities are the identity; summary entities corroborate —
-  // wire boilerplate in summaries must not mint event identity
-  const entCoreTokens = new Set(
-    entitySignature(cluster.title).split(" ").filter(Boolean),
-  );
-
-  const distinctiveKeys = new Set(
-    claims.map((c) => c.claimKey).filter(isDistinctiveKey),
-  );
-  const genericFps = new Set(
-    claims.filter((c) => !isDistinctiveKey(c.claimKey)).map(genericFingerprint),
-  );
+  opts: {
+    embedder?: (texts: string[]) => Promise<(number[] | null)[]>;
+  } = {},
+): Promise<{ ref: EventRef; evals: ResolverEval[] }> {
+  const inc = buildIncomingSide(cluster, claims);
+  const signature = inc.signature;
+  const entSig = [...inc.entTokens].sort().join(" ");
+  const entCoreSig = [...inc.entCoreTokens].sort().join(" ");
 
   const cands = await client.query<{
     id: string;
@@ -746,182 +440,192 @@ async function resolveEvent(
     entity_signature: string;
     entity_signature_core: string;
     current_version_id: string;
+    occurred_at: string | null;
+    topic: string;
+    title: string;
+    summary: string | null;
   }>(
-    `SELECT id, signature, entity_signature, entity_signature_core,
-            current_version_id
-     FROM events
-     WHERE status NOT IN ('merged', 'archived')
-       AND last_seen_at > now() - interval '${RESOLVE_WINDOW}'`,
+    `SELECT e.id, e.signature, e.entity_signature, e.entity_signature_core,
+            e.current_version_id, e.occurred_at, e.topic,
+            ev.title, ev.summary
+     FROM events e
+     LEFT JOIN event_versions ev ON ev.id = e.current_version_id
+     WHERE e.status NOT IN ('merged', 'archived')
+       AND e.last_seen_at > now() - interval '${RESOLVER_MAX_WINDOW_HOURS} hours'`,
   );
+
+  const evals: ResolverEval[] = [];
+  // stage A-side feature state per candidate (claim space + rep text)
+  const sides: {
+    row: (typeof cands.rows)[number];
+    cand: CandidateSide;
+    rep: string;
+    hash: string;
+  }[] = [];
+  for (const c of cands.rows) {
+    // candidate's claim space: every versioned value (all positions),
+    // so a cluster asserting an earlier position still matches
+    const ck = await client.query<{
+      claim_key: string;
+      value: unknown;
+    }>(
+      `SELECT DISTINCT c.claim_key, cv.value
+       FROM claims c
+       JOIN claim_versions cv ON cv.claim_id = c.id
+       WHERE c.event_id = $1`,
+      [c.id],
+    );
+    const claimLabels = ck.rows
+      .map((r) => `${r.claim_key}=${JSON.stringify(r.value)}`)
+      .slice(0, 6);
+    const rep = eventRepText({
+      title: c.title ?? "",
+      summary: c.summary ?? "",
+      // recipe-identical to clusterRepTextV2 on a single-article
+      // cluster — the event title is its own representative headline
+      headlines: c.title ? [c.title] : [],
+      entities: (c.entity_signature ?? "").split(" ").filter(Boolean),
+      claimLabels,
+    });
+    sides.push({
+      row: c,
+      cand: {
+        id: c.id,
+        signature: c.signature ?? "",
+        entitySignature: c.entity_signature ?? "",
+        entitySignatureCore: c.entity_signature_core ?? "",
+        claimKeys: new Set(ck.rows.map((r) => r.claim_key)),
+        claimFps: new Set(
+          ck.rows.map((r) => `${r.claim_key}|${JSON.stringify(r.value)}`),
+        ),
+        topic: c.topic,
+        publishedAt: c.occurred_at ? Date.parse(c.occurred_at) : undefined,
+        language: c.title ? detectLanguage(c.title) : undefined,
+      },
+      rep,
+      hash: repHash(rep),
+    });
+  }
+
+  // stage A recall filter — semantic retrieval widens the pool but never
+  // merges on its own: it only earns the pair a scored evaluation.
+  const incRep = clusterRepTextV2(cluster, claims);
+  if (opts.embedder) {
+    const cached = sides.length
+      ? await client
+          .query<{
+            event_id: string;
+            representation_hash: string;
+            vector: number[];
+          }>(
+            `SELECT event_id, representation_hash, vector
+           FROM event_embeddings
+           WHERE (event_id, representation_hash) IN (
+             ${sides.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(",")})`,
+            sides.flatMap((x) => [x.row.id, x.hash]),
+          )
+          .catch(() => ({ rows: [] as never[] }))
+      : {
+          rows: [] as {
+            event_id: string;
+            representation_hash: string;
+            vector: number[];
+          }[],
+        };
+    const cacheHit = new Map(
+      cached.rows.map((r) => [
+        `${r.event_id}|${r.representation_hash}`,
+        r.vector,
+      ]),
+    );
+    const missing = sides.filter((x) => !cacheHit.has(`${x.row.id}|${x.hash}`));
+    const texts = [incRep, ...missing.map((x) => x.rep)];
+    const vectors = await opts.embedder(texts).catch(() => []);
+    inc.embedding = vectors[0] ?? undefined;
+    for (let i = 0; i < missing.length; i++) {
+      const v = vectors[i + 1];
+      if (!v) continue;
+      missing[i].cand.embedding = v;
+      await client
+        .query(
+          `INSERT INTO event_embeddings
+             (event_id, representation_hash, model, dims, vector, representation)
+           VALUES ($1, $2, $3, $4, $5::jsonb, $6)
+           ON CONFLICT (event_id, representation_hash) DO NOTHING`,
+          [
+            missing[i].row.id,
+            missing[i].hash,
+            embedModel(),
+            v.length,
+            JSON.stringify(v),
+            missing[i].rep,
+          ],
+        )
+        .catch(() => {});
+    }
+    for (const x of sides) {
+      const hit = cacheHit.get(`${x.row.id}|${x.hash}`);
+      if (hit) x.cand.embedding = hit;
+    }
+  }
 
   let best: (typeof cands.rows)[number] | null = null;
   let bestScore = 0;
-  for (const c of cands.rows) {
-    const cSigParts = c.signature.split("|");
-    const cTokens = new Set((cSigParts[1] ?? "").split(" ").filter(Boolean));
-    const cNums = new Set((cSigParts[2] ?? "").split(" ").filter(Boolean));
-    const cBigs = new Set((cSigParts[3] ?? "").split(" ").filter(Boolean));
-    const cEnt = new Set(c.entity_signature.split(" ").filter(Boolean));
-    const cCore = new Set(
-      (c.entity_signature_core || c.entity_signature)
-        .split(" ")
-        .filter(Boolean),
-    );
-
-    const sigSim = jaccard(sigTokens, cTokens);
-    const entSim = jaccard(entTokens, cEnt);
-    const coreEntSim = jaccard(entCoreTokens, cCore);
-    const coreShared = [...entCoreTokens].filter((e) => cCore.has(e));
-    const fullShared = [...entTokens].filter((e) => cEnt.has(e));
-    // hub-only entity overlap (us+china, russia+ukraine…) names a beat,
-    // not an event — it needs a non-hub entity or real headline support.
-    // a lone hub ("vietnam") needs still stronger support.
-    const entityEvidence =
-      coreShared.some((e) => !HUB_ENTITIES.has(e)) ||
-      sigSim >= (coreShared.length >= 2 ? HUB_SIG_FLOOR : HUB_SINGLE_SIG_FLOOR);
-    const personShared = coreShared.some((e) => PERSON_ENTITIES.has(e));
-    const numShared = [...numTokens].some(
-      (t) => cNums.has(t) && isDistinctiveNumber(t),
-    );
-    // entity contradiction blocks only the paths that USE entities as
-    // evidence — a strong independent identity (headline/rare-token/
-    // person/distinctive claim) survives differing place mentions:
-    // "Biển Đông" and "miền Trung" are one storm's route, not two events.
-    const entityBlocked =
-      entCoreTokens.size > 0 && cCore.size > 0 && coreShared.length === 0;
-
-    // candidate's claim space: every versioned value (all positions),
-    // so a cluster asserting an earlier position still matches
-    let distinctiveOverlap = 0;
-    let genericOverlap = 0;
-    if (claims.length > 0) {
-      const ck = await client.query<{
-        claim_key: string;
-        value: unknown;
-      }>(
-        `SELECT DISTINCT c.claim_key, cv.value
-         FROM claims c
-         JOIN claim_versions cv ON cv.claim_id = c.id
-         WHERE c.event_id = $1`,
-        [c.id],
+  for (const { row: c, cand } of sides) {
+    const d = decide(inc, cand);
+    evals.push({ candidateId: c.id, decision: d });
+    if (process.env.DBG_RESOLVE)
+      console.error(
+        `resolve vs ${c.id.slice(0, 8)}: ${JSON.stringify(d)} ` +
+          `inc=${JSON.stringify({ nums: [...inc.numTokens], core: [...inc.entCoreTokens], pub: inc.publishedAt })} ` +
+          `cand=${JSON.stringify({ nums: cand.signature.split("|")[2], core: cand.entitySignatureCore, pub: cand.publishedAt })}`,
       );
-      const candKeys = new Set(ck.rows.map((r) => r.claim_key));
-      const candFps = new Set(
-        ck.rows.map((r) => `${r.claim_key}|${JSON.stringify(r.value)}`),
-      );
-      if (distinctiveKeys.size > 0) {
-        const shared = [...distinctiveKeys].filter((k) =>
-          candKeys.has(k),
-        ).length;
-        distinctiveOverlap = shared / distinctiveKeys.size;
-      }
-      if (genericFps.size > 0) {
-        const shared = [...genericFps].filter((f) => candFps.has(f)).length;
-        genericOverlap = shared / genericFps.size;
-      }
-    }
-
-    const sharedRare = [...sigTokens].filter(
-      (t) =>
-        cTokens.has(t) &&
-        t.length >= RARE_TOKEN_MIN_LEN &&
-        !/^\d+$/.test(t) &&
-        !RARE_TOKEN_EXCLUDE.has(t),
-    ).length;
-
-    // numbers appearing on one side but not the other are an anti-signal
-    // for entity-based paths: "8 đội ASIAD 2026" and "lịch đấu 24/9" share
-    // the competition but not the sub-event. identity paths (headline,
-    // rare token, person, distinctive claim) are exempt.
-    const strictNumConflict =
-      (numTokens.size > 0 || cNums.size > 0) &&
-      ![...numTokens].some((t) => cNums.has(t));
-    const crossLingual =
-      sigSim < 0.1 &&
-      !strictNumConflict &&
-      coreShared.some((e) => !HUB_ENTITIES.has(e)) &&
-      fullShared.length >= 2 &&
-      coreEntSim >= 0.4;
-
-    const eligible =
-      sigSim >= MERGE_JACCARD ||
-      (sharedRare > 0 && sigSim >= RARE_SIG_FLOOR) ||
-      (personShared && sigSim >= PERSON_SIG_FLOOR) ||
-      // a shared title phrase plus a real (non-hub) entity is identity —
-      // hub-only pairs like "trung_quoc" bigrams name a beat, not an event
-      (sigSim >= 0.1 &&
-        [...bigTokens].some((b) => cBigs.has(b)) &&
-        coreShared.some((e) => !HUB_ENTITIES.has(e))) ||
-      (numShared && coreShared.length >= 2) ||
-      crossLingual ||
-      (distinctiveKeys.size > 0 && distinctiveOverlap >= MERGE_CLAIM_OVERLAP) ||
-      (!entityBlocked &&
-        (((!strictNumConflict || sigSim >= 0.2) &&
-          // a numeric mismatch only vetoes weak-headline entity matches;
-          // real token overlap means the numbers are facets, not identity
-          ((coreEntSim >= 0.5 &&
-            sigSim >= ENTITY_SIG_FLOOR &&
-            entityEvidence) ||
-            (coreShared.length >= ENTITY_STRONG_SHARED &&
-              coreEntSim >= ENTITY_STRONG_SIM &&
-              entityEvidence))) ||
-          // an exact claim-value fingerprint is identity itself — a stray
-          // title number must not veto it
-          (genericFps.size > 0 &&
-            genericOverlap >= MERGE_CLAIM_OVERLAP &&
-            (entSim > 0 ||
-              sigSim >= GENERIC_SIG_FLOOR ||
-              (entTokens.size === 0 &&
-                cEnt.size === 0 &&
-                [...genericFps].every((f) =>
-                  INCIDENT_SCOPED.has(f.split("|")[0]),
-                ))))));
-
-    if (!eligible) continue;
-    const score = Math.max(sigSim, entSim, distinctiveOverlap, genericOverlap);
-    if (score > bestScore) {
-      bestScore = score;
+    if (d.decision === "merge" && d.score > bestScore) {
+      bestScore = d.score;
       best = c;
     }
   }
 
   if (best) {
     // entity signature accumulates — newly observed places join the event
-    const merged = new Set([
-      ...entTokens,
-      ...best.entity_signature.split(" ").filter(Boolean),
-    ]);
-    const mergedSig = [...merged].sort().join(" ");
-    const mergedCore = new Set([
-      ...entCoreTokens,
-      ...(best.entity_signature_core || best.entity_signature)
-        .split(" ")
-        .filter(Boolean),
-    ]);
-    const mergedCoreSig = [...mergedCore].sort().join(" ");
+    const merged = new Set([...inc.entTokens]);
+    for (const e of best.entity_signature.split(" ").filter(Boolean)) {
+      merged.add(e);
+    }
+    const mergedCore = new Set([...inc.entCoreTokens]);
+    for (const e of (best.entity_signature_core || best.entity_signature)
+      .split(" ")
+      .filter(Boolean)) {
+      mergedCore.add(e);
+    }
     await client.query(
       `UPDATE events
        SET last_seen_at = now(), entity_signature = $2,
            entity_signature_core = $3
        WHERE id = $1`,
-      [best.id, mergedSig, mergedCoreSig],
+      [best.id, [...merged].sort().join(" "), [...mergedCore].sort().join(" ")],
     );
     return {
-      eventId: best.id,
-      eventVersionId: best.current_version_id,
-      created: false,
+      ref: {
+        eventId: best.id,
+        eventVersionId: best.current_version_id,
+        created: false,
+      },
+      evals,
     };
   }
-  return createEvent(client, {
-    topic: cluster.topic,
-    signature,
-    entitySignature: entSig,
-    entitySignatureCore: [...entCoreTokens].sort().join(" "),
-    title: cluster.title,
-    summary: cluster.summary,
-    occurredAt: cluster.publishedAt,
-    importance: cluster.significanceScore,
-  });
+  return {
+    ref: await createEvent(client, {
+      topic: cluster.topic,
+      signature,
+      entitySignature: entSig,
+      entitySignatureCore: entCoreSig,
+      title: cluster.title,
+      summary: cluster.summary,
+      occurredAt: cluster.publishedAt,
+    }),
+    evals,
+  };
 }
 
 /* -------------------------- step: attach evidence ------------------------ */
@@ -1609,6 +1313,8 @@ export interface PersistResult {
   materialChanges: number;
   /** primary-source documents attached this call */
   primaryAttached: number;
+  /** stage-B evaluations produced while resolving this cluster */
+  resolverEvals?: ResolverEval[];
 }
 
 /**
@@ -1623,6 +1329,8 @@ export async function persistCluster(
     channel?: IngestChannel;
     sourceMeta?: Record<string, SourceMeta>;
     eventType?: string;
+    /** optional semantic scorer — absent ⇒ deterministic lexical path */
+    embedder?: (texts: string[]) => Promise<(number[] | null)[]>;
   } = {},
 ): Promise<PersistResult> {
   const pool = getPool();
@@ -1650,7 +1358,8 @@ export async function persistCluster(
       evByArticle.set(article.id, ev.evidenceVersionId);
       docByArticle.set(article.id, ev.documentId);
       evBySource.set(article.source, ev.evidenceVersionId);
-      const primary = meta?.kind === "primary" || article.ingest?.sourceKind === "primary";
+      const primary =
+        meta?.kind === "primary" || article.ingest?.sourceKind === "primary";
       if (primary) primarySources.add(article.source);
       ingested.push({
         source: article.source,
@@ -1664,7 +1373,40 @@ export async function persistCluster(
     }
 
     // 2) event identity — claims join the merge decision (value-aware)
-    const { eventId, created } = await resolveEvent(client, cluster, claims);
+    const { ref: evRef, evals: resolverEvals } = await resolveEvent(
+      client,
+      cluster,
+      claims,
+      { embedder: opts.embedder },
+    );
+    const { eventId, created } = evRef;
+
+    // 2b) resolver telemetry — every evaluated pair is auditable
+    for (const ev of resolverEvals) {
+      await client
+        .query(
+          `INSERT INTO resolver_decisions
+             (incoming_cluster, candidate_event_id, chosen_event_id,
+              decision, path, score, reasons, hard_blocks, features,
+              semantic_available)
+           VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb, $9::jsonb, $10)`,
+          [
+            cluster.id,
+            ev.candidateId,
+            eventId,
+            ev.decision.decision,
+            ev.decision.path,
+            ev.decision.score,
+            JSON.stringify(ev.decision.reasons),
+            JSON.stringify(ev.decision.hardBlocks),
+            JSON.stringify(ev.decision.features ?? {}, (k, v) =>
+              v instanceof Set ? [...v] : v,
+            ),
+            ev.decision.features?.semanticSimilarity !== undefined,
+          ],
+        )
+        .catch(() => {}); // telemetry must never break persistence
+    }
 
     // 3) membership edges — one event_evidence row per DOCUMENT
     const newEvidence: {
@@ -1853,7 +1595,11 @@ export async function persistCluster(
             prev?.id ?? null,
           ],
         );
-        if (prev && prev.relation !== "original" && asrt.relation === "original")
+        if (
+          prev &&
+          prev.relation !== "original" &&
+          asrt.relation === "original"
+        )
           confirmedUpgrades.push({ docId, source: child.source });
       }
       // final relation per attached article (two articles can share a doc)
@@ -2014,6 +1760,7 @@ export async function persistCluster(
       lineage: lineageStats,
       materialChanges: pending.filter((p) => p.material !== false).length,
       primaryAttached: ingested.filter((i) => i.primary).length,
+      resolverEvals,
     };
   } catch (err) {
     await client.query("ROLLBACK");

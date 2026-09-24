@@ -15,11 +15,7 @@ import { injectPool, getPool } from "../lib/db/pool";
 import { persistCluster } from "../lib/db/writer";
 import { extractClaims } from "../lib/db/extract";
 import { getEventView } from "../lib/db/read";
-import {
-  classifyLineage,
-  independence,
-  type LineageDoc,
-} from "../lib/lineage";
+import { classifyLineage, independence, type LineageDoc } from "../lib/lineage";
 import type { Article, StoryCluster } from "../lib/model";
 
 function setupDb() {
@@ -327,7 +323,8 @@ test("case 7: two journalists, same event, different text → separate origins",
       documentId: "a",
       source: "VnExpress",
       title: "Cháy chợ Đồng Xuân thiệt hại lớn",
-      summary: "Đám cháy bùng lên lúc rạng sáng, thiêu rụi hàng chục gian hàng.",
+      summary:
+        "Đám cháy bùng lên lúc rạng sáng, thiêu rụi hàng chục gian hàng.",
       publishedAt: "2026-09-24T08:00:00Z",
       url: "u1",
     },
@@ -382,7 +379,10 @@ test("A1: SEC filings from two issuers → 2 source rows, no domain conflict", a
   const { rows: disc } = await getPool().query<{ provider: string }>(
     `SELECT DISTINCT provider FROM evidence_discoveries ORDER BY provider`,
   );
-  assert.deepEqual(disc.map((d) => d.provider), ["SEC EDGAR"]);
+  assert.deepEqual(
+    disc.map((d) => d.provider),
+    ["SEC EDGAR"],
+  );
 });
 
 test("A2: late metadata enrichment merges, no new EvidenceVersion", async () => {
@@ -509,11 +509,56 @@ test("independence(): math on mixed graph", () => {
     }),
   );
   const asrts = new Map([
-    ["d0", { parentDocumentId: null, relation: "original" as const, confidence: 1, method: "rule" as const, evidence: {} }],
-    ["d1", { parentDocumentId: "d0", relation: "syndicated" as const, confidence: 1, method: "rule" as const, evidence: {} }],
-    ["d2", { parentDocumentId: "d0", relation: "syndicated" as const, confidence: 1, method: "rule" as const, evidence: {} }],
-    ["d3", { parentDocumentId: null, relation: "original" as const, confidence: 1, method: "rule" as const, evidence: {} }],
-    ["d4", { parentDocumentId: null, relation: "original" as const, confidence: 1, method: "rule" as const, evidence: {} }],
+    [
+      "d0",
+      {
+        parentDocumentId: null,
+        relation: "original" as const,
+        confidence: 1,
+        method: "rule" as const,
+        evidence: {},
+      },
+    ],
+    [
+      "d1",
+      {
+        parentDocumentId: "d0",
+        relation: "syndicated" as const,
+        confidence: 1,
+        method: "rule" as const,
+        evidence: {},
+      },
+    ],
+    [
+      "d2",
+      {
+        parentDocumentId: "d0",
+        relation: "syndicated" as const,
+        confidence: 1,
+        method: "rule" as const,
+        evidence: {},
+      },
+    ],
+    [
+      "d3",
+      {
+        parentDocumentId: null,
+        relation: "original" as const,
+        confidence: 1,
+        method: "rule" as const,
+        evidence: {},
+      },
+    ],
+    [
+      "d4",
+      {
+        parentDocumentId: null,
+        relation: "original" as const,
+        confidence: 1,
+        method: "rule" as const,
+        evidence: {},
+      },
+    ],
   ]);
   const ind = independence(docs, asrts);
   assert.equal(ind.rawSources, 5);
@@ -789,7 +834,13 @@ test("mutation guard: lineage + metadata observations are append-only in schema"
   // real Postgres rejects UPDATE/DELETE on both tables
   assert.match(mig, /CREATE TRIGGER evidence_lineage_append_only/);
   assert.match(mig, /BEFORE UPDATE OR DELETE ON evidence_lineage/);
-  assert.match(mig, /CREATE TRIGGER evidence_metadata_observations_append_only/);
-  assert.match(mig, /BEFORE UPDATE OR DELETE ON evidence_metadata_observations/);
+  assert.match(
+    mig,
+    /CREATE TRIGGER evidence_metadata_observations_append_only/,
+  );
+  assert.match(
+    mig,
+    /BEFORE UPDATE OR DELETE ON evidence_metadata_observations/,
+  );
   assert.match(mig, /reject_history_mutation\(\)/);
 });
