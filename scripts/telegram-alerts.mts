@@ -34,12 +34,17 @@ interface State {
   delivered: string[];
 }
 
-function loadState(): State {
+function loadState(): { state: State; existed: boolean } {
   try {
     const raw = JSON.parse(readFileSync(STATE_PATH, "utf8")) as State;
-    return { delivered: Array.isArray(raw.delivered) ? raw.delivered : [] };
+    return {
+      state: {
+        delivered: Array.isArray(raw.delivered) ? raw.delivered : [],
+      },
+      existed: true,
+    };
   } catch {
-    return { delivered: [] };
+    return { state: { delivered: [] }, existed: false };
   }
 }
 
@@ -53,9 +58,26 @@ async function main() {
     ? await getChangesForEntities(watch, 50)
     : await getLatestChanges(50);
 
-  const state = loadState();
+  const { state, existed } = loadState();
   const seen = new Set(state.delivered);
   const fresh = changes.filter((c) => !seen.has(c.id));
+
+  // first run: seed the watermark instead of dumping the whole backlog —
+  // an alert channel that opens with 50 stale items is noise, not signal
+  if (!existed) {
+    for (const c of changes) seen.add(c.id);
+    const delivered = [...seen].slice(-STATE_CAP);
+    if (!dryRun) {
+      mkdirSync("data", { recursive: true });
+      writeFileSync(STATE_PATH, JSON.stringify({ delivered }, null, 1));
+      await sendTelegram(
+        `⚡ ThunderFeed — đã kết nối.\n` +
+          `Đang theo dõi ${changes.length} thay đổi gần đây; chỉ thay đổi MỚI từ giờ sẽ được gửi.`,
+      );
+    }
+    console.log(`initialized state (${delivered.length} ids)`);
+    return;
+  }
 
   if (!fresh.length) {
     console.log("no new material changes");
