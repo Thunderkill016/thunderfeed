@@ -26,6 +26,11 @@ export interface ClaimView {
   changedAt?: string;
   evidenceCount: number;
   primaryEvidenceCount: number;
+  /**
+   * Live positions under dispute — each value with the sources whose
+   * LATEST assertion holds it. Only present when ≥2 positions exist.
+   */
+  positions?: { value: unknown; sources: string[] }[];
 }
 
 export interface ChangeView {
@@ -151,13 +156,31 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     [eventId],
   );
 
+  const positionsQ = pool.query<{
+    claim_id: string;
+    source: string;
+    value: unknown;
+    version_no: number;
+  }>(
+    `SELECT c.id AS claim_id, s.name AS source, cv.value, cv.version_no
+     FROM claim_evidence ce
+     JOIN claim_versions cv ON cv.id = ce.claim_version_id
+     JOIN claims c ON c.id = cv.claim_id
+     JOIN evidence_versions ev ON ev.id = ce.evidence_version_id
+     JOIN evidence_documents d ON d.id = ev.document_id
+     JOIN sources s ON s.id = d.source_id
+     WHERE c.event_id = $1`,
+    [eventId],
+  );
+
+  // Independent origins = distinct content lineages, not outlets:
+  // N wire copies of the same text share one content_hash → one origin;
+  // genuinely different reporting produces different hashes.
   const originsQ = pool.query<{ n: string }>(
-    `SELECT COUNT(DISTINCT d.source_id) AS n
+    `SELECT COUNT(DISTINCT ev.content_hash) AS n
      FROM event_evidence ee
      JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
-     JOIN evidence_documents d ON d.id = ev.document_id
-     WHERE ee.event_id = $1 AND ee.relationship IN ('origin', 'primary_evidence')
-       AND ee.detached_at IS NULL`,
+     WHERE ee.event_id = $1 AND ee.detached_at IS NULL`,
     [eventId],
   );
 
@@ -170,15 +193,23 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     [eventId],
   );
 
-  const [claimsR, claimCountsR, changesR, evidenceR, originsR, contraR] =
-    await Promise.all([
-      claimsQ,
-      claimCountsQ,
-      changesQ,
-      evidenceQ,
-      originsQ,
-      contradictionsQ,
-    ]);
+  const [
+    claimsR,
+    claimCountsR,
+    changesR,
+    evidenceR,
+    positionsR,
+    originsR,
+    contraR,
+  ] = await Promise.all([
+    claimsQ,
+    claimCountsQ,
+    changesQ,
+    evidenceQ,
+    positionsQ,
+    originsQ,
+    contradictionsQ,
+  ]);
 
   const counts = new Map(
     claimCountsR.rows.map((r) => [
@@ -189,6 +220,40 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
       },
     ]),
   );
+  // positions: latest vote per source, grouped by value — mirrors the
+  // writer's deterministic model so the UI can render "20: Reuters, AP /
+  // 35: BBC" instead of a single flickering current value
+  const positionsByClaim = new Map<
+    string,
+    { value: unknown; sources: string[] }[]
+  >();
+  {
+    const latest = new Map<
+      string,
+      Map<string, { value: unknown; vn: number }>
+    >();
+    for (const r of positionsR.rows) {
+      const per = latest.get(r.claim_id) ?? new Map();
+      const cur = per.get(r.source);
+      if (!cur || r.version_no > cur.vn)
+        per.set(r.source, { value: r.value, vn: r.version_no });
+      latest.set(r.claim_id, per);
+    }
+    for (const [claimId, per] of latest) {
+      const byValue = new Map<string, { value: unknown; sources: string[] }>();
+      for (const [source, v] of per) {
+        const key = JSON.stringify(v.value);
+        const p = byValue.get(key) ?? { value: v.value, sources: [] };
+        p.sources.push(source);
+        byValue.set(key, p);
+      }
+      const positions = [...byValue.values()].sort(
+        (a, b) => b.sources.length - a.sources.length,
+      );
+      if (positions.length > 1) positionsByClaim.set(claimId, positions);
+    }
+  }
+
   const claims: ClaimView[] = claimsR.rows.map((r) => {
     const n = counts.get(r.claim_version_id);
     return {
@@ -199,9 +264,13 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
       unit: r.unit,
       state: r.state,
       previousValue: r.prev_value ?? undefined,
-      changedAt: r.prev_value ? r.changed_at! : undefined,
+      changedAt:
+        r.prev_value !== null && r.prev_value !== undefined
+          ? r.changed_at!
+          : undefined,
       evidenceCount: n?.evidence ?? 0,
       primaryEvidenceCount: n?.primary ?? 0,
+      positions: positionsByClaim.get(r.id),
     };
   });
 

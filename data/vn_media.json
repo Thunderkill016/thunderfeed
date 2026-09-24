@@ -158,5 +158,173 @@
     "description": "Báo khoa học phổ thông của Viện Hàn lâm KH&CN.",
     "owner": "Viện Hàn lâm KH&CN",
     "typology": "State Funded Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "VTV",
+    "domains": ["vtv.vn"],
+    "description": "Đài Truyền hình Việt Nam — đài truyền hình quốc gia.",
+    "owner": "Đài THVN",
+    "typology": "State Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "VOV",
+    "domains": ["vov.vn", "vov.gov.vn"],
+    "description": "Đài Tiếng nói Việt Nam — đài phát thanh quốc gia.",
+    "owner": "Đài TNVN",
+    "typology": "State Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "CafeF",
+    "domains": ["cafef.vn"],
+    "description": "Kênh tin tài chính - chứng khoán trực thuộc VCCorp.",
+    "owner": "VCCorp",
+    "typology": "Private Enterprise"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "CafeBiz",
+    "domains": ["cafebiz.vn"],
+    "description": "Báo kinh doanh - doanh nhân của VCCorp.",
+    "owner": "VCCorp",
+    "typology": "Private Enterprise"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Người Đưa Tin",
+    "domains": ["nguoiduatin.vn"],
+    "description": "Báo điện tử tổng hợp, giấy phép của Tạp chí Kinh tế VN.",
+    "owner": "Tạp chí Kinh tế Việt Nam",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "Thailand",
+    "organization": "Bangkok Post",
+    "domains": ["bangkokpost.com"],
+    "description": "Nhật báo tiếng Anh lâu đời của Thái Lan.",
+    "owner": "Bangkok Post Public Co.",
+    "typology": "Private Media"
+  },
+  {
+    "country": "Japan",
+    "organization": "Nikkei Asia",
+    "domains": ["asia.nikkei.com", "nikkei.com"],
+    "description": "Nhật báo kinh tế - tài chính Nhật Bản, ấn bản châu Á.",
+    "owner": "Nikkei Inc.",
+    "typology": "Private Media"
+  },
+  {
+    "country": "Hong Kong",
+    "organization": "Asia Times",
+    "domains": ["asiatimes.com"],
+    "description": "Báo mạng phân tích chính trị - kinh tế châu Á.",
+    "owner": "Asia Times Holdings",
+    "typology": "Private Media"
+  },
+  {
+    "country": "Japan",
+    "organization": "The Diplomat",
+    "domains": ["thediplomat.com"],
+    "description": "Tạp chí phân tích chính trị - an ninh châu Á - Thái Bình Dương.",
+    "owner": "Diplomat Media Inc.",
+    "typology": "Private Media"
+  },
+  {
+    "country": "United States",
+    "organization": "Techmeme",
+    "domains": ["techmeme.com"],
+    "description": "Trang tổng hợp tin công nghệ.",
+    "owner": "Techmeme LLC",
+    "typology": "Private Media"
+  },
+  {
+    "country": "United States",
+    "organization": "RFA Tiếng Việt",
+    "domains": ["rfa.org"],
+    "description": "Đài Á Châu Tự Do — đài quốc tế của Mỹ phát tiếng Việt.",
+    "owner": "USAGM",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "United States",
+    "organization": "Radio Free Asia",
+    "domains": ["www.rfa.org"],
+    "description": "Radio Free Asia — US-funded international broadcaster covering Asia.",
+    "owner": "USAGM",
+    "typology": "State Funded Media"
+  },
+  {
+    "country": "United States",
+    "organization": "CNN",
+    "domains": ["cnn.com"],
+    "description": "Cable News Network — kênh tin tức 24h của Mỹ.",
+    "owner": "Warner Bros. Discovery",
+    "typology": "Private Media"
+  },
+  {
+    "country": "United States",
+    "organization": "Fox News",
+    "domains": ["foxnews.com"],
+    "description": "Kênh tin tức cáp thiên hữu bảo thủ của Mỹ.",
+    "owner": "Fox Corporation",
+    "typology": "Private Media"
+  },
+  {
+    "country": "United Kingdom",
+    "organization": "Sky News",
+    "domains": ["skynews.com", "news.sky.com"],
+    "description": "Kênh tin tức 24h của Anh (kite's 'Sky' entry maps skynews.com to Sky News Arabia — this entry takes precedence).",
+    "owner": "Comcast (Sky Group)",
+    "typology": "Private Media"
+  },
+  {
+    "country": "India",
+    "organization": "The Times of India",
+    "domains": ["timesofindia.indiatimes.com", "timesofindia.com"],
+    "description": "Nhật báo tiếng Anh lớn nhất Ấn Độ.",
+    "owner": "The Times Group",
+    "typology": "Private Media"
+  },
+  {
+    "country": "Japan",
+    "organization": "The Japan Times",
+    "domains": ["japantimes.co.jp"],
+    "description": "Nhật báo tiếng Anh lâu đời nhất Nhật Bản.",
+    "owner": "The Japan Times, Ltd.",
+    "typology": "Private Media"
+  },
+  {
+    "country": "Netherlands",
+    "organization": "The Moscow Times",
+    "domains": ["themoscowtimes.com"],
+    "description": "Báo tiếng Anh độc lập về Nga, trụ sở Amsterdam (lưu vong).",
+    "owner": "Moscow Times LLC",
+    "typology": "Private Independent Media"
+  },
+  {
+    "country": "Ukraine",
+    "organization": "Ukrinform",
+    "domains": ["ukrinform.net", "ukrinform.ua"],
+    "description": "Hãng thông tấn nhà nước Ukraine.",
+    "owner": "Ukrainian Government",
+    "typology": "State Media"
+  },
+  {
+    "country": "Israel",
+    "organization": "The Jerusalem Post",
+    "domains": ["jpost.com"],
+    "description": "Nhật báo tiếng Anh lớn của Israel.",
+    "owner": "Jerusalem Post Group (Eli Azur)",
+    "typology": "Private Media"
+  },
+  {
+    "country": "Canada",
+    "organization": "CBC News",
+    "domains": ["cbc.ca"],
+    "description": "Đài phát thanh - truyền hình công cộng Canada.",
+    "owner": "Canadian Broadcasting Corporation",
+    "typology": "Public Broadcaster"
   }
 ]

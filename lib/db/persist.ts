@@ -9,7 +9,12 @@ import type { StoryCluster } from "../model";
 import type { Feed } from "../feeds";
 import { dbEnabled } from "./pool";
 import { extractClaims } from "./extract";
-import { persistCluster, resolveStaleEvents, type SourceMeta } from "./writer";
+import {
+  persistCluster,
+  resolveStaleEvents,
+  type ExtractedClaim,
+  type SourceMeta,
+} from "./writer";
 
 /* Bound DB growth per refresh: only the most significant clusters persist.
    60 clusters × ~3 evidence versions stays well under free-tier write
@@ -35,15 +40,23 @@ function metaFor(feed: Feed | undefined, name: string): SourceMeta {
 /**
  * Persist one edition build. Callers pass the FINAL clusters (post
  * semantic-merge) so persisted events match what the UI renders.
+ * `extraClaims` merges LLM-extracted claims (keyed by cluster id) into
+ * the same canonical Claim tables — the deterministic extractor wins
+ * on identical (source, key, value) so a fact never double-writes.
  * Each cluster commits independently — one bad cluster must not
  * sink the edition (transactional isolation).
  */
 export async function persistEdition(
   allClusters: StoryCluster[],
   feedByName: Map<string, Feed>,
-): Promise<{ persisted: number; failed: number }> {
+  extraClaims?: Map<string, ExtractedClaim[]>,
+): Promise<{
+  persisted: number;
+  failed: number;
+  eventIds: Map<string, string>;
+}> {
   if (!dbEnabled() || allClusters.length === 0)
-    return { persisted: 0, failed: 0 };
+    return { persisted: 0, failed: 0, eventIds: new Map() };
 
   const clusters = [...allClusters]
     .sort((a, b) => b.significanceScore - a.significanceScore)
@@ -56,12 +69,28 @@ export async function persistEdition(
 
   let persisted = 0;
   let failed = 0;
+  const eventIds = new Map<string, string>();
   for (const c of clusters) {
+    const llmClaims = extraClaims?.get(c.id) ?? [];
+    const deterministic = extractClaims(c);
+    const seen = new Set(
+      deterministic.map(
+        (d) => `${d.assertedBy}|${d.claimKey}|${JSON.stringify(d.value)}`,
+      ),
+    );
+    const claims = [
+      ...deterministic,
+      ...llmClaims.filter(
+        (l) =>
+          !seen.has(`${l.assertedBy}|${l.claimKey}|${JSON.stringify(l.value)}`),
+      ),
+    ];
     try {
-      await persistCluster(c, extractClaims(c), {
+      const r = await persistCluster(c, claims, {
         channel: "rss",
         sourceMeta,
       });
+      eventIds.set(c.id, r.eventId);
       persisted++;
     } catch (error) {
       failed++;
@@ -74,5 +103,5 @@ export async function persistEdition(
   const resolved = await resolveStaleEvents().catch(() => 0);
   if (resolved > 0)
     console.log(`Event history: ${resolved} stale events resolved`);
-  return { persisted, failed };
+  return { persisted, failed, eventIds };
 }

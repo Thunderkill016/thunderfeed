@@ -10,7 +10,7 @@ import {
 import { isNoise, normalizeText, STOP_WORDS } from "./model";
 import { analyzeCluster, deterministicNhanDinh } from "./analysis";
 import { generateNhanDinh, geminiEnabled } from "./gemini";
-import { generateClaims } from "./claims";
+import { generateClaims, extractClaimsLLM } from "./claims";
 import { cosine, embedArticles } from "./embed";
 import { applyTracking } from "./tracking";
 import { feeds } from "./feeds";
@@ -24,6 +24,7 @@ import type {
   PillarId,
   StoryCluster,
 } from "./model";
+import type { ExtractedClaim } from "./db/writer";
 
 const REVALIDATE_SECONDS = 15 * 60;
 const MAX_LLM_CLUSTERS = 8;
@@ -160,23 +161,6 @@ async function buildEdition(): Promise<Edition> {
   const editionNow = new Date().toISOString();
   applyTracking(clusters, editionNow);
 
-  // evidence layer: persist the final clusters as Evidence → Event → Claim
-  // → Change history. Inert without DATABASE_URL; a persistence failure
-  // must never sink the edition itself.
-  const feedByName = new Map(feeds.map((f) => [f.name, f]));
-  try {
-    const r = await persistEdition(clusters, feedByName);
-    if (r.persisted > 0 || r.failed > 0)
-      console.log(
-        `Event history: ${r.persisted} clusters persisted, ${r.failed} failed`,
-      );
-  } catch (error) {
-    console.warn(
-      "persistEdition failed:",
-      error instanceof Error ? error.message : error,
-    );
-  }
-
   // Hero: highest-significance strategic event, else top cluster
   const hero =
     clusters.find(
@@ -227,6 +211,7 @@ async function buildEdition(): Promise<Edition> {
   const llmTargets = apiKey ? sortedTargets.slice(0, MAX_LLM_CLUSTERS) : [];
   const generated = new Map<string, NhanDinh>();
   const claimsMap = new Map<string, ClaimAnalysis>();
+  const extractedMap = new Map<string, ExtractedClaim[]>();
   const LLM_CONCURRENCY = 4;
   for (let i = 0; i < llmTargets.length; i += LLM_CONCURRENCY) {
     const slice = llmTargets.slice(i, i + LLM_CONCURRENCY);
@@ -234,13 +219,34 @@ async function buildEdition(): Promise<Edition> {
       slice.flatMap((c) => [
         generateNhanDinh(apiKey!, c).then((v) => ["nd", c.id, v] as const),
         generateClaims(apiKey!, c).then((v) => ["cl", c.id, v] as const),
+        extractClaimsLLM(apiKey!, c).then((v) => ["ex", c.id, v] as const),
       ]),
     );
     for (const [kind, id, v] of results) {
-      if (!v) continue;
+      if (!v || (Array.isArray(v) && v.length === 0)) continue;
       if (kind === "nd") generated.set(id, v as NhanDinh);
-      else claimsMap.set(id, v as ClaimAnalysis);
+      else if (kind === "cl") claimsMap.set(id, v as ClaimAnalysis);
+      else extractedMap.set(id, v as ExtractedClaim[]);
     }
+  }
+
+  // evidence layer: persist the final clusters as Evidence → Event → Claim
+  // → Change history. LLM-extracted claims merge into the same canonical
+  // tables. Inert without DATABASE_URL; a failure must never sink the edition.
+  const feedByName = new Map(feeds.map((f) => [f.name, f]));
+  let eventIds: Record<string, string> | undefined;
+  try {
+    const r = await persistEdition(clusters, feedByName, extractedMap);
+    if (r.eventIds.size > 0) eventIds = Object.fromEntries(r.eventIds);
+    if (r.persisted > 0 || r.failed > 0)
+      console.log(
+        `Event history: ${r.persisted} clusters persisted, ${r.failed} failed`,
+      );
+  } catch (error) {
+    console.warn(
+      "persistEdition failed:",
+      error instanceof Error ? error.message : error,
+    );
   }
 
   const analyses: Record<string, EventAnalysis> = {};
@@ -279,6 +285,7 @@ async function buildEdition(): Promise<Edition> {
     llmEnabled: geminiEnabled(),
     totalArticles: articles.length,
     changes,
+    eventIds,
   };
 }
 

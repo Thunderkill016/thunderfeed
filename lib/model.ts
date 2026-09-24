@@ -239,6 +239,11 @@ export interface Edition {
   totalArticles: number;
   /** diff vs the previous edition snapshot */
   changes: { newEvents: number; accelerating: number };
+  /**
+   * cluster.id → canonical event id, when the evidence layer persisted
+   * this edition. Lets the UI open the EventView for any rendered card.
+   */
+  eventIds?: Record<string, string>;
 }
 
 /* -------------------------------- helpers -------------------------------- */

@@ -9,6 +9,8 @@ import PillarSection from "./PillarSection";
 import BlindspotStrip from "./BlindspotStrip";
 import WireRail from "./WireRail";
 import EventDetail from "./EventDetail";
+import EventModal from "./EventModal";
+import ChangesRail from "./ChangesRail";
 import SearchPalette from "./SearchPalette";
 
 const READ_KEY = "thunderfeed:read";
@@ -26,6 +28,7 @@ function loadRead(): Set<string> {
 export default function Edition({ initial }: { initial: Edition }) {
   const [edition, setEdition] = useState(initial);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [openEventId, setOpenEventId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [read, setRead] = useState<Set<string>>(new Set());
   const [dark, setDark] = useState(false);
@@ -90,6 +93,7 @@ export default function Edition({ initial }: { initial: Edition }) {
       if (e.key === "Escape") {
         setSearchOpen(false);
         setOpenId(null);
+        setOpenEventId(null);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -174,6 +178,8 @@ export default function Edition({ initial }: { initial: Edition }) {
         </div>
       </header>
 
+      <ChangesRail onOpenEvent={setOpenEventId} />
+
       <StatusBar
         updatedAt={edition.updatedAt}
         sources={edition.sources}
@@ -234,8 +240,16 @@ export default function Edition({ initial }: { initial: Edition }) {
         <EventDetail
           cluster={openEvent}
           analysis={openAnalysis}
+          eventId={edition.eventIds?.[openEvent.id]}
           now={nowMs}
           onClose={() => setOpenId(null)}
+        />
+      )}
+
+      {openEventId && (
+        <EventModal
+          eventId={openEventId}
+          onClose={() => setOpenEventId(null)}
         />
       )}
     </div>

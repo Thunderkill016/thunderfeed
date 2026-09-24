@@ -11,6 +11,12 @@ export type Feed = {
   wire?: boolean;
   /** feed omits item dates — stamp articles at fetch time (real-time wires) */
   undatedAsFresh?: boolean;
+  /**
+   * Non-RSS surface. "news-sitemap" is a Google News sitemap (<urlset> with
+   * news:title + news:publication_date) — the only live machine-readable
+   * output on outlets whose RSS died (RFA Tiếng Việt, CafeBiz, Người Đưa Tin).
+   */
+  format?: "news-sitemap";
 };
 
 const vne = (path: string, topic: Topic): Feed => ({
@@ -43,6 +49,15 @@ const vnnews = (path: string, topic: Topic): Feed => ({
   topic,
   url: `https://vietnamnews.vn/rss/${path}.rss`,
   language: "en",
+  region: "vietnam",
+});
+
+const vov = (path: string, topic: Topic): Feed => ({
+  id: `vov-${path}`,
+  name: "VOV",
+  topic,
+  url: `https://vov.vn/rss/${path}.rss`,
+  language: "vi",
   region: "vietnam",
 });
 
@@ -143,6 +158,263 @@ export const feeds: Feed[] = [
     language: "en",
     region: "asia",
   },
+  {
+    id: "scmp-asia",
+    name: "South China Morning Post",
+    topic: "world",
+    url: "https://www.scmp.com/rss/91/feed",
+    language: "en",
+    region: "asia",
+    wire: true,
+  },
+  {
+    id: "st-asia",
+    name: "The Straits Times",
+    topic: "world",
+    url: "https://www.straitstimes.com/news/asia/rss.xml",
+    language: "en",
+    region: "asia",
+  },
+  {
+    id: "bangkokpost",
+    name: "Bangkok Post",
+    topic: "world",
+    url: "https://www.bangkokpost.com/rss/data/topstories.xml",
+    language: "en",
+    region: "asia",
+  },
+  {
+    id: "abc-au",
+    name: "ABC News Australia",
+    topic: "world",
+    url: "https://www.abc.net.au/news/feed/51120/rss.xml",
+    language: "en",
+    region: "asia",
+  },
+
+  /* ----------------------------- US outlets ----------------------------- */
+  {
+    id: "nyt-world",
+    name: "The New York Times",
+    topic: "world",
+    url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+    language: "en",
+    region: "us",
+    wire: true,
+  },
+  /* CNN is intentionally absent: rss.cnn.com still serves edition.rss but the
+     channel froze in April 2023 — every machine-readable surface is stale. */
+  {
+    id: "fox-world",
+    name: "Fox News",
+    topic: "world",
+    url: "https://moxie.foxnews.com/google-publisher/world.xml",
+    language: "en",
+    region: "us",
+    wire: true,
+  },
+  {
+    id: "npr-world",
+    name: "NPR",
+    topic: "world",
+    url: "https://feeds.npr.org/1004/rss.xml",
+    language: "en",
+    region: "us",
+    wire: true,
+  },
+  {
+    id: "pbs-world",
+    name: "PBS NewsHour",
+    topic: "world",
+    url: "https://www.pbs.org/newshour/feeds/rss/world",
+    language: "en",
+    region: "us",
+  },
+  {
+    id: "thehill",
+    name: "The Hill",
+    topic: "world",
+    url: "https://thehill.com/feed/",
+    language: "en",
+    region: "us",
+  },
+  {
+    id: "cnbc",
+    name: "CNBC",
+    topic: "business",
+    url: "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+    language: "en",
+    region: "us",
+  },
+
+  /* ------------------------- Europe / Russia / Ukraine ------------------ */
+  {
+    id: "sky-world",
+    name: "Sky News",
+    topic: "world",
+    url: "https://feeds.skynews.com/feeds/rss/world.xml",
+    language: "en",
+    region: "europe",
+    wire: true,
+  },
+  {
+    id: "independent",
+    name: "The Independent",
+    topic: "world",
+    url: "https://www.independent.co.uk/rss",
+    language: "en",
+    region: "europe",
+  },
+  {
+    id: "euronews",
+    name: "Euronews",
+    topic: "world",
+    url: "https://www.euronews.com/rss",
+    language: "en",
+    region: "europe",
+  },
+  {
+    id: "rt",
+    name: "RT",
+    topic: "world",
+    url: "https://www.rt.com/rss/news/",
+    language: "en",
+    region: "europe",
+  },
+  {
+    id: "tass",
+    name: "TASS",
+    topic: "world",
+    url: "https://tass.com/rss/v2.xml",
+    language: "en",
+    region: "europe",
+    wire: true,
+  },
+  {
+    id: "moscowtimes",
+    name: "The Moscow Times",
+    topic: "world",
+    url: "https://www.themoscowtimes.com/rss/news",
+    language: "en",
+    region: "europe",
+  },
+  {
+    id: "ukrinform",
+    name: "Ukrinform",
+    topic: "world",
+    url: "https://www.ukrinform.net/rss/block-lastnews",
+    language: "en",
+    region: "europe",
+  },
+  {
+    id: "jpost",
+    name: "The Jerusalem Post",
+    topic: "world",
+    url: "https://www.jpost.com/rss/rssfeedsfrontpage.aspx",
+    language: "en",
+    region: "world",
+  },
+
+  /* ------------------------- South / East Asia -------------------------- */
+  {
+    id: "toi",
+    name: "The Times of India",
+    topic: "world",
+    url: "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
+    language: "en",
+    region: "asia",
+    wire: true,
+  },
+  {
+    id: "thehindu-intl",
+    name: "The Hindu",
+    topic: "world",
+    url: "https://www.thehindu.com/news/international/feeder/default.rss",
+    language: "en",
+    region: "asia",
+  },
+  {
+    id: "ndtv-world",
+    name: "NDTV",
+    topic: "world",
+    url: "https://feeds.feedburner.com/ndtvnews-world-news",
+    language: "en",
+    region: "asia",
+  },
+  {
+    id: "japantimes",
+    name: "The Japan Times",
+    topic: "world",
+    url: "https://www.japantimes.co.jp/feed/",
+    language: "en",
+    region: "asia",
+  },
+  {
+    id: "yonhap",
+    name: "Yonhap News",
+    topic: "world",
+    url: "https://en.yna.co.kr/RSS/news.xml",
+    language: "en",
+    region: "asia",
+  },
+  {
+    id: "cbc-world",
+    name: "CBC News",
+    topic: "world",
+    url: "https://www.cbc.ca/cmlink/rss-world",
+    language: "en",
+    region: "world",
+  },
+
+  /* --------- Vietnamese-language international (framing contrast) -------- */
+  {
+    id: "rfi-vi",
+    name: "RFI Tiếng Việt",
+    topic: "world",
+    url: "https://www.rfi.fr/vi/rss",
+    language: "vi",
+    region: "world",
+    wire: true,
+  },
+  {
+    id: "rfa-en",
+    name: "Radio Free Asia",
+    topic: "world",
+    url: "https://www.rfa.org/english/rss2.xml",
+    language: "en",
+    region: "asia",
+    wire: true,
+  },
+  /* Google News sitemaps — only live machine-readable surface on outlets
+     whose RSS died (RFA: USAGM cuts 2025; CafeBiz/Người Đưa Tin: RSS gone). */
+  {
+    id: "rfa-vi",
+    name: "RFA Tiếng Việt",
+    topic: "vietnam",
+    url: "https://www.rfa.org/vietnamese/news-sitemap.xml",
+    language: "vi",
+    region: "world",
+    wire: true,
+    format: "news-sitemap",
+  },
+  {
+    id: "cafebiz",
+    name: "CafeBiz",
+    topic: "business",
+    url: "https://cafebiz.vn/google-news-sitemap.xml",
+    language: "vi",
+    region: "vietnam",
+    format: "news-sitemap",
+  },
+  {
+    id: "nguoiduatin",
+    name: "Người Đưa Tin",
+    topic: "vietnam",
+    url: "https://www.nguoiduatin.vn/google-news-sitemap.xml",
+    language: "vi",
+    region: "vietnam",
+    format: "news-sitemap",
+  },
 
   /* ------------------------------ technology ---------------------------- */
   {
@@ -200,6 +472,26 @@ export const feeds: Feed[] = [
     language: "vi",
     region: "vietnam",
   },
+  {
+    id: "vtv-home",
+    name: "VTV",
+    topic: "vietnam",
+    url: "https://vtv.vn/rss/home.rss",
+    headline: true,
+    language: "vi",
+    region: "vietnam",
+  },
+  vov("chinh-tri", "vietnam"),
+  vov("xa-hoi", "vietnam"),
+  vov("the-gioi", "world"),
+  {
+    id: "tn-home",
+    name: "Thanh Niên",
+    topic: "vietnam",
+    url: "https://thanhnien.vn/rss/home.rss",
+    language: "vi",
+    region: "vietnam",
+  },
 
   /* --------------------- Vietnam — nhà nước / wires --------------------- */
   {
@@ -228,6 +520,23 @@ export const feeds: Feed[] = [
   },
   vnnews("politics-laws", "vietnam"),
   vnnews("society", "vietnam"),
+  /* English editions of VN outlets — the vi↔en bridge the resolver needs */
+  {
+    id: "vne-en",
+    name: "e.VnExpress",
+    topic: "vietnam",
+    url: "https://e.vnexpress.net/rss/news.rss",
+    language: "en",
+    region: "vietnam",
+  },
+  {
+    id: "vnplus-en",
+    name: "VietnamPlus English",
+    topic: "vietnam",
+    url: "https://en.vietnamplus.vn/rss/home.rss",
+    language: "en",
+    region: "vietnam",
+  },
 
   /* ------------------------------ kinh tế ------------------------------- */
   vne("kinh-doanh", "business"),
@@ -263,6 +572,14 @@ export const feeds: Feed[] = [
     name: "Vietcetera",
     topic: "business",
     url: "https://vietcetera.com/rss-vn.xml",
+    language: "vi",
+    region: "vietnam",
+  },
+  {
+    id: "cafef",
+    name: "CafeF",
+    topic: "business",
+    url: "https://cafef.vn/home.rss",
     language: "vi",
     region: "vietnam",
   },
@@ -304,4 +621,28 @@ export const feeds: Feed[] = [
   vne("giai-tri", "culture"),
   tt("the-thao", "sports"),
   tt("van-hoa", "culture"),
+  {
+    id: "kienthuc",
+    name: "Kiến Thức",
+    topic: "science",
+    url: "https://kienthuc.net.vn/rss/home.rss",
+    language: "vi",
+    region: "vietnam",
+  },
+  {
+    id: "skds-giadinh",
+    name: "Sức khỏe & Đời sống",
+    topic: "health",
+    url: "https://giadinh.suckhoedoisong.vn/rss/home.rss",
+    language: "vi",
+    region: "vietnam",
+  },
+  {
+    id: "tt247",
+    name: "Thể Thao 247",
+    topic: "sports",
+    url: "https://thethao247.vn/the-thao-24h.rss",
+    language: "vi",
+    region: "vietnam",
+  },
 ];

@@ -1,7 +1,9 @@
 import Parser from "rss-parser";
 import { decodeHTML } from "entities";
 import { createHash } from "node:crypto";
+import { get as httpsGet } from "node:https";
 import { feeds, type Feed } from "./feeds";
+import { mediaInfoFor } from "./mediaData";
 import { normalizeText, type Article, type SourceStatus } from "./model";
 
 const parser = new Parser();
@@ -169,12 +171,13 @@ async function fetchFeed(
       chunks.push(value);
     }
     // some feeds (baodautu) emit whitespace before <?xml — strict parsers reject
-    const parsed = await parser.parseString(
-      decodeFeedBytes(Buffer.concat(chunks)).trimStart(),
-    );
-    const articles = parsed.items
-      .map((item) => toArticle(item, feed))
-      .filter((a): a is Article => a !== null);
+    const body = decodeFeedBytes(Buffer.concat(chunks)).trimStart();
+    const articles =
+      feed.format === "news-sitemap"
+        ? parseNewsSitemap(body, feed, Date.now())
+        : (await parser.parseString(body)).items
+            .map((item) => toArticle(item, feed))
+            .filter((a): a is Article => a !== null);
     if (!articles.length) throw new Error("No recent dated articles");
     return {
       articles,
@@ -204,6 +207,30 @@ async function fetchFeed(
       },
     };
   }
+}
+
+/**
+ * Google News sitemap (<urlset> + news: namespace). Loc + news:title (CDATA)
+ * + news:publication_date + image:loc map onto Parser.Item so toArticle
+ * applies the same date-freshness and canonicalization rules as RSS.
+ */
+function parseNewsSitemap(xml: string, feed: Feed, now: number): Article[] {
+  const articles: Article[] = [];
+  for (const match of xml.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const block = match[1];
+    const imageUrl = /<image:loc>([^<]+)<\/image:loc>/.exec(block)?.[1];
+    const item: Parser.Item = {
+      link: /<loc>([^<]+)<\/loc>/.exec(block)?.[1],
+      title: /<news:title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/news:title>/
+        .exec(block)?.[1],
+      isoDate: /<news:publication_date>([^<]+)<\/news:publication_date>/
+        .exec(block)?.[1],
+      ...(imageUrl ? { enclosure: { url: imageUrl } } : {}),
+    };
+    const article = toArticle(item, feed, now);
+    if (article) articles.push(article);
+  }
+  return articles;
 }
 
 export async function fetchHackerNews(): Promise<Article[]> {
@@ -261,6 +288,139 @@ export async function fetchHackerNews(): Promise<Article[]> {
   }
 }
 
+const GDELT_SOURCE_NAME = "GDELT";
+
+/**
+ * node:https GET forced to IPv4 — undici fetch times out connecting to
+ * api.gdeltproject.org (its IPv6 route is dead from this host while curl's
+ * IPv4 path works). Scoped to GDELT so other fetchers keep default DNS order.
+ */
+function httpsGetText(url: string, timeoutMs: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const req = httpsGet(
+      url,
+      { family: 4, timeout: timeoutMs },
+      (res) => {
+        if (res.statusCode && res.statusCode >= 400) {
+          res.resume();
+          reject(new Error(`HTTP ${res.statusCode}`));
+          return;
+        }
+        const chunks: Buffer[] = [];
+        res.on("data", (c: Buffer) => chunks.push(c));
+        res.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
+      },
+    );
+    req.on("timeout", () => req.destroy(new Error("Request timeout")));
+    req.on("error", reject);
+  });
+}
+
+/**
+ * GDELT DOC 2 API — free, keyless index over outlets we cannot reach via RSS
+ * or sitemaps (znews, vtc, cand…). One artlist call per cycle stays inside
+ * their 1-req/5s limit; rate-limited responses degrade to an error status.
+ */
+export async function fetchGdelt(): Promise<{
+  articles: Article[];
+  status: SourceStatus;
+}> {
+  const url =
+    "https://api.gdeltproject.org/api/v2/doc/doc" +
+    "?query=vietnam&mode=artlist&maxrecords=75&format=json" +
+    "&timespan=1d&sourcelang:vietnamese";
+  const checkedAt = new Date().toISOString();
+  try {
+    const text = await httpsGetText(url, 20_000);
+    if (!text.startsWith("{")) throw new Error("GDELT rate limit");
+    const { articles: items } = JSON.parse(text) as {
+      articles: {
+        url: string;
+        title: string;
+        seendate: string; // "20260924T153000Z"
+        socialimage?: string;
+        domain: string;
+        language?: string;
+      }[];
+    };
+    const now = Date.now();
+    const articles: Article[] = [];
+    for (const item of items) {
+      const articleUrl = safeUrl(item.url);
+      const title = cleanText(item.title ?? "");
+      // GDELT seendate "20260924T153000Z" → ISO
+      const seen = item.seendate?.replace(
+        /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/,
+        "$1-$2-$3T$4:$5:$6Z",
+      );
+      const published = Date.parse(seen ?? "");
+      if (
+        !articleUrl ||
+        !title ||
+        !Number.isFinite(published) ||
+        published > now + CLOCK_SKEW_ALLOWANCE ||
+        now - published > MAX_ARTICLE_AGE
+      )
+        continue;
+      const canonical = new URL(articleUrl);
+      canonical.hash = "";
+      for (const key of [...canonical.searchParams.keys()])
+        if (key.startsWith("utm_")) canonical.searchParams.delete(key);
+      const host = canonical.hostname.replace(/^www\./, "");
+      // source = the real outlet (resolved via ownership registry), GDELT is
+      // only the discovery layer — appearances must carry the outlet so
+      // downstream merge/spectrum logic sees consistent source identity.
+      const org = mediaInfoFor("", canonical.href)?.organization ?? host;
+      articles.push({
+        id: createHash("sha256")
+          .update(canonical.href)
+          .digest("hex")
+          .slice(0, 20),
+        title,
+        summary: "",
+        url: canonical.href,
+        image: safeUrl(item.socialimage),
+        publishedAt: new Date(published).toISOString(),
+        source: org,
+        topic: "vietnam",
+        headline: false,
+        appearances: [{ source: org, url: canonical.href }],
+        language: item.language === "English" ? "en" : "vi",
+        region: "vietnam",
+        wire: true,
+      });
+    }
+    return {
+      articles,
+      status: {
+        id: "gdelt",
+        name: GDELT_SOURCE_NAME,
+        topic: "vietnam",
+        url: "https://www.gdeltproject.org",
+        status: articles.length ? "ok" : "error",
+        count: articles.length,
+        checkedAt,
+        error: articles.length ? undefined : "No recent articles",
+      },
+    };
+  } catch (error) {
+    return {
+      articles: [],
+      status: {
+        id: "gdelt",
+        name: GDELT_SOURCE_NAME,
+        topic: "vietnam",
+        url: "https://www.gdeltproject.org",
+        status: "error",
+        count: 0,
+        checkedAt,
+        error:
+          error instanceof Error ? error.message.slice(0, 140) : "Fetch failed",
+      },
+    };
+  }
+}
+
 /** Fetch all feeds (bounded concurrency) + Hacker News, deduplicated. */
 export async function fetchAllNews(): Promise<RawNews> {
   const results: Awaited<ReturnType<typeof fetchFeed>>[] = [];
@@ -268,12 +428,16 @@ export async function fetchAllNews(): Promise<RawNews> {
     results.push(
       ...(await Promise.all(feeds.slice(i, i + CONCURRENCY).map(fetchFeed))),
     );
-  const hnArticles = await fetchHackerNews();
+  const [hnArticles, gdelt] = await Promise.all([
+    fetchHackerNews(),
+    fetchGdelt(),
+  ]);
   const rawArticles = results
     .flatMap((result) => result.articles)
-    .concat(hnArticles);
+    .concat(hnArticles, gdelt.articles);
   const articles = deduplicate(rawArticles);
   const sources = results.map((result) => result.status);
+  sources.push(gdelt.status);
   if (hnArticles.length > 0) {
     sources.unshift({
       id: "hacker-news",

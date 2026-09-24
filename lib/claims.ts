@@ -15,6 +15,7 @@
 import type { ClaimAnalysis, ClaimDispute, StoryCluster } from "./model";
 import { extractNumbers, geminiModel } from "./gemini";
 import { normalizeText } from "./model";
+import type { ExtractedClaim } from "./db/writer";
 
 const GEMINI_ENDPOINT =
   "https://generativelanguage.googleapis.com/v1beta/models";
@@ -182,5 +183,175 @@ export async function generateClaims(
     return validateClaims(parsed, sourceNames, allowedNumbers);
   } catch {
     return null;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Canonical claim extraction — the LLM sibling of lib/db/extract.ts.
+ * Both write the same Claim/ClaimEvidence tables; this one catches
+ * non-numeric facts ("OpenAI phát hành model X", "chính phủ thông qua
+ * chính sách Y") that the deterministic patterns cannot see.
+ * ------------------------------------------------------------------ */
+
+const MAX_LLM_CLAIMS = 8;
+const LLM_STATES = new Set([
+  "reported",
+  "confirmed",
+  "disputed",
+  "corrected",
+  "retracted",
+]);
+
+function buildExtractPrompt(cluster: StoryCluster): string {
+  return [
+    "Bạn là máy trích dữ kiện. Dưới đây là giật tít/tóm tắt của các nguồn đưa tin về CÙNG một sự kiện.",
+    "",
+    "Nhiệm vụ: với MỖI nguồn, trích các dữ kiện nó khẳng định, dạng cấu trúc.",
+    'Mỗi claim: {"subject":"chủ thể","predicate":"điều được khẳng định","value":"giá trị","unit":"đơn vị hoặc null","label":"cụm từ nguyên văn ngắn","source":"tên nguồn trong ngoặc vuông"}',
+    "",
+    "Quy tắc:",
+    "- subject: thực thể chính (cơ quan, công ty, địa danh); để trống nếu không rõ.",
+    "- predicate: danh từ/khái niệm chuẩn hóa, ví dụ: flights_cancelled, deaths, interest_rate, product_launch, policy_approved, arrest, price.",
+    "- value: giá trị ngắn gọn (số, tên, mô tả ngắn ≤ 80 ký tự). Chỉ dùng nội dung CÓ TRONG đoạn trích — không suy diễn, không thêm con số mới.",
+    "- Chỉ trích dữ kiện KHẲNG ĐỊNH được (không trích ý kiến, bình luận, phỏng đoán).",
+    "- Tối đa 8 claim tổng cộng, ưu tiên dữ kiện xuất hiện ở nhiều nguồn.",
+    '- Chỉ trả JSON hợp lệ: {"claims":[...]}. Không có gì thì {"claims":[]}.',
+    "",
+    "Các đoạn trích:",
+    corpusFor(cluster),
+  ].join("\n");
+}
+
+const slug = (s: string) =>
+  normalizeText(s)
+    .replace(/[^a-z0-9\s_]/g, "")
+    .trim()
+    .replace(/\s+/g, "_");
+
+/**
+ * Validate + normalize LLM-extracted claims into ExtractedClaim[].
+ * Grounding gate (fail-closed): source must be a real cluster source;
+ * numeric values must already exist in the corpus; predicate/subject
+ * slugged into the same claim_key space as the deterministic extractor.
+ */
+export function validateExtractedClaims(
+  raw: unknown,
+  cluster: StoryCluster,
+): ExtractedClaim[] {
+  if (typeof raw !== "object" || raw === null) return [];
+  const list = (raw as Record<string, unknown>).claims;
+  if (!Array.isArray(list)) return [];
+
+  const sourceNames = new Set(cluster.sources.map((s) => s.name));
+  const canon = new Map<string, string>();
+  for (const s of sourceNames) canon.set(normalizeText(s), s);
+  const allowedNumbers = new Set(
+    extractNumbers(`${cluster.title} ${cluster.summary} ${corpusFor(cluster)}`),
+  );
+  const resolve = (s: string): string | null =>
+    sourceNames.has(s) ? s : (canon.get(normalizeText(s)) ?? null);
+
+  const out: ExtractedClaim[] = [];
+  for (const item of list.slice(0, MAX_LLM_CLAIMS)) {
+    if (typeof item !== "object" || item === null) continue;
+    const c = item as Record<string, unknown>;
+    const source = isStr(c.source) ? resolve(c.source.trim()) : null;
+    const predicate = isStr(c.predicate) ? slug(c.predicate) : "";
+    const label = isStr(c.label) ? c.label.trim() : "";
+    if (!source || !predicate || !label || label.length > MAX_TEXT_LEN)
+      continue;
+
+    const subject = isStr(c.subject) ? c.subject.trim() : "";
+    const rawValue = c.value;
+    const value =
+      typeof rawValue === "number"
+        ? rawValue
+        : isStr(rawValue)
+          ? rawValue.trim().slice(0, 160)
+          : "";
+    if (value === "" || value === null) continue;
+    // numbers must exist in the corpus — same gate as the UI matrix
+    if (extractNumbers(String(value)).some((n) => !allowedNumbers.has(n)))
+      continue;
+
+    const claimKey = subject ? `${slug(subject)}|${predicate}` : predicate;
+    // the article asserting it — best-effort match on the source's docs
+    const article =
+      cluster.articles.find(
+        (a) =>
+          a.source === source &&
+          `${a.title} ${a.summary}`.includes(
+            typeof value === "number" ? String(value) : label.slice(0, 24),
+          ),
+      ) ?? cluster.articles.find((a) => a.source === source);
+
+    const state =
+      isStr(c.state) && LLM_STATES.has(c.state) ? c.state : undefined;
+    out.push({
+      claimKey,
+      predicate,
+      claimType: "fact",
+      valueType: typeof value === "number" ? "number" : "text",
+      value,
+      unit: isStr(c.unit) ? c.unit.trim() : undefined,
+      qualifiers: subject ? { subject } : undefined,
+      state: state as ExtractedClaim["state"],
+      label,
+      assertedBy: source,
+      articleId: article?.id,
+      method: "model",
+    });
+  }
+  return out;
+}
+
+/** Gemini structured-claim pass for one cluster. Fail-closed: []. */
+export async function extractClaimsLLM(
+  apiKey: string,
+  cluster: StoryCluster,
+): Promise<ExtractedClaim[]> {
+  const model = geminiModel();
+  const body = {
+    contents: [{ parts: [{ text: buildExtractPrompt(cluster) }] }],
+    generationConfig: {
+      temperature: 0.1,
+      maxOutputTokens: 4000,
+      responseMimeType: "application/json",
+    },
+  };
+  try {
+    const res = await fetch(
+      `${GEMINI_ENDPOINT}/${model}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(CALL_TIMEOUT),
+      },
+    );
+    if (!res.ok) return [];
+    const data = (await res.json()) as {
+      candidates?: {
+        finishReason?: string;
+        content?: { parts?: { text?: string; thought?: boolean }[] };
+      }[];
+    };
+    const candidate = data.candidates?.[0];
+    if (candidate?.finishReason && candidate.finishReason !== "STOP") return [];
+    const text = (candidate?.content?.parts ?? [])
+      .filter((p) => p.thought !== true)
+      .map((p) => p.text ?? "")
+      .join("")
+      .trim();
+    if (!text) return [];
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return [];
+    }
+    return validateExtractedClaims(parsed, cluster);
+  } catch {
+    return [];
   }
 }

@@ -5,7 +5,7 @@
  */
 import assert from "node:assert/strict";
 import test from "node:test";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
 import { newDb, DataType } from "pg-mem";
@@ -18,10 +18,12 @@ import type { Article, StoryCluster } from "../lib/model";
 
 function setupDb() {
   const db = newDb();
-  const path = fileURLToPath(
-    new URL("../db/migrations/0001_core_schema.sql", import.meta.url),
-  );
-  const sql = readFileSync(path, "utf8")
+  const dir = fileURLToPath(new URL("../db/migrations", import.meta.url));
+  const sql = readdirSync(dir)
+    .filter((f) => f.endsWith(".sql"))
+    .sort()
+    .map((f) => readFileSync(`${dir}/${f}`, "utf8"))
+    .join("\n")
     .replace(
       /CREATE OR REPLACE FUNCTION uuid_v7[\s\S]*?LANGUAGE plpgsql VOLATILE;/,
       "",
@@ -120,10 +122,18 @@ test("persistCluster → EventView → claim diff → change log", async () => {
   const view3 = await getEventView(r1.eventId);
   assert.ok(view3);
   const claim = view3.claims.find((c) => c.predicate === "flights_cancelled")!;
-  assert.equal(claim.value, 35);
+  // positions model: the majority position stands as truth — 20 has two
+  // supporters vs one for 35; the claim reads disputed, not flipped
+  assert.equal(claim.value, 20);
   assert.equal(claim.state, "disputed");
-  assert.equal(claim.previousValue, 20); // the "20 → 35" diff is served
   assert.equal(view3.confidence.contradictions, 1);
+  assert.deepEqual(
+    claim.positions?.map((p) => [p.value, p.sources]),
+    [
+      [20, ["VnExpress", "BBC World News"]],
+      [35, ["Tuổi Trẻ"]],
+    ],
+  );
 
   const feed = await getLatestChanges();
   const types = feed.map((f) => f.type);
@@ -248,12 +258,32 @@ test("acceptance: coverage is not change; primary source updates the claim", asy
   assert.ok(types.includes("claim_updated"));
   assert.ok(types.includes("new_primary_source"));
 
-  // coverage created NO event_version — versions only from material change:
-  // v1 event_created, v2 new_claim, v3 claim_updated, v4 primary_confirmation
+  // batched EventVersion: one snapshot per observation cycle —
+  // v1 = creation (event_created + new_claim annotate it),
+  // v2 = the official-source cycle (claim_updated + primary_confirmation)
   const { rows: evs } = await pool.query<{ c: string }>(
     `SELECT COUNT(*) AS c FROM event_versions`,
   );
-  assert.equal(Number(evs[0].c), 4);
+  assert.equal(Number(evs[0].c), 2);
+
+  // all material changes in one cycle point at the same snapshot
+  // (creation-cycle changes annotate v1 and carry no from_version)
+  const { rows: matChanges } = await pool.query<{
+    type: string;
+    to_event_version_id: string;
+  }>(
+    `SELECT type, to_event_version_id FROM changes
+      WHERE materiality != 'low' AND from_event_version_id IS NOT NULL
+      ORDER BY type`,
+  );
+  const matTypes = matChanges.map((c) => c.type);
+  assert.ok(matTypes.includes("claim_updated"));
+  assert.ok(matTypes.includes("new_primary_source"));
+  assert.equal(
+    new Set(matChanges.map((c) => c.to_event_version_id)).size,
+    1,
+    "one EventVersion per observation cycle",
+  );
 
   // stances: Reuters supports v1; the agency originates v2
   const { rows: stances } = await pool.query<{

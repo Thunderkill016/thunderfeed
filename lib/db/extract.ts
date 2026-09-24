@@ -38,7 +38,7 @@ const PATTERNS: PatternDef[] = [
     key: "flights_cancelled",
     unit: "flights",
     vi: /(?<n>\d[\d.,]*)\s*chuyến bay[^.;]{0,40}?(?:bị\s+)?hủy|hủy[^.;]{0,20}?(?<n2>\d[\d.,]*)\s*chuyến bay/i,
-    en: /(?<n>\d[\d.,]*)\s*flights?[^.;]{0,40}?cancell?ed|cancell?ed[^.;]{0,20}?(?<n2>\d[\d.,]*)\s*flights?/i,
+    en: /(?<n>\d[\d.,]*)\s*flights?[^.;]{0,40}?(?:cancell?ed|grounded|scrapped)|(?:cancell?ed|grounds?|grounding|scrapping)[^.;]{0,25}?(?<n2>\d[\d.,]*)\s*flights?/i,
   },
   {
     key: "deaths",
@@ -237,6 +237,8 @@ export function extractClaims(cluster: StoryCluster): ExtractedClaim[] {
         qualifiers: subject ? { subject } : undefined,
         label: m[0].trim().replace(/\s+/g, " "),
         assertedBy: a.source,
+        articleId: a.id,
+        method: "rule",
       });
     }
   }

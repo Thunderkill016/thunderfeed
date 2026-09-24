@@ -1,20 +1,39 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { EventAnalysis, StoryCluster } from "../lib/model";
+import type { EventView } from "../lib/db/read";
 import { MediaSpectrumBar, OwnershipBar } from "./Spectrum";
+import EventIntel from "./EventIntel";
 import { timeAgo, typologyLabel } from "../lib/model";
 
 export default function EventDetail({
   cluster,
   analysis,
+  eventId,
   now,
   onClose,
 }: {
   cluster: StoryCluster;
   analysis: EventAnalysis;
+  /** canonical event id — when set, the EventView is the source of truth */
+  eventId?: string;
   now: number;
   onClose: () => void;
 }) {
+  const [view, setView] = useState<EventView | null>(null);
+  useEffect(() => {
+    if (!eventId) return;
+    let dead = false;
+    fetch(`/api/events/${eventId}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((v) => !dead && setView(v))
+      .catch(() => {});
+    return () => {
+      dead = true;
+    };
+  }, [eventId]);
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
@@ -144,7 +163,9 @@ export default function EventDetail({
             </section>
           )}
 
-          {analysis.claims && (
+          {view && <EventIntel view={view} />}
+
+          {!view && analysis.claims && (
             <section className="detail-section">
               <h3>
                 Dữ kiện & bất đồng

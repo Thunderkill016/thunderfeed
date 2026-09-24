@@ -1135,3 +1135,230 @@ button {
     display: none;
   }
 }
+
+/* ---------- changes rail — canonical change feed ---------- */
+.changes-rail {
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  background: var(--bg-elev);
+  padding: 10px 12px;
+}
+.rail-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 8px;
+}
+.rail-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.change-card {
+  flex: 0 0 auto;
+  width: 220px;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  padding: 8px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--sans);
+}
+.change-card:hover {
+  border-color: var(--ink-faint);
+}
+.change-card.high {
+  border-left: 3px solid var(--accent);
+}
+.change-card.medium {
+  border-left: 3px solid var(--dom);
+}
+.change-card-summary {
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.change-card-event {
+  font-size: 11px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.change-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  align-self: flex-start;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+.change-badge.high {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.change-badge.medium {
+  color: var(--dom);
+  border-color: var(--dom);
+}
+.change-badge.low {
+  color: var(--ink-faint);
+}
+
+/* ---------- canonical claims + positions ---------- */
+.conf-badge {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-left: 8px;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+.conf-badge.strong {
+  color: var(--priv);
+  border-color: var(--priv);
+}
+.conf-badge.weak {
+  color: var(--accent);
+}
+.contra-badge {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 9px;
+  margin-left: 6px;
+  color: var(--accent);
+}
+.claims-canonical {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.claim-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.claim-pred {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+.claim-val {
+  font-size: 15px;
+}
+.claim-state {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+.claim-state.confirmed {
+  color: var(--priv);
+  border-color: var(--priv);
+}
+.claim-state.disputed {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.claim-prev {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+.claim-meta {
+  font-size: 10px;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+.positions {
+  margin: 6px 0 2px;
+  padding: 6px 8px;
+  border-left: 2px solid var(--accent);
+  background: var(--bg-sunken);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.position {
+  font-size: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.position-srcs {
+  color: var(--ink-faint);
+  font-size: 11px;
+}
+
+/* ---------- evidence buckets ---------- */
+.ev-buckets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.ev-bucket ul {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ev-bucket a {
+  font-size: 12px;
+  color: var(--ink);
+}
+.ev-src {
+  font-size: 10px;
+  color: var(--ink-faint);
+  margin-left: 6px;
+}
+
+/* ---------- changes timeline ---------- */
+.changes-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.change-row {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 12px;
+}
+.change-row.low {
+  opacity: 0.65;
+}
+.change-summary {
+  flex: 1;
+}
+.change-time {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-faint);
+}
