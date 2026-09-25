@@ -4,20 +4,31 @@ name: edition
 # snapshot) runs HERE, not in the web request: Vercel serverless reads
 # the latest edition_snapshots row, and scheduled runs keep it fresh.
 # Public repo → Actions minutes are free. GitHub may delay scheduled
-# runs a few minutes at peak; 20-min cadence tolerates that jitter.
+# runs a few minutes at peak; 30-min cadence tolerates that jitter and
+# leaves headroom for a slow cold build to finish before the next slot.
 
 on:
   schedule:
-    - cron: "*/20 * * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch: # manual "rebuild now" from the Actions tab
   push:
     branches: [main]
     paths: [lib/**, db/migrations/**] # deploy-affecting changes rebuild early
 
+# One edition build at a time: persist takes a session-level advisory
+# lock, so overlapping runs would just spin on pg_try_advisory_lock.
+# GitHub keeps a single pending run per group — extras coalesce.
+concurrency:
+  group: edition
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Remote persist (runner → Supabase SG) is ~3-4x slower than local:
+    # sequential per-cluster roundtrips at ~200ms RTT. 45 min covers a
+    # cold run; steady-state rebuilds finish well under that.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
