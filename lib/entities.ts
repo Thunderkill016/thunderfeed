@@ -610,6 +610,99 @@ const LABEL_OVERRIDES: Record<string, string> = {
 
 const DEFS_BY_SLUG = new Map(GAZETTEER.map((d) => [d.slug, d]));
 
+/* ------------------------- entity kinds ------------------------- */
+
+export type EntityKind = "place" | "org" | "person" | "topic";
+
+/* Every gazetteer entry defaults to "place" — that covers all Vietnam
+ * localities, countries and named regions. Only non-place kinds are
+ * listed, grouped to mirror the gazetteer sections above. */
+const KIND_BY_SLUG: Record<string, EntityKind> = {
+  // supranational bodies & recurring forums
+  nato: "org",
+  un: "org",
+  asean: "org",
+  aseancup: "org",
+  asiad: "org",
+  unga: "org",
+  brics: "org",
+  g20: "org",
+  // financial & multilateral institutions
+  federal_reserve: "org",
+  nhnn: "org",
+  ecb: "org",
+  boj: "org",
+  opec: "org",
+  imf: "org",
+  worldbank: "org",
+  wto: "org",
+  who: "org",
+  // companies
+  openai: "org",
+  anthropic: "org",
+  spacex: "org",
+  tesla: "org",
+  meta: "org",
+  google: "org",
+  apple: "org",
+  microsoft: "org",
+  nvidia: "org",
+  bytedance: "org",
+  vinfast: "org",
+  viettel: "org",
+  samsung: "org",
+  intel: "org",
+  boeing: "org",
+  airbus: "org",
+  // people
+  trump: "person",
+  putin: "person",
+  zelensky: "person",
+  xijinping: "person",
+  hunsen: "person",
+  kimsangsik: "person",
+  kimjongun: "person",
+  netanyahu: "person",
+  modi: "person",
+  milei: "person",
+  lam: "person",
+  biden: "person",
+  macron: "person",
+  starmer: "person",
+  vonderleyen: "person",
+  pm: "person",
+  // abstract story anchors
+  pipeline: "topic",
+  oil: "topic",
+  drone: "topic",
+  ai: "topic",
+  semiconductor: "topic",
+  trade_surplus: "topic",
+  song_hong: "topic",
+  nine_eleven: "topic",
+};
+
+/** Kind of a canonical slug; null for slugs outside the gazetteer. */
+export function entityKind(slug: string): EntityKind | null {
+  const bare = slug.startsWith("entity_") ? slug.slice(7) : slug;
+  if (!DEFS_BY_SLUG.has(bare)) return null;
+  return KIND_BY_SLUG[bare] ?? "place";
+}
+
+/** Vietnamese label for a kind — badge text on entity chips/pages. */
+export function entityKindLabel(kind: EntityKind): string {
+  switch (kind) {
+    case "place":
+      return "Địa điểm";
+    case "org":
+      return "Tổ chức";
+    case "person":
+      return "Nhân vật";
+    case "topic":
+      return "Chủ đề";
+  }
+}
+
 const VI_MARK =
   /[ăâđêôơưáàảãạấầẩẫậắằẳẵặéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ]/i;
 

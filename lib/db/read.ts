@@ -5,7 +5,12 @@
  */
 
 import { getPool } from "./pool";
-import { extractEntitiesNormalized, entityLabel } from "../entities";
+import {
+  extractEntitiesNormalized,
+  entityKind,
+  entityLabel,
+  type EntityKind,
+} from "../entities";
 import { normalizeText } from "../model";
 
 export interface EvidenceView {
@@ -58,6 +63,9 @@ export interface EventView {
   topic: string;
   firstSeenAt: string;
   lastUpdatedAt: string;
+  /** canonical entities in signature order — kind null when the slug is
+   *  outside the gazetteer (junction-only slug from an older taxonomy) */
+  entities: { slug: string; label: string; kind: EntityKind | null }[];
   claims: ClaimView[];
   latestChanges: ChangeView[];
   /** canonical state history — append-only event_versions, newest first */
@@ -224,11 +232,12 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     status: string;
     first_seen_at: string;
     last_seen_at: string;
+    entity_signature: string;
     title: string;
     summary: string;
   }>(
     `SELECT e.id, e.topic, e.status, e.first_seen_at, e.last_seen_at,
-            v.title, v.summary
+            e.entity_signature, v.title, v.summary
      FROM events e
      JOIN event_versions v ON v.id = e.current_version_id
      WHERE e.id = $1`,
@@ -517,6 +526,14 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     topic: event.topic,
     firstSeenAt: event.first_seen_at,
     lastUpdatedAt: event.last_seen_at,
+    entities: event.entity_signature
+      .split(" ")
+      .filter(Boolean)
+      .map((slug) => ({
+        slug,
+        label: entityLabel(slug),
+        kind: entityKind(slug),
+      })),
     claims,
     latestChanges: changesR.rows.map((r) => ({
       type: r.type,
@@ -684,6 +701,7 @@ export async function getChangesForEntities(
 export async function getEntityEvents(slug: string): Promise<{
   slug: string;
   label: string;
+  kind: EntityKind | null;
   events: {
     id: string;
     title: string;
@@ -694,8 +712,32 @@ export async function getEntityEvents(slug: string): Promise<{
     lastSeenAt: string;
     changeCount: number;
   }[];
+  /** entities co-occurring on the same events — the junction's
+   *  co-mention graph, ordered by shared-event count */
+  related: {
+    slug: string;
+    label: string;
+    kind: EntityKind | null;
+    shared: number;
+  }[];
 }> {
   const pool = getPool();
+  const relatedQ = pool.query<{
+    entity_slug: string;
+    shared: string;
+  }>(
+    `SELECT ee2.entity_slug, count(*) AS shared
+     FROM event_entities ee1
+     JOIN event_entities ee2
+       ON ee2.event_id = ee1.event_id AND ee2.entity_slug <> $1
+     JOIN events e ON e.id = ee2.event_id
+     WHERE ee1.entity_slug = $1
+       AND e.status NOT IN ('merged', 'archived')
+     GROUP BY ee2.entity_slug
+     ORDER BY shared DESC, ee2.entity_slug
+     LIMIT 8`,
+    [slug],
+  );
   const { rows } = await pool.query<{
     id: string;
     title: string;
@@ -721,9 +763,16 @@ export async function getEntityEvents(slug: string): Promise<{
      ORDER BY e.last_seen_at DESC`,
     [slug],
   );
+  const related = (await relatedQ).rows.map((r) => ({
+    slug: r.entity_slug,
+    label: entityLabel(r.entity_slug),
+    kind: entityKind(r.entity_slug),
+    shared: Number(r.shared),
+  }));
   return {
     slug,
     label: entityLabel(slug),
+    kind: entityKind(slug),
     events: rows.map((r) => ({
       id: r.id,
       title: r.title,
@@ -734,6 +783,7 @@ export async function getEntityEvents(slug: string): Promise<{
       lastSeenAt: r.last_seen_at,
       changeCount: Number(r.change_count),
     })),
+    related,
   };
 }
 

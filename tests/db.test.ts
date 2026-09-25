@@ -419,6 +419,15 @@ test("event_entities junction: create, accumulate on merge, entity reads", async
   const jp = await getEntityEvents("japan");
   assert.equal(jp.events.length, 0);
 
+  // typed registry rides along: us is a place, china too — and each sees
+  // the other through the co-occurrence edge
+  assert.equal(us.kind, "place");
+  assert.equal(cn.kind, "place");
+  assert.deepEqual(
+    us.related.map((r) => r.slug),
+    ["china"],
+  );
+
   // a later observation of the SAME story whose LEAD also names Japan
   // merges — the signature accumulates and the junction gains the slug
   const c2 = cluster([
@@ -441,6 +450,14 @@ test("event_entities junction: create, accumulate on merge, entity reads", async
     jp2.events.map((e) => e.id),
     [r1.eventId],
     "entity rows accumulate like the signature",
+  );
+
+  // merge accumulated japan — us's neighbourhood now spans both
+  const us2 = await getEntityEvents("us");
+  assert.deepEqual(
+    us2.related.map((r) => r.slug).sort(),
+    ["china", "japan"],
+    "co-occurrence edge accumulates with the signature",
   );
 
   // the watch-topic read path (junction-backed) returns the same event's

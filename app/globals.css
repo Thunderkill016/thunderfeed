@@ -1841,3 +1841,121 @@ button {
 .tier-badge.weak {
   color: #b04030;
 }
+
+/* ---- entity graph surface ---- */
+.entity-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.entity-chip {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.entity-chip:hover {
+  border-color: var(--ink-faint);
+  color: var(--ink);
+}
+.entity-chip.place {
+  border-color: var(--dom);
+}
+.entity-chip.org {
+  border-color: var(--priv);
+}
+.entity-chip.person {
+  border-color: var(--state);
+}
+.entity-chip.topic {
+  border-color: var(--ink-faint);
+}
+
+.entity-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+  font-family: var(--sans);
+  color: var(--ink);
+}
+.entity-back {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  text-decoration: none;
+}
+.entity-back:hover {
+  color: var(--accent);
+}
+.entity-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 6px;
+}
+.entity-title-row h1 {
+  font-family: var(--serif);
+  font-size: 30px;
+  margin: 0;
+}
+.entity-stats {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin: 0 0 14px;
+}
+.entity-related {
+  margin-bottom: 8px;
+}
+.entity-related-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+}
+.entity-empty {
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.entity-events {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.entity-event {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.entity-event-title {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.entity-event-title:hover {
+  color: var(--accent);
+}
+.entity-event-meta {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+.entity-status.resolved {
+  color: var(--priv);
+}
+.entity-status.active,
+.entity-status.emerging {
+  color: var(--accent);
+}
