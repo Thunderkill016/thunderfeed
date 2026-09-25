@@ -633,6 +633,54 @@ test("unknown does not inflate confidence: Fed primary + ambiguous publisher", a
   assert.notEqual(view!.confidence.state, "strong");
 });
 
+test("confidenceState: open contradiction caps strong at moderate (ICD 203)", async () => {
+  const { confidenceState } = await import("../lib/db/read");
+  // textbook strong: primary evidence + 2 confirmed independent origins
+  assert.equal(
+    confidenceState({
+      directEvidenceCount: 1,
+      confirmedIndependentOrigins: 2,
+      claimCount: 3,
+      contradictions: 0,
+      unresolvedOrigins: 0,
+    }),
+    "strong",
+  );
+  // same event WITH a live dispute — disconfirming evidence must bite
+  assert.equal(
+    confidenceState({
+      directEvidenceCount: 1,
+      confirmedIndependentOrigins: 2,
+      claimCount: 3,
+      contradictions: 1,
+      unresolvedOrigins: 0,
+    }),
+    "moderate",
+  );
+  // provenance mostly unknown → no "strong" badge either
+  assert.equal(
+    confidenceState({
+      directEvidenceCount: 1,
+      confirmedIndependentOrigins: 2,
+      claimCount: 3,
+      contradictions: 0,
+      unresolvedOrigins: 3,
+    }),
+    "moderate",
+  );
+  // thin evidence stays weak
+  assert.equal(
+    confidenceState({
+      directEvidenceCount: 0,
+      confirmedIndependentOrigins: 0,
+      claimCount: 1,
+      contradictions: 0,
+      unresolvedOrigins: 2,
+    }),
+    "weak",
+  );
+});
+
 test("late parent: child asserted unknown, wire arrives later → derived v2", async () => {
   setupDb();
   // LocalSite publishes 08:00 and is ingested first — alone, it is unknown

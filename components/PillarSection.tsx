@@ -32,6 +32,11 @@ function EventCard({
       tabIndex={0}
       onKeyDown={(e) => e.key === "Enter" && onOpen()}
     >
+      {lead && cluster.leadArticle.image && (
+        <div className="card-thumb">
+          <img src={cluster.leadArticle.image} alt="" loading="lazy" />
+        </div>
+      )}
       <div className="card-top">
         {topic && (
           <span className="topic-tag" style={{ color: topic.color }}>

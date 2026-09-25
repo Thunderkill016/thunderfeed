@@ -91,6 +91,35 @@ export interface EventView {
   };
 }
 
+/**
+ * ICD 203 / Heuer ACH: confidence is a judgment about evidence, so open
+ * contradictions and murky provenance push it DOWN — a disputed claim or
+ * a majority of unresolved origins can't sit under "strong".
+ * strong: ≥1 primary-backed claim + ≥2 confirmed independent origins;
+ * contradictions or an unresolved majority cap at moderate.
+ */
+export function confidenceState(input: {
+  directEvidenceCount: number;
+  confirmedIndependentOrigins: number;
+  claimCount: number;
+  contradictions: number;
+  unresolvedOrigins: number;
+}): "strong" | "moderate" | "weak" {
+  let s: "strong" | "moderate" | "weak" =
+    input.directEvidenceCount >= 1 && input.confirmedIndependentOrigins >= 2
+      ? "strong"
+      : input.claimCount >= 2 || input.confirmedIndependentOrigins >= 1
+        ? "moderate"
+        : "weak";
+  if (
+    s === "strong" &&
+    (input.contradictions > 0 ||
+      input.unresolvedOrigins > input.confirmedIndependentOrigins)
+  )
+    s = "moderate";
+  return s;
+}
+
 export async function getEventView(eventId: string): Promise<EventView | null> {
   const pool = getPool();
 
@@ -420,12 +449,14 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     else if (!rel || rel === "unknown") unresolvedOrigins++;
   }
   const rawSourceCount = new Set(docsR.rows.map((r) => r.source_id)).size;
-  const state =
-    directEvidenceCount >= 1 && confirmedIndependentOrigins >= 2
-      ? "strong"
-      : claims.length >= 2 || confirmedIndependentOrigins >= 1
-        ? "moderate"
-        : "weak";
+  const contradictions = Number(contraR.rows[0]?.n ?? 0);
+  const state = confidenceState({
+    directEvidenceCount,
+    confirmedIndependentOrigins,
+    claimCount: claims.length,
+    contradictions,
+    unresolvedOrigins,
+  });
 
   return {
     id: event.id,
@@ -462,7 +493,7 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
       lineageCoverage: docsR.rows.length
         ? latestLin.size / docsR.rows.length
         : 0,
-      contradictions: Number(contraR.rows[0]?.n ?? 0),
+      contradictions,
     },
   };
 }

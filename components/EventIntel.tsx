@@ -1,6 +1,7 @@
 "use client";
 
 import type { ChangeView, EventVersionView, EventView } from "../lib/db/read";
+import { fmtClaimValue, PRED_LABEL_VI } from "../lib/format";
 import { TIER_LABEL, useReliability } from "./ReliabilityContext";
 
 const CHANGE_LABEL: Record<string, string> = {
@@ -50,16 +51,8 @@ const CONFIDENCE_LABEL: Record<string, string> = {
   weak: "độ tin cậy thấp",
 };
 
-function fmtValue(v: unknown, unit?: string | null): string {
-  if (v === null || v === undefined) return "—";
-  if (typeof v === "object") {
-    const r = v as { low?: unknown; high?: unknown };
-    if (r.low !== undefined && r.high !== undefined)
-      return `${r.low}–${r.high}${unit ? ` ${unit}` : ""}`;
-    return JSON.stringify(v);
-  }
-  return `${String(v)}${unit ? ` ${unit}` : ""}`;
-}
+const fmtValue = (v: unknown, unit?: string | null): string =>
+  v === null || v === undefined ? "—" : fmtClaimValue(v, unit);
 
 export function changeLabel(t: string): string {
   return CHANGE_LABEL[t] ?? t;
@@ -81,11 +74,24 @@ export default function EventIntel({ view }: { view: EventView }) {
             <em className="contra-badge">⚡ {conf.contradictions} mâu thuẫn</em>
           )}
         </h3>
+        {/* ICD 203: a confidence grade without reasoning is noise —
+            show the evidence arithmetic behind the badge */}
+        <p className="conf-why">
+          {conf.confirmedIndependentOrigins} nguồn độc lập
+          {conf.primaryOrigins > 0 && ` · ${conf.primaryOrigins} chính thức`}
+          {conf.directEvidenceCount > 0 &&
+            ` · ${conf.directEvidenceCount} dữ kiện có bằng chứng gốc`}
+          {conf.unresolvedOrigins > 0 &&
+            ` · ${conf.unresolvedOrigins} nguồn chưa rõ gốc`}
+          {conf.contradictions > 0 && ` · ${conf.contradictions} mâu thuẫn mở`}
+        </p>
         <ul className="claims-canonical">
           {view.claims.map((c) => (
             <li key={c.id}>
               <div className="claim-row">
-                <span className="claim-pred">{c.predicate}</span>
+                <span className="claim-pred">
+                  {PRED_LABEL_VI[c.predicate] ?? c.predicate}
+                </span>
                 <strong className="claim-val">
                   {fmtValue(c.value, c.unit)}
                 </strong>
