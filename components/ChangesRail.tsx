@@ -81,6 +81,7 @@ export default function ChangesRail({
             <button
               key={g.key}
               className={`change-card ${mat}`}
+              disabled={!g.eventId}
               onClick={() => g.eventId && onOpenEvent(g.eventId)}
             >
               <span className={`change-badge ${mat}`}>
