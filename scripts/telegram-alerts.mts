@@ -12,8 +12,10 @@
  *
  * Channel policy (ALERT_FILTER): push is an interruption, not a feed —
  * only claim-level changes (facts updated/disputed/corrected/retracted)
- * plus event boundaries qualify. "Another source confirmed it" stays
- * on the web rail where coverage context lives.
+ * plus event boundaries qualify, and only on important events.
+ * "Another source confirmed it" stays on the web rail where coverage
+ * context lives. Delivery is HTML (bold titles + deep links to the
+ * event page) — TF_SITE_URL overrides the link origin.
  *
  * Dedup: delivered change ids persist in the delivery_state row when
  * DATABASE_URL is set (durable across ephemeral runners like GitHub
@@ -50,12 +52,12 @@ const dryRun = process.argv.includes("--dry-run");
  * TELEGRAM_MIN_IMPORTANCE overrides the gate.
  */
 const MIN_IMPORTANCE = Number(process.env.TELEGRAM_MIN_IMPORTANCE) || 200;
+/** Event deep links in alerts — public origin of the site. */
+const SITE_URL = process.env.TF_SITE_URL ?? "https://thunderfeed.vercel.app";
 const ALERT_FILTER = {
   tiers: ["high"],
   alsoTypes: ["event_created", "new_primary_source", "event_resolved"],
   minImportance: MIN_IMPORTANCE,
-  // a just-created event carries no importance score yet — it IS the news
-  importanceExemptTypes: ["event_created"],
 } as const;
 
 interface State {
@@ -150,7 +152,7 @@ async function main() {
 
   // oldest-first so the digest reads chronologically
   fresh.reverse();
-  const messages = formatAlertMessages(fresh);
+  const messages = formatAlertMessages(fresh, SITE_URL);
   console.log(
     `${fresh.length} new changes → ${messages.length} message(s)` +
       (dryRun ? " [dry-run]" : ""),

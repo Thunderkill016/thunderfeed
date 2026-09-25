@@ -86,7 +86,7 @@ test("changeSummaryText: strips duplicate label prefix", () => {
   assert.equal(changeSummaryText(c, "Cập nhật"), "Dữ kiện mới: 519 triệu USD");
 });
 
-test("formatAlertMessages: event_created marks the header, no echo bullet", () => {
+test("formatAlertMessages: event_created goes to the breaking lane", () => {
   const rows = [0, 1, 2, 3].map((i) =>
     ch({
       eventId: `ev${i}`,
@@ -96,10 +96,76 @@ test("formatAlertMessages: event_created marks the header, no echo bullet", () =
       summary: `Sự kiện ${i}`,
     }),
   );
-  const [msg] = formatAlertMessages(rows);
-  assert.match(msg, /▸ Sự kiện mới — Sự kiện 0/);
+  const msgs = formatAlertMessages(rows, "https://feed.example");
+  // each new event is its own standalone message, not a digest line
+  assert.equal(msgs.length, 4);
+  assert.match(msgs[0], /🚨 <b>SỰ KIỆN MỚI<\/b>/);
+  assert.match(
+    msgs[0],
+    /<b><a href="https:\/\/feed\.example\/\?event=ev0">Sự kiện 0<\/a><\/b>/,
+  );
   // the bullet that restates the title must not exist
-  assert.ok(!/• Sự kiện mới: Sự kiện 0/.test(msg));
+  assert.ok(!/• .*Sự kiện 0/.test(msgs[0]));
+});
+
+test("formatAlertMessages: breaking carries first facts + sources", () => {
+  const rows = [
+    ch({
+      eventId: "e9",
+      eventTitle: "Động đất M6.1 ở Bắc Bộ",
+      type: "event_created",
+      summary: "Động đất M6.1 ở Bắc Bộ",
+    }),
+    ch({
+      eventId: "e9",
+      eventTitle: "Động đất M6.1 ở Bắc Bộ",
+      type: "new_claim",
+      summary: "Dữ kiện mới: Độ lớn: 6,1 độ Richter",
+    }),
+    ch({
+      eventId: "e9",
+      eventTitle: "Động đất M6.1 ở Bắc Bộ",
+      type: "new_independent_evidence",
+      materiality: "medium",
+      summary: "Nguồn độc lập mới xác nhận: Reuters",
+    }),
+  ];
+  const [msg] = formatAlertMessages(rows, "https://feed.example");
+  assert.match(msg, /🚨 <b>SỰ KIỆN MỚI<\/b>/);
+  assert.match(msg, /• Độ lớn: 6,1 độ Richter/);
+  assert.match(msg, /Nguồn: Reuters/);
+});
+
+test("formatAlertMessages: escapes HTML in source summaries", () => {
+  const rows = [
+    ch({
+      eventId: "e1",
+      eventTitle: "A <b>bold</b> & <i>tricksy</i>",
+      type: "claim_updated",
+      summary: "Lãi suất: 4 < 5 & > 3",
+    }),
+    ch({ eventId: "e2", eventTitle: "B", summary: "x" }),
+  ];
+  const [msg] = formatAlertMessages(rows);
+  assert.match(msg, /A &lt;b&gt;bold&lt;\/b&gt; &amp; &lt;i&gt;/);
+  assert.match(msg, /4 &lt; 5 &amp; &gt; 3/);
+});
+
+test("formatAlertMessages: breaking lane capped, rest fold into digest", () => {
+  const rows = [0, 1, 2, 3, 4, 5, 6].map((i) =>
+    ch({
+      eventId: `ev${i}`,
+      eventTitle: `Sự kiện ${i}`,
+      type: "event_created",
+      summary: `Sự kiện ${i}`,
+    }),
+  );
+  const msgs = formatAlertMessages(rows);
+  const breaking = msgs.filter((m) => m.includes("SỰ KIỆN MỚI"));
+  assert.equal(breaking.length, 5);
+  // the 6th+ new events render as 🆕 digest lines instead of more pushes
+  const digest = msgs.find((m) => m.includes("có thay đổi"));
+  assert.ok(digest && /🆕/.test(digest));
 });
 
 test("formatAlertMessages: caps substantive lines per event, disputes first", () => {
@@ -114,7 +180,9 @@ test("formatAlertMessages: caps substantive lines per event, disputes first", ()
   ];
   const [msg] = formatAlertMessages(rows);
   // disputed outranks the four new_claim lines
-  assert.ok(msg.indexOf("Mâu thuẫn: con số mâu thuẫn") < msg.indexOf("claim 1"));
+  const disputedAt = msg.indexOf("Mâu thuẫn — con số mâu thuẫn");
+  const claimAt = msg.indexOf("claim 1");
+  assert.ok(disputedAt >= 0 && disputedAt < claimAt);
   // cap leaves one overflow counter, not a 5th bullet
   assert.match(msg, /…2 dữ kiện khác trên app/);
 });

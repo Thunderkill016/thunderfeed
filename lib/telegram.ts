@@ -1,8 +1,14 @@
 /**
  * Telegram delivery — Bot API client for the alert layer. Token/chat id
  * come from env only (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID); nothing is
- * persisted. Messages are plain text (no parse_mode) so summaries can't
- * break formatting with stray HTML/markdown chars.
+ * persisted.
+ *
+ * Design (Ground News / Kagi-style): push is an interruption budget.
+ * Two lanes — BREAKING (a new important event gets its own message,
+ * self-contained with a deep link) and DIGEST (the rest of the run's
+ * material deltas grouped per event). Messages are HTML parse_mode:
+ * titles render bold + link back to the event page; all source text is
+ * escaped so arbitrary summaries can't break markup.
  */
 import {
   dedupChanges,
@@ -22,6 +28,9 @@ export function telegramEnabled(): boolean {
   );
 }
 
+const esc = (s: string): string =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
 export async function sendTelegram(text: string): Promise<boolean> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
@@ -33,6 +42,7 @@ export async function sendTelegram(text: string): Promise<boolean> {
       body: JSON.stringify({
         chat_id: chatId,
         text: text.slice(0, MSG_LIMIT),
+        parse_mode: "HTML",
         disable_web_page_preview: true,
       }),
       signal: AbortSignal.timeout(SEND_TIMEOUT),
@@ -65,6 +75,8 @@ const MAX_LINES = 24;
 /** substantive lines shown per event — a push digest reads top-facts,
  *  not the full claim diff; the rest stay on the event page */
 const MAX_LINES_PER_EVENT = 3;
+/** breaking messages per run — beyond this, new events fold into digest */
+const MAX_BREAKING = 5;
 /** order claims inside an event block: conflicts and corrections are
  *  the reason a reader opens the alert; plain "new claim" trails */
 const TYPE_PRIORITY: Record<string, number> = {
@@ -76,47 +88,101 @@ const TYPE_PRIORITY: Record<string, number> = {
   new_claim: 5,
 };
 
-/** One alert per message when few; a per-event grouped digest when many.
- *  Dedup + grouping live in lib/changes.ts — shared with the web rail so
- *  coverage collapses to "N nguồn: A, B" on every surface. */
-export function formatAlertMessages(changes: DigestChange[]): string[] {
+const isNewEvent = (t: string) => t === "event_created" || t === "new_event";
+
+const link = (
+  siteUrl: string | undefined,
+  c: { eventId?: string },
+): string | null =>
+  siteUrl && c.eventId ? `${siteUrl}/?event=${c.eventId}` : null;
+
+const titleHtml = (
+  siteUrl: string | undefined,
+  c: { eventId?: string; eventTitle: string },
+): string => {
+  const href = link(siteUrl, c);
+  const t = esc(c.eventTitle);
+  return href ? `<b><a href="${href}">${t}</a></b>` : `<b>${t}</b>`;
+};
+
+/** Standalone alert for a genuinely new important event — one message,
+ *  self-contained: title, its first hard facts, who's reporting, link. */
+function formatBreaking(
+  g: {
+    eventId?: string;
+    eventTitle: string;
+    substantive: ChangeLike[];
+    coverageSources: string[];
+  },
+  siteUrl: string | undefined,
+): string {
+  const lines = ["🚨 <b>SỰ KIỆN MỚI</b>", "", titleHtml(siteUrl, g)];
+  const top = g.substantive
+    .filter((c) => !isNewEvent(c.type))
+    .sort((a, b) => (TYPE_PRIORITY[a.type] ?? 9) - (TYPE_PRIORITY[b.type] ?? 9))
+    .slice(0, MAX_LINES_PER_EVENT);
+  for (const c of top)
+    lines.push(
+      `• ${esc(changeSummaryText(c, CHANGE_LABEL[c.type] ?? c.type))}`,
+    );
+  if (g.coverageSources.length) {
+    const shown = g.coverageSources.slice(0, 4);
+    const more = g.coverageSources.length - shown.length;
+    lines.push(`Nguồn: ${esc(shown.join(", "))}${more > 0 ? ` +${more}` : ""}`);
+  }
+  return lines.join("\n");
+}
+
+/** BREAKING lane for new events (already importance-gated upstream),
+ *  DIGEST for the rest — grouped per event, claims ranked by severity. */
+export function formatAlertMessages(
+  changes: DigestChange[],
+  siteUrl?: string,
+): string[] {
   const deduped = dedupChanges(changes);
   if (deduped.length === 0) return [];
 
-  const distinctEvents = new Set(deduped.map((c) => c.eventId ?? c.eventTitle))
-    .size;
-  if (deduped.length <= 3 && deduped.length === distinctEvents) {
-    return deduped.map(
-      (c) =>
-        `⚡ ${CHANGE_LABEL[c.type] ?? c.type} [${c.materiality}]\n` +
-        `${c.eventTitle}\n${c.summary}`,
-    );
+  const ordered = groupChangesByEvent(deduped);
+  const breaking: string[] = [];
+  const digestGroups: typeof ordered = [];
+  for (const g of ordered) {
+    if (
+      g.substantive.some((c) => isNewEvent(c.type)) &&
+      breaking.length < MAX_BREAKING
+    ) {
+      breaking.push(formatBreaking(g, siteUrl));
+    } else {
+      digestGroups.push(g);
+    }
   }
 
-  const ordered = groupChangesByEvent(deduped);
+  const messages: string[] = [...breaking];
+  if (!digestGroups.length) return messages;
+
   const lines: string[] = [];
   let skippedEvents = 0;
-  for (const g of ordered) {
-    // event_created repeats the event title verbatim — it belongs in the
-    // header as a MỚI marker, not as a bullet restating it
-    const isNew = g.substantive.some(
-      (c) => c.type === "event_created" || c.type === "new_event",
-    );
-    const block = [`▸ ${isNew ? "Sự kiện mới — " : ""}${g.eventTitle}`];
+  for (const g of digestGroups) {
+    const isNew = g.substantive.some((c) => isNewEvent(c.type));
+    const head = g.eventId
+      ? { eventId: g.eventId, eventTitle: g.eventTitle }
+      : { eventTitle: g.eventTitle };
+    const block = [`▸ ${isNew ? "🆕 " : ""}${titleHtml(siteUrl, head)}`];
     const top = g.substantive
-      .filter((c) => c.type !== "event_created" && c.type !== "new_event")
+      .filter((c) => !isNewEvent(c.type))
       .sort(
         (a, b) => (TYPE_PRIORITY[a.type] ?? 9) - (TYPE_PRIORITY[b.type] ?? 9),
       );
     for (const c of top.slice(0, MAX_LINES_PER_EVENT)) {
       const label = CHANGE_LABEL[c.type] ?? c.type;
-      block.push(`  • ${label}: ${changeSummaryText(c, label)}`);
+      block.push(`  • ${label} — ${esc(changeSummaryText(c, label))}`);
     }
     if (top.length > MAX_LINES_PER_EVENT)
-      block.push(`  • …${top.length - MAX_LINES_PER_EVENT} dữ kiện khác trên app`);
+      block.push(
+        `  • …${top.length - MAX_LINES_PER_EVENT} dữ kiện khác trên app`,
+      );
     if (g.coverageSources.length)
       block.push(
-        `  • ${g.coverageSources.length} nguồn: ${g.coverageSources.join(", ")}`,
+        `  • ${g.coverageSources.length} nguồn: ${esc(g.coverageSources.join(", "))}`,
       );
     if (lines.length + block.length > MAX_LINES) {
       skippedEvents++;
@@ -126,16 +192,15 @@ export function formatAlertMessages(changes: DigestChange[]): string[] {
   }
   if (skippedEvents) lines.push(`…và ${skippedEvents} sự kiện khác trên app`);
 
-  const header = `⚡ ThunderFeed — ${ordered.length} sự kiện có thay đổi\n`;
-  const out: string[] = [];
+  const header = `⚡ <b>ThunderFeed</b> — ${digestGroups.length} sự kiện có thay đổi\n`;
   let cur = header;
   for (const l of lines) {
     if (cur.length + l.length + 1 > MSG_LIMIT - 100) {
-      out.push(cur);
+      messages.push(cur);
       cur = "";
     }
     cur += (cur.endsWith("\n") || cur === "" ? "" : "\n") + l + "\n";
   }
-  if (cur.trim()) out.push(cur);
-  return out;
+  if (cur.trim()) messages.push(cur);
+  return messages;
 }

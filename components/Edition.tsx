@@ -56,6 +56,9 @@ export default function Edition({ initial }: { initial: Edition }) {
     const isDark = theme ? theme === "dark" : prefersDark;
     setDark(isDark);
     document.documentElement.dataset.theme = isDark ? "dark" : "light";
+    // deep link — Telegram alerts open ?event=<canonical event id>
+    const eid = new URLSearchParams(window.location.search).get("event");
+    if (eid) setOpenEventId(eid);
   }, []);
 
   const toggleTheme = useCallback(() => {
