@@ -5,10 +5,17 @@ import { timeAgo } from "../lib/model";
 import { MediaSpectrumBar, OwnershipBar } from "./Spectrum";
 import { SourceAvatars } from "./SourceIcons";
 
+const CONF_LABEL = {
+  strong: "tin cậy cao",
+  moderate: "tin cậy vừa",
+  weak: "tin cậy thấp",
+} as const;
+
 export default function HeroStory({
   cluster,
   analysis,
   claimCount,
+  confidence,
   isRead,
   now,
   onOpen,
@@ -16,6 +23,7 @@ export default function HeroStory({
   cluster: StoryCluster;
   analysis: EventAnalysis;
   claimCount?: number;
+  confidence?: "strong" | "moderate" | "weak";
   isRead: boolean;
   now: number;
   onOpen: () => void;
@@ -92,6 +100,14 @@ export default function HeroStory({
               <>
                 <span className="dot">·</span>
                 <span className="claims-chip">{facts} dữ kiện</span>
+              </>
+            )}
+            {confidence && (
+              <>
+                <span className="dot">·</span>
+                <span className={`conf-badge ${confidence}`} title="Độ tin cậy">
+                  {CONF_LABEL[confidence]}
+                </span>
               </>
             )}
             <span className="dot">·</span>

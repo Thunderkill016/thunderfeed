@@ -16,7 +16,7 @@ import { cosine, embedArticles } from "./embed";
 import { applyTracking } from "./tracking";
 import { feeds } from "./feeds";
 import { persistEdition } from "./db/persist";
-import { getClaimCounts } from "./db/read";
+import { getClaimCounts, getConfidenceStates } from "./db/read";
 import { dbEnabled } from "./db/pool";
 import {
   getLatestEditionSnapshot,
@@ -273,15 +273,24 @@ export async function buildEdition(): Promise<Edition> {
   // canonical claim counts surface as the "N dữ kiện" chip on cards —
   // read back from Postgres so the chip matches the EventView modal.
   let claimCounts: Record<string, number> | undefined;
+  let confidences: Edition["confidences"];
   if (eventIds) {
     try {
-      const counts = await getClaimCounts(Object.values(eventIds));
+      const ids = Object.values(eventIds);
+      const [counts, confs] = await Promise.all([
+        getClaimCounts(ids),
+        getConfidenceStates(ids),
+      ]);
       const m: Record<string, number> = {};
+      const cf: Record<string, "strong" | "moderate" | "weak"> = {};
       for (const [clusterId, eventId] of Object.entries(eventIds)) {
         const c = counts.get(eventId);
         if (c) m[clusterId] = c;
+        const s = confs.get(eventId);
+        if (s) cf[clusterId] = s;
       }
       if (Object.keys(m).length > 0) claimCounts = m;
+      if (Object.keys(cf).length > 0) confidences = cf;
     } catch {
       /* optional — chips hide without it */
     }
@@ -325,6 +334,7 @@ export async function buildEdition(): Promise<Edition> {
     changes,
     eventIds,
     claimCounts,
+    confidences,
   };
 }
 

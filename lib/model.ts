@@ -254,6 +254,8 @@ export interface Edition {
   eventIds?: Record<string, string>;
   /** cluster.id → canonical claim count ("N dữ kiện" chip on cards). */
   claimCounts?: Record<string, number>;
+  /** cluster.id → ICD 203 confidence state (reliability chip on cards). */
+  confidences?: Record<string, "strong" | "moderate" | "weak">;
 }
 
 /* -------------------------------- helpers -------------------------------- */

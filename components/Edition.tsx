@@ -259,6 +259,7 @@ export default function Edition({ initial }: { initial: Edition }) {
             cluster={edition.hero}
             analysis={edition.heroAnalysis}
             claimCount={edition.claimCounts?.[edition.hero.id]}
+            confidence={edition.confidences?.[edition.hero.id]}
             isRead={read.has(edition.hero.leadArticle.id)}
             now={nowMs}
             onOpen={() => openCluster(edition.hero!)}
@@ -272,6 +273,7 @@ export default function Edition({ initial }: { initial: Edition }) {
               pillar={pillar}
               analyses={edition.analyses}
               claimCounts={edition.claimCounts}
+              confidences={edition.confidences}
               read={read}
               now={nowMs}
               onOpen={openCluster}

@@ -5,10 +5,17 @@ import { timeAgo, topicById } from "../lib/model";
 import { MediaSpectrumBar } from "./Spectrum";
 import { SourceAvatars } from "./SourceIcons";
 
+const CONF_LABEL = {
+  strong: "tin cậy cao",
+  moderate: "tin cậy vừa",
+  weak: "tin cậy thấp",
+} as const;
+
 function EventCard({
   cluster,
   analysis,
   claimCount,
+  confidence,
   isRead,
   lead,
   now,
@@ -17,6 +24,7 @@ function EventCard({
   cluster: StoryCluster;
   analysis?: EventAnalysis;
   claimCount?: number;
+  confidence?: "strong" | "moderate" | "weak";
   isRead: boolean;
   lead: boolean;
   now: number;
@@ -56,6 +64,11 @@ function EventCard({
       <div className="card-foot">
         <SourceAvatars sources={cluster.sources} />
         {facts > 0 && <span className="claims-chip">{facts} dữ kiện</span>}
+        {confidence && (
+          <span className={`conf-badge ${confidence}`} title="Độ tin cậy">
+            {CONF_LABEL[confidence]}
+          </span>
+        )}
         {cluster.mediaSpectrum && (
           <MediaSpectrumBar spectrum={cluster.mediaSpectrum} compact />
         )}
@@ -83,6 +96,7 @@ export default function PillarSection({
   pillar,
   analyses,
   claimCounts,
+  confidences,
   read,
   now,
   onOpen,
@@ -90,6 +104,7 @@ export default function PillarSection({
   pillar: Pillar;
   analyses: Record<string, EventAnalysis>;
   claimCounts?: Record<string, number>;
+  confidences?: Record<string, "strong" | "moderate" | "weak">;
   read: Set<string>;
   now: number;
   onOpen: (c: StoryCluster) => void;
@@ -108,6 +123,7 @@ export default function PillarSection({
             cluster={c}
             analysis={analyses[c.id]}
             claimCount={claimCounts?.[c.id]}
+            confidence={confidences?.[c.id]}
             isRead={read.has(c.leadArticle.id)}
             lead={i === 0}
             now={now}
