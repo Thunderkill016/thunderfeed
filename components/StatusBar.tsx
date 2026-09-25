@@ -61,18 +61,22 @@ export default function StatusBar({
         <button
           className="sources-btn"
           onClick={() => setShowSources((v) => !v)}
+          title={`${okCount} nguồn đang hoạt động`}
         >
-          {okCount}/{sources.length} nguồn
+          {sources.length} nguồn
+          {failed.length > 0 && ` · ${failed.length} lỗi`}
         </button>
         <span className="dot">·</span>
-        <span className="art-count">{totalArticles} bài</span>
+        <span className="art-count">
+          {totalArticles.toLocaleString("vi-VN")} bài
+        </span>
         {changes && changes.newEvents > 0 && (
           <span className="changes-tag">+{changes.newEvents} sự kiện mới</span>
         )}
         {changes && changes.accelerating > 0 && (
           <span className="changes-tag">▲{changes.accelerating} đang leo</span>
         )}
-        {llmEnabled && <span className="ai-tag">AI nhận định</span>}
+        {llmEnabled && <span className="ai-tag">nhận định AI</span>}
       </div>
       {trending.length > 0 && (
         <div className="trending">

@@ -8,19 +8,21 @@ function EventCard({
   cluster,
   analysis,
   isRead,
+  lead,
   now,
   onOpen,
 }: {
   cluster: StoryCluster;
   analysis?: EventAnalysis;
   isRead: boolean;
+  lead: boolean;
   now: number;
   onOpen: () => void;
 }) {
   const topic = topicById.get(cluster.topic);
   return (
     <article
-      className={`event-card ${isRead ? "read" : ""}`}
+      className={`event-card ${isRead ? "read" : ""} ${lead ? "lead" : ""}`}
       onClick={onOpen}
       role="button"
       tabIndex={0}
@@ -88,12 +90,13 @@ export default function PillarSection({
         <span className="pillar-count">{pillar.events.length}</span>
       </header>
       <div className="pillar-events">
-        {pillar.events.map((c) => (
+        {pillar.events.map((c, i) => (
           <EventCard
             key={c.id}
             cluster={c}
             analysis={analyses[c.id]}
             isRead={read.has(c.leadArticle.id)}
+            lead={i === 0}
             now={now}
             onOpen={() => onOpen(c)}
           />
