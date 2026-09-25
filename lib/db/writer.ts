@@ -1334,7 +1334,9 @@ async function upsertClaim(
           cur.id,
           newVn,
           winnerVer?.value_type ?? claim.valueType ?? "text",
-          JSON.parse(winner.valueJson),
+          // already valid JSON text — JSON.parse then pg-serialize breaks
+          // string scalars ('"approved"' → bare 'approved' → invalid jsonb)
+          winner.valueJson,
           winnerVer?.unit ?? claim.unit ?? null,
           null,
           computedState,

@@ -12,7 +12,7 @@ import { randomUUID } from "node:crypto";
 import { newDb, DataType } from "pg-mem";
 import type { Pool } from "pg";
 import { injectPool, getPool } from "../lib/db/pool";
-import { persistCluster } from "../lib/db/writer";
+import { persistCluster, type ExtractedClaim } from "../lib/db/writer";
 import { extractClaims } from "../lib/db/extract";
 import { getEventView } from "../lib/db/read";
 import { classifyLineage, independence, type LineageDoc } from "../lib/lineage";
@@ -873,6 +873,53 @@ test("unknown → confirmed: peer coverage upgrades an origin once", async () =>
   // unresolved rather than minting a second origin
   assert.equal(view!.confidence.confirmedIndependentOrigins, 1);
   assert.equal(view!.confidence.unresolvedOrigins, 1);
+});
+
+test("text-valued claim dispute mints valid jsonb on state upgrade", async () => {
+  setupDb();
+  // two outlets assert different TEXT values for the same claim — the
+  // winner-convergence mint must store '"approved"'-style JSON text, not
+  // a bare 'approved' scalar (regression: pg/jsonb rejected bare strings)
+  const t1 = "2026-09-24T08:00:00Z";
+  const t2 = "2026-09-24T09:00:00Z";
+  const TITLE = "Quốc hội biểu quyết đề án cải cách";
+  const a1 = art({
+    source: "Báo Chính Phủ",
+    title: TITLE,
+    url: "https://bcp.vn/de-an-1",
+    publishedAt: t1,
+  });
+  const a2 = art({
+    source: "VnExpress",
+    title: TITLE,
+    url: "https://vne.vn/de-an-2",
+    publishedAt: t2,
+  });
+  const textClaim = (a: Article, value: string): ExtractedClaim => ({
+    claimKey: "de_an|trang_thai",
+    predicate: "trang_thai",
+    claimType: "status",
+    valueType: "text",
+    value,
+    label: "Trạng thái đề án",
+    assertedBy: a.source,
+    articleId: a.id,
+    assertedAt: a.publishedAt,
+  });
+  const r1 = await persistCluster(cluster([a1]), [textClaim(a1, "approved")]);
+  const r2 = await persistCluster(cluster([a2]), [textClaim(a2, "rejected")]);
+  assert.equal(r2.eventId, r1.eventId);
+
+  const { rows } = await getPool().query<{ value: string; state: string }>(
+    `SELECT cv.value::text AS value, cv.state
+     FROM claim_versions cv JOIN claims c ON c.id = cv.claim_id
+     WHERE c.event_id = $1 ORDER BY cv.version_no`,
+    [r1.eventId],
+  );
+  assert.ok(rows.length >= 2); // initial + dispute/version trail
+  for (const r of rows) assert.doesNotThrow(() => JSON.parse(r.value));
+  const view = await getEventView(r1.eventId);
+  assert.equal(view!.claims[0].state, "disputed");
 });
 
 test("mutation guard: lineage + metadata observations are append-only in schema", () => {

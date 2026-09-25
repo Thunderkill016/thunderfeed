@@ -71,6 +71,7 @@ export default function Edition({ initial }: { initial: Edition }) {
   const openEventById = useCallback((id: string) => {
     setOpenEventId(id);
     const url = new URL(window.location.href);
+    if (url.searchParams.get("event") === id) return;
     url.searchParams.set("event", id);
     history.pushState({ tfEvent: id }, "", url);
   }, []);
