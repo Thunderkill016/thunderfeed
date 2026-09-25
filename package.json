@@ -16,6 +16,7 @@
     "quality": "npm run typecheck && npm test && npm run build",
     "bench": "tsx scripts/bench/run.ts",
     "alerts:telegram": "tsx scripts/telegram-alerts.mts",
+    "build:edition": "tsx scripts/build-edition.mts",
     "bench:lineage": "tsx scripts/bench/lineage.ts",
     "bench:lineage:real": "tsx scripts/bench/lineage.ts bench/lineage-real.jsonl",
     "bench:export": "tsx scripts/bench/export-pairs.ts",

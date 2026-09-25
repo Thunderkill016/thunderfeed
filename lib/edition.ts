@@ -17,6 +17,11 @@ import { applyTracking } from "./tracking";
 import { feeds } from "./feeds";
 import { persistEdition } from "./db/persist";
 import { getClaimCounts } from "./db/read";
+import { dbEnabled } from "./db/pool";
+import {
+  getLatestEditionSnapshot,
+  saveEditionSnapshot,
+} from "./db/editionSnapshot";
 import type {
   ClaimAnalysis,
   Edition,
@@ -129,7 +134,7 @@ function computeTrending(
     }));
 }
 
-async function buildEdition(): Promise<Edition> {
+export async function buildEdition(): Promise<Edition> {
   const { articles, sources } = await fetchAllNews();
   const apiKey = process.env.GEMINI_API_KEY;
 
@@ -316,39 +321,71 @@ async function buildEdition(): Promise<Edition> {
  * the whole multi-minute cold build and the page looked dead. Instead
  * each built edition is persisted to disk; getEdition serves the
  * last-good snapshot instantly and refreshes in the background once it
- * goes stale. Only the very first boot (no snapshot) still waits. */
+ * goes stale. Only the very first boot (no snapshot) still waits.
+ *
+ * Serverless wrinkle: on Vercel .cache/ is ephemeral per-invocation, so
+ * every build also writes an edition_snapshots row — reads there prefer
+ * the DB (fs is empty anyway), locally fs stays first (cheap). And
+ * background rebuilds are local-only: a rebuild kicked inside a request
+ * dies when the response does, so on Vercel we serve the last-good
+ * snapshot and let the external builder (scripts/build-edition.mts)
+ * refresh the row. */
 const SNAPSHOT_PATH =
   process.env.THUNDERFEED_EDITION_CACHE ?? ".cache/edition.json";
 
 let memEdition: Edition | null = null;
 let inflight: Promise<Edition> | null = null;
 
-function loadSnapshot(): Edition | null {
-  if (memEdition) return memEdition;
+function readFsSnapshot(): Edition | null {
   try {
     if (!existsSync(SNAPSHOT_PATH)) return null;
-    memEdition = JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8")) as Edition;
-    return memEdition;
+    return JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8")) as Edition;
   } catch {
     return null;
   }
 }
 
-function saveSnapshot(e: Edition): void {
+async function readDbSnapshot(): Promise<Edition | null> {
+  if (!dbEnabled()) return null;
+  try {
+    return await getLatestEditionSnapshot();
+  } catch {
+    return null; // optional store — a failure is just a cache miss
+  }
+}
+
+async function loadSnapshot(): Promise<Edition | null> {
+  if (memEdition) return memEdition;
+  memEdition = process.env.VERCEL
+    ? ((await readDbSnapshot()) ?? readFsSnapshot())
+    : (readFsSnapshot() ?? (await readDbSnapshot()));
+  return memEdition;
+}
+
+async function saveSnapshot(e: Edition): Promise<void> {
+  memEdition = e;
   try {
     const dir = path.dirname(SNAPSHOT_PATH);
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(SNAPSHOT_PATH, JSON.stringify(e));
-    memEdition = e;
   } catch {
     // snapshot is an availability optimization — never fail the edition
   }
+  if (!dbEnabled()) return;
+  try {
+    await saveEditionSnapshot(e);
+  } catch (error) {
+    console.warn(
+      "edition snapshot save failed:",
+      error instanceof Error ? error.message : error,
+    );
+  }
 }
 
-function refreshEdition(): Promise<Edition> {
+export function refreshEdition(): Promise<Edition> {
   inflight ??= buildEdition()
-    .then((e) => {
-      saveSnapshot(e);
+    .then(async (e) => {
+      await saveSnapshot(e);
       return e;
     })
     .finally(() => {
@@ -358,10 +395,10 @@ function refreshEdition(): Promise<Edition> {
 }
 
 export async function getEdition(): Promise<Edition> {
-  const snap = loadSnapshot();
+  const snap = await loadSnapshot();
   if (snap) {
     const built = snap.updatedAt ? Date.parse(snap.updatedAt) : 0;
-    if (Date.now() - built > REVALIDATE_SECONDS * 1000)
+    if (!process.env.VERCEL && Date.now() - built > REVALIDATE_SECONDS * 1000)
       void refreshEdition().catch(() => {});
     return snap;
   }

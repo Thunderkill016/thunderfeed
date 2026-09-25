@@ -9,3 +9,5 @@ out/
 .pg/
 bench/results/semantic-vectors.json
 bench/results/*.tmp
+.vercel
+.env*
