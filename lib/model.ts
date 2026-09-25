@@ -421,6 +421,39 @@ const NOISE_PATTERN =
 
 /** Vietnamese display label for a media typology value. Client-safe: keep
  * this pure — never import mediaData.ts (it bundles the JSON registry). */
+/** Media typology values whose outlets are state/public-owned — the
+ *  single source of truth shared by mediaData.ownershipClass (server)
+ *  and ownershipCamp (client). Keep in sync with the registry's
+ *  typology vocabulary. */
+export const STATE_TYPOLOGIES = new Set([
+  "State Media",
+  "State Media / Digital",
+  "State Funded Media",
+  "Public Media",
+  "Public Broadcaster",
+  "Public agency (statutory, editorially independent)",
+]);
+
+export const PRIVATE_TYPOLOGIES = new Set([
+  "Private Media",
+  "Private Enterprise",
+  "Private Independent Media",
+  "Independent Media",
+  "Non-Profit",
+  "Print Media",
+]);
+
+/** Reader-facing coverage camp for a source: Vietnamese media splits on
+ *  the state/private axis (not GN's left/right), international outlets
+ *  are their own camp. */
+export function ownershipCamp(
+  typology: string | undefined,
+  isDomestic: boolean,
+): "state" | "private" | "intl" {
+  if (!isDomestic) return "intl";
+  return typology && STATE_TYPOLOGIES.has(typology) ? "state" : "private";
+}
+
 export function typologyLabel(typology: string): string {
   switch (typology) {
     case "State Media":

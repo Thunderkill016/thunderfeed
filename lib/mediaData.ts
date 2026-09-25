@@ -1,5 +1,6 @@
 import mediaDataRaw from "../data/media_data.json";
 import vnMediaRaw from "../data/vn_media.json";
+import { PRIVATE_TYPOLOGIES, STATE_TYPOLOGIES } from "./model";
 
 /**
  * Source-ownership registry. Entries from kagisearch/kite-public
@@ -88,22 +89,9 @@ export function canonicalSourceName(name: string, url?: string): string {
 export type OwnershipClass = "state" | "private" | "unknown";
 
 export function ownershipClass(typology: string): OwnershipClass {
-  switch (typology) {
-    case "State Media":
-    case "State Media / Digital":
-    case "State Funded Media":
-    case "Public Media":
-    case "Public Broadcaster":
-    case "Public agency (statutory, editorially independent)":
-      return "state";
-    case "Private Media":
-    case "Private Enterprise":
-    case "Private Independent Media":
-    case "Independent Media":
-    case "Non-Profit":
-    case "Print Media":
-      return "private";
-    default:
-      return "unknown";
-  }
+  // typology→class vocabulary lives in model.ts (client-safe module) so
+  // readers and the pipeline classify a source identically
+  if (STATE_TYPOLOGIES.has(typology)) return "state";
+  if (PRIVATE_TYPOLOGIES.has(typology)) return "private";
+  return "unknown";
 }

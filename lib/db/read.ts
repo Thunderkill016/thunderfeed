@@ -285,9 +285,11 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     summary: string;
     detected_at: string;
   }>(
+    /* 40 raw rows (corroboration emits near-duplicate rows per evidence
+     * version) — the modal dedups them into a readable catch-up arc */
     `SELECT type, materiality, summary, detected_at
      FROM changes WHERE event_id = $1
-     ORDER BY detected_at DESC LIMIT 12`,
+     ORDER BY detected_at DESC LIMIT 40`,
     [eventId],
   );
 

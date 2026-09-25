@@ -1,6 +1,7 @@
 "use client";
 
 import type { ChangeView, EventVersionView, EventView } from "../lib/db/read";
+import { buildStoryArc } from "../lib/changes";
 import { fmtClaimValue, PRED_LABEL_VI } from "../lib/format";
 import { TIER_LABEL, useReliability } from "./ReliabilityContext";
 
@@ -188,12 +189,17 @@ export default function EventIntel({ view }: { view: EventView }) {
 
       {view.latestChanges.length > 0 && (
         <section className="detail-section">
-          <h3>Diễn biến</h3>
-          <ul className="changes-timeline">
-            {view.latestChanges.map((c, i) => (
-              <ChangeRow key={i} change={c} />
-            ))}
-          </ul>
+          <h3>Từ đầu tới giờ</h3>
+          {buildStoryArc(view.latestChanges).map((d) => (
+            <div key={d.label} className="arc-day">
+              <span className="arc-day-label">{d.label}</span>
+              <ul className="changes-timeline">
+                {d.items.map((c, i) => (
+                  <ChangeRow key={i} change={c} />
+                ))}
+              </ul>
+            </div>
+          ))}
         </section>
       )}
 
@@ -245,9 +251,9 @@ function VersionRow({
   );
 }
 
+/** A single beat inside a story-arc day group — the day header carries
+ *  the date, so the row shows VN-local time only. */
 export function ChangeRow({ change }: { change: ChangeView }) {
-  const at = new Date(change.detectedAt);
-  const isToday = at.toDateString() === new Date().toDateString();
   return (
     <li className={`change-row ${change.materiality}`}>
       <span className={`change-badge ${change.materiality}`}>
@@ -255,17 +261,11 @@ export function ChangeRow({ change }: { change: ChangeView }) {
       </span>
       <span className="change-summary">{change.summary}</span>
       <span className="change-time">
-        {isToday
-          ? at.toLocaleTimeString("vi-VN", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })
-          : at.toLocaleString("vi-VN", {
-              day: "2-digit",
-              month: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+        {new Date(change.detectedAt).toLocaleTimeString("vi-VN", {
+          timeZone: "Asia/Ho_Chi_Minh",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
       </span>
     </li>
   );

@@ -6,7 +6,13 @@ import type { EventView } from "../lib/db/read";
 import { MediaSpectrumBar, OwnershipBar } from "./Spectrum";
 import EventIntel from "./EventIntel";
 import Modal from "./Modal";
-import { timeAgo, typologyLabel } from "../lib/model";
+import { timeAgo, typologyLabel, ownershipCamp } from "../lib/model";
+
+const CAMPS = [
+  { key: "state", label: "Báo nhà nước VN" },
+  { key: "private", label: "Báo tư nhân VN" },
+  { key: "intl", label: "Báo quốc tế" },
+] as const;
 
 export default function EventDetail({
   cluster,
@@ -210,30 +216,51 @@ export default function EventDetail({
         )}
 
         <section className="detail-section">
-          <h3>Góc nhìn từng nguồn</h3>
-          <ul className="view-from">
-            {analysis.theViewFrom.map((v) => (
-              <li key={v.url ?? v.source}>
-                <div className="headline-src">
-                  <span
-                    className={`src-dot ${v.isDomestic ? "dom" : "intl"}`}
-                  />
-                  <strong>{v.source}</strong>
-                  {v.ownerType && (
-                    <span className="owner-badge">
-                      {typologyLabel(v.ownerType)}
-                    </span>
-                  )}
-                </div>
-                <p>{v.summary}</p>
-                {v.url && (
-                  <a href={v.url} target="_blank" rel="noopener noreferrer">
-                    Đọc bài gốc →
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
+          <h3>Góc nhìn từng phe</h3>
+          {/* Vietnamese coverage splits on the state/private axis, not a
+              partisan one — group sources into the camps a VN reader
+              actually weighs against each other (Ground News's "Left/
+              Center/Right say" adapted to the local axis). */}
+          {CAMPS.map(({ key, label }) => {
+            const items = analysis.theViewFrom.filter(
+              (v) => ownershipCamp(v.ownerType, v.isDomestic) === key,
+            );
+            if (!items.length) return null;
+            return (
+              <div key={key} className="view-camp">
+                <span className={`camp-label ${key}`}>
+                  {label} · {items.length}
+                </span>
+                <ul className="view-from">
+                  {items.map((v) => (
+                    <li key={v.url ?? v.source}>
+                      <div className="headline-src">
+                        <span
+                          className={`src-dot ${v.isDomestic ? "dom" : "intl"}`}
+                        />
+                        <strong>{v.source}</strong>
+                        {v.ownerType && (
+                          <span className="owner-badge">
+                            {typologyLabel(v.ownerType)}
+                          </span>
+                        )}
+                      </div>
+                      <p>{v.summary}</p>
+                      {v.url && (
+                        <a
+                          href={v.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Đọc bài gốc →
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </section>
       </div>
 

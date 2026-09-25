@@ -104,6 +104,58 @@ export function materialityName(rank: number): string {
   return rank === 0 ? "high" : rank === 1 ? "medium" : "low";
 }
 
+/* ------------------------- story arc (catch-up) ------------------------- */
+
+/** Minimal shape the arc needs — satisfied by both ChangeLike and the
+ *  per-event ChangeView rows the modal fetches. */
+export interface ArcChange {
+  type: string;
+  materiality?: string;
+  summary: string;
+  detectedAt: string;
+}
+
+export interface ArcDay {
+  /** "Th 5, 25/9" — Vietnam-local day boundary, not UTC */
+  label: string;
+  items: ArcChange[];
+}
+
+const DAY_FMT = new Intl.DateTimeFormat("vi-VN", {
+  timeZone: "Asia/Ho_Chi_Minh",
+  weekday: "short",
+  day: "numeric",
+  month: "numeric",
+});
+
+/**
+ * One event's change log as a reading arc: deduplicated, oldest→newest,
+ * grouped under Vietnam-local day headers. A reader arriving on day 3
+ * catches up top-down instead of reverse-engineering a newest-first log.
+ */
+export function buildStoryArc(changes: ArcChange[]): ArcDay[] {
+  const seen = new Set<string>();
+  const sorted = changes
+    .filter((c) => {
+      const k = `${c.type}|${c.summary}`;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    })
+    .sort(
+      (a, b) =>
+        (Date.parse(a.detectedAt) || 0) - (Date.parse(b.detectedAt) || 0),
+    );
+  const days: ArcDay[] = [];
+  for (const c of sorted) {
+    const label = DAY_FMT.format(new Date(c.detectedAt));
+    const last = days[days.length - 1];
+    if (last?.label === label) last.items.push(c);
+    else days.push({ label, items: [c] });
+  }
+  return days;
+}
+
 /** Summary text for a substantive change — the writer already prefixes
  *  some summaries with the change label ("Dữ kiện mới: 519 triệu USD"),
  *  so surfaces adding their own label must strip the duplicate. */

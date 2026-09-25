@@ -11,6 +11,7 @@ import {
   groupChangesByEvent,
   materialityName,
   changeSummaryText,
+  buildStoryArc,
   type ChangeLike,
 } from "../lib/changes";
 import { formatAlertMessages } from "../lib/telegram";
@@ -197,4 +198,48 @@ test("formatAlertMessages: caps substantive lines per event, disputes first", ()
   assert.ok(disputedAt >= 0 && disputedAt < claimAt);
   // cap leaves one overflow counter, not a 5th bullet
   assert.match(msg, /…2 dữ kiện khác trên app/);
+});
+
+test("buildStoryArc: dedup, chronological, VN-day grouped", () => {
+  const rows = [
+    // newest first — the raw change feed order
+    ch({
+      type: "claim_updated",
+      summary: "b",
+      detectedAt: "2026-09-25T14:00:00Z",
+    }),
+    ch({ type: "new_claim", summary: "a", detectedAt: "2026-09-25T10:00:00Z" }),
+    // an exact duplicate row (another evidence version of the same act)
+    ch({ type: "new_claim", summary: "a", detectedAt: "2026-09-25T10:00:00Z" }),
+    // 23:30 UTC Sep 24 = 06:30 Sep 25 VN — same VN day as the others
+    ch({
+      type: "event_created",
+      summary: "start",
+      detectedAt: "2026-09-24T23:30:00Z",
+    }),
+    // 17:00 UTC Sep 23 = 00:00 Sep 24 VN — a different VN day
+    ch({
+      type: "new_claim",
+      summary: "earlier",
+      detectedAt: "2026-09-23T17:00:00Z",
+    }),
+  ];
+  const arc = buildStoryArc(rows);
+  assert.equal(arc.length, 2, "VN-local day boundaries, not UTC");
+  assert.equal(arc[0].items[0].summary, "earlier");
+  const day2 = arc[1];
+  assert.equal(day2.items.length, 3, "the duplicate row collapses");
+  assert.equal(day2.items[0].summary, "start");
+  assert.equal(day2.items[2].summary, "b");
+});
+
+test("ownershipCamp: VN splits state/private, intl is its own camp", async () => {
+  const { ownershipCamp } = await import("../lib/model");
+  assert.equal(ownershipCamp("State Media", true), "state");
+  assert.equal(ownershipCamp("Public Broadcaster", true), "state");
+  assert.equal(ownershipCamp("Private Enterprise", true), "private");
+  assert.equal(ownershipCamp(undefined, true), "private");
+  // a state-owned international outlet is still the intl camp — the axis
+  // the reader weighs is domestic-state vs domestic-private vs foreign
+  assert.equal(ownershipCamp("Public Broadcaster", false), "intl");
 });

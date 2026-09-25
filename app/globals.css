@@ -1198,6 +1198,32 @@ button {
   color: var(--accent);
   text-decoration: none;
 }
+/* coverage camps — VN media splits on the state/private axis, not a
+ * partisan one; the camp header carries the count like a spectra-label */
+.view-camp {
+  margin-bottom: 14px;
+}
+.camp-label {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  background: var(--bg-sunken);
+  color: var(--ink-soft);
+  margin-bottom: 2px;
+}
+.camp-label.state {
+  color: var(--dom);
+  border-color: color-mix(in srgb, var(--dom) 40%, transparent);
+}
+.camp-label.intl {
+  color: var(--intl);
+  border-color: color-mix(in srgb, var(--intl) 40%, transparent);
+}
 .modal-foot {
   padding: 0 30px 24px;
 }
@@ -1782,6 +1808,19 @@ button {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--ink-faint);
+}
+/* story-arc day group — VN-local day header above each batch of beats */
+.arc-day {
+  margin-bottom: 10px;
+}
+.arc-day-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
 }
 .version-title {
   color: var(--ink-faint);
