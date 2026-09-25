@@ -55,7 +55,17 @@ export default function HeroStory({
       <div className="hero-grid">
         {cluster.leadArticle.image && (
           <div className="hero-image">
-            <img src={cluster.leadArticle.image} alt="" loading="lazy" />
+            <img
+              src={cluster.leadArticle.image}
+              alt=""
+              loading="lazy"
+              ref={(img) => {
+                // cached/SSR-complete images finish before hydration —
+                // their load event never fires, so check here too
+                if (img?.complete) img.classList.add("loaded");
+              }}
+              onLoad={(e) => e.currentTarget.classList.add("loaded")}
+            />
           </div>
         )}
         <div className="hero-body">

@@ -430,13 +430,26 @@ button {
 .hero-grid:not(:has(.hero-image)) .hero-body {
   max-width: 780px;
 }
+/* the frame is the placeholder: a bordered sunken box holds the slot
+ * while the (often slow) origin CDN decodes, so a half-loaded hero
+ * never shows as a dark box with a sliver of photo */
+.hero-image {
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--bg-sunken);
+  overflow: hidden;
+}
 .hero-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid var(--line);
+  display: block;
   max-height: 420px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.hero-image img.loaded {
+  opacity: 1;
 }
 .hero-title {
   font-family: var(--serif);
@@ -679,6 +692,11 @@ button {
   height: 100%;
   object-fit: cover;
   display: block;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.card-thumb img.loaded {
+  opacity: 1;
 }
 .event-card.lead .card-title {
   font-size: 20px;
@@ -1335,6 +1353,11 @@ button {
   }
   .hero-grid {
     grid-template-columns: 1fr;
+  }
+  /* stacked layout gives the frame no row height to stretch into —
+   * pin a 16:9 slot so the placeholder holds and nothing shifts on load */
+  .hero-image {
+    aspect-ratio: 16 / 9;
   }
   .hero-title {
     font-size: 26px;
