@@ -252,43 +252,62 @@ async function recordIngestCycle(
     [startedAt ?? new Date().toISOString()],
   );
   const cycleId = cyc.rows[0].id;
-  for (const s of sources) {
+  // batched unnest — ~100 sources × one insert each was pure RTT waste
+  // over a remote pooler
+  const stats = (s: SourceStatus) => {
     const ev = statsBySource.get(s.name);
-    await pool.query(
-      `INSERT INTO ingest_source_stats
-         (cycle_id, source_key, channel, provider, fetched, accepted,
-          duplicate_docs, new_evidence_versions, events_contributed,
-          material_events, primary_attached, latency_ms, http_status, status,
-          detail)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15::jsonb)`,
-      [
-        cycleId,
-        s.id,
-        null, // channel/provider resolved per-document, not per-source row
-        null,
-        s.count,
-        s.count,
-        ev?.reObserved ?? 0,
-        ev?.newVersions ?? 0,
-        ev?.events.size ?? 0,
-        ev?.materialEvents.size ?? 0,
-        ev?.primaryAttached ?? 0,
-        s.latencyMs ?? null,
-        s.httpStatus ?? null,
-        s.status,
-        // information-lineage contribution: does the source bring new
-        // origins or only derivative volume? syndicationRatio > ~0.5 is a
-        // copy-forward outlet, not an intelligence source.
-        JSON.stringify({
-          origins: ev?.origins ?? 0,
-          derived: ev?.derived ?? 0,
-          unknown: ev?.unknown ?? 0,
-          syndicationRatio:
-            (ev?.origins ?? 0) + (ev?.derived ?? 0)
-              ? (ev?.derived ?? 0) / ((ev?.origins ?? 0) + (ev?.derived ?? 0))
-              : null,
-        }),
-      ],
-    );
-  }
+    return {
+      key: s.id,
+      fetched: s.count,
+      dup: ev?.reObserved ?? 0,
+      newv: ev?.newVersions ?? 0,
+      evs: ev?.events.size ?? 0,
+      matev: ev?.materialEvents.size ?? 0,
+      prim: ev?.primaryAttached ?? 0,
+      lat: s.latencyMs ?? null,
+      http: s.httpStatus ?? null,
+      st: s.status,
+      // information-lineage contribution: does the source bring new
+      // origins or only derivative volume? syndicationRatio > ~0.5 is a
+      // copy-forward outlet, not an intelligence source.
+      detail: JSON.stringify({
+        origins: ev?.origins ?? 0,
+        derived: ev?.derived ?? 0,
+        unknown: ev?.unknown ?? 0,
+        syndicationRatio:
+          (ev?.origins ?? 0) + (ev?.derived ?? 0)
+            ? (ev?.derived ?? 0) / ((ev?.origins ?? 0) + (ev?.derived ?? 0))
+            : null,
+      }),
+    };
+  };
+  const rows = sources.map(stats);
+  await pool.query(
+    `INSERT INTO ingest_source_stats
+       (cycle_id, source_key, channel, provider, fetched, accepted,
+        duplicate_docs, new_evidence_versions, events_contributed,
+        material_events, primary_attached, latency_ms, http_status, status,
+        detail)
+     SELECT $1, t.key, NULL, NULL, t.fetched, t.fetched,
+            t.dup, t.newv, t.evs, t.matev, t.prim, t.lat, t.http, t.st,
+            t.detail::jsonb
+     FROM unnest(
+       $2::text[], $3::int[], $4::int[], $5::int[], $6::int[],
+       $7::int[], $8::int[], $9::int[], $10::int[], $11::text[], $12::text[]
+     ) AS t(key, fetched, dup, newv, evs, matev, prim, lat, http, st, detail)`,
+    [
+      cycleId,
+      rows.map((r) => r.key),
+      rows.map((r) => r.fetched),
+      rows.map((r) => r.dup),
+      rows.map((r) => r.newv),
+      rows.map((r) => r.evs),
+      rows.map((r) => r.matev),
+      rows.map((r) => r.prim),
+      rows.map((r) => r.lat),
+      rows.map((r) => r.http),
+      rows.map((r) => r.st),
+      rows.map((r) => r.detail),
+    ],
+  );
 }

@@ -93,6 +93,14 @@ export interface ExtractedClaim {
   assertedAt?: string;
   /** extraction_method for claim_evidence — 'heuristic' regex, 'model' LLM */
   method?: "model" | "rule" | "manual";
+  /**
+   * News salience: "core" claims change the event's real-world state
+   * (numbers, decisions, actions); "peripheral" claims are protocol /
+   * ceremony / trivia facts the extractor could not rule out. Peripheral
+   * claims stay in the canonical record but demote their change rows so
+   * alerts and the rail never amplify "đeo găng tay khi đón Tập".
+   */
+  salience?: "core" | "peripheral";
 }
 
 export interface SourceMeta {
@@ -851,6 +859,8 @@ interface PlannedChange {
   reason?: string;
   /** false → annotates the snapshot without minting a version */
   material?: boolean;
+  /** per-change override (peripheral-claim demotion); absent ⇒ type default */
+  materiality?: "low" | "medium" | "high";
 }
 
 /* reason on the batched snapshot = the highest-priority material reason */
@@ -913,7 +923,7 @@ async function flushChanges(
         p.fromClaimVersionId ?? null,
         p.toClaimVersionId ?? null,
         p.type,
-        CHANGE_MATERIALITY[p.type] ?? "low",
+        p.materiality ?? CHANGE_MATERIALITY[p.type] ?? "low",
         p.summary,
       ],
     );
@@ -1491,28 +1501,38 @@ export async function persistCluster(
     );
     const { eventId, created } = evRef;
 
-    // 2b) resolver telemetry — every evaluated pair is auditable
-    for (const ev of resolverEvals) {
+    // 2b) resolver telemetry — every evaluated pair is auditable.
+    // Batched unnest: per-row inserts were N × network RTT — over a
+    // remote pooler (runner→Supabase ~200ms) 1.5k evals ate minutes per
+    // cluster and blew the CI timeout.
+    if (resolverEvals.length) {
+      const json = (v: unknown) =>
+        JSON.stringify(v, (k, x) => (x instanceof Set ? [...x] : x));
       await client
         .query(
           `INSERT INTO resolver_decisions
              (incoming_cluster, candidate_event_id, chosen_event_id,
               decision, path, score, reasons, hard_blocks, features,
               semantic_available)
-           VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb, $9::jsonb, $10)`,
+           SELECT $1, t.cand, $2, t.decision, t.path, t.score,
+                  t.reasons::jsonb, t.blocks::jsonb, t.features::jsonb, t.sem
+           FROM unnest(
+             $3::uuid[], $4::text[], $5::text[], $6::double precision[],
+             $7::text[], $8::text[], $9::text[], $10::boolean[]
+           ) AS t(cand, decision, path, score, reasons, blocks, features, sem)`,
           [
             cluster.id,
-            ev.candidateId,
             eventId,
-            ev.decision.decision,
-            ev.decision.path,
-            ev.decision.score,
-            JSON.stringify(ev.decision.reasons),
-            JSON.stringify(ev.decision.hardBlocks),
-            JSON.stringify(ev.decision.features ?? {}, (k, v) =>
-              v instanceof Set ? [...v] : v,
+            resolverEvals.map((e) => e.candidateId),
+            resolverEvals.map((e) => e.decision.decision),
+            resolverEvals.map((e) => e.decision.path),
+            resolverEvals.map((e) => e.decision.score ?? null),
+            resolverEvals.map((e) => json(e.decision.reasons)),
+            resolverEvals.map((e) => json(e.decision.hardBlocks)),
+            resolverEvals.map((e) => json(e.decision.features ?? {})),
+            resolverEvals.map(
+              (e) => e.decision.features?.semanticSimilarity !== undefined,
             ),
-            ev.decision.features?.semanticSimilarity !== undefined,
           ],
         )
         .catch(() => {}); // telemetry must never break persistence
@@ -1775,12 +1795,22 @@ export async function persistCluster(
       }
       if (out.change) {
         changes.push(out.change.summary);
+        // peripheral claims annotate history without minting event state —
+        // a protocol fact is not a material event change, and its row drops
+        // to low/medium so push channels never see it
+        const peripheral = claim.salience === "peripheral";
         pending.push({
           type: out.change.type,
           summary: out.change.summary,
           claimId: out.claimId,
           fromClaimVersionId: out.fromClaimVersionId,
           toClaimVersionId: out.claimVersionId,
+          material: !peripheral,
+          materiality: peripheral
+            ? out.change.type === "claim_disputed"
+              ? "medium"
+              : "low"
+            : undefined,
           reason:
             out.change.type === "new_claim"
               ? "new_material_claim"

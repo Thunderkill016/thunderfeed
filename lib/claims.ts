@@ -214,6 +214,8 @@ function buildExtractPrompt(cluster: StoryCluster): string {
     "- predicate: danh từ/khái niệm chuẩn hóa, ví dụ: flights_cancelled, deaths, interest_rate, product_launch, policy_approved, arrest, price.",
     "- value: giá trị ngắn gọn (số, tên, mô tả ngắn ≤ 80 ký tự). Chỉ dùng nội dung CÓ TRONG đoạn trích — không suy diễn, không thêm con số mới.",
     "- Chỉ trích dữ kiện KHẲNG ĐỊNH được (không trích ý kiến, bình luận, phỏng đoán).",
+    "- BỎ QUA dữ kiện nghi thức/hình thức không đổi thực trạng sự kiện: trang phục, bữa ăn, lễ đón, bắt tay, chụp ảnh, thảm đỏ, sắp xếp hội nghị.",
+    "- Ưu tiên dữ kiện đổi trạng thái thật: con số, quyết định, hành động, tuyên bố, hậu quả.",
     "- Tối đa 8 claim tổng cộng, ưu tiên dữ kiện xuất hiện ở nhiều nguồn.",
     '- Chỉ trả JSON hợp lệ: {"claims":[...]}. Không có gì thì {"claims":[]}.',
     "",
@@ -227,6 +229,26 @@ const slug = (s: string) =>
     .replace(/[^a-z0-9\s_]/g, "")
     .trim()
     .replace(/\s+/g, "_");
+
+/**
+ * Salience gate for model-extracted claims. The LLM faithfully extracts
+ * whatever reporters mention — including protocol trivia ("ăn trưa làm
+ * việc", "trang phục tông xám") that must never page the alert channel.
+ * Deterministic numeric claims are always "core" — a hard number is a
+ * diff target by construction.
+ */
+const PERIPHERAL_RE =
+  /(ăn (trưa|tối|sáng)|tiệc\b|chiêu đãi|trang phục|đeo găng|găng tay|thảm đỏ|bắt tay|lễ đón|phu nhân|tông màu|tặng hoa|chụp ảnh|sân bay tân sơn nhất|nội các|hội nghị ban chỉ đạo|khai mạc|bế mạc|dự lễ|lunch|dinner|banquet|outfit|handshake|red carpet|photo op|welcoming ceremony|gala|first lady|spouse|wearing|wore)/i;
+
+export function claimSalience(
+  claim: Pick<ExtractedClaim, "predicate" | "label" | "valueType">,
+): "core" | "peripheral" {
+  if (claim.valueType === "number" || claim.valueType === "range")
+    return "core";
+  return PERIPHERAL_RE.test(`${claim.predicate} ${claim.label}`)
+    ? "peripheral"
+    : "core";
+}
 
 /**
  * Validate + normalize LLM-extracted claims into ExtractedClaim[].
@@ -300,6 +322,7 @@ export function validateExtractedClaims(
       assertedBy: source,
       articleId: article?.id,
       method: "model",
+      salience: claimSalience({ predicate, label, valueType: typeof value === "number" ? "number" : "text" }),
     });
   }
   return out;

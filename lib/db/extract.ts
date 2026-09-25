@@ -239,6 +239,9 @@ export function extractClaims(cluster: StoryCluster): ExtractedClaim[] {
         assertedBy: a.source,
         articleId: a.id,
         method: "rule",
+        // numeric claims are hard-fact diff targets by construction —
+        // peripheral status exists for free-text model claims only
+        salience: "core",
       });
     }
   }
