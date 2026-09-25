@@ -484,7 +484,29 @@ async function createEvent(
      VALUES ($1, $2, 'event_created', 'medium', $3, $4)`,
     [eventId, eventVersionId, `Sự kiện mới: ${args.title}`, now],
   );
+  await syncEventEntities(client, eventId, args.entitySignature);
   return { eventId, eventVersionId, created: true };
+}
+
+/**
+ * Junction projection of events.entity_signature — the ontology-graph
+ * read path (entity pages, watch topics) queries rows, not exploded
+ * text. Signature semantics are accumulate-only, so the sync is a
+ * pure upsert: rows a slug joined when first observed stay forever.
+ */
+async function syncEventEntities(
+  client: PoolClient,
+  eventId: string,
+  signature: string,
+): Promise<void> {
+  const slugs = signature.split(" ").filter(Boolean);
+  if (!slugs.length) return;
+  await client.query(
+    `INSERT INTO event_entities (event_id, entity_slug)
+     VALUES ${slugs.map((_, i) => `($1, $${i + 2})`).join(",")}
+     ON CONFLICT DO NOTHING`,
+    [eventId, ...slugs],
+  );
 }
 
 /**
@@ -753,13 +775,15 @@ async function resolveEvent(
       .filter(Boolean)) {
       mergedCore.add(e);
     }
+    const mergedSig = [...merged].sort().join(" ");
     await client.query(
       `UPDATE events
        SET last_seen_at = now(), entity_signature = $2,
            entity_signature_core = $3
        WHERE id = $1`,
-      [best.id, [...merged].sort().join(" "), [...mergedCore].sort().join(" ")],
+      [best.id, mergedSig, [...mergedCore].sort().join(" ")],
     );
+    await syncEventEntities(client, best.id, mergedSig);
     return {
       ref: {
         eventId: best.id,

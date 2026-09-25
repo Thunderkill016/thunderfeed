@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeView, EventVersionView, EventView } from "../lib/db/read";
-import { buildStoryArc } from "../lib/changes";
+import { buildStoryArc, type ArcChange } from "../lib/changes";
 import { fmtClaimValue, PRED_LABEL_VI } from "../lib/format";
 import { TIER_LABEL, useReliability } from "./ReliabilityContext";
 
@@ -253,7 +253,7 @@ function VersionRow({
 
 /** A single beat inside a story-arc day group — the day header carries
  *  the date, so the row shows VN-local time only. */
-export function ChangeRow({ change }: { change: ChangeView }) {
+export function ChangeRow({ change }: { change: ArcChange }) {
   return (
     <li className={`change-row ${change.materiality}`}>
       <span className={`change-badge ${change.materiality}`}>

@@ -223,7 +223,7 @@ export default function EventDetail({
               Center/Right say" adapted to the local axis). */}
           {CAMPS.map(({ key, label }) => {
             const items = analysis.theViewFrom.filter(
-              (v) => ownershipCamp(v.ownerType, v.isDomestic) === key,
+              (v) => ownershipCamp(v.ownerType, v.isDomestic ?? false) === key,
             );
             if (!items.length) return null;
             return (

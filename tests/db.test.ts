@@ -13,7 +13,11 @@ import type { Pool } from "pg";
 import { injectPool, getPool } from "../lib/db/pool";
 import { persistCluster } from "../lib/db/writer";
 import { extractClaims } from "../lib/db/extract";
-import { getEventView, getLatestChanges } from "../lib/db/read";
+import {
+  getEventView,
+  getLatestChanges,
+  getEntityEvents,
+} from "../lib/db/read";
 import type { Article, StoryCluster } from "../lib/model";
 
 function setupDb() {
@@ -386,4 +390,65 @@ test("null-domain name row gets its domain backfilled, never stolen", async () =
   );
   assert.equal(rows.length, 1);
   assert.equal(rows[0].domain, "g.example");
+});
+
+test("event_entities junction: create, accumulate on merge, entity reads", async () => {
+  setupDb();
+
+  // an event naming the US + China in its title carries both slugs
+  const c1 = cluster([
+    art({
+      source: "VnExpress",
+      title: "Mỹ công bố thỏa thuận thương mại với Trung Quốc",
+    }),
+  ]);
+  const r1 = await persistCluster(c1, extractClaims(c1));
+  assert.ok(r1.created);
+
+  // junction rows mirror the event's canonical signature
+  const us = await getEntityEvents("us");
+  assert.deepEqual(
+    us.events.map((e) => e.id),
+    [r1.eventId],
+  );
+  const cn = await getEntityEvents("china");
+  assert.deepEqual(
+    cn.events.map((e) => e.id),
+    [r1.eventId],
+  );
+  const jp = await getEntityEvents("japan");
+  assert.equal(jp.events.length, 0);
+
+  // a later observation of the SAME story whose LEAD also names Japan
+  // merges — the signature accumulates and the junction gains the slug
+  const c2 = cluster([
+    art({
+      source: "VnExpress",
+      title:
+        "Mỹ công bố thỏa thuận thương mại với Trung Quốc, Nhật Bản hoan nghênh",
+    }),
+    art({
+      source: "BBC World News",
+      title: "US-China trade deal announced, Japan welcomes it",
+      language: "en",
+    }),
+  ]);
+  const r2 = await persistCluster(c2, extractClaims(c2));
+  assert.equal(r2.eventId, r1.eventId, "same story attaches, not a split");
+
+  const jp2 = await getEntityEvents("japan");
+  assert.deepEqual(
+    jp2.events.map((e) => e.id),
+    [r1.eventId],
+    "entity rows accumulate like the signature",
+  );
+
+  // the watch-topic read path (junction-backed) returns the same event's
+  // changes an exploded-signature query would have found
+  const { getChangesForEntities } = await import("../lib/db/read");
+  const watched = await getChangesForEntities(["japan"]);
+  assert.ok(
+    watched.some((c) => c.eventId === r1.eventId),
+    "watching 'japan' surfaces this event's changes",
+  );
 });

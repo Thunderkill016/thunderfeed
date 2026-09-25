@@ -5,7 +5,7 @@
  */
 
 import { getPool } from "./pool";
-import { extractEntitiesNormalized } from "../entities";
+import { extractEntitiesNormalized, entityLabel } from "../entities";
 import { normalizeText } from "../model";
 
 export interface EvidenceView {
@@ -629,10 +629,11 @@ export async function getLatestChanges(
 }
 
 /**
- * Material changes on events whose canonical entity signature intersects
- * the user's watched slugs — the alert layer of the personal-mission loop.
- * `entity_signature` is a space-joined slug list, so a plain IN on the
- * exploded array matches exactly (no substring false positives).
+ * Material changes on events whose canonical entity set intersects the
+ * user's watched slugs — the alert layer of the personal-mission loop.
+ * Slug matching runs on the event_entities junction (the resolver's
+ * signature exploded once at write time), so watch topics hit an index
+ * instead of a per-row string split.
  */
 export async function getChangesForEntities(
   entities: string[],
@@ -659,9 +660,9 @@ export async function getChangesForEntities(
      JOIN event_versions ev ON ev.id = e.current_version_id
      WHERE e.status NOT IN ('merged', 'archived')
        AND ${channelFilterClause(filter)}
-       AND EXISTS (
-         SELECT 1 FROM unnest(string_to_array(e.entity_signature, ' ')) s
-         WHERE s IN (${entities.map((_, i) => `$${i + 2}`).join(",")})
+       AND e.id IN (
+         SELECT ee.event_id FROM event_entities ee
+         WHERE ee.entity_slug IN (${entities.map((_, i) => `$${i + 2}`).join(",")})
        )
      ORDER BY ch.detected_at DESC
      LIMIT $1`,
@@ -676,6 +677,64 @@ export async function getChangesForEntities(
     summary: r.summary,
     detectedAt: r.detected_at,
   }));
+}
+
+/** Every live event carrying a canonical entity slug — the entity-page
+ *  read behind "theo dõi Fed": junction rows, newest activity first. */
+export async function getEntityEvents(slug: string): Promise<{
+  slug: string;
+  label: string;
+  events: {
+    id: string;
+    title: string;
+    status: string;
+    topic: string;
+    importance: number | null;
+    firstSeenAt: string;
+    lastSeenAt: string;
+    changeCount: number;
+  }[];
+}> {
+  const pool = getPool();
+  const { rows } = await pool.query<{
+    id: string;
+    title: string;
+    status: string;
+    topic: string;
+    importance: number | null;
+    first_seen_at: string;
+    last_seen_at: string;
+    change_count: string;
+  }>(
+    `SELECT e.id, ev.title, e.status, e.topic,
+            ev.importance_score AS importance,
+            e.first_seen_at, e.last_seen_at,
+            count(ch.id) AS change_count
+     FROM event_entities ee
+     JOIN events e ON e.id = ee.event_id
+     JOIN event_versions ev ON ev.id = e.current_version_id
+     LEFT JOIN changes ch ON ch.event_id = e.id
+     WHERE ee.entity_slug = $1
+       AND e.status NOT IN ('merged', 'archived')
+     GROUP BY e.id, ev.title, e.status, e.topic,
+              ev.importance_score, e.first_seen_at, e.last_seen_at
+     ORDER BY e.last_seen_at DESC`,
+    [slug],
+  );
+  return {
+    slug,
+    label: entityLabel(slug),
+    events: rows.map((r) => ({
+      id: r.id,
+      title: r.title,
+      status: r.status,
+      topic: r.topic,
+      importance: r.importance,
+      firstSeenAt: r.first_seen_at,
+      lastSeenAt: r.last_seen_at,
+      changeCount: Number(r.change_count),
+    })),
+  };
 }
 
 export interface EventListItem {
