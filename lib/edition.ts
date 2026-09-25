@@ -135,12 +135,19 @@ function computeTrending(
 }
 
 export async function buildEdition(): Promise<Edition> {
+  // stage timing — a silent multi-hour pipeline is undebuggable on a CI
+  // runner; these lines are how we see where a run actually is.
+  const t0 = Date.now();
+  const lap = (name: string) =>
+    console.log(`[edition] ${name} ${((Date.now() - t0) / 1000).toFixed(0)}s`);
   const { articles, sources } = await fetchAllNews();
+  lap(`fetched ${articles.length} articles / ${sources.length} sources`);
   const apiKey = process.env.GEMINI_API_KEY;
 
   let clusters = clusterArticles(articles).filter(
     (c) => !isNoise(c.leadArticle) && c.articles.length > 0,
   );
+  lap(`clustered → ${clusters.length}`);
 
   // semantic merge pass: embed representative text of the top clusters and
   // union-find merge pairs the lexical pass could not join (vi/en
@@ -162,6 +169,7 @@ export async function buildEdition(): Promise<Edition> {
         (a, b) => b.significanceScore - a.significanceScore,
       );
     }
+    lap(`semantic merge (${vectors.size}/${tops.length} embedded)`);
   }
 
   // temporal layer: attach momentum + persist snapshot for the next edition
@@ -236,6 +244,9 @@ export async function buildEdition(): Promise<Edition> {
       else extractedMap.set(id, v as ExtractedClaim[]);
     }
   }
+  lap(
+    `LLM pass (${generated.size} nhận định, ${claimsMap.size} claim matrices, ${extractedMap.size} extracted)`,
+  );
 
   // evidence layer: persist the final clusters as Evidence → Event → Claim
   // → Change history. LLM-extracted claims merge into the same canonical
@@ -251,6 +262,7 @@ export async function buildEdition(): Promise<Edition> {
       console.log(
         `Event history: ${r.persisted} clusters persisted, ${r.failed} failed`,
       );
+    lap(`persist (${r.persisted} ok / ${r.failed} failed)`);
   } catch (error) {
     console.warn(
       "persistEdition failed:",

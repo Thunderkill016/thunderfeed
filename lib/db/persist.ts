@@ -198,6 +198,11 @@ export async function persistEdition(
           error instanceof Error ? error.message : error,
         );
       }
+      // heartbeat: remote runs are minute-scale per-cluster loops — a
+      // periodic line is the difference between "slow" and "hung".
+      const done = persisted + failed;
+      if (done % 15 === 0)
+        console.log(`persist: ${done}/${clusters.length} clusters`);
     }
     const resolved = await resolveStaleEvents().catch(() => 0);
     if (resolved > 0)
