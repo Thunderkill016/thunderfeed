@@ -86,7 +86,7 @@ test("changeSummaryText: strips duplicate label prefix", () => {
   assert.equal(changeSummaryText(c, "Cập nhật"), "Dữ kiện mới: 519 triệu USD");
 });
 
-test("formatAlertMessages: event_created goes to the breaking lane", () => {
+test("formatAlertMessages: one message per run — top event only", () => {
   const rows = [0, 1, 2, 3].map((i) =>
     ch({
       eventId: `ev${i}`,
@@ -97,8 +97,9 @@ test("formatAlertMessages: event_created goes to the breaking lane", () => {
     }),
   );
   const msgs = formatAlertMessages(rows, "https://feed.example");
-  // each new event is its own standalone message, not a digest line
-  assert.equal(msgs.length, 4);
+  // a busy run is still exactly one interruption: the top-ranked event
+  // is the alert and the rest collapse to a footer line
+  assert.equal(msgs.length, 1);
   assert.match(msgs[0], /🚨 <b>SỰ KIỆN MỚI<\/b>/);
   assert.match(
     msgs[0],
@@ -106,6 +107,8 @@ test("formatAlertMessages: event_created goes to the breaking lane", () => {
   );
   // the bullet that restates the title must not exist
   assert.ok(!/• .*Sự kiện 0/.test(msgs[0]));
+  assert.match(msgs[0], /…và 3 sự kiện khác/);
+  assert.match(msgs[0], /href="https:\/\/feed\.example"/);
 });
 
 test("formatAlertMessages: breaking carries first facts + sources", () => {
@@ -151,21 +154,30 @@ test("formatAlertMessages: escapes HTML in source summaries", () => {
   assert.match(msg, /4 &lt; 5 &amp; &gt; 3/);
 });
 
-test("formatAlertMessages: breaking lane capped, rest fold into digest", () => {
-  const rows = [0, 1, 2, 3, 4, 5, 6].map((i) =>
+test("formatAlertMessages: a non-breaking top change gets its own header", () => {
+  const rows = [
     ch({
-      eventId: `ev${i}`,
-      eventTitle: `Sự kiện ${i}`,
-      type: "event_created",
-      summary: `Sự kiện ${i}`,
+      eventId: "e-top",
+      eventTitle: "Fed giữ lãi suất",
+      type: "claim_disputed",
+      materiality: "high",
+      summary: "4,25% hay 4,50%",
     }),
-  );
-  const msgs = formatAlertMessages(rows);
-  const breaking = msgs.filter((m) => m.includes("SỰ KIỆN MỚI"));
-  assert.equal(breaking.length, 5);
-  // the 6th+ new events render as 🆕 digest lines instead of more pushes
-  const digest = msgs.find((m) => m.includes("có thay đổi"));
-  assert.ok(digest && /🆕/.test(digest));
+    ch({
+      eventId: "e-new",
+      eventTitle: "Sự kiện phụ",
+      type: "event_created",
+      materiality: "low",
+      summary: "Sự kiện phụ",
+    }),
+  ];
+  const [msg] = formatAlertMessages(rows);
+  assert.match(msg, /⚡ <b>THAY ĐỔI QUAN TRỌNG<\/b>/);
+  assert.match(msg, /Fed giữ lãi suất/);
+  // the high-materiality dispute outranks a low-materiality new event
+  assert.match(msg, /• Mâu thuẫn — 4,25% hay 4,50%/);
+  assert.ok(!msg.includes("SỰ KIỆN MỚI"), "runner-up does not get a block");
+  assert.match(msg, /…và 1 sự kiện khác/);
 });
 
 test("formatAlertMessages: caps substantive lines per event, disputes first", () => {
