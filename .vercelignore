@@ -2,5 +2,5 @@
 .next/
 node_modules/
 .cache/
-data/
+data/alert-state.json
 bench/results/
