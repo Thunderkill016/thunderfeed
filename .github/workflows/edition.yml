@@ -1,0 +1,39 @@
+name: edition
+
+# ThunderFeed's heavy pipeline (fetch → cluster → embed → persist →
+# snapshot) runs HERE, not in the web request: Vercel serverless reads
+# the latest edition_snapshots row, and scheduled runs keep it fresh.
+# Public repo → Actions minutes are free. GitHub may delay scheduled
+# runs a few minutes at peak; 20-min cadence tolerates that jitter.
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"
+  workflow_dispatch: # manual "rebuild now" from the Actions tab
+  push:
+    branches: [main]
+    paths: [lib/**, db/migrations/**] # deploy-affecting changes rebuild early
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build edition → Postgres
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+          GEMINI_API_KEY: ${{ secrets.TF_GEMINI_API_KEY }}
+        run: npm run build:edition
+      - name: Telegram alerts
+        if: always() # send accumulated changes even if the build failed
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TF_TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TF_TELEGRAM_CHAT_ID }}
+        run: npm run alerts:telegram

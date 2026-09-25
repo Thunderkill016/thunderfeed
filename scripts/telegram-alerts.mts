@@ -10,11 +10,14 @@
  *   TELEGRAM_WATCH       — optional comma-separated entity slugs;
  *                          unset ⇒ deliver ALL medium/high materiality changes
  *
- * Dedup: delivered change ids persist in data/alert-state.json (capped).
+ * Dedup: delivered change ids persist in the delivery_state row when
+ * DATABASE_URL is set (durable across ephemeral runners like GitHub
+ * Actions), falling back to data/alert-state.json otherwise (capped).
  */
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { getChangesForEntities, getLatestChanges } from "../lib/db/read";
+import { dbEnabled, getPool } from "../lib/db/pool";
 import { formatAlertMessages, sendTelegram } from "../lib/telegram";
 
 try {
@@ -28,13 +31,32 @@ try {
 
 const STATE_PATH = "data/alert-state.json";
 const STATE_CAP = 2000;
+const CHANNEL = "telegram";
 const dryRun = process.argv.includes("--dry-run");
 
 interface State {
   delivered: string[];
 }
 
-function loadState(): { state: State; existed: boolean } {
+async function loadState(): Promise<{ state: State; existed: boolean }> {
+  if (dbEnabled()) {
+    try {
+      const { rows } = await getPool().query<{ state: State }>(
+        `SELECT state FROM delivery_state WHERE channel = $1`,
+        [CHANNEL],
+      );
+      if (rows.length) {
+        const s = rows[0].state;
+        return {
+          state: { delivered: Array.isArray(s.delivered) ? s.delivered : [] },
+          existed: true,
+        };
+      }
+      return { state: { delivered: [] }, existed: false };
+    } catch {
+      /* table absent pre-0009 — fall through to file */
+    }
+  }
   try {
     const raw = JSON.parse(readFileSync(STATE_PATH, "utf8")) as State;
     return {
@@ -48,6 +70,25 @@ function loadState(): { state: State; existed: boolean } {
   }
 }
 
+async function saveState(delivered: string[]): Promise<void> {
+  if (dbEnabled()) {
+    try {
+      await getPool().query(
+        `INSERT INTO delivery_state (channel, state, updated_at)
+         VALUES ($1, $2::jsonb, now())
+         ON CONFLICT (channel)
+         DO UPDATE SET state = $2::jsonb, updated_at = now()`,
+        [CHANNEL, JSON.stringify({ delivered })],
+      );
+      return;
+    } catch {
+      /* fall back to file */
+    }
+  }
+  mkdirSync("data", { recursive: true });
+  writeFileSync(STATE_PATH, JSON.stringify({ delivered }, null, 1));
+}
+
 async function main() {
   const watch = (process.env.TELEGRAM_WATCH ?? "")
     .split(",")
@@ -58,7 +99,7 @@ async function main() {
     ? await getChangesForEntities(watch, 50)
     : await getLatestChanges(50);
 
-  const { state, existed } = loadState();
+  const { state, existed } = await loadState();
   const seen = new Set(state.delivered);
   const fresh = changes.filter((c) => !seen.has(c.id));
 
@@ -68,8 +109,7 @@ async function main() {
     for (const c of changes) seen.add(c.id);
     const delivered = [...seen].slice(-STATE_CAP);
     if (!dryRun) {
-      mkdirSync("data", { recursive: true });
-      writeFileSync(STATE_PATH, JSON.stringify({ delivered }, null, 1));
+      await saveState(delivered);
       await sendTelegram(
         `⚡ ThunderFeed — đã kết nối.\n` +
           `Đang theo dõi ${changes.length} thay đổi gần đây; chỉ thay đổi MỚI từ giờ sẽ được gửi.`,
@@ -106,8 +146,7 @@ async function main() {
 
   for (const c of fresh) seen.add(c.id);
   const delivered = [...seen].slice(-STATE_CAP);
-  mkdirSync("data", { recursive: true });
-  writeFileSync(STATE_PATH, JSON.stringify({ delivered }, null, 1));
+  await saveState(delivered);
   console.log(`delivered ${sent} message(s), state=${delivered.length} ids`);
   process.exit(0);
 }
