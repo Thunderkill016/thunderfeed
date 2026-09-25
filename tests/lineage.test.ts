@@ -939,3 +939,49 @@ test("mutation guard: lineage + metadata observations are append-only in schema"
   );
   assert.match(mig, /reject_history_mutation\(\)/);
 });
+
+test("cross-event: a shared document keeps the lineage minted where its parent lives", async () => {
+  setupDb();
+  // event A: Reuters wire + a local copy → copy derives syndicated→Reuters
+  const wire = art({
+    source: "Reuters",
+    title: WIRE_TITLE,
+    summary: WIRE_SUMMARY,
+    url: "https://reuters.com/wire-shared",
+    language: "en",
+    publishedAt: "2026-09-24T08:00:00Z",
+  });
+  const copy = art({
+    source: "LocalSite",
+    title: WIRE_TITLE,
+    summary: WIRE_SUMMARY,
+    url: "https://localsite.vn/copy-shared",
+    publishedAt: "2026-09-24T09:00:00Z",
+  });
+  const cA = cluster([wire, copy]);
+  const rA = await persistCluster(cA, extractClaims(cA));
+  const lin1 = await latestLineage();
+  assert.equal(
+    lin1.find((l) => l.child === "LocalSite")!.relation,
+    "syndicated",
+  );
+
+  // the SAME document (canonical_url) is later attached to a different
+  // event whose pool lacks Reuters — processing B must not blind-overwrite
+  // the provenance minted in A
+  const other = art({
+    source: "LocalSite",
+    title: "Chính phủ họp thường kỳ tháng 9 bàn chương trình y tế",
+    summary: "Phiên họp thường kỳ xem xét các chương trình y tế cộng đồng.",
+    url: "https://localsite.vn/copy-shared",
+    publishedAt: "2026-09-24T10:00:00Z",
+  });
+  const cB = cluster([other]);
+  const rB = await persistCluster(cB, extractClaims(cB));
+  assert.notEqual(rB.eventId, rA.eventId);
+
+  const lin2 = await latestLineage();
+  const edge = lin2.find((l) => l.child === "LocalSite")!;
+  assert.equal(edge.relation, "syndicated"); // parent chain survives
+  assert.equal(edge.parent, "Reuters");
+});

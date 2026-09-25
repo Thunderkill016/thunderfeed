@@ -142,20 +142,26 @@ function effectiveRoots(
   derivedDocuments: number;
   unresolvedOrigins: number;
 } {
-  const rootOf = (id: string): string => {
+  const docById = new Map(docs.map((r) => [r.doc_id, r]));
+  // dangling = the walk could not be verified INSIDE this doc set —
+  // root outside the pool, a derivation cycle, or the depth cap. A
+  // dangling origin is unknowable; it must count as unresolved or the
+  // confidence cap sees "derived = resolved" on blind provenance.
+  const rootOf = (id: string): { id: string; dangling: boolean } => {
     const seen = new Set<string>();
     let cur = id;
     for (let depth = 0; depth < 8; depth++) {
-      if (seen.has(cur)) return cur;
+      if (seen.has(cur)) return { id: cur, dangling: true };
       seen.add(cur);
       const a = latestLin.get(cur);
-      if (!a || !a.parent || !DERIVED_RELS.has(a.relation)) return cur;
+      if (!a || !a.parent || !DERIVED_RELS.has(a.relation))
+        return { id: cur, dangling: !docById.has(cur) && cur !== id };
       cur = a.parent;
     }
-    return cur;
+    return { id: cur, dangling: true };
   };
-  const docById = new Map(docs.map((r) => [r.doc_id, r]));
-  const rootIds = new Set(docs.map((r) => rootOf(r.doc_id)));
+  const roots = new Map(docs.map((r) => [r.doc_id, rootOf(r.doc_id)]));
+  const rootIds = new Set([...roots.values()].map((r) => r.id));
   // one newsroom = one origin: multiple asserted-original docs from the
   // same source still count as a single confirmed origin
   const confirmedSources = new Set<string>();
@@ -171,8 +177,10 @@ function effectiveRoots(
   let unresolvedOrigins = 0;
   for (const r of docs) {
     const rel = latestLin.get(r.doc_id)?.relation;
-    if (rel && DERIVED_RELS.has(rel)) derivedDocuments++;
-    else if (!rel || rel === "unknown") unresolvedOrigins++;
+    if (rel && DERIVED_RELS.has(rel)) {
+      derivedDocuments++;
+      if (roots.get(r.doc_id)!.dangling) unresolvedOrigins++;
+    } else if (!rel || rel === "unknown") unresolvedOrigins++;
   }
   return {
     rootIds,
@@ -252,11 +260,14 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
   );
 
   const claimCountsQ = pool.query<{
-    claim_version_id: string;
+    claim_id: string;
     evidence_count: string;
     primary_evidence_count: string;
   }>(
-    `SELECT ce.claim_version_id,
+    // count per CLAIM across all its versions — a synthesized winner
+    // version (state convergence, consensus shift) carries no direct
+    // claim_evidence rows yet still stands on the claim's full support
+    `SELECT c.id AS claim_id,
             COUNT(*) AS evidence_count,
             SUM(CASE WHEN ce.evidence_strength = 'direct'
                      THEN 1 ELSE 0 END) AS primary_evidence_count
@@ -264,7 +275,7 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
      JOIN claim_versions cv ON cv.id = ce.claim_version_id
      JOIN claims c ON c.id = cv.claim_id
      WHERE c.event_id = $1
-     GROUP BY ce.claim_version_id`,
+     GROUP BY c.id`,
     [eventId],
   );
 
@@ -317,8 +328,12 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     source: string;
     value: unknown;
     version_no: number;
+    vote_at: string;
   }>(
-    `SELECT c.id AS claim_id, s.name AS source, cv.value, cv.version_no
+    // latest vote per source must follow the writer's ordering — evidence
+    // time (doc published_at, fallback observed_at), never ingestion order
+    `SELECT c.id AS claim_id, s.name AS source, cv.value, cv.version_no,
+            COALESCE(d.published_at, ev.observed_at) AS vote_at
      FROM claim_evidence ce
      JOIN claim_versions cv ON cv.id = ce.claim_version_id
      JOIN claims c ON c.id = cv.claim_id
@@ -383,7 +398,7 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
 
   const counts = new Map(
     claimCountsR.rows.map((r) => [
-      r.claim_version_id,
+      r.claim_id,
       {
         evidence: Number(r.evidence_count),
         primary: Number(r.primary_evidence_count),
@@ -400,13 +415,14 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
   {
     const latest = new Map<
       string,
-      Map<string, { value: unknown; vn: number }>
+      Map<string, { value: unknown; vn: number; at: number }>
     >();
     for (const r of positionsR.rows) {
       const per = latest.get(r.claim_id) ?? new Map();
       const cur = per.get(r.source);
-      if (!cur || r.version_no > cur.vn)
-        per.set(r.source, { value: r.value, vn: r.version_no });
+      const at = Date.parse(r.vote_at);
+      if (!cur || at > cur.at || (at === cur.at && r.version_no > cur.vn))
+        per.set(r.source, { value: r.value, vn: r.version_no, at });
       latest.set(r.claim_id, per);
     }
     for (const [claimId, per] of latest) {
@@ -425,7 +441,7 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
   }
 
   const claims: ClaimView[] = claimsR.rows.map((r) => {
-    const n = counts.get(r.claim_version_id);
+    const n = counts.get(r.id);
     return {
       id: r.id,
       predicate: r.predicate,

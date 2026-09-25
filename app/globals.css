@@ -1390,16 +1390,15 @@ button {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-}
-.change-card:disabled {
-  cursor: default;
-  opacity: 0.7;
-}
   gap: 5px;
   font-family: var(--sans);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
+}
+.change-card:disabled {
+  cursor: default;
+  opacity: 0.7;
 }
 .change-card:hover {
   border-color: var(--ink-faint);

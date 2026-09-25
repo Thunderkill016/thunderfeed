@@ -619,3 +619,278 @@ test("semantic: validateExtractedClaims drops hallucinated sources/numbers", asy
   assert.equal(ok[0].method, "model");
   assert.equal(ok[0].assertedBy, "VnExpress");
 });
+
+test("matrix: publisher corroborating an OLD value cannot outrank a newer primary", async () => {
+  setupDb();
+  // A(primary) says 4 @t1 → B(primary) says 5 @t2 → C(publisher) repeats 4
+  // @t3. Position 4's recency must track its PRIMARY supporters only —
+  // otherwise C's later timestamp pulls the standing truth back to 4.
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const mk = (source: string, value: number, at: string) => {
+    const a = art({
+      source,
+      title: TITLE,
+      url: `https://${source.toLowerCase().replace(/\s/g, "")}.vn/${value}`,
+      publishedAt: at,
+    });
+    const claim: ExtractedClaim = {
+      claimKey: "growth_pct",
+      predicate: "growth_pct",
+      valueType: "number",
+      value,
+      unit: "%",
+      label: "Chỉ tiêu tăng trưởng",
+      assertedBy: source,
+      articleId: a.id,
+      assertedAt: at,
+    };
+    return { c: cluster([a]), claims: [claim] };
+  };
+  const a = mk("NHNN", 4, "2026-09-24T01:00:00Z");
+  const r1 = await persistCluster(a.c, a.claims, {
+    sourceMeta: { NHNN: { kind: "primary" } },
+  });
+  const b = mk("SBV", 5, "2026-09-24T02:00:00Z");
+  const r2 = await persistCluster(b.c, b.claims, {
+    sourceMeta: { SBV: { kind: "primary" } },
+  });
+  assert.equal(r2.eventId, r1.eventId);
+  const c = mk("VnExpress", 4, "2026-09-24T03:00:00Z");
+  const r3 = await persistCluster(c.c, c.claims);
+  assert.equal(r3.eventId, r1.eventId);
+
+  const cs = await claimState();
+  assert.equal(cs[0].value, 5); // the newest PRIMARY assertion stands
+  assert.equal(cs[0].state, "confirmed");
+});
+
+test("matrix: an old article cannot borrow a newer sibling's timestamp", async () => {
+  setupDb();
+  // same source publishes a correction cycle in one crawl batch: the NEW
+  // article lists first, the OLD article second. The old article's claim
+  // must keep its own publishedAt — borrowing the sibling's timestamp
+  // would bypass stale detection and resurrect the outdated figure.
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const aNew = art({
+    source: "VnExpress",
+    title: TITLE,
+    url: "https://vne.vn/growth-new",
+    publishedAt: "2026-09-24T05:00:00Z",
+  });
+  const aOld = art({
+    source: "VnExpress",
+    title: TITLE,
+    url: "https://vne.vn/growth-old",
+    publishedAt: "2026-09-24T01:00:00Z",
+  });
+  const numClaim = (a: Article, value: number): ExtractedClaim => ({
+    claimKey: "growth_pct",
+    predicate: "growth_pct",
+    valueType: "number",
+    value,
+    unit: "%",
+    label: "Tăng trưởng",
+    assertedBy: "VnExpress",
+    articleId: a.id,
+  });
+  const c = cluster([aNew, aOld]);
+  await persistCluster(c, [numClaim(aNew, 4), numClaim(aOld, 100)]);
+  const cs = await claimState();
+  assert.equal(cs[0].value, 4); // older sibling stays history, not a vote move
+});
+
+test("matrix: consensus switch exposes real previousValue, not position prehistory", async () => {
+  setupDb();
+  // A says 100, B says 4, A revises to 2, C corroborates 4 — the truth
+  // moved 2 → 4 at C's arrival. Reusing position-4's old version would
+  // expose previousValue=100 (its mint-time chain) at a stale timestamp.
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const mk = (source: string, value: number, at: string) => {
+    const a = art({
+      source,
+      title: TITLE,
+      url: `https://${source.toLowerCase().replace(/\s/g, "")}.vn/${value}-${at}`,
+      publishedAt: at,
+    });
+    const claim: ExtractedClaim = {
+      claimKey: "growth_pct",
+      predicate: "growth_pct",
+      valueType: "number",
+      value,
+      unit: "%",
+      label: "Tăng trưởng",
+      assertedBy: source,
+      articleId: a.id,
+      assertedAt: at,
+    };
+    return { c: cluster([a]), claims: [claim] };
+  };
+  const a1 = mk("VnExpress", 100, "2026-09-24T01:00:00Z");
+  const r1 = await persistCluster(a1.c, a1.claims);
+  const b = mk("Tuổi Trẻ", 4, "2026-09-24T02:00:00Z");
+  await persistCluster(b.c, b.claims);
+  const a2 = mk("VnExpress", 2, "2026-09-24T03:00:00Z");
+  await persistCluster(a2.c, a2.claims);
+  const c4 = mk("Thanh Niên", 4, "2026-09-24T04:00:00Z");
+  await persistCluster(c4.c, c4.claims);
+
+  const view = await getEventView(r1.eventId);
+  const claim = view!.claims[0];
+  assert.equal(claim.value, 4);
+  assert.equal(claim.previousValue, 2); // transition from 2, not v(100) chain
+});
+
+test("matrix: a unit change is a real change — 4 % ≠ 4 basis_points", async () => {
+  setupDb();
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const mk = (unit: string, at: string) => {
+    const a = art({
+      source: "VnExpress",
+      title: TITLE,
+      url: `https://vne.vn/growth-${at}`,
+      publishedAt: at,
+    });
+    const claim: ExtractedClaim = {
+      claimKey: "growth_pct",
+      predicate: "growth_pct",
+      valueType: "number",
+      value: 4,
+      unit,
+      label: "Tăng trưởng",
+      assertedBy: "VnExpress",
+      articleId: a.id,
+      assertedAt: at,
+    };
+    return { c: cluster([a]), claims: [claim] };
+  };
+  const a1 = mk("%", "2026-09-24T01:00:00Z");
+  const r1 = await persistCluster(a1.c, a1.claims);
+  const a2 = mk("basis_points", "2026-09-24T02:00:00Z");
+  await persistCluster(a2.c, a2.claims);
+
+  const { rows } = await getPool().query<{ n: string }>(
+    `SELECT COUNT(*) AS n FROM claim_versions cv
+     JOIN claims c ON c.id = cv.claim_id WHERE c.event_id = $1`,
+    [r1.eventId],
+  );
+  // initial + the unit correction — not silent corroboration
+  assert.ok(Number(rows[0].n) >= 2);
+  const view = await getEventView(r1.eventId);
+  assert.equal(view!.claims[0].unit, "basis_points");
+});
+
+test("matrix: a source alias revises, not disputes — one voter per canonical org", async () => {
+  setupDb();
+  // "e.VnExpress" is a domain alias of VnExpress (e.vnexpress.net is a
+  // registered domain). Its newer figure is the SAME voter revising —
+  // treating it as a second outlet would leave the truth on disputed 4.
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const mk = (source: string, url: string, value: number, at: string) => {
+    const a = art({ source, title: TITLE, url, publishedAt: at });
+    const claim: ExtractedClaim = {
+      claimKey: "growth_pct",
+      predicate: "growth_pct",
+      valueType: "number",
+      value,
+      unit: "%",
+      label: "Tăng trưởng",
+      assertedBy: source,
+      articleId: a.id,
+      assertedAt: at,
+    };
+    return { c: cluster([a]), claims: [claim] };
+  };
+  const a1 = mk(
+    "VnExpress",
+    "https://vnexpress.net/growth-4",
+    4,
+    "2026-09-24T01:00:00Z",
+  );
+  const r1 = await persistCluster(a1.c, a1.claims);
+  const a2 = mk(
+    "e.VnExpress",
+    "https://e.vnexpress.net/growth-5",
+    5,
+    "2026-09-24T02:00:00Z",
+  );
+  await persistCluster(a2.c, a2.claims);
+
+  const view = await getEventView(r1.eventId);
+  const claim = view!.claims[0];
+  assert.equal(claim.value, 5); // the org's revision stands
+  assert.notEqual(claim.state, "disputed");
+});
+
+test("matrix: replaying an identical explicit state mints no duplicate version", async () => {
+  setupDb();
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const mk = (at: string) => {
+    const a = art({
+      source: "VnExpress",
+      title: TITLE,
+      url: `https://vne.vn/g-${at}`,
+      publishedAt: at,
+    });
+    const claim: ExtractedClaim = {
+      claimKey: "growth_pct",
+      predicate: "growth_pct",
+      valueType: "number",
+      value: 4,
+      unit: "%",
+      state: "confirmed",
+      label: "Tăng trưởng",
+      assertedBy: "VnExpress",
+      articleId: a.id,
+      assertedAt: at,
+    };
+    return { c: cluster([a]), claims: [claim] };
+  };
+  const a1 = mk("2026-09-24T01:00:00Z");
+  const r1 = await persistCluster(a1.c, a1.claims);
+  // same source re-asserts the same value + same explicit state twice
+  for (const at of ["2026-09-24T02:00:00Z", "2026-09-24T03:00:00Z"]) {
+    const r = mk(at);
+    await persistCluster(r.c, r.claims);
+  }
+  const { rows } = await getPool().query<{ n: string }>(
+    `SELECT COUNT(*) AS n FROM claim_versions cv
+     JOIN claims c ON c.id = cv.claim_id WHERE c.event_id = $1`,
+    [r1.eventId],
+  );
+  assert.equal(Number(rows[0].n), 1); // append-only ≠ append-always
+});
+
+test("matrix: '4' (string) corroborates 4 (number) — no false dispute", async () => {
+  setupDb();
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const mk = (source: string, value: unknown, at: string) => {
+    const a = art({
+      source,
+      title: TITLE,
+      url: `https://${source.toLowerCase().replace(/\s/g, "")}.vn/${at}`,
+      publishedAt: at,
+    });
+    const claim: ExtractedClaim = {
+      claimKey: "growth_pct",
+      predicate: "growth_pct",
+      valueType: "number",
+      value,
+      unit: "%",
+      label: "Tăng trưởng",
+      assertedBy: source,
+      articleId: a.id,
+      assertedAt: at,
+    };
+    return { c: cluster([a]), claims: [claim] };
+  };
+  const a1 = mk("VnExpress", 4, "2026-09-24T01:00:00Z");
+  const r1 = await persistCluster(a1.c, a1.claims);
+  // an LLM extractor emits the same figure as a JSON string
+  const a2 = mk("Tuổi Trẻ", "4", "2026-09-24T02:00:00Z");
+  await persistCluster(a2.c, a2.claims);
+
+  const view = await getEventView(r1.eventId);
+  const claim = view!.claims[0];
+  assert.equal(claim.value, 4);
+  assert.notEqual(claim.state, "disputed");
+});

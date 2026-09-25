@@ -8,7 +8,7 @@
 import type { Article, SourceStatus, StoryCluster } from "../model";
 import type { Feed } from "../feeds";
 import type { Pool, PoolClient } from "pg";
-import { dbEnabled, getPool, toJsonb } from "./pool";
+import { dbEnabled, getPool, toJsonb, canonValue } from "./pool";
 import { extractClaims } from "./extract";
 import { embedArticles } from "../embed";
 import { clusterRepTextV2, repHash } from "../resolver";
@@ -143,14 +143,17 @@ export async function persistEdition(
     const deterministic = extractClaims(c);
     const seen = new Set(
       deterministic.map(
-        (d) => `${d.assertedBy}|${d.claimKey}|${JSON.stringify(d.value)}`,
+        (d) =>
+          `${d.assertedBy}|${d.claimKey}|${JSON.stringify(canonValue(d.value))}|${d.unit ?? ""}`,
       ),
     );
     claimsByCluster.set(c.id, [
       ...deterministic,
       ...llmClaims.filter(
         (l) =>
-          !seen.has(`${l.assertedBy}|${l.claimKey}|${JSON.stringify(l.value)}`),
+          !seen.has(
+            `${l.assertedBy}|${l.claimKey}|${JSON.stringify(canonValue(l.value))}|${l.unit ?? ""}`,
+          ),
       ),
     ]);
   }

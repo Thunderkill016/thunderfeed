@@ -15,7 +15,7 @@
 
 import { createHash } from "node:crypto";
 import type { PoolClient } from "pg";
-import { getPool, toJsonb } from "./pool";
+import { getPool, toJsonb, canonValue } from "./pool";
 import { normalizeText } from "../model";
 import { canonicalSourceName, mediaInfoFor } from "../mediaData";
 import { entitySignature } from "../entities";
@@ -795,6 +795,13 @@ interface ClaimOutcome {
   claimVersionId: string;
   /** claim_version superseded by this write — for change.from_claim_version_id */
   fromClaimVersionId?: string;
+  /**
+   * version the change record should point AT — the minted position
+   * version, or the synthesized transition/winner version when the truth
+   * converged without this document minting it. Differs from
+   * claimVersionId (the evidence attach target) on consensus shifts.
+   */
+  changeVersionId?: string;
   /** null when the value+state matched the current version */
   change: { type: string; summary: string } | null;
 }
@@ -946,6 +953,13 @@ const mapState = (s: string) =>
     : null;
 
 /**
+ * Position identity = value + unit. A unit change is a real change —
+ * "4 %" and "4 basis_points" are different facts, never one position.
+ */
+const posKey = (value: unknown, unit: string | null | undefined) =>
+  toJsonb({ v: canonValue(value) ?? null, u: unit ?? null });
+
+/**
  * One live position inside a claim: a value, the newest version carrying
  * it, and the set of sources whose LATEST assertion equals it.
  * A source that revises its number moves its vote — history keeps the
@@ -959,8 +973,14 @@ interface Position {
   /** sources whose latest assertion is this value */
   sources: Set<string>;
   hasPrimary: boolean;
-  /** newest evidence-time among supporters — deterministic winner key */
+  /** newest evidence-time among supporters */
   latestAt: number;
+  /**
+   * newest evidence-time among PRIMARY supporters only — the winner key
+   * between primary positions. A publisher corroborating an old value
+   * after a newer primary assertion must not pull recency back.
+   */
+  latestPrimaryAt: number;
 }
 
 /**
@@ -981,7 +1001,14 @@ async function upsertClaim(
   eventId: string,
   claim: ExtractedClaim,
   isPrimary = false,
+  /**
+   * canonical publisher identity for vote bookkeeping — persisted votes
+   * key on sources.name; raw assertedBy aliases ("e.VnExpress") must
+   * resolve to the same voter or self-revisions look like disputes
+   */
+  voteName?: string,
 ): Promise<ClaimOutcome> {
+  const voter = voteName ?? claim.assertedBy;
   const now = new Date().toISOString();
   const valueJson = toJsonb(claim.value);
   // a claim originated by a primary source is born confirmed
@@ -991,10 +1018,11 @@ async function upsertClaim(
     id: string;
     current_version_id: string;
     value: unknown;
+    unit: string | null;
     state: string;
     version_no: number;
   }>(
-    `SELECT c.id, c.current_version_id, cv.value, cv.state, cv.version_no
+    `SELECT c.id, c.current_version_id, cv.value, cv.unit, cv.state, cv.version_no
      FROM claims c JOIN claim_versions cv ON cv.id = c.current_version_id
      WHERE c.event_id = $1 AND c.claim_key = $2`,
     [eventId, claim.claimKey],
@@ -1076,11 +1104,12 @@ async function upsertClaim(
   const votes = await client.query<{
     name: string;
     value: unknown;
+    unit: string | null;
     version_no: number;
     strength: string | null;
     vote_at: string;
   }>(
-    `SELECT s.name, cv.value, cv.version_no,
+    `SELECT s.name, cv.value, cv.unit, cv.version_no,
             ce.evidence_strength AS strength,
             COALESCE(d.published_at, ev.observed_at) AS vote_at
      FROM claim_evidence ce
@@ -1096,6 +1125,8 @@ async function upsertClaim(
     string,
     {
       valueJson: string;
+      unit: string | null;
+      pos: string;
       versionNo: number;
       primary: boolean;
       at: number;
@@ -1109,6 +1140,8 @@ async function upsertClaim(
   for (const v of sortedVotes) {
     latestVote.set(v.name, {
       valueJson: toJsonb(v.value),
+      unit: v.unit,
+      pos: posKey(v.value, v.unit),
       versionNo: v.version_no,
       primary: v.strength === "direct",
       at: Date.parse(v.vote_at),
@@ -1120,8 +1153,9 @@ async function upsertClaim(
   for (const ver of vers.rows) {
     maxVersionNo = Math.max(maxVersionNo, ver.version_no);
     const vj = toJsonb(ver.value);
+    const pk = posKey(ver.value, ver.unit);
     const p =
-      positions.get(vj) ??
+      positions.get(pk) ??
       ({
         valueJson: vj,
         versionId: ver.id,
@@ -1129,24 +1163,30 @@ async function upsertClaim(
         sources: new Set(),
         hasPrimary: false,
         latestAt: 0,
+        latestPrimaryAt: 0,
       } satisfies Position);
     if (ver.version_no > p.versionNo) {
       p.versionId = ver.id;
       p.versionNo = ver.version_no;
     }
-    positions.set(vj, p);
+    positions.set(pk, p);
   }
   for (const [src, vote] of latestVote) {
-    const p = positions.get(vote.valueJson);
+    const p = positions.get(vote.pos);
     if (p) {
       p.sources.add(src);
-      if (vote.primary) p.hasPrimary = true;
+      if (vote.primary) {
+        p.hasPrimary = true;
+        p.latestPrimaryAt = Math.max(p.latestPrimaryAt, vote.at);
+      }
       p.latestAt = Math.max(p.latestAt, vote.at);
     }
   }
 
-  const priorVote = latestVote.get(claim.assertedBy);
+  const priorVote = latestVote.get(voter);
   const priorVoteJson = priorVote?.valueJson ?? null;
+  const priorPos = priorVote?.pos ?? null;
+  const claimPos = posKey(claim.value, claim.unit);
   const explicit = claim.state ? mapState(claim.state) : null;
   const upgradeable = cur.state === "reported" || cur.state === "supported";
 
@@ -1165,19 +1205,19 @@ async function upsertClaim(
     // a stale value never seen before still earns a version — the
     // position existed in history — but it emits no change record:
     // a late-arriving old article is not a live dispute
-    if (!positions.has(valueJson))
+    if (!positions.has(claimPos))
       mint = { state: "disputed", changeType: "disputed" };
-  } else if (priorVoteJson === valueJson) {
+  } else if (priorPos === claimPos) {
     // same-position re-assert — corroboration mints nothing
     if (explicit) mint = { state: claim.state!, changeType: explicit };
     else if (isPrimary && upgradeable)
       mint = { state: "confirmed", changeType: "confirmed" };
-  } else if (priorVoteJson !== null) {
+  } else if (priorPos !== null) {
     // the source moved its own vote — self-revision
     mint = explicit
       ? { state: claim.state!, changeType: explicit }
       : { state: "corrected", changeType: "corrected" };
-  } else if (positions.has(valueJson)) {
+  } else if (positions.has(claimPos)) {
     // a new source corroborates an existing position
     if (explicit) mint = { state: claim.state!, changeType: explicit };
     else if (isPrimary && upgradeable)
@@ -1188,6 +1228,22 @@ async function upsertClaim(
     else if (isPrimary)
       mint = { state: "confirmed", changeType: "value_changed" };
     else mint = { state: "disputed", changeType: "disputed" };
+  }
+
+  // replay guard: re-asserting the same position+state the source already
+  // stands on (or a new source re-stating an already-recorded state) is a
+  // semantic no-op — append-only means never rewriting history, not
+  // duplicating it. A self-revision (priorPos !== claimPos) is always a
+  // real move and never skipped.
+  if (
+    mint &&
+    (priorPos === claimPos || (priorPos === null && positions.has(claimPos)))
+  ) {
+    const standingId = positions.get(claimPos)?.versionId;
+    const standing = standingId
+      ? vers.rows.find((v) => v.id === standingId)
+      : undefined;
+    if (standing && standing.state === mint.state) mint = null;
   }
 
   let mintedId: string | null = null;
@@ -1221,10 +1277,10 @@ async function upsertClaim(
 
     const head = claimDisplayText({ ...claim, value: "", valueType: "text" });
     const summary =
-      priorVoteJson !== valueJson && priorVoteJson !== null
-        ? `${head}: ${fmtClaimValue(JSON.parse(priorVoteJson), claim.unit)} → ${fmtClaimValue(claim.value, claim.unit)}`
-        : priorVoteJson !== valueJson && !positions.has(valueJson)
-          ? `${head}: ${fmtClaimValue(cur.value, claim.unit)} → ${fmtClaimValue(claim.value, claim.unit)}`
+      priorPos !== claimPos && priorVoteJson !== null
+        ? `${head}: ${fmtClaimValue(JSON.parse(priorVoteJson), priorVote?.unit ?? claim.unit)} → ${fmtClaimValue(claim.value, claim.unit)}`
+        : priorPos !== claimPos && !positions.has(claimPos)
+          ? `${head}: ${fmtClaimValue(cur.value, cur.unit ?? claim.unit)} → ${fmtClaimValue(claim.value, claim.unit)}`
           : `${head} — ${cur.state} → ${mint.state}`;
     if (!stale) {
       emitted = {
@@ -1234,7 +1290,7 @@ async function upsertClaim(
     }
 
     const p =
-      positions.get(valueJson) ??
+      positions.get(claimPos) ??
       ({
         valueJson,
         versionId: mintedId,
@@ -1242,26 +1298,30 @@ async function upsertClaim(
         sources: new Set(),
         hasPrimary: false,
         latestAt: 0,
+        latestPrimaryAt: 0,
       } satisfies Position);
     p.versionId = mintedId;
     p.versionNo = newVn;
-    positions.set(valueJson, p);
+    positions.set(claimPos, p);
   }
 
   // register this document's vote — a moved vote LEAVES its old position
   // (a self-correction withdraws support for the earlier figure).
   // A stale assertion moves nothing: the source stays at its newest vote.
-  if (!stale && priorVoteJson !== null && priorVoteJson !== valueJson) {
-    positions.get(priorVoteJson)?.sources.delete(claim.assertedBy);
+  if (!stale && priorPos !== null && priorPos !== claimPos) {
+    positions.get(priorPos)?.sources.delete(voter);
   }
-  const votePos = positions.get(valueJson);
+  const votePos = positions.get(claimPos);
   if (votePos && !stale) {
-    votePos.sources.add(claim.assertedBy);
-    if (isPrimary) votePos.hasPrimary = true;
-    votePos.latestAt = Math.max(
-      votePos.latestAt,
-      claim.assertedAt ? Date.parse(claim.assertedAt) : Date.parse(now),
-    );
+    const assertedAtMs = claim.assertedAt
+      ? Date.parse(claim.assertedAt)
+      : Date.parse(now);
+    votePos.sources.add(voter);
+    if (isPrimary) {
+      votePos.hasPrimary = true;
+      votePos.latestPrimaryAt = Math.max(votePos.latestPrimaryAt, assertedAtMs);
+    }
+    votePos.latestAt = Math.max(votePos.latestAt, assertedAtMs);
   }
 
   /* ---- deterministic winner: never order-dependent ---- */
@@ -1276,7 +1336,8 @@ async function upsertClaim(
   const winner = primaryPos.length
     ? primaryPos.sort(
         (a, b) =>
-          b.latestAt - a.latestAt || a.valueJson.localeCompare(b.valueJson),
+          b.latestPrimaryAt - a.latestPrimaryAt ||
+          a.valueJson.localeCompare(b.valueJson),
       )[0]
     : ranked.sort(
         (a, b) =>
@@ -1357,9 +1418,39 @@ async function upsertClaim(
     }
   }
 
-  // corroboration moved the standing truth without minting anything —
-  // record the consensus shift as a claim_updated against the winner version
-  if (!mintedId && !emitted && winner.valueJson !== JSON.stringify(cur.value)) {
+  // corroboration moved the standing truth to an existing position — the
+  // transition itself is a real event and needs its own version: reusing
+  // the old position version exposes ITS stale chain (prev_value from
+  // prehistory, observed_at = position birth, not when truth moved)
+  if (
+    !mintedId &&
+    !emitted &&
+    posKey(JSON.parse(winner.valueJson), winnerVer?.unit) !==
+      posKey(cur.value, cur.unit)
+  ) {
+    const newVn = maxVersionNo + 1;
+    const cv = await client.query<{ id: string }>(
+      `INSERT INTO claim_versions
+         (claim_id, version_no, value_type, value, unit, qualifiers, state,
+          valid_from, observed_at, previous_version_id, change_type,
+          content_hash)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'value_changed', $11)
+       RETURNING id`,
+      [
+        cur.id,
+        newVn,
+        winnerVer?.value_type ?? claim.valueType ?? "text",
+        winner.valueJson,
+        winnerVer?.unit ?? claim.unit ?? null,
+        claim.qualifiers ? toJsonb(claim.qualifiers) : null,
+        computedState,
+        claim.validFrom ?? null,
+        now,
+        cur.current_version_id,
+        contentHash(claim.claimKey, `${winner.valueJson}${newVn}`),
+      ],
+    );
+    currentVersionId = cv.rows[0].id;
     emitted = {
       type: "claim_updated",
       summary: `Đồng thuận dịch chuyển — ${claimDisplayText({ ...claim, value: "", valueType: "text" })}: ${fmtClaimValue(cur.value, claim.unit)} → ${fmtClaimValue(JSON.parse(winner.valueJson), claim.unit)}`,
@@ -1376,6 +1467,7 @@ async function upsertClaim(
     // the version this document's evidence attaches to — the position it
     // asserts, minted now or the standing version of that position
     claimVersionId: mintedId ?? votePos?.versionId ?? currentVersionId,
+    changeVersionId: emitted ? (mintedId ?? currentVersionId) : undefined,
     fromClaimVersionId: cur.current_version_id,
     change: emitted,
   };
@@ -1484,7 +1576,8 @@ export async function persistCluster(
       evBySource.set(article.source, ev.evidenceVersionId);
       const primary =
         meta?.kind === "primary" || article.ingest?.sourceKind === "primary";
-      if (primary) primarySources.add(article.source);
+      if (primary)
+        primarySources.add(canonicalSourceName(article.source, article.url));
       ingested.push({
         source: article.source,
         primary,
@@ -1696,6 +1789,10 @@ export async function persistCluster(
       for (const docId of docIdsSorted) {
         const child = candById.get(docId)!;
         const prev = existing.get(docId);
+        // a doc shared across events keeps the assertion minted where its
+        // parent lives — reclassifying against a pool missing the parent
+        // would overwrite real provenance with a blind 'unknown'
+        if (prev?.parent && !candById.has(prev.parent)) continue;
         const asrt = classifyLineage(
           child,
           candidates.filter((c) => c.documentId !== docId),
@@ -1766,13 +1863,33 @@ export async function persistCluster(
         (claim.articleId ? evByArticle.get(claim.articleId) : undefined) ??
         evBySource.get(claim.assertedBy) ??
         leadEvidenceId;
-      // the vote's evidence-time — the asserting doc's own timestamp
+      // the vote's evidence-time — the asserting doc's own timestamp.
+      // articleId match must win over the first same-source article:
+      // borrowing a sibling article's timestamp can bypass stale checks
       claim.assertedAt ??=
-        cluster.articles.find(
-          (a) => a.id === claim.articleId || a.source === claim.assertedBy,
-        )?.publishedAt ?? cluster.publishedAt;
-      const assertedByPrimary = primarySources.has(claim.assertedBy);
-      const out = await upsertClaim(client, eventId, claim, assertedByPrimary);
+        (claim.articleId &&
+          cluster.articles.find((a) => a.id === claim.articleId)
+            ?.publishedAt) ||
+        cluster.articles.find((a) => a.source === claim.assertedBy)
+          ?.publishedAt ||
+        cluster.publishedAt;
+      const assertingArticle =
+        (claim.articleId
+          ? cluster.articles.find((a) => a.id === claim.articleId)
+          : undefined) ??
+        cluster.articles.find((a) => a.source === claim.assertedBy);
+      const assertedByCanon = canonicalSourceName(
+        assertingArticle?.source ?? claim.assertedBy,
+        assertingArticle?.url,
+      );
+      const assertedByPrimary = primarySources.has(assertedByCanon);
+      const out = await upsertClaim(
+        client,
+        eventId,
+        claim,
+        assertedByPrimary,
+        assertedByCanon,
+      );
       if (evId) {
         // the document's stance describes how it relates to THIS version:
         // a disputing doc contradicts, a correcting/retracting doc
@@ -1807,7 +1924,7 @@ export async function persistCluster(
           summary: out.change.summary,
           claimId: out.claimId,
           fromClaimVersionId: out.fromClaimVersionId,
-          toClaimVersionId: out.claimVersionId,
+          toClaimVersionId: out.changeVersionId ?? out.claimVersionId,
           material: !peripheral,
           materiality: peripheral
             ? out.change.type === "claim_disputed"
