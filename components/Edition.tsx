@@ -59,6 +59,33 @@ export default function Edition({ initial }: { initial: Edition }) {
     // deep link — Telegram alerts open ?event=<canonical event id>
     const eid = new URLSearchParams(window.location.search).get("event");
     if (eid) setOpenEventId(eid);
+    const onPop = () => {
+      const id = new URLSearchParams(window.location.search).get("event");
+      setOpenEventId(id);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  // event modal is shareable: opening pushes ?event=<id>, back button closes it
+  const openEventById = useCallback((id: string) => {
+    setOpenEventId(id);
+    const url = new URL(window.location.href);
+    url.searchParams.set("event", id);
+    history.pushState({ tfEvent: id }, "", url);
+  }, []);
+
+  const closeEventModal = useCallback(() => {
+    if (history.state?.tfEvent) {
+      history.back();
+      return;
+    }
+    setOpenEventId(null);
+    const url = new URL(window.location.href);
+    if (url.searchParams.has("event")) {
+      url.searchParams.delete("event");
+      history.replaceState(null, "", url);
+    }
   }, []);
 
   const toggleTheme = useCallback(() => {
@@ -110,12 +137,12 @@ export default function Edition({ initial }: { initial: Edition }) {
       if (e.key === "Escape") {
         setSearchOpen(false);
         setOpenId(null);
-        setOpenEventId(null);
+        closeEventModal();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [closeEventModal]);
 
   const openCluster = useCallback(
     (cluster: StoryCluster) => {
@@ -207,14 +234,14 @@ export default function Edition({ initial }: { initial: Edition }) {
         </div>
       </header>
 
-      <ChangesRail onOpenEvent={setOpenEventId} />
+      <ChangesRail onOpenEvent={openEventById} />
 
       <WatchBar
         watch={watch}
         setWatch={setWatch}
         editionVersion={edition.updatedAt ?? ""}
         onOpenCluster={openClusterById}
-        onOpenEvent={setOpenEventId}
+        onOpenEvent={openEventById}
       />
 
       <StatusBar
@@ -271,7 +298,7 @@ export default function Edition({ initial }: { initial: Edition }) {
           edition={edition}
           onClose={() => setSearchOpen(false)}
           onOpen={openCluster}
-          onOpenEvent={setOpenEventId}
+          onOpenEvent={openEventById}
           normalizeText={normalizeText}
         />
       )}
@@ -287,10 +314,7 @@ export default function Edition({ initial }: { initial: Edition }) {
       )}
 
       {openEventId && (
-        <EventModal
-          eventId={openEventId}
-          onClose={() => setOpenEventId(null)}
-        />
+        <EventModal eventId={openEventId} onClose={closeEventModal} />
       )}
     </div>
   );

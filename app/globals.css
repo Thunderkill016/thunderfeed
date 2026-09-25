@@ -123,6 +123,7 @@ button {
   border: 1px solid var(--line);
   padding: 2px 8px;
   border-radius: 3px;
+  white-space: nowrap;
 }
 .masthead-right {
   display: flex;
@@ -181,7 +182,7 @@ button {
   font-size: 12px;
   color: var(--ink-soft);
   flex-wrap: wrap;
-  flex-shrink: 0;
+  min-width: 0;
 }
 .clock em {
   font-style: normal;
@@ -1343,6 +1344,9 @@ button {
   .edition-date {
     display: none;
   }
+  .edition-tag {
+    display: none;
+  }
 }
 
 /* ---------- changes rail — canonical change feed ---------- */
@@ -1458,6 +1462,8 @@ button {
 }
 .watch-head .rail-title {
   margin: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .alert-badge {
   font-family: var(--mono);
@@ -1471,6 +1477,8 @@ button {
 }
 .watch-edit {
   margin-left: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.08em;
