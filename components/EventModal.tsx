@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { EventView } from "../lib/db/read";
 import EventIntel from "./EventIntel";
+import Modal from "./Modal";
 
 const STATUS_LABEL: Record<string, string> = {
   active: "Đang diễn biến",
@@ -34,51 +35,41 @@ export default function EventModal({
   }, [eventId]);
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div
-        className="modal"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-      >
-        <button className="modal-close" onClick={onClose} aria-label="Đóng">
-          ×
-        </button>
-        {view ? (
-          <>
-            <div className="modal-head">
-              <span className="modal-kicker">
-                {STATUS_LABEL[view.status] ?? view.status} ·{" "}
-                {view.evidence.publishers.length +
-                  view.evidence.primary.length +
-                  view.evidence.community.length}{" "}
-                nguồn ·{" "}
-                {new Date(view.lastUpdatedAt).toLocaleString("vi-VN", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  day: "numeric",
-                  month: "numeric",
-                })}
-              </span>
-              <h2 className="modal-title">{view.title}</h2>
-            </div>
-            <div className="modal-body">
-              {view.summary && (
-                <section className="detail-section">
-                  <p>{view.summary}</p>
-                </section>
-              )}
-              <EventIntel view={view} />
-            </div>
-          </>
-        ) : (
-          <div className="modal-body">
-            <p className="muted">
-              {failed ? "Không tải được sự kiện." : "Đang tải…"}
-            </p>
+    <Modal onClose={onClose} label={view?.title ?? "Đang tải sự kiện"}>
+      {view ? (
+        <>
+          <div className="modal-head">
+            <span className="modal-kicker">
+              {STATUS_LABEL[view.status] ?? view.status} ·{" "}
+              {view.evidence.publishers.length +
+                view.evidence.primary.length +
+                view.evidence.community.length}{" "}
+              nguồn ·{" "}
+              {new Date(view.lastUpdatedAt).toLocaleString("vi-VN", {
+                hour: "2-digit",
+                minute: "2-digit",
+                day: "numeric",
+                month: "numeric",
+              })}
+            </span>
+            <h2 className="modal-title">{view.title}</h2>
           </div>
-        )}
-      </div>
-    </div>
+          <div className="modal-body">
+            {view.summary && (
+              <section className="detail-section">
+                <p>{view.summary}</p>
+              </section>
+            )}
+            <EventIntel view={view} />
+          </div>
+        </>
+      ) : (
+        <div className="modal-body">
+          <p className="muted">
+            {failed ? "Không tải được sự kiện." : "Đang tải…"}
+          </p>
+        </div>
+      )}
+    </Modal>
   );
 }
