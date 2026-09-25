@@ -38,7 +38,7 @@ function EventCard({
       onClick={onOpen}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && onOpen()}
+      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onOpen()}
     >
       {lead && cluster.leadArticle.image && (
         <div className="card-thumb">

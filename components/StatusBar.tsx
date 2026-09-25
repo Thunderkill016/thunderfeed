@@ -40,6 +40,9 @@ export default function StatusBar({
     updatedAt && now
       ? Math.max(0, Math.round((now - Date.parse(updatedAt)) / 60_000))
       : null;
+  // the builder runs ~hourly — beyond 2h the reader should see the data
+  // is stale rather than a quietly growing "N phút trước" counter
+  const isStale = ageMin !== null && ageMin >= 120;
   const okCount = sources.filter((s) => s.status === "ok").length;
   const failed = sources.filter((s) => s.status === "error");
 
@@ -50,12 +53,15 @@ export default function StatusBar({
           {clock} <em>giờ VN</em>
         </span>
         <span className="dot">·</span>
-        <span className="updated">
+        <span className={`updated${isStale ? " stale" : ""}`}>
           {ageMin === null
             ? "đang tải"
             : ageMin < 1
               ? "vừa cập nhật"
-              : `cập nhật ${ageMin} phút trước`}
+              : ageMin >= 60
+                ? `cập nhật ${Math.round(ageMin / 60)} giờ trước`
+                : `cập nhật ${ageMin} phút trước`}
+          {isStale && " · có thể cũ"}
         </span>
         <span className="dot">·</span>
         <button

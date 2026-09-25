@@ -189,6 +189,9 @@ button {
   color: var(--ink-faint);
   font-size: 10px;
 }
+.updated.stale {
+  color: var(--accent);
+}
 .dot {
   color: var(--ink-faint);
 }
