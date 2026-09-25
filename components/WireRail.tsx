@@ -17,7 +17,11 @@ export default function WireRail({
   const [open, setOpen] = useState(false);
   return (
     <section className="wire">
-      <button className="wire-toggle" onClick={() => setOpen((v) => !v)}>
+      <button
+        className="wire-toggle"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
         <h2>Dòng wire mới nhất</h2>
         <span className="wire-meta">
           {articles.length} bài chưa gom cụm {open ? "▲" : "▼"}
