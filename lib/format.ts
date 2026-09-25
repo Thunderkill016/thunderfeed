@@ -4,6 +4,27 @@
  * identical text. Kept out of writer.ts because that module pulls `pg`.
  */
 
+/**
+ * Canonicalize a claim value for EQUALITY only (position identity, dedup,
+ * resolver fingerprints) — never for storage. A numeric string is the
+ * same fact as the number ("4" === 4) and a reordered range is the same
+ * fact ({low,high} === {high,low}); JSON.stringify would split them.
+ */
+export function canonValue(v: unknown): unknown {
+  if (typeof v === "string" && v.trim() !== "" && !Number.isNaN(Number(v)))
+    return Number(v);
+  if (Array.isArray(v)) return v.map(canonValue);
+  if (v && typeof v === "object" && !(v instanceof Set)) {
+    const rec = v as Record<string, unknown>;
+    return Object.fromEntries(
+      Object.keys(rec)
+        .sort()
+        .map((k) => [k, canonValue(rec[k])]),
+    );
+  }
+  return v;
+}
+
 /** Canonical predicate → vi display label. Free-text predicates (LLM fact
  *  claims) fall back to the claim's own label span. */
 export const PRED_LABEL_VI: Record<string, string> = {

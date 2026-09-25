@@ -45,23 +45,6 @@ export function toJsonb(v: unknown): string {
     .replace(/\u0000/g, " ");
 }
 
-/**
- * Canonicalize a claim value for EQUALITY only (position identity, dedup)
- * — never for storage. A numeric string is the same fact as the number
- * ("4" === 4) and a reordered range is the same fact ({low,high} ===
- * {high,low}); JSON.stringify would split them into false positions.
- */
-export function canonValue(v: unknown): unknown {
-  if (typeof v === "string" && v.trim() !== "" && !Number.isNaN(Number(v)))
-    return Number(v);
-  if (Array.isArray(v)) return v.map(canonValue);
-  if (v && typeof v === "object" && !(v instanceof Set)) {
-    const rec = v as Record<string, unknown>;
-    return Object.fromEntries(
-      Object.keys(rec)
-        .sort()
-        .map((k) => [k, canonValue(rec[k])]),
-    );
-  }
-  return v;
-}
+// canonical equality lives in format.ts — pure, so the resolver can use
+// it without pulling `pg` through this module
+export { canonValue } from "../format";

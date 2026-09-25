@@ -459,12 +459,13 @@ export interface EvidenceIndependence {
   derivedDocuments: number;
 }
 
-const DERIVED = new Set<LineageRelation>([
+const DERIVED: ReadonlySet<LineageRelation> = new Set<LineageRelation>([
   "syndicated",
   "quoted",
   "rewritten",
   "press_release_based",
 ]);
+export { DERIVED };
 
 export function independence(
   docs: LineageDoc[],

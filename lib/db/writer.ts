@@ -36,6 +36,7 @@ import { embedModel } from "../embed";
 import {
   CLASSIFIER_VERSION,
   classifyLineage,
+  DERIVED,
   resolveOrigins,
   type LineageAssertion,
   type LineageDoc,
@@ -376,6 +377,48 @@ async function ingestEvidence(
 
 /* ----------------------------- step: event ------------------------------- */
 
+// Load one document as a lineage candidate — used when a shared doc's
+// stored parent lives outside this event's pool and the child's content
+// just changed, so the old parent gets to defend its assertion instead of
+// the child being blindly re-derived against an unrelated pool.
+async function loadLineageDoc(
+  client: PoolClient,
+  documentId: string,
+): Promise<LineageDoc | null> {
+  const r = await client.query<{
+    id: string;
+    source: string;
+    kind: string;
+    title: string;
+    summary: string | null;
+    published_at: string | null;
+    canonical_url: string;
+    language: string | null;
+  }>(
+    `SELECT d.id, s.name AS source, s.kind::text AS kind,
+            v.title, v.summary, d.published_at, d.canonical_url, s.language
+     FROM evidence_documents d
+     JOIN evidence_versions v ON v.id = d.current_version_id
+     JOIN sources s ON s.id = d.source_id
+     WHERE d.id = $1`,
+    [documentId],
+  );
+  const row = r.rows[0];
+  if (!row) return null;
+  return {
+    documentId: row.id,
+    source: row.source,
+    sourceKind: row.kind,
+    title: row.title,
+    summary: row.summary ?? "",
+    publishedAt: row.published_at
+      ? new Date(row.published_at).toISOString()
+      : "",
+    url: row.canonical_url,
+    language: row.language ?? undefined,
+  };
+}
+
 export interface EventRef {
   eventId: string;
   eventVersionId: string;
@@ -536,7 +579,7 @@ async function prepareResolve(
     // so a cluster asserting an earlier position still matches
     const ck = { rows: claimsByEvent.get(c.id) ?? [] };
     const claimLabels = ck.rows
-      .map((r) => `${r.claim_key}=${JSON.stringify(r.value)}`)
+      .map((r) => `${r.claim_key}=${JSON.stringify(canonValue(r.value))}`)
       .slice(0, 6);
     const rep = eventRepText({
       title: c.title ?? "",
@@ -556,7 +599,9 @@ async function prepareResolve(
         entitySignatureCore: c.entity_signature_core ?? "",
         claimKeys: new Set(ck.rows.map((r) => r.claim_key)),
         claimFps: new Set(
-          ck.rows.map((r) => `${r.claim_key}|${JSON.stringify(r.value)}`),
+          ck.rows.map(
+            (r) => `${r.claim_key}|${JSON.stringify(canonValue(r.value))}`,
+          ),
         ),
         topic: c.topic,
         publishedAt: c.occurred_at ? Date.parse(c.occurred_at) : undefined,
@@ -684,7 +729,13 @@ async function resolveEvent(
           `inc=${JSON.stringify({ nums: [...inc.numTokens], core: [...inc.entCoreTokens], pub: inc.publishedAt })} ` +
           `cand=${JSON.stringify({ nums: cand.signature.split("|")[2], core: cand.entitySignatureCore, pub: cand.publishedAt })}`,
       );
-    if (d.decision === "merge" && d.score > bestScore) {
+    // candidate order is SQL-row order — unstable across runs. Two
+    // candidates merging with the same score must not leave the attach
+    // outcome to chance: lowest event id wins the tie deterministically.
+    if (
+      d.decision === "merge" &&
+      (d.score > bestScore || (d.score === bestScore && best && c.id < best.id))
+    ) {
       bestScore = d.score;
       best = c;
     }
@@ -746,13 +797,23 @@ async function attachEvidence(
   } = {},
 ): Promise<boolean> {
   // existence check first — pg-mem misreports rowCount/RETURNING on
-  // ON CONFLICT skips, and the SELECT is honest on real Postgres too
-  const exists = await client.query(
-    `SELECT 1 FROM event_evidence
+  // ON CONFLICT skips, and the SELECT is honest on real Postgres too.
+  // A previously-detached edge resurrects: ignoring detached_at here
+  // would leave the document invisible to readers forever.
+  const exists = await client.query<{ detached_at: string | null }>(
+    `SELECT detached_at FROM event_evidence
      WHERE event_id = $1 AND evidence_version_id = $2`,
     [eventId, evidenceVersionId],
   );
-  if (exists.rows.length > 0) return false;
+  if (exists.rows.length > 0) {
+    if (exists.rows[0].detached_at == null) return false;
+    await client.query(
+      `UPDATE event_evidence SET detached_at = NULL
+       WHERE event_id = $1 AND evidence_version_id = $2`,
+      [eventId, evidenceVersionId],
+    );
+    return true;
+  }
   await client.query(
     `INSERT INTO event_evidence
        (event_id, evidence_version_id, relationship, cluster_score, attached_by)
@@ -957,7 +1018,7 @@ const mapState = (s: string) =>
  * "4 %" and "4 basis_points" are different facts, never one position.
  */
 const posKey = (value: unknown, unit: string | null | undefined) =>
-  toJsonb({ v: canonValue(value) ?? null, u: unit ?? null });
+  toJsonb({ v: canonValue(value) ?? null, u: unit || null });
 
 /**
  * One live position inside a claim: a value, the newest version carrying
@@ -1106,10 +1167,11 @@ async function upsertClaim(
     value: unknown;
     unit: string | null;
     version_no: number;
+    state: string;
     strength: string | null;
     vote_at: string;
   }>(
-    `SELECT s.name, cv.value, cv.unit, cv.version_no,
+    `SELECT s.name, cv.value, cv.unit, cv.version_no, cv.state,
             ce.evidence_strength AS strength,
             COALESCE(d.published_at, ev.observed_at) AS vote_at
      FROM claim_evidence ce
@@ -1128,6 +1190,7 @@ async function upsertClaim(
       unit: string | null;
       pos: string;
       versionNo: number;
+      state: string;
       primary: boolean;
       at: number;
     }
@@ -1143,6 +1206,7 @@ async function upsertClaim(
       unit: v.unit,
       pos: posKey(v.value, v.unit),
       versionNo: v.version_no,
+      state: v.state,
       primary: v.strength === "direct",
       at: Date.parse(v.vote_at),
     });
@@ -1230,20 +1294,21 @@ async function upsertClaim(
     else mint = { state: "disputed", changeType: "disputed" };
   }
 
-  // replay guard: re-asserting the same position+state the source already
-  // stands on (or a new source re-stating an already-recorded state) is a
-  // semantic no-op — append-only means never rewriting history, not
-  // duplicating it. A self-revision (priorPos !== claimPos) is always a
-  // real move and never skipped.
-  if (
-    mint &&
-    (priorPos === claimPos || (priorPos === null && positions.has(claimPos)))
-  ) {
+  // replay guard is PER-VOTER: re-asserting the same position+state this
+  // source already stands on is a semantic no-op; a DIFFERENT source
+  // asserting the same terminal state (retract/dispute/correct) is a real
+  // act and must mint. 'confirmed' also dedupes across voters — an
+  // already-confirmed position gains nothing from a second confirmation.
+  // A self-revision (priorPos !== claimPos) is always a real move.
+  if (mint && (priorPos === claimPos || priorPos === null)) {
     const standingId = positions.get(claimPos)?.versionId;
     const standing = standingId
       ? vers.rows.find((v) => v.id === standingId)
       : undefined;
-    if (standing && standing.state === mint.state) mint = null;
+    const replay =
+      (priorPos === claimPos && priorVote?.state === mint.state) ||
+      (mint.state === "confirmed" && standing?.state === "confirmed");
+    if (replay) mint = null;
   }
 
   let mintedId: string | null = null;
@@ -1646,7 +1711,9 @@ export async function persistCluster(
       const evId = evByArticle.get(article.id);
       if (!evId) continue;
       const isOrigin = evId === leadEvidenceId && created;
-      const primary = primarySources.has(article.source);
+      const primary = primarySources.has(
+        canonicalSourceName(article.source, article.url),
+      );
       const relationship = isOrigin
         ? "origin"
         : primary
@@ -1789,14 +1856,39 @@ export async function persistCluster(
       for (const docId of docIdsSorted) {
         const child = candById.get(docId)!;
         const prev = existing.get(docId);
-        // a doc shared across events keeps the assertion minted where its
-        // parent lives — reclassifying against a pool missing the parent
-        // would overwrite real provenance with a blind 'unknown'
-        if (prev?.parent && !candById.has(prev.parent)) continue;
-        const asrt = classifyLineage(
-          child,
-          candidates.filter((c) => c.documentId !== docId),
-        );
+        // a doc shared across events carries its provenance with it: the
+        // stored parent — which lives in another event — re-enters the
+        // pool to defend its assertion, so reclassification is a fair
+        // contest. A stored derivation is only displaced by a BETTER
+        // derivation (a matching parent that just joined this event);
+        // 'original'/'unknown' here would mean "no parent visible in
+        // THIS event's pool" — which the parent's absence already
+        // explains, so it can never overwrite the recorded provenance.
+        // a doc shared across events carries its provenance with it: the
+        // stored parent — which lives in another event — re-enters the
+        // pool to defend its assertion, so reclassification is a fair
+        // contest. A stored derivation is only displaced by a BETTER
+        // derivation (a matching parent that just joined this event);
+        // 'original'/'unknown' here would mean "no parent visible in
+        // THIS event's pool" — which the parent's absence already
+        // explains, so it can never overwrite the recorded provenance.
+        const childPool = candidates.filter((c) => c.documentId !== docId);
+        const parentAbsent = prev?.parent && !candById.has(prev.parent);
+        if (parentAbsent) {
+          const oldParent = await loadLineageDoc(client, prev.parent!);
+          if (!oldParent) continue; // unverifiable — never downgrade blind
+          childPool.push(oldParent);
+        }
+        let asrt = classifyLineage(child, childPool);
+        if (parentAbsent && !DERIVED.has(asrt.relation)) {
+          asrt = {
+            parentDocumentId: prev!.parent,
+            relation: prev!.relation as LineageAssertion["relation"],
+            confidence: 0,
+            method: "rule",
+            evidence: { reason: "kept_parent_outside_pool" },
+          };
+        }
         const changed =
           !prev ||
           prev.relation !== asrt.relation ||

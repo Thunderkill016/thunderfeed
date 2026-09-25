@@ -894,3 +894,189 @@ test("matrix: '4' (string) corroborates 4 (number) — no false dispute", async 
   assert.equal(claim.value, 4);
   assert.notEqual(claim.state, "disputed");
 });
+
+test("matrix: a different voter retracting the same value is a real change, not a replay", async () => {
+  setupDb();
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const t = (h: number) => `2026-09-24T0${h}:00:00Z`;
+  const reported = (a: Article): ExtractedClaim => ({
+    claimKey: "growth_pct",
+    predicate: "growth_pct",
+    valueType: "number",
+    value: 4,
+    unit: "%",
+    label: "Tăng trưởng",
+    assertedBy: a.source,
+    articleId: a.id,
+    assertedAt: a.publishedAt,
+  });
+  const retract = (a: Article): ExtractedClaim => ({
+    ...reported(a),
+    state: "retracted",
+  });
+  const aV = art({
+    source: "VnExpress",
+    title: TITLE,
+    url: "https://vne.vn/g-a",
+    publishedAt: t(1),
+  });
+  const aT = art({
+    source: "Tuổi Trẻ",
+    title: TITLE,
+    url: "https://tt.vn/g-a",
+    publishedAt: t(1),
+  });
+  const r1 = await persistCluster(cluster([aV, aT]), [
+    reported(aV),
+    reported(aT),
+  ]);
+  // VnExpress retracts the figure — position's standing state is now
+  // 'retracted', but Tuổi Trẻ's own vote still stands at 'reported'
+  const aVr = art({
+    source: "VnExpress",
+    title: TITLE,
+    url: "https://vne.vn/g-r",
+    publishedAt: t(2),
+  });
+  await persistCluster(cluster([aVr]), [retract(aVr)]);
+  // an hour later Tuổi Trẻ withdraws the SAME value. A position-level
+  // replay guard would see standing='retracted' and skip — silently
+  // dropping Tuổi Trẻ's retraction and leaving it as a live supporter
+  const aTr = art({
+    source: "Tuổi Trẻ",
+    title: TITLE,
+    url: "https://tt.vn/g-r",
+    publishedAt: t(3),
+  });
+  await persistCluster(cluster([aTr]), [retract(aTr)]);
+
+  const types = await changeTypes(r1.eventId);
+  assert.equal(types.filter((x) => x === "claim_retracted").length, 2);
+});
+
+test("matrix: primary-flagged feed alias keeps primary_evidence relationship", async () => {
+  setupDb();
+  const TITLE = "NHNN giữ nguyên lãi suất điều hành ở mức 4.25%";
+  const c1 = cluster([
+    art({
+      source: "Reuters",
+      title: TITLE,
+      url: "https://reuters.com/nhnn-hold",
+      publishedAt: "2026-09-24T01:00:00Z",
+    }),
+  ]);
+  const r1 = await persistCluster(c1, extractClaims(c1));
+  // the e.VnExpress feed is an alias of VnExpress — if the evidence loop
+  // looked up primary status by raw feed name against canonical names it
+  // would silently downgrade a primary doc to ordinary coverage
+  const c2 = cluster([
+    art({
+      source: "e.VnExpress",
+      title: TITLE,
+      url: "https://e.vnexpress.net/nhnn-hold",
+      publishedAt: "2026-09-24T02:00:00Z",
+    }),
+  ]);
+  const r2 = await persistCluster(c2, extractClaims(c2), {
+    sourceMeta: { "e.VnExpress": { kind: "primary" } },
+  });
+  assert.equal(r2.eventId, r1.eventId);
+
+  const { rows } = await getPool().query<{ rel: string }>(
+    `SELECT ee.relationship::text AS rel
+     FROM event_evidence ee
+     JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
+     JOIN evidence_documents d ON d.id = ev.document_id
+     JOIN sources s ON s.id = d.source_id
+     WHERE s.name = 'VnExpress'`,
+  );
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].rel, "primary_evidence");
+});
+
+test("matrix: retracted claim's evidence is dead support, not live direct", async () => {
+  setupDb();
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const t = (h: number) => `2026-09-24T0${h}:00:00Z`;
+  const reported = (a: Article): ExtractedClaim => ({
+    claimKey: "growth_pct",
+    predicate: "growth_pct",
+    valueType: "number",
+    value: 4,
+    unit: "%",
+    label: "Tăng trưởng",
+    assertedBy: a.source,
+    articleId: a.id,
+    assertedAt: a.publishedAt,
+  });
+  const aR = art({
+    source: "Reuters",
+    title: TITLE,
+    url: "https://reuters.com/g-a",
+    publishedAt: t(1),
+  });
+  const r1 = await persistCluster(cluster([aR]), [reported(aR)]);
+  // the central bank asserts the same figure — direct evidence lands
+  const aP = art({
+    source: "Ngân hàng Nhà nước",
+    title: TITLE,
+    url: "https://sbv.gov.vn/g-a",
+    publishedAt: t(2),
+  });
+  const meta = { "Ngân hàng Nhà nước": { kind: "primary" as const } };
+  await persistCluster(cluster([aP]), [reported(aP)], { sourceMeta: meta });
+  let view = await getEventView(r1.eventId);
+  assert.equal(view!.confidence.directEvidenceCount, 1);
+
+  // …then withdraws it. The retraction is terminal disconfirmation:
+  // counting that dead support as 'direct' inflates the badge
+  const aPr = art({
+    source: "Ngân hàng Nhà nước",
+    title: TITLE,
+    url: "https://sbv.gov.vn/g-r",
+    publishedAt: t(3),
+  });
+  await persistCluster(
+    cluster([aPr]),
+    [{ ...reported(aPr), state: "retracted" }],
+    { sourceMeta: meta },
+  );
+  view = await getEventView(r1.eventId);
+  assert.equal(view!.claims[0].state, "retracted");
+  assert.equal(view!.confidence.directEvidenceCount, 0);
+  assert.notEqual(view!.confidence.state, "strong");
+});
+
+test("matrix: empty-string unit equals no unit", async () => {
+  setupDb();
+  const TITLE = "NHNN công bố chỉ tiêu tăng trưởng tín dụng";
+  const t = (h: number) => `2026-09-24T0${h}:00:00Z`;
+  const claim = (a: Article, unit: string | undefined): ExtractedClaim => ({
+    claimKey: "growth_pct",
+    predicate: "growth_pct",
+    valueType: "number",
+    value: 4,
+    unit,
+    label: "Tăng trưởng",
+    assertedBy: a.source,
+    articleId: a.id,
+    assertedAt: a.publishedAt,
+  });
+  const a1 = art({
+    source: "VnExpress",
+    title: TITLE,
+    url: "https://vne.vn/u-1",
+    publishedAt: t(1),
+  });
+  const r1 = await persistCluster(cluster([a1]), [claim(a1, "")]);
+  // extractor emits null on one feed, "" on another — both are unitless
+  const a2 = art({
+    source: "Tuổi Trẻ",
+    title: TITLE,
+    url: "https://tt.vn/u-1",
+    publishedAt: t(2),
+  });
+  await persistCluster(cluster([a2]), [claim(a2, undefined)]);
+  const view = await getEventView(r1.eventId);
+  assert.notEqual(view!.claims[0].state, "disputed");
+});

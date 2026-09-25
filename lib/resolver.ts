@@ -17,6 +17,7 @@
  */
 
 import { entitySignature } from "./entities";
+import { canonValue } from "./format";
 import { normalizeText } from "./model";
 import { cosine } from "./embed";
 import type { ExtractedClaim } from "./db/writer";
@@ -373,8 +374,10 @@ export const jaccard = (a: Set<string>, b: Set<string>): number => {
 };
 
 export const isDistinctiveKey = (key: string) => key.includes("|");
+// canonValue: "20" (string) and 20 (number) are the same fact — a raw
+// JSON.stringify fingerprint would recall-miss and split the event
 export const genericFingerprint = (c: ExtractedClaim) =>
-  `${c.claimKey}|${JSON.stringify(c.value)}`;
+  `${c.claimKey}|${JSON.stringify(canonValue(c.value))}`;
 
 /**
  * Resolver fingerprint — topic | sorted tokens | number tokens | bigrams.
@@ -857,7 +860,9 @@ export function clusterRepTextV2(
     entities: entitySignature(`${cluster.title} ${cluster.summary}`)
       .split(" ")
       .filter(Boolean),
-    claimLabels: claims.map((c) => `${c.claimKey}=${JSON.stringify(c.value)}`),
+    claimLabels: claims.map(
+      (c) => `${c.claimKey}=${JSON.stringify(canonValue(c.value))}`,
+    ),
   });
 }
 

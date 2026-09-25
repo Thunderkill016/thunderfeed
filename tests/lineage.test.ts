@@ -940,7 +940,7 @@ test("mutation guard: lineage + metadata observations are append-only in schema"
   assert.match(mig, /reject_history_mutation\(\)/);
 });
 
-test("cross-event: a shared document keeps the lineage minted where its parent lives", async () => {
+test("cross-event: shared doc's stored parent defends its assertion in a foreign pool", async () => {
   setupDb();
   // event A: Reuters wire + a local copy → copy derives syndicated→Reuters
   const wire = art({
@@ -967,8 +967,10 @@ test("cross-event: a shared document keeps the lineage minted where its parent l
   );
 
   // the SAME document (canonical_url) is later attached to a different
-  // event whose pool lacks Reuters — processing B must not blind-overwrite
-  // the provenance minted in A
+  // event whose pool lacks Reuters — a blind reclassification would
+  // downgrade it to 'original'/'unknown'. The stored parent re-enters
+  // the pool; nothing there matches either, so the recorded derivation
+  // stands instead of being overwritten by pool blindness
   const other = art({
     source: "LocalSite",
     title: "Chính phủ họp thường kỳ tháng 9 bàn chương trình y tế",
@@ -982,6 +984,62 @@ test("cross-event: a shared document keeps the lineage minted where its parent l
 
   const lin2 = await latestLineage();
   const edge = lin2.find((l) => l.child === "LocalSite")!;
-  assert.equal(edge.relation, "syndicated"); // parent chain survives
+  assert.equal(edge.relation, "syndicated");
   assert.equal(edge.parent, "Reuters");
+});
+
+test("cross-event: a better parent in the new pool legitimately re-points", async () => {
+  setupDb();
+  // event A: LocalSite copies the storm wire → syndicated→Reuters
+  const wire = art({
+    source: "Reuters",
+    title: WIRE_TITLE,
+    summary: WIRE_SUMMARY,
+    url: "https://reuters.com/wire-shared2",
+    language: "en",
+    publishedAt: "2026-09-24T08:00:00Z",
+  });
+  const copy = art({
+    source: "LocalSite",
+    title: WIRE_TITLE,
+    summary: WIRE_SUMMARY,
+    url: "https://localsite.vn/copy-shared2",
+    publishedAt: "2026-09-24T09:00:00Z",
+  });
+  const cA = cluster([wire, copy]);
+  const rA = await persistCluster(cA, extractClaims(cA));
+  const lin1 = await latestLineage();
+  assert.equal(lin1.find((l) => l.child === "LocalSite")!.parent, "Reuters");
+
+  // the same document now carries text verbatim from a BBC story inside
+  // a DIFFERENT event — content changed, and the matching parent is right
+  // here in the pool: keeping Reuters would be stale provenance
+  const BBC_TITLE = "Government holds regular September session";
+  const BBC_SUMMARY =
+    "The regular session reviewed community healthcare programs " +
+    "and budget disbursement for the fourth quarter.";
+  const bbc = art({
+    source: "BBC World News",
+    title: BBC_TITLE,
+    summary: BBC_SUMMARY,
+    url: "https://bbc.com/gov-session",
+    language: "en",
+    publishedAt: "2026-09-24T08:30:00Z",
+  });
+  const repost = art({
+    source: "LocalSite",
+    title: BBC_TITLE,
+    summary: BBC_SUMMARY,
+    url: "https://localsite.vn/copy-shared2",
+    publishedAt: "2026-09-24T10:00:00Z",
+  });
+  const cB = cluster([bbc, repost]);
+  const rB = await persistCluster(cB, extractClaims(cB));
+  assert.notEqual(rB.eventId, rA.eventId);
+
+  const lin2 = await latestLineage();
+  const edge = lin2.find((l) => l.child === "LocalSite")!;
+  assert.equal(edge.relation, "syndicated");
+  assert.equal(edge.parent, "BBC News"); // canonical source name
+  assert.equal(edge.version_no, 2); // re-point appended, v1 preserved
 });

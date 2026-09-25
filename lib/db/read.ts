@@ -482,8 +482,11 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     }
   }
 
+  // a retracted claim's evidence is dead support — the primary DID assert
+  // it, but the standing truth is that it withdrew. Counting it as live
+  // direct evidence inflates 'strong' past ICD 203's disconfirm rule.
   const directEvidenceCount = claims.reduce(
-    (n, c) => n + c.primaryEvidenceCount,
+    (n, c) => n + (c.state === "retracted" ? 0 : c.primaryEvidenceCount),
     0,
   );
   // resolve each doc's effective root by walking latest parent links;
@@ -795,12 +798,16 @@ export async function getConfidenceStates(
     claim_count: string;
     direct_count: string;
   }>(
+    // per-claim support across all versions (a synthesized standing
+    // version carries no links yet still stands on the claim's evidence),
+    // but a retracted claim's support is dead — never live direct evidence
     `SELECT c.event_id,
             COUNT(DISTINCT c.id) AS claim_count,
-            COUNT(*) FILTER (WHERE ce.evidence_strength = 'direct')
-              AS direct_count
+            COUNT(*) FILTER (WHERE ce.evidence_strength = 'direct'
+                             AND cur.state <> 'retracted') AS direct_count
      FROM claims c
-     JOIN claim_versions cv ON cv.id = c.current_version_id
+     JOIN claim_versions cur ON cur.id = c.current_version_id
+     JOIN claim_versions cv ON cv.claim_id = c.id
      LEFT JOIN claim_evidence ce ON ce.claim_version_id = cv.id
      WHERE c.event_id = ANY($1)
      GROUP BY c.event_id`,

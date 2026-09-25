@@ -12,7 +12,7 @@ import { randomUUID } from "node:crypto";
 import { newDb, DataType } from "pg-mem";
 import type { Pool } from "pg";
 import { injectPool } from "../lib/db/pool";
-import { persistCluster } from "../lib/db/writer";
+import { persistCluster, type ExtractedClaim } from "../lib/db/writer";
 import { extractClaims } from "../lib/db/extract";
 import type { Article, StoryCluster } from "../lib/model";
 
@@ -370,4 +370,57 @@ test("edition number is not a numeric conflict: ASEAN 47 merges", async () => {
   const d = decide(inc, candOf(a, va));
   // one-sided edition marker (47) is missing evidence, not contradiction
   assert.equal(d.decision, "merge");
+});
+
+test("generic claim fingerprint: '20' (string) recalls 20 (number)", async () => {
+  setupDb();
+  // two phrasings of the same incident, no named entities on either
+  // side — the generic-claim fingerprint is the ONLY merge path, so a
+  // raw JSON.stringify mismatch ("20" vs 20) would silently split it
+  const mk = (title: string, source: string, value: unknown) => {
+    const a: Article = {
+      id: randomUUID(),
+      title,
+      summary: "",
+      url: `https://x.vn/${randomUUID()}`,
+      image: null,
+      publishedAt: "2026-09-24T08:00:00Z",
+      source,
+      topic: "world",
+      headline: false,
+      appearances: [],
+      language: "vi",
+    };
+    const c: StoryCluster = {
+      id: `rc-${randomUUID().slice(0, 8)}`,
+      title,
+      summary: "",
+      leadArticle: a,
+      articles: [a],
+      sources: [{ name: a.source, url: a.url }],
+      topic: "world",
+      scope: "world",
+      significanceScore: 100,
+      publishedAt: a.publishedAt,
+    };
+    const claims: ExtractedClaim[] = [
+      {
+        claimKey: "deaths",
+        predicate: "deaths",
+        valueType: "number",
+        value,
+        unit: "people",
+        label: "Số người thiệt mạng",
+        assertedBy: a.source,
+        articleId: a.id,
+        assertedAt: a.publishedAt,
+      },
+    ];
+    return { c, claims };
+  };
+  const a = mk("Cháy kho lớn: 20 người thiệt mạng", "VnExpress", 20);
+  const ra = await persistCluster(a.c, a.claims);
+  const b = mk("Hỏa hoạn nhà kho, số người chết lên đến 20", "Tuổi Trẻ", "20");
+  const rb = await persistCluster(b.c, b.claims);
+  assert.equal(rb.eventId, ra.eventId);
 });
