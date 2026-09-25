@@ -9,6 +9,7 @@
 import type { EventView } from "./db/read";
 import { getEventView, searchEvents } from "./db/read";
 import { extractNumbers, geminiEnabled, geminiModel } from "./gemini";
+import { fmtClaimValue, PRED_LABEL_VI } from "./format";
 
 export interface AskResult {
   question: string;
@@ -34,16 +35,7 @@ const STATE_LABEL: Record<string, string> = {
   retracted: "đã rút lại",
 };
 
-function fmtValue(v: unknown, unit?: string | null): string {
-  if (v === null || v === undefined) return "—";
-  if (typeof v === "object") {
-    const r = v as { low?: unknown; high?: unknown };
-    if (r.low !== undefined && r.high !== undefined)
-      return `${r.low}–${r.high}${unit ? ` ${unit}` : ""}`;
-    return JSON.stringify(v);
-  }
-  return `${String(v)}${unit ? ` ${unit}` : ""}`;
-}
+const fmtValue = fmtClaimValue;
 
 /** Facts per event — the ONLY information the model is allowed to use. */
 function buildEventFacts(view: EventView): string[] {
@@ -64,7 +56,7 @@ function buildEventFacts(view: EventView): string[] {
             .join("; ")}`
         : "";
     facts.push(
-      `Dữ kiện "${c.predicate}": ${fmtValue(c.value, c.unit)} — ` +
+      `Dữ kiện "${PRED_LABEL_VI[c.predicate] ?? c.predicate}": ${fmtValue(c.value, c.unit)} — ` +
         `${STATE_LABEL[c.state] ?? c.state}, ${c.evidenceCount} bằng chứng${positions}.`,
     );
   }
@@ -184,14 +176,17 @@ function extractiveAnswer(views: EventView[]): string {
     parts.push(
       `Dữ kiện đã xác nhận: ${confirmed
         .slice(0, 3)
-        .map((c) => `${c.predicate} = ${fmtValue(c.value, c.unit)}`)
+        .map(
+          (c) =>
+            `${PRED_LABEL_VI[c.predicate] ?? c.predicate} = ${fmtValue(c.value, c.unit)}`,
+        )
         .join("; ")}.`,
     );
   if (disputed.length)
     parts.push(
       `Đang tranh chấp: ${disputed
         .slice(0, 2)
-        .map((c) => c.predicate)
+        .map((c) => PRED_LABEL_VI[c.predicate] ?? c.predicate)
         .join("; ")} — các nguồn đưa giá trị khác nhau.`,
     );
   if (views.length > 1)

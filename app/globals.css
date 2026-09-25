@@ -1269,6 +1269,12 @@ button {
   color: var(--ink);
   padding: 0;
 }
+.ask-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
 .ask-event:hover {
   text-decoration: underline;
 }

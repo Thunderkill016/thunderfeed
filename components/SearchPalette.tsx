@@ -51,15 +51,26 @@ export default function SearchPalette({
   }, [edition]);
 
   const hits = useMemo<Hit[]>(() => {
-    const query = normalizeText(q);
-    if (!query) return [];
+    const terms = normalizeText(q).split(" ").filter(Boolean);
+    if (!terms.length) return [];
+    const matches = (text: string) => {
+      const h = normalizeText(text);
+      return terms.every((t) => h.includes(t));
+    };
     const clusterHits: Hit[] = allClusters
-      .filter((c) =>
-        normalizeText(
-          `${c.title} ${c.summary} ${c.sources.map((s) => s.name).join(" ")}`,
-        ).includes(query),
-      )
       .map((c) => ({
+        c,
+        score: matches(c.title)
+          ? 2
+          : matches(
+                `${c.summary} ${c.keyTakeaways?.join(" ") ?? ""} ${c.sources.map((s) => s.name).join(" ")} ${c.articles.map((a) => `${a.title} ${a.summary}`).join(" ")}`,
+              )
+            ? 1
+            : 0,
+      }))
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(({ c }) => ({
         kind: "event" as const,
         id: c.id,
         title: c.title,
@@ -67,9 +78,7 @@ export default function SearchPalette({
         cluster: c,
       }));
     const wireHits: Hit[] = edition.wire
-      .filter((a) =>
-        normalizeText(`${a.title} ${a.summary} ${a.source}`).includes(query),
-      )
+      .filter((a) => matches(`${a.title} ${a.summary} ${a.source}`))
       .slice(0, 15)
       .map((a) => ({
         kind: "wire" as const,
@@ -123,7 +132,7 @@ export default function SearchPalette({
                 <p className="ask-answer">{asked.answer}</p>
                 {asked.events.length > 0 && (
                   <div className="ask-events">
-                    {asked.events.map((e) => (
+                    {asked.events.map((e, i) => (
                       <button
                         key={e.id}
                         className="ask-event"
@@ -132,6 +141,7 @@ export default function SearchPalette({
                           onClose();
                         }}
                       >
+                        <span className="ask-num">[{i + 1}]</span>
                         <span className={`conf-badge ${e.confidence}`}>
                           {e.confidence}
                         </span>
