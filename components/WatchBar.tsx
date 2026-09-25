@@ -155,6 +155,19 @@ export default function WatchBar({
         {alerts.length > 0 && (
           <span className="alert-badge">{alerts.length} cảnh báo</span>
         )}
+        {!editing && !active && available.length > 0 && (
+          <div className="watch-chips suggest-inline">
+            {available.slice(0, 6).map((e) => (
+              <button
+                key={e}
+                className="chip"
+                onClick={() => toggle("entities", e)}
+              >
+                {entityLabel(e)}
+              </button>
+            ))}
+          </div>
+        )}
         <button className="watch-edit" onClick={() => setEditing((v) => !v)}>
           {editing ? "xong" : active ? "chỉnh" : "theo dõi chủ đề"}
         </button>
@@ -193,26 +206,10 @@ export default function WatchBar({
         </div>
       )}
 
-      {!editing && !active && (
-        <div className="watch-suggest">
-          <span className="watch-label">Gợi ý theo dõi nhanh</span>
-          <div className="watch-chips">
-            {available.slice(0, 6).map((e) => (
-              <button
-                key={e}
-                className="chip"
-                onClick={() => toggle("entities", e)}
-              >
-                {entityLabel(e)}
-              </button>
-            ))}
-            {available.length === 0 && (
-              <span className="watch-empty">
-                Chọn "theo dõi chủ đề" để nhận tin theo sự kiện bạn quan tâm.
-              </span>
-            )}
-          </div>
-        </div>
+      {!editing && !active && available.length === 0 && (
+        <span className="watch-empty">
+          Chọn "theo dõi chủ đề" để nhận tin theo sự kiện bạn quan tâm.
+        </span>
       )}
 
       {!editing && active && (

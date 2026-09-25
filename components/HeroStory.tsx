@@ -3,20 +3,24 @@
 import type { EventAnalysis, StoryCluster } from "../lib/model";
 import { timeAgo } from "../lib/model";
 import { MediaSpectrumBar, OwnershipBar } from "./Spectrum";
+import { SourceAvatars } from "./SourceIcons";
 
 export default function HeroStory({
   cluster,
   analysis,
+  claimCount,
   isRead,
   now,
   onOpen,
 }: {
   cluster: StoryCluster;
   analysis: EventAnalysis;
+  claimCount?: number;
   isRead: boolean;
   now: number;
   onOpen: () => void;
 }) {
+  const facts = claimCount ?? analysis.claims?.consensus.length ?? 0;
   return (
     <section className={`hero ${isRead ? "read" : ""}`} onClick={onOpen}>
       <div className="hero-label">
@@ -76,7 +80,13 @@ export default function HeroStory({
           )}
 
           <div className="hero-meta">
-            <span>{cluster.sources.length} nguồn</span>
+            <SourceAvatars sources={cluster.sources} max={4} />
+            {facts > 0 && (
+              <>
+                <span className="dot">·</span>
+                <span className="claims-chip">{facts} dữ kiện</span>
+              </>
+            )}
             <span className="dot">·</span>
             <span>{timeAgo(cluster.publishedAt, now)}</span>
             <span className="dot">·</span>

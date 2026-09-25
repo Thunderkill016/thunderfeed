@@ -639,6 +639,20 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
   });
 }
 
+/** Canonical claim counts per event — powers the "N dữ kiện" chip on cards. */
+export async function getClaimCounts(
+  eventIds: string[],
+): Promise<Map<string, number>> {
+  const pool = getPool();
+  if (!pool || eventIds.length === 0) return new Map();
+  const r = await pool.query<{ event_id: string; c: string }>(
+    `SELECT event_id, COUNT(*) AS c FROM claims
+     WHERE event_id = ANY($1) GROUP BY event_id`,
+    [eventIds],
+  );
+  return new Map(r.rows.map((x) => [x.event_id, Number(x.c)]));
+}
+
 export interface EventSearchHit {
   id: string;
   title: string;

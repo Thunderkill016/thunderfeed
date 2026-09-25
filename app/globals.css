@@ -166,8 +166,11 @@ button {
 /* ------------------------------- statusbar ------------------------------ */
 
 .statusbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   border-bottom: 1px solid var(--line);
-  padding: 8px 24px;
+  padding: 7px 24px;
   background: var(--bg-sunken);
 }
 .status-left {
@@ -178,6 +181,7 @@ button {
   font-size: 12px;
   color: var(--ink-soft);
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 .clock em {
   font-style: normal;
@@ -209,10 +213,16 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 6px;
+  margin-top: 0;
+  margin-left: auto;
+  min-width: 0;
   overflow-x: auto;
+  scrollbar-width: none;
   font-family: var(--mono);
   font-size: 11px;
+}
+.trending::-webkit-scrollbar {
+  display: none;
 }
 .trending-label {
   color: var(--ink-faint);
@@ -286,6 +296,53 @@ button {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--ink-faint);
+}
+
+/* stacked outlet favicons — recognizability without hero imagery */
+.src-avatars {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.src-icons {
+  display: inline-flex;
+  align-items: center;
+}
+.src-favicon {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--bg);
+  background: var(--bg-elev);
+  margin-left: -4px;
+}
+.src-favicon:first-child,
+.src-letter:first-child {
+  margin-left: 0;
+}
+.src-letter {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--bg);
+  background: var(--bg-sunken);
+  color: var(--ink-soft);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+  margin-left: -4px;
+}
+.claims-chip {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--bg-elev);
+  color: var(--ink-soft);
+  white-space: nowrap;
 }
 .sources-note {
   font-size: 11px;
@@ -419,6 +476,7 @@ button {
 }
 .hero-meta {
   display: flex;
+  align-items: center;
   gap: 10px;
   font-family: var(--mono);
   font-size: 12px;
@@ -1359,12 +1417,21 @@ button {
   margin: 0 0 18px;
   border: 1px solid var(--line);
   background: var(--bg-elev);
-  padding: 10px 12px;
+  padding: 8px 12px;
 }
 .watch-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
+}
+.suggest-inline {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  min-width: 0;
+}
+.suggest-inline::-webkit-scrollbar {
+  display: none;
 }
 .watch-head .rail-title {
   margin: 0;
@@ -1495,9 +1562,6 @@ button {
   font-size: 12px;
   color: var(--ink-faint);
   padding: 4px 0;
-}
-.watch-suggest {
-  margin-top: 10px;
 }
 
 /* ---------- canonical claims + positions ---------- */

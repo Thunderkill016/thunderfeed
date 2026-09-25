@@ -3,10 +3,12 @@
 import type { EventAnalysis, Pillar, StoryCluster } from "../lib/model";
 import { timeAgo, topicById } from "../lib/model";
 import { MediaSpectrumBar } from "./Spectrum";
+import { SourceAvatars } from "./SourceIcons";
 
 function EventCard({
   cluster,
   analysis,
+  claimCount,
   isRead,
   lead,
   now,
@@ -14,12 +16,14 @@ function EventCard({
 }: {
   cluster: StoryCluster;
   analysis?: EventAnalysis;
+  claimCount?: number;
   isRead: boolean;
   lead: boolean;
   now: number;
   onOpen: () => void;
 }) {
   const topic = topicById.get(cluster.topic);
+  const facts = claimCount ?? analysis?.claims?.consensus.length ?? 0;
   return (
     <article
       className={`event-card ${isRead ? "read" : ""} ${lead ? "lead" : ""}`}
@@ -45,7 +49,8 @@ function EventCard({
         </p>
       )}
       <div className="card-foot">
-        <span className="src-count">{cluster.sources.length} nguồn</span>
+        <SourceAvatars sources={cluster.sources} />
+        {facts > 0 && <span className="claims-chip">{facts} dữ kiện</span>}
         {cluster.mediaSpectrum && (
           <MediaSpectrumBar spectrum={cluster.mediaSpectrum} compact />
         )}
@@ -72,12 +77,14 @@ function EventCard({
 export default function PillarSection({
   pillar,
   analyses,
+  claimCounts,
   read,
   now,
   onOpen,
 }: {
   pillar: Pillar;
   analyses: Record<string, EventAnalysis>;
+  claimCounts?: Record<string, number>;
   read: Set<string>;
   now: number;
   onOpen: (c: StoryCluster) => void;
@@ -95,6 +102,7 @@ export default function PillarSection({
             key={c.id}
             cluster={c}
             analysis={analyses[c.id]}
+            claimCount={claimCounts?.[c.id]}
             isRead={read.has(c.leadArticle.id)}
             lead={i === 0}
             now={now}

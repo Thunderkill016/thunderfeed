@@ -228,6 +228,7 @@ export default function Edition({ initial }: { initial: Edition }) {
           <HeroStory
             cluster={edition.hero}
             analysis={edition.heroAnalysis}
+            claimCount={edition.claimCounts?.[edition.hero.id]}
             isRead={read.has(edition.hero.leadArticle.id)}
             now={nowMs}
             onOpen={() => openCluster(edition.hero!)}
@@ -240,6 +241,7 @@ export default function Edition({ initial }: { initial: Edition }) {
               key={pillar.id}
               pillar={pillar}
               analyses={edition.analyses}
+              claimCounts={edition.claimCounts}
               read={read}
               now={nowMs}
               onOpen={openCluster}

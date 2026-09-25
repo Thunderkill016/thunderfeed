@@ -252,6 +252,8 @@ export interface Edition {
    * this edition. Lets the UI open the EventView for any rendered card.
    */
   eventIds?: Record<string, string>;
+  /** cluster.id → canonical claim count ("N dữ kiện" chip on cards). */
+  claimCounts?: Record<string, number>;
 }
 
 /* -------------------------------- helpers -------------------------------- */

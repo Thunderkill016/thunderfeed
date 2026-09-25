@@ -16,6 +16,7 @@ import { cosine, embedArticles } from "./embed";
 import { applyTracking } from "./tracking";
 import { feeds } from "./feeds";
 import { persistEdition } from "./db/persist";
+import { getClaimCounts } from "./db/read";
 import type {
   ClaimAnalysis,
   Edition,
@@ -252,6 +253,23 @@ async function buildEdition(): Promise<Edition> {
     );
   }
 
+  // canonical claim counts surface as the "N dữ kiện" chip on cards —
+  // read back from Postgres so the chip matches the EventView modal.
+  let claimCounts: Record<string, number> | undefined;
+  if (eventIds) {
+    try {
+      const counts = await getClaimCounts(Object.values(eventIds));
+      const m: Record<string, number> = {};
+      for (const [clusterId, eventId] of Object.entries(eventIds)) {
+        const c = counts.get(eventId);
+        if (c) m[clusterId] = c;
+      }
+      if (Object.keys(m).length > 0) claimCounts = m;
+    } catch {
+      /* optional — chips hide without it */
+    }
+  }
+
   const analyses: Record<string, EventAnalysis> = {};
   for (const [id, cluster] of analyzeTargets) {
     analyses[id] = {
@@ -289,6 +307,7 @@ async function buildEdition(): Promise<Edition> {
     totalArticles: articles.length,
     changes,
     eventIds,
+    claimCounts,
   };
 }
 
