@@ -129,6 +129,33 @@ async function main() {
   const seen = new Set(state.delivered);
   const fresh = changes.filter((c) => !seen.has(c.id));
 
+  // quiet hours (Ground-News style): digest lanes hold overnight VN time
+  // and deliver after the window — deferred, never dropped. Genuinely
+  // new events (breaking) still interrupt: a war doesn't wait for 7am.
+  // TELEGRAM_QUIET_HOURS="23-6" overrides; "off" disables.
+  const qh = (process.env.TELEGRAM_QUIET_HOURS ?? "23-6").trim();
+  if (qh !== "off") {
+    const hour = Number(
+      new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Ho_Chi_Minh",
+        hour: "numeric",
+        hour12: false,
+      }),
+    );
+    const [qs, qe] = qh.split("-").map(Number);
+    const quiet = qs <= qe ? hour >= qs && hour < qe : hour >= qs || hour < qe;
+    if (quiet) {
+      const breaking = fresh.filter((c) => c.type === "event_created");
+      if (!breaking.length) {
+        console.log(
+          `quiet hours (${hour}h VN) — ${fresh.length} change(s) held`,
+        );
+        return;
+      }
+      fresh.splice(0, fresh.length, ...breaking);
+    }
+  }
+
   // first run: seed the watermark instead of dumping the whole backlog —
   // an alert channel that opens with 50 stale items is noise, not signal
   if (!existed) {

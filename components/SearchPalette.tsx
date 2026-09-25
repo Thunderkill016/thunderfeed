@@ -142,8 +142,15 @@ export default function SearchPalette({
                         }}
                       >
                         <span className="ask-num">[{i + 1}]</span>
-                        <span className={`conf-badge ${e.confidence}`}>
-                          {e.confidence}
+                        <span
+                          className={`conf-badge ${e.confidence}`}
+                          title="Độ tin cậy"
+                        >
+                          {e.confidence === "strong"
+                            ? "tin cậy cao"
+                            : e.confidence === "moderate"
+                              ? "tin cậy vừa"
+                              : "tin cậy thấp"}
                         </span>
                         {e.title}
                       </button>
