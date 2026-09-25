@@ -15,7 +15,7 @@
 
 import { createHash } from "node:crypto";
 import type { PoolClient } from "pg";
-import { getPool } from "./pool";
+import { getPool, toJsonb } from "./pool";
 import { normalizeText } from "../model";
 import { canonicalSourceName, mediaInfoFor } from "../mediaData";
 import { entitySignature } from "../entities";
@@ -268,7 +268,7 @@ async function ingestEvidence(
       article.publishedAt || null,
       now,
       docChannel,
-      ingest?.structuredData ? JSON.stringify(ingest.structuredData) : "{}",
+      ingest?.structuredData ? toJsonb(ingest.structuredData) : "{}",
     ],
   );
   const documentId = doc.rows[0].id;
@@ -291,13 +291,13 @@ async function ingestEvidence(
       mergedMeta = { ...current, ...delta };
       await client.query(
         `UPDATE evidence_documents SET metadata = $2::jsonb WHERE id = $1`,
-        [documentId, JSON.stringify(mergedMeta)],
+        [documentId, toJsonb(mergedMeta)],
       );
       await client.query(
         `INSERT INTO evidence_metadata_observations
            (document_id, delta, snapshot)
          VALUES ($1, $2::jsonb, $3::jsonb)`,
-        [documentId, JSON.stringify(delta), JSON.stringify(mergedMeta)],
+        [documentId, toJsonb(delta), toJsonb(mergedMeta)],
       );
     }
   }
@@ -320,8 +320,8 @@ async function ingestEvidence(
       ingest?.discoveryProvider ?? "",
       now,
       ingest?.externalId ?? null,
-      ingest?.structuredData ? JSON.stringify(ingest.structuredData) : "{}",
-      JSON.stringify(mergedMeta ?? ingest?.structuredData ?? {}),
+      ingest?.structuredData ? toJsonb(ingest.structuredData) : "{}",
+      toJsonb(mergedMeta ?? ingest?.structuredData ?? {}),
     ],
   );
 
@@ -338,15 +338,16 @@ async function ingestEvidence(
      RETURNING id`,
     [
       documentId,
-      article.title,
-      article.summary || null,
+      // NUL bytes in scraped text kill Postgres text columns too
+      article.title?.replace(/\u0000/g, " "),
+      article.summary ? article.summary.replace(/\u0000/g, " ") : null,
       hash,
       now,
       // published_at and source_updated_at are different facts — only an
       // explicit upstream "updated/revised" timestamp belongs here
       ingest?.sourceUpdatedAt ?? null,
       supersedes,
-      ingest?.structuredData ? JSON.stringify(ingest.structuredData) : null,
+      ingest?.structuredData ? toJsonb(ingest.structuredData) : null,
     ],
   );
 
@@ -630,7 +631,7 @@ async function ensureEmbeddings(
           missing[i].hash,
           embedModel(),
           v.length,
-          JSON.stringify(v),
+          toJsonb(v),
           missing[i].rep,
         ],
       )
@@ -985,7 +986,7 @@ async function upsertClaim(
   isPrimary = false,
 ): Promise<ClaimOutcome> {
   const now = new Date().toISOString();
-  const valueJson = JSON.stringify(claim.value);
+  const valueJson = toJsonb(claim.value);
   // a claim originated by a primary source is born confirmed
   const state = claim.state ?? (isPrimary ? "confirmed" : "reported");
 
@@ -1030,7 +1031,7 @@ async function upsertClaim(
         claim.valueType ?? "text",
         valueJson,
         claim.unit ?? null,
-        claim.qualifiers ? JSON.stringify(claim.qualifiers) : null,
+        claim.qualifiers ? toJsonb(claim.qualifiers) : null,
         state,
         claim.validFrom ?? null,
         now,
@@ -1107,7 +1108,7 @@ async function upsertClaim(
   );
   for (const v of sortedVotes) {
     latestVote.set(v.name, {
-      valueJson: JSON.stringify(v.value),
+      valueJson: toJsonb(v.value),
       versionNo: v.version_no,
       primary: v.strength === "direct",
       at: Date.parse(v.vote_at),
@@ -1118,7 +1119,7 @@ async function upsertClaim(
   let maxVersionNo = 0;
   for (const ver of vers.rows) {
     maxVersionNo = Math.max(maxVersionNo, ver.version_no);
-    const vj = JSON.stringify(ver.value);
+    const vj = toJsonb(ver.value);
     const p =
       positions.get(vj) ??
       ({
@@ -1206,7 +1207,7 @@ async function upsertClaim(
         claim.valueType ?? "text",
         valueJson,
         claim.unit ?? null,
-        claim.qualifiers ? JSON.stringify(claim.qualifiers) : null,
+        claim.qualifiers ? toJsonb(claim.qualifiers) : null,
         mint.state,
         claim.validFrom ?? null,
         now,
@@ -1506,8 +1507,7 @@ export async function persistCluster(
     // remote pooler (runner→Supabase ~200ms) 1.5k evals ate minutes per
     // cluster and blew the CI timeout.
     if (resolverEvals.length) {
-      const json = (v: unknown) =>
-        JSON.stringify(v, (k, x) => (x instanceof Set ? [...x] : x));
+      const json = toJsonb;
       await client
         .query(
           `INSERT INTO resolver_decisions
@@ -1720,7 +1720,7 @@ export async function persistCluster(
             asrt.relation,
             asrt.confidence,
             asrt.method,
-            JSON.stringify(asrt.evidence),
+            toJsonb(asrt.evidence),
             CLASSIFIER_VERSION,
             prev?.id ?? null,
           ],

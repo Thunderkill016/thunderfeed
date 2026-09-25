@@ -31,3 +31,16 @@ export function getPool(): Pool {
 export function injectPool(p: Pool | null): void {
   pool = p;
 }
+
+/**
+ * Serialize a value for a jsonb parameter. Postgres rejects \u0000 inside
+ * jsonb input even when escaped, and rejects the raw byte in text columns
+ * too — one scraped article containing a NUL would otherwise sink a whole
+ * persist transaction with "invalid input syntax for type json". Sets are
+ * emitted as arrays (resolver features rely on it).
+ */
+export function toJsonb(v: unknown): string {
+  return JSON.stringify(v, (_k, x) => (x instanceof Set ? [...x] : x))
+    .replace(/\\u0000/g, " ")
+    .replace(/\u0000/g, " ");
+}

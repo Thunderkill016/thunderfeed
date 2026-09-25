@@ -407,12 +407,23 @@ export function refreshEdition(): Promise<Edition> {
 }
 
 export async function getEdition(): Promise<Edition> {
-  const snap = await loadSnapshot();
+  let snap = await loadSnapshot();
   if (snap) {
     const built = snap.updatedAt ? Date.parse(snap.updatedAt) : 0;
-    if (!process.env.VERCEL && Date.now() - built > REVALIDATE_SECONDS * 1000)
-      void refreshEdition().catch(() => {});
-    return snap;
+    const stale = Date.now() - built > REVALIDATE_SECONDS * 1000;
+    if (stale) {
+      if (process.env.VERCEL) {
+        /* serverless can't rebuild in the background — but a warm lambda
+           pinning memEdition would serve the load-time snapshot forever.
+           Stale ⇒ re-read the store once; the external builder refreshes
+           the row on its own cadence. */
+        memEdition = null;
+        snap = await loadSnapshot();
+      } else {
+        void refreshEdition().catch(() => {});
+      }
+    }
+    if (snap) return snap;
   }
   return refreshEdition();
 }

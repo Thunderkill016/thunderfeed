@@ -8,7 +8,7 @@
 import type { Article, SourceStatus, StoryCluster } from "../model";
 import type { Feed } from "../feeds";
 import type { Pool, PoolClient } from "pg";
-import { dbEnabled, getPool } from "./pool";
+import { dbEnabled, getPool, toJsonb } from "./pool";
 import { extractClaims } from "./extract";
 import { embedArticles } from "../embed";
 import { clusterRepTextV2, repHash } from "../resolver";
@@ -270,7 +270,7 @@ async function recordIngestCycle(
       // information-lineage contribution: does the source bring new
       // origins or only derivative volume? syndicationRatio > ~0.5 is a
       // copy-forward outlet, not an intelligence source.
-      detail: JSON.stringify({
+      detail: toJsonb({
         origins: ev?.origins ?? 0,
         derived: ev?.derived ?? 0,
         unknown: ev?.unknown ?? 0,
