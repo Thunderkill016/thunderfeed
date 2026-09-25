@@ -8,7 +8,12 @@
  *   TELEGRAM_BOT_TOKEN   — bot token (required)
  *   TELEGRAM_CHAT_ID     — recipient chat id (required)
  *   TELEGRAM_WATCH       — optional comma-separated entity slugs;
- *                          unset ⇒ deliver ALL medium/high materiality changes
+ *                          unset ⇒ deliver ALERT_FILTER changes below
+ *
+ * Channel policy (ALERT_FILTER): push is an interruption, not a feed —
+ * only claim-level changes (facts updated/disputed/corrected/retracted)
+ * plus event boundaries qualify. "Another source confirmed it" stays
+ * on the web rail where coverage context lives.
  *
  * Dedup: delivered change ids persist in the delivery_state row when
  * DATABASE_URL is set (durable across ephemeral runners like GitHub
@@ -33,6 +38,25 @@ const STATE_PATH = "data/alert-state.json";
 const STATE_CAP = 2000;
 const CHANNEL = "telegram";
 const dryRun = process.argv.includes("--dry-run");
+
+/**
+ * Telegram = interruption budget: high-materiality claim changes plus
+ * the rare event-boundary signals (new event, official primary source,
+ * resolution) — and only on events that actually matter. The score is
+ * the event's current importance: ~median is 160, the day's top story
+ * sits at 650; 200 keeps roughly the top third of events.
+ * ~75% of medium changes were new_independent_evidence spam — those
+ * stay on the web rail where coverage context lives.
+ * TELEGRAM_MIN_IMPORTANCE overrides the gate.
+ */
+const MIN_IMPORTANCE = Number(process.env.TELEGRAM_MIN_IMPORTANCE) || 200;
+const ALERT_FILTER = {
+  tiers: ["high"],
+  alsoTypes: ["event_created", "new_primary_source", "event_resolved"],
+  minImportance: MIN_IMPORTANCE,
+  // a just-created event carries no importance score yet — it IS the news
+  importanceExemptTypes: ["event_created"],
+} as const;
 
 interface State {
   delivered: string[];
@@ -96,8 +120,8 @@ async function main() {
     .filter(Boolean);
 
   const changes = watch.length
-    ? await getChangesForEntities(watch, 50)
-    : await getLatestChanges(50);
+    ? await getChangesForEntities(watch, 50, ALERT_FILTER)
+    : await getLatestChanges(50, ALERT_FILTER);
 
   const { state, existed } = await loadState();
   const seen = new Set(state.delivered);

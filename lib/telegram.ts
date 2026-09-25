@@ -62,6 +62,19 @@ type DigestChange = ChangeLike;
 
 /** grouped digest budget — beyond this, overflow becomes a footer line */
 const MAX_LINES = 24;
+/** substantive lines shown per event — a push digest reads top-facts,
+ *  not the full claim diff; the rest stay on the event page */
+const MAX_LINES_PER_EVENT = 3;
+/** order claims inside an event block: conflicts and corrections are
+ *  the reason a reader opens the alert; plain "new claim" trails */
+const TYPE_PRIORITY: Record<string, number> = {
+  claim_disputed: 0,
+  claim_corrected: 1,
+  claim_retracted: 2,
+  claim_updated: 3,
+  claim_confirmed: 4,
+  new_claim: 5,
+};
 
 /** One alert per message when few; a per-event grouped digest when many.
  *  Dedup + grouping live in lib/changes.ts — shared with the web rail so
@@ -84,11 +97,23 @@ export function formatAlertMessages(changes: DigestChange[]): string[] {
   const lines: string[] = [];
   let skippedEvents = 0;
   for (const g of ordered) {
-    const block = [`▸ ${g.eventTitle}`];
-    for (const c of g.substantive) {
+    // event_created repeats the event title verbatim — it belongs in the
+    // header as a MỚI marker, not as a bullet restating it
+    const isNew = g.substantive.some(
+      (c) => c.type === "event_created" || c.type === "new_event",
+    );
+    const block = [`▸ ${isNew ? "Sự kiện mới — " : ""}${g.eventTitle}`];
+    const top = g.substantive
+      .filter((c) => c.type !== "event_created" && c.type !== "new_event")
+      .sort(
+        (a, b) => (TYPE_PRIORITY[a.type] ?? 9) - (TYPE_PRIORITY[b.type] ?? 9),
+      );
+    for (const c of top.slice(0, MAX_LINES_PER_EVENT)) {
       const label = CHANGE_LABEL[c.type] ?? c.type;
       block.push(`  • ${label}: ${changeSummaryText(c, label)}`);
     }
+    if (top.length > MAX_LINES_PER_EVENT)
+      block.push(`  • …${top.length - MAX_LINES_PER_EVENT} dữ kiện khác trên app`);
     if (g.coverageSources.length)
       block.push(
         `  • ${g.coverageSources.length} nguồn: ${g.coverageSources.join(", ")}`,

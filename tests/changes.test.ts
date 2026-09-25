@@ -13,6 +13,7 @@ import {
   changeSummaryText,
   type ChangeLike,
 } from "../lib/changes";
+import { formatAlertMessages } from "../lib/telegram";
 
 const ch = (over: Partial<ChangeLike>): ChangeLike => ({
   eventId: "e1",
@@ -83,4 +84,37 @@ test("changeSummaryText: strips duplicate label prefix", () => {
   const c = ch({ summary: "Dữ kiện mới: 519 triệu USD" });
   assert.equal(changeSummaryText(c, "Dữ kiện mới"), "519 triệu USD");
   assert.equal(changeSummaryText(c, "Cập nhật"), "Dữ kiện mới: 519 triệu USD");
+});
+
+test("formatAlertMessages: event_created marks the header, no echo bullet", () => {
+  const rows = [0, 1, 2, 3].map((i) =>
+    ch({
+      eventId: `ev${i}`,
+      eventTitle: `Sự kiện ${i}`,
+      type: "event_created",
+      materiality: "high",
+      summary: `Sự kiện ${i}`,
+    }),
+  );
+  const [msg] = formatAlertMessages(rows);
+  assert.match(msg, /▸ Sự kiện mới — Sự kiện 0/);
+  // the bullet that restates the title must not exist
+  assert.ok(!/• Sự kiện mới: Sự kiện 0/.test(msg));
+});
+
+test("formatAlertMessages: caps substantive lines per event, disputes first", () => {
+  const rows = [
+    ch({ eventId: "e1", type: "new_claim", summary: "claim 1" }),
+    ch({ eventId: "e1", type: "new_claim", summary: "claim 2" }),
+    ch({ eventId: "e1", type: "new_claim", summary: "claim 3" }),
+    ch({ eventId: "e1", type: "new_claim", summary: "claim 4" }),
+    ch({ eventId: "e1", type: "claim_disputed", summary: "con số mâu thuẫn" }),
+    // a second event so the digest (not single-alert) path renders
+    ch({ eventId: "e2", eventTitle: "Sự kiện B", summary: "x" }),
+  ];
+  const [msg] = formatAlertMessages(rows);
+  // disputed outranks the four new_claim lines
+  assert.ok(msg.indexOf("Mâu thuẫn: con số mâu thuẫn") < msg.indexOf("claim 1"));
+  // cap leaves one overflow counter, not a 5th bullet
+  assert.match(msg, /…2 dữ kiện khác trên app/);
 });

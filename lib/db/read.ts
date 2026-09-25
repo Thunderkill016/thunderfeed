@@ -467,9 +467,50 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
   };
 }
 
+/**
+ * Which changes a channel should surface. `tiers` is the materiality
+ * allowlist; `alsoTypes` ORs in specific change types at ANY tier —
+ * e.g. a brand-new event is alert-worthy even at medium while yet
+ * another independent confirmation is not.
+ */
+export interface ChangeChannelFilter {
+  tiers?: readonly string[];
+  alsoTypes?: readonly string[];
+  /** gate on the event's CURRENT importance (ev = current_version join);
+   *  changes on minor events stay on the rail, not the push channel */
+  minImportance?: number;
+  /** change types exempt from the importance gate — a brand-new event has
+   *  no score yet but is exactly what a push channel exists for */
+  importanceExemptTypes?: readonly string[];
+}
+
+const MATERIALITY_TIERS = new Set(["low", "medium", "high"]);
+
+function channelFilterClause(f?: ChangeChannelFilter): string {
+  const tiers = (f?.tiers ?? ["medium", "high"]).filter((t) =>
+    MATERIALITY_TIERS.has(t),
+  );
+  // change types are internal constants — strip quotes defensively anyway
+  const safe = (t: string) => `'${t.replace(/'/g, "")}'`;
+  const also = (f?.alsoTypes ?? []).map(safe);
+  const parts: string[] = [];
+  if (tiers.length)
+    parts.push(`ch.materiality IN (${tiers.map((t) => `'${t}'`).join(",")})`);
+  if (also.length) parts.push(`ch.type IN (${also.join(",")})`);
+  if (!parts.length) return "FALSE";
+  let clause = `(${parts.join(" OR ")})`;
+  if (f?.minImportance !== undefined) {
+    const exempt = (f.importanceExemptTypes ?? []).map(safe);
+    const gate = `COALESCE(ev.importance_score, -1) >= ${Number(f.minImportance) || 0}`;
+    clause += ` AND (${exempt.length ? `ch.type IN (${exempt.join(",")}) OR ` : ""}${gate})`;
+  }
+  return clause;
+}
+
 /** Feed of material changes across all live events — the "WHAT CHANGED" rail. */
 export async function getLatestChanges(
   limit = 30,
+  filter?: ChangeChannelFilter,
 ): Promise<
   (ChangeView & { id: string; eventId: string; eventTitle: string })[]
 > {
@@ -489,7 +530,7 @@ export async function getLatestChanges(
      JOIN events e ON e.id = ch.event_id
      JOIN event_versions ev ON ev.id = e.current_version_id
      WHERE e.status NOT IN ('merged', 'archived')
-       AND ch.materiality IN ('medium', 'high')
+       AND ${channelFilterClause(filter)}
      ORDER BY ch.detected_at DESC
      LIMIT $1`,
     [limit],
@@ -514,6 +555,7 @@ export async function getLatestChanges(
 export async function getChangesForEntities(
   entities: string[],
   limit = 30,
+  filter?: ChangeChannelFilter,
 ): Promise<
   (ChangeView & { id: string; eventId: string; eventTitle: string })[]
 > {
@@ -534,7 +576,7 @@ export async function getChangesForEntities(
      JOIN events e ON e.id = ch.event_id
      JOIN event_versions ev ON ev.id = e.current_version_id
      WHERE e.status NOT IN ('merged', 'archived')
-       AND ch.materiality IN ('medium', 'high')
+       AND ${channelFilterClause(filter)}
        AND EXISTS (
          SELECT 1 FROM unnest(string_to_array(e.entity_signature, ' ')) s
          WHERE s IN (${entities.map((_, i) => `$${i + 2}`).join(",")})
