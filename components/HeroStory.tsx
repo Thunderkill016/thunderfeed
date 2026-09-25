@@ -22,7 +22,14 @@ export default function HeroStory({
 }) {
   const facts = claimCount ?? analysis.claims?.consensus.length ?? 0;
   return (
-    <section className={`hero ${isRead ? "read" : ""}`} onClick={onOpen}>
+    <section
+      className={`hero ${isRead ? "read" : ""}`}
+      onClick={onOpen}
+      role="button"
+      tabIndex={0}
+      aria-label={cluster.title}
+      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onOpen()}
+    >
       <div className="hero-label">
         <span className="hero-kicker">Nhận định đầu trang</span>
         {cluster.isBreaking && <span className="breaking">Đang diễn biến</span>}

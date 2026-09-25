@@ -79,6 +79,29 @@ test("getEdition locally prefers the fs snapshot over DB", async () => {
   assert.equal(snap?.marker, "fs");
 });
 
+test("getEdition on Vercel never builds in-request — degrades empty", async () => {
+  // production incident: a transient snapshot miss fell through to
+  // refreshEdition(), which ran the whole multi-minute fetch pipeline
+  // inside the request — the lambda ground until maxDuration killed it
+  setupDb();
+  process.env.VERCEL = "1";
+  try {
+    const missing = path.join(
+      mkdtempSync(path.join(tmpdir(), "tf-edition-")),
+      "edition.json",
+    );
+    const started = Date.now();
+    const snap = await freshGetEdition("vercel-empty", missing);
+    // returns fast (ms) — a build would take minutes
+    assert.ok(Date.now() - started < 5000);
+    assert.equal(snap.stale, true);
+    assert.equal(snap.updatedAt, null);
+    assert.equal(snap.pillars.length, 0);
+  } finally {
+    delete process.env.VERCEL;
+  }
+});
+
 test("getEdition locally falls back to DB when no fs snapshot exists", async () => {
   setupDb();
   await saveEditionSnapshot(fakeEdition("db"));

@@ -317,6 +317,16 @@ button {
   background: var(--bg-elev);
   margin-left: -4px;
 }
+/* reliability ring — GN-style signal on the favicon itself:
+   strong sources get a steady ring, weak sources warn */
+.src-favicon.tier-strong,
+.src-letter.tier-strong {
+  box-shadow: 0 0 0 1.5px #3a6f43;
+}
+.src-favicon.tier-weak,
+.src-letter.tier-weak {
+  box-shadow: 0 0 0 1.5px var(--accent);
+}
 .src-favicon:first-child,
 .src-letter:first-child {
   margin-left: 0;

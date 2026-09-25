@@ -634,9 +634,12 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
     [limit],
   );
   if (events.length === 0) return [];
+  const ids = events.map((e) => e.id);
 
   const claimsQ = await pool.query<{ event_id: string; c: string }>(
-    `SELECT event_id, COUNT(*) AS c FROM claims GROUP BY event_id`,
+    `SELECT event_id, COUNT(*) AS c FROM claims
+     WHERE event_id = ANY($1) GROUP BY event_id`,
+    [ids],
   );
   const claimCount = new Map(
     claimsQ.rows.map((r) => [r.event_id, Number(r.c)]),
@@ -647,7 +650,9 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
      FROM event_evidence ee
      JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
      JOIN evidence_documents ed ON ed.id = ev.document_id
+     WHERE ee.event_id = ANY($1)
      GROUP BY ee.event_id`,
+    [ids],
   );
   const sourceCount = new Map(srcQ.rows.map((r) => [r.event_id, Number(r.c)]));
 
@@ -656,9 +661,10 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
     type: string;
     detected_at: string;
   }>(
-    `SELECT event_id, type, detected_at FROM changes
-     WHERE materiality <> 'low'
-     ORDER BY detected_at DESC`,
+    `SELECT DISTINCT ON (event_id) event_id, type, detected_at FROM changes
+     WHERE materiality <> 'low' AND event_id = ANY($1)
+     ORDER BY event_id, detected_at DESC`,
+    [ids],
   );
   const lastMaterial = new Map<string, { type: string; detected_at: string }>();
   for (const r of matQ.rows)

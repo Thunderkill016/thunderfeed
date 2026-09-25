@@ -345,7 +345,31 @@ export async function buildEdition(): Promise<Edition> {
 const SNAPSHOT_PATH =
   process.env.THUNDERFEED_EDITION_CACHE ?? ".cache/edition.json";
 
+/** Degrade edition when no snapshot exists — Vercel is a pure reader;
+ *  building the full pipeline inside a request would hold the lambda
+ *  until maxDuration kills it. Empty beats a doomed 3-minute build. */
+const EMPTY_EDITION: Edition = {
+  hero: null,
+  heroAnalysis: null,
+  pillars: [],
+  blindspots: { internationalOnly: [], domesticOnly: [] },
+  analyses: {},
+  wire: [],
+  trending: [],
+  sources: [],
+  updatedAt: null,
+  stale: true,
+  llmEnabled: false,
+  totalArticles: 0,
+  changes: { newEvents: 0, accelerating: 0 },
+};
+
+/** Warm lambdas re-check a stale snapshot at most this often — without
+ *  the throttle every request between editions pays a DB roundtrip. */
+const STALE_RECHECK_MS = 60_000;
+
 let memEdition: Edition | null = null;
+let lastStaleCheck = 0;
 let inflight: Promise<Edition> | null = null;
 
 function readFsSnapshot(): Edition | null {
@@ -415,16 +439,28 @@ export async function getEdition(): Promise<Edition> {
       if (process.env.VERCEL) {
         /* serverless can't rebuild in the background — but a warm lambda
            pinning memEdition would serve the load-time snapshot forever.
-           Stale ⇒ re-read the store once; the external builder refreshes
-           the row on its own cadence. */
-        memEdition = null;
-        snap = await loadSnapshot();
+           Stale ⇒ re-read the store, throttled; the external builder
+           refreshes the row on its own cadence. */
+        if (Date.now() - lastStaleCheck > STALE_RECHECK_MS) {
+          lastStaleCheck = Date.now();
+          memEdition = null;
+          const fresh = await readDbSnapshot();
+          if (fresh) {
+            memEdition = fresh;
+            snap = fresh;
+          } else {
+            memEdition = snap;
+          }
+        }
       } else {
         void refreshEdition().catch(() => {});
       }
     }
     if (snap) return snap;
   }
+  /* no snapshot anywhere: locally we can afford the build; on Vercel a
+     request-time build is a guaranteed timeout, so degrade instead */
+  if (process.env.VERCEL) return EMPTY_EDITION;
   return refreshEdition();
 }
 
