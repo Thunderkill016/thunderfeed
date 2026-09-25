@@ -1,0 +1,6 @@
+.pg/
+.next/
+node_modules/
+.cache/
+data/
+bench/results/
