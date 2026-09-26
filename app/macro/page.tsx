@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { dbEnabled } from "../../lib/db/pool";
-import { getMacroPoints, getMacroSeriesList } from "../../lib/db/read";
+import {
+  getLatestDataDeltas,
+  getMacroPoints,
+  getMacroSeriesList,
+} from "../../lib/db/read";
 
 /* force-dynamic: the board is a live read of the DB — a build-time
  * prerender would freeze whatever state happened to exist (or crash the
@@ -81,6 +85,7 @@ export default async function MacroPage() {
     );
   }
   const series = await getMacroSeriesList();
+  const deltas = await getLatestDataDeltas(15);
   const latestTwo = await Promise.all(
     series.map((s) =>
       getMacroPoints(s.canonicalKey, { limit: 2, order: "desc" }),
@@ -161,6 +166,55 @@ export default async function MacroPage() {
           </table>
         </section>
       ))}
+
+      {deltas.length > 0 && (
+        <section className="macro-group">
+          <h2 className="macro-group-title">Dữ liệu vừa thay đổi</h2>
+          <table className="macro-table">
+            <tbody>
+              {deltas.map((d) => (
+                <tr key={d.id}>
+                  <td>
+                    <span className={`delta-kind ${d.kind}`}>
+                      {d.kind === "macro_revision"
+                        ? "SỬA SỐ"
+                        : d.kind === "macro_release"
+                          ? "SỐ MỚI"
+                          : d.kind === "ca_declared"
+                            ? "CA MỚI"
+                            : "CA SỬA"}
+                    </span>
+                  </td>
+                  <td className="macro-name">
+                    {d.seriesCode ? (
+                      <a href={`/macro/${d.seriesCode}`} className="macro-code">
+                        {d.summary}
+                      </a>
+                    ) : d.instrumentKey ? (
+                      <a
+                        href={`/instrument/${d.instrumentKey.split(":").join("/")}`}
+                        className="macro-code"
+                      >
+                        {d.summary}
+                      </a>
+                    ) : (
+                      d.summary
+                    )}
+                  </td>
+                  <td className="macro-date">
+                    {String(d.detectedAt).slice(0, 16).replace("T", " ")}
+                  </td>
+                  <td>
+                    <span className={`change-badge ${d.materiality}`}>
+                      {d.materiality}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
     </main>
   );
 }

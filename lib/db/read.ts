@@ -678,6 +678,65 @@ export async function getLatestChanges(
   }));
 }
 
+/** Data-layer delta feed — macro releases/revisions and corporate-action
+ *  transitions, the data twin of the `changes` rail. */
+export interface DataDeltaView {
+  id: string;
+  kind: string;
+  materiality: string;
+  summary: string;
+  detectedAt: string;
+  seriesKey: string | null;
+  seriesCode: string | null;
+  entityKey: string | null;
+  actionType: string | null;
+  instrumentKey: string | null;
+}
+
+export async function getLatestDataDeltas(
+  limit = 30,
+): Promise<DataDeltaView[]> {
+  const pool = getPool();
+  const { rows } = await pool.query<{
+    id: string;
+    kind: string;
+    materiality: string;
+    summary: string;
+    detected_at: string;
+    series_key: string | null;
+    series_code: string | null;
+    entity_key: string | null;
+    action_type: string | null;
+    instrument_key: string | null;
+  }>(
+    `SELECT d.id, d.kind, d.materiality, d.summary, d.detected_at,
+            s.canonical_key AS series_key, s.series_code,
+            e.canonical_key AS entity_key,
+            a.action_type, i.canonical_key AS instrument_key
+       FROM data_deltas d
+       LEFT JOIN macro_points p ON p.id = d.point_id
+       LEFT JOIN macro_series s ON s.id = p.series_id
+       LEFT JOIN entities e ON e.id = s.entity_id
+       LEFT JOIN corporate_actions a ON a.id = d.action_id
+       LEFT JOIN financial_instruments i ON i.id = a.instrument_id
+      ORDER BY d.detected_at DESC
+      LIMIT $1`,
+    [limit],
+  );
+  return rows.map((r) => ({
+    id: r.id,
+    kind: r.kind,
+    materiality: r.materiality,
+    summary: r.summary,
+    detectedAt: r.detected_at,
+    seriesKey: r.series_key,
+    seriesCode: r.series_code,
+    entityKey: r.entity_key,
+    actionType: r.action_type,
+    instrumentKey: r.instrument_key,
+  }));
+}
+
 /**
  * Material changes on events whose canonical entity set intersects the
  * user's watched slugs — the alert layer of the personal-mission loop.

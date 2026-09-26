@@ -41,6 +41,11 @@ export interface CaApplyResult {
   versionNo: number | null;
 }
 
+const CA_KIND_VI: Record<string, string> = {
+  cash_dividend: "Cổ tức tiền mặt",
+  stock_split: "Chia tách cổ phiếu",
+};
+
 const SEMANTIC_COLS = [
   "ex_date",
   "declaration_date",
@@ -192,6 +197,7 @@ export async function applyActionAssertion(
   }
 
   // 5. create action + insert assertion (atomically with caller's txn)
+  const actionCreated = !actionId;
   if (!actionId) {
     const ins = await db.query(
       `INSERT INTO corporate_actions
@@ -291,6 +297,25 @@ export async function applyActionAssertion(
         [actionId, newVersionId, row.id, row.observation_id, role],
       );
     }
+    // delta feed — a produced version IS the fact-change; bounded per
+    // assertion so no baseline-flood guard needed like the macro layer
+    const shortKey = actionKey.split(":")[1];
+    await db.query(
+      `INSERT INTO data_deltas
+         (kind, materiality, summary, action_id,
+          action_version_id, prev_action_version_id)
+       VALUES ($1,'medium',$2,$3,$4,$5)
+       ON CONFLICT (action_version_id) DO NOTHING`,
+      [
+        actionCreated ? "ca_declared" : "ca_updated",
+        actionCreated
+          ? `${CA_KIND_VI[a.actionType] ?? a.actionType} ${shortKey} · ex ${a.exDate} — ghi nhận mới`
+          : `${CA_KIND_VI[a.actionType] ?? a.actionType} ${shortKey} · ex ${a.exDate} — sửa đổi v${prevNo + 1}`,
+        actionId,
+        newVersionId,
+        cur?.id ?? null,
+      ],
+    );
   } else {
     // no version churn — link the assertion to the current version with
     // the verdict role (corroborated | conflicted)

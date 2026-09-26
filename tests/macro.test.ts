@@ -188,6 +188,17 @@ test("macro apply — vintage-aware append-only revisions", async () => {
   const r3 = await applyMacroObservations(pool, seriesId, rev, obsId);
   assert.equal(r3.versionsInserted, 1);
 
+  // data_deltas: baseline ingest emits nothing (first load isn't a
+  // change), the real revision emits one 'medium' delta
+  const deltas = await pool.query(
+    `SELECT kind, materiality, summary FROM data_deltas
+      ORDER BY detected_at, kind`,
+  );
+  assert.equal(deltas.rows.length, 1);
+  assert.equal(deltas.rows[0].kind, "macro_revision");
+  assert.equal(deltas.rows[0].materiality, "medium");
+  assert.match(deltas.rows[0].summary as string, /322\.56 → 322\.6/);
+
   const hist = await getMacroPointHistory(
     "macro_series:fred:CPIAUCSL",
     "2025-12-01",
@@ -234,6 +245,22 @@ test("macro apply — vintage-aware append-only revisions", async () => {
   assert.equal(String(scoped[0].latestValue), "323.123"); // latest obs_date's current value
   const none = await getEntityMacroSeries(randomUUID());
   assert.equal(none.length, 0);
+
+  // a new obs_date on a series that exists → release delta, routine 'low'
+  // (runs last — it moves the series' latest obs forward)
+  const r4 = await applyMacroObservations(
+    pool,
+    seriesId,
+    [{ obsDate: "2026-03-01", vintageDate: "2026-04-10", value: "324.0" }],
+    obsId,
+  );
+  assert.equal(r4.versionsInserted, 1);
+  const d2 = await pool.query(
+    `SELECT kind, materiality FROM data_deltas ORDER BY detected_at, kind`,
+  );
+  assert.equal(d2.rows.length, 2);
+  assert.equal(d2.rows[1].kind, "macro_release");
+  assert.equal(d2.rows[1].materiality, "low");
 });
 
 test("macro migration text — append-only + RLS + provider allowlist", () => {

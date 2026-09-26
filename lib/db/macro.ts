@@ -114,7 +114,9 @@ export async function applyMacroObservations(
     points = await readPoints();
   }
 
-  // existing versions → dedupe set + per-point max version_no + current id
+  // existing versions → dedupe set + per-point max version_no + current id.
+  // A series with zero prior versions is being backfilled — baseline load,
+  // not a delta, so data_deltas emission is suppressed for this call.
   const existing = await db.query(
     `SELECT v.point_id, v.id, v.vintage_date, v.value, v.version_no,
             p.current_version_id
@@ -123,17 +125,34 @@ export async function applyMacroObservations(
       WHERE p.series_id=$1`,
     [seriesId],
   );
+  const seriesHadVersions = existing.rows.length > 0;
   const seen = new Set<string>();
   const maxNo = new Map<string, number>();
   const curId = new Map<string, string>();
+  const curVal = new Map<string, string>();
+  const curObsDate = new Map<string, string>();
   for (const r of existing.rows) {
     const pid = r.point_id as string;
     seen.add(`${pid}|${isoDateOnly(r.vintage_date)}|${decimalKey(r.value)}`);
     maxNo.set(pid, Math.max(maxNo.get(pid) ?? 0, r.version_no as number));
-    if (r.current_version_id) curId.set(pid, r.current_version_id as string);
+    if (r.current_version_id) {
+      curId.set(pid, r.current_version_id as string);
+      curVal.set(pid, String(r.value));
+    }
   }
-
   const rows: [string, number, string, string, string, string | null][] = [];
+  // staged metadata mirrors `rows` for delta classification
+  const staged: {
+    pid: string;
+    no: number;
+    obsDate: string;
+    value: string;
+    prevVersionId: string | null;
+    prevValue: string | null;
+    release: boolean;
+  }[] = [];
+  const stagedCount = new Map<string, number>();
+  const lastStagedVal = new Map<string, string>();
   for (const o of obs) {
     const pid = points.get(o.obsDate);
     if (!pid) continue;
@@ -145,15 +164,29 @@ export async function applyMacroObservations(
     seen.add(key);
     const no = (maxNo.get(pid) ?? 0) + 1;
     maxNo.set(pid, no);
-    rows.push([
+    const alreadyStaged = stagedCount.get(pid) ?? 0;
+    stagedCount.set(pid, alreadyStaged + 1);
+    // superseded version: pre-batch current for the first staged row,
+    // the previous staged row otherwise (chain pointer stays pre-batch)
+    const prevVersionId = alreadyStaged ? null : (curId.get(pid) ?? null);
+    const prevValue = alreadyStaged
+      ? (lastStagedVal.get(pid) ?? null)
+      : (curVal.get(pid) ?? null);
+    lastStagedVal.set(pid, o.value);
+    rows.push([pid, no, o.vintageDate, o.value, observationId, prevVersionId]);
+    staged.push({
       pid,
       no,
-      o.vintageDate,
-      o.value,
-      observationId,
-      curId.get(pid) ?? null,
-    ]);
+      obsDate: o.obsDate,
+      value: o.value,
+      prevVersionId,
+      prevValue,
+      // first-ever version for a point = release; any later version
+      // (existing point, or second staged in this batch) = revision
+      release: alreadyStaged === 0 && !curId.has(pid),
+    });
   }
+  const newVersionIds = new Map<string, string>();
   for (const chunk of chunks(rows)) {
     const ph = chunk
       .map(
@@ -162,13 +195,15 @@ export async function applyMacroObservations(
           `$${i * 6 + 4}::numeric,$${i * 6 + 5}::uuid,$${i * 6 + 6}::uuid)`,
       )
       .join(",");
-    await db.query(
+    const ins = await db.query(
       `INSERT INTO macro_point_versions
          (point_id, version_no, vintage_date, value, observation_id,
           previous_version_id)
-       VALUES ${ph}`,
+       VALUES ${ph} RETURNING id, point_id, version_no`,
       chunk.flat(),
     );
+    for (const r of ins.rows)
+      newVersionIds.set(`${r.point_id}|${r.version_no}`, r.id as string);
   }
   res.versionsInserted = rows.length;
 
@@ -190,6 +225,61 @@ export async function applyMacroObservations(
         WHERE macro_points.id = nv.point_id`,
       touched,
     );
+
+    // data_deltas: only emit when the series already had versions —
+    // a first-time backfill is baseline load, not a change. Releases are
+    // routine ('low'); revisions that actually move the value are the
+    // marquee delta ('medium'), vintage-only moves stay 'low'.
+    if (seriesHadVersions) {
+      const code = (
+        await db.query(`SELECT series_code FROM macro_series WHERE id=$1`, [
+          seriesId,
+        ])
+      ).rows[0]?.series_code as string;
+      const deltas: [
+        string,
+        string,
+        string,
+        string,
+        string | null,
+        string | null,
+      ][] = [];
+      for (const s of staged) {
+        const vid = newVersionIds.get(`${s.pid}|${s.no}`);
+        if (!vid) continue;
+        const moved =
+          s.prevValue != null && decimalKey(s.prevValue) !== s.value;
+        deltas.push([
+          s.release ? "macro_release" : "macro_revision",
+          s.release ? "low" : moved ? "medium" : "low",
+          s.release
+            ? `${code} kỳ ${s.obsDate}: ${s.value}`
+            : s.prevValue != null && moved
+              ? `${code} kỳ ${s.obsDate}: ${s.prevValue} → ${s.value}`
+              : `${code} kỳ ${s.obsDate}: vintage mới, giá trị giữ ${s.value}`,
+          s.pid,
+          vid,
+          s.prevVersionId,
+        ]);
+      }
+      for (const chunk of chunks(deltas)) {
+        const ph = chunk
+          .map(
+            (_, i) =>
+              `($${i * 6 + 1},$${i * 6 + 2},$${i * 6 + 3},` +
+              `$${i * 6 + 4}::uuid,$${i * 6 + 5}::uuid,$${i * 6 + 6}::uuid)`,
+          )
+          .join(",");
+        await db.query(
+          `INSERT INTO data_deltas
+             (kind, materiality, summary, point_id,
+              macro_version_id, prev_macro_version_id)
+           VALUES ${ph}
+           ON CONFLICT (macro_version_id) DO NOTHING`,
+          chunk.flat(),
+        );
+      }
+    }
   }
   return res;
 }

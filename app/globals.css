@@ -2180,3 +2180,11 @@ h1 .macro-code {
   color: var(--accent);
   border-color: var(--accent);
 }
+
+/* data-delta kind chips on the macro board */
+.delta-kind {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
