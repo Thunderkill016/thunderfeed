@@ -1,0 +1,486 @@
+{
+  "generatedAt": "2026-09-26T09:35:36.833Z",
+  "instruments": [
+    {
+      "issuerEntity": "company:alphabet",
+      "instrument": {
+        "id": "01a0dd11-f8a7-7cdd-8aab-2b4c9892bd52",
+        "canonicalKey": "instrument:alphabet:class_a_common_stock",
+        "name": "ALPHABET INC-CL A",
+        "type": "common_stock",
+        "shareClass": "A",
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd11-fa63-7e59-9a93-1e0070004975",
+          "canonicalKey": "listing:alphabet:class_a_common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "GOOGL",
+          "currency": null,
+          "figi": "BBG009S4MT03"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG009S39JY5",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG009S39JX6",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:38.339Z"
+    },
+    {
+      "issuerEntity": "company:alphabet",
+      "instrument": {
+        "id": "01a0dd11-fc5d-7f33-b4da-f4eb0398d4e6",
+        "canonicalKey": "instrument:alphabet:class_c_common_stock",
+        "name": "ALPHABET INC-CL C",
+        "type": "common_stock",
+        "shareClass": "C",
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd11-fe18-7351-a6c2-1daa46c84c0d",
+          "canonicalKey": "listing:alphabet:class_c_common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "GOOG",
+          "currency": null,
+          "figi": "BBG009S4MVF2"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG009S3NB21",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG009S3NB30",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:39.286Z"
+    },
+    {
+      "issuerEntity": "company:amazon",
+      "instrument": {
+        "id": "01a0dd12-01c9-7978-976c-64607404dc22",
+        "canonicalKey": "instrument:amazon:common_stock",
+        "name": "AMAZON.COM INC",
+        "type": "common_stock",
+        "shareClass": null,
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd12-0382-7c79-96b4-f9367f8276ee",
+          "canonicalKey": "listing:amazon:common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "AMZN",
+          "currency": null,
+          "figi": "BBG000BVQ4Z3"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG001S5PQL7",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG000BVPV84",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:40.672Z"
+    },
+    {
+      "issuerEntity": "company:amd",
+      "instrument": {
+        "id": "01a0dd12-05ba-7c2e-874c-d8f039c34afc",
+        "canonicalKey": "instrument:amd:common_stock",
+        "name": "ADVANCED MICRO DEVICES",
+        "type": "common_stock",
+        "shareClass": null,
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd12-0771-7605-b9f2-7b68579f8077",
+          "canonicalKey": "listing:amd:common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "AMD",
+          "currency": null,
+          "figi": "BBG000BBQPP1"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG001S5NN36",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG000BBQCY0",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:41.679Z"
+    },
+    {
+      "issuerEntity": "company:apple",
+      "instrument": {
+        "id": "01a0dd12-09aa-75b6-9cc0-f0fadc0de7df",
+        "canonicalKey": "instrument:apple:common_stock",
+        "name": "APPLE INC",
+        "type": "common_stock",
+        "shareClass": null,
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd12-0b62-7982-8418-6a1f4d9e43ba",
+          "canonicalKey": "listing:apple:common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "AAPL",
+          "currency": null,
+          "figi": "BBG000B9Y5X2"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG001S5N8V8",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG000B9XRY4",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:42.689Z"
+    },
+    {
+      "issuerEntity": "company:intel",
+      "instrument": {
+        "id": "01a0dd12-0da3-795a-8843-4cd5b441b6cd",
+        "canonicalKey": "instrument:intel:common_stock",
+        "name": "INTEL CORP",
+        "type": "common_stock",
+        "shareClass": null,
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd12-0f5c-7c7b-bbee-0d2670011454",
+          "canonicalKey": "listing:intel:common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "INTC",
+          "currency": null,
+          "figi": "BBG000C0GFS4"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG001S5SF65",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG000C0G1D1",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:43.706Z"
+    },
+    {
+      "issuerEntity": "company:meta_platforms",
+      "instrument": {
+        "id": "01a0dd12-1194-704c-a0d1-f5d084d4887f",
+        "canonicalKey": "instrument:meta_platforms:class_a_common_stock",
+        "name": "META PLATFORMS INC-CLASS A",
+        "type": "common_stock",
+        "shareClass": "A",
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd12-134d-7204-b059-730861e858a7",
+          "canonicalKey": "listing:meta_platforms:class_a_common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "META",
+          "currency": null,
+          "figi": "BBG002GPKKZ7"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG001SQCQC5",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG000MM2P62",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:44.714Z"
+    },
+    {
+      "issuerEntity": "company:microsoft",
+      "instrument": {
+        "id": "01a0dd12-1585-71e6-a297-7a0cd3130e11",
+        "canonicalKey": "instrument:microsoft:common_stock",
+        "name": "MICROSOFT CORP",
+        "type": "common_stock",
+        "shareClass": null,
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd12-173b-772a-8674-d529a9140a0c",
+          "canonicalKey": "listing:microsoft:common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "MSFT",
+          "currency": null,
+          "figi": "BBG000BPHFS9"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG001S5TD05",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG000BPH459",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:45.721Z"
+    },
+    {
+      "issuerEntity": "company:nvidia",
+      "instrument": {
+        "id": "01a0dd12-1972-7a5c-a728-5944804829af",
+        "canonicalKey": "instrument:nvidia:common_stock",
+        "name": "NVIDIA CORP",
+        "type": "common_stock",
+        "shareClass": null,
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd12-1b29-7502-bf84-feac5d795f2d",
+          "canonicalKey": "listing:nvidia:common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "NVDA",
+          "currency": null,
+          "figi": "BBG000BBK0R0"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG001S5TZJ6",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG000BBJQV0",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:46.728Z"
+    },
+    {
+      "issuerEntity": "company:oracle",
+      "instrument": {
+        "id": "01a0dd0c-4683-71e9-8b26-407a76f05651",
+        "canonicalKey": "instrument:oracle:common_stock",
+        "name": "ORACLE CORP",
+        "type": "common_stock",
+        "shareClass": null,
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd0c-47fc-7f67-999a-91f1b8d3fe44",
+          "canonicalKey": "listing:oracle:common_stock:xnys",
+          "mic": "XNYS",
+          "ticker": "ORCL",
+          "currency": null,
+          "figi": "BBG000BQLY10"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG001S5SJG6",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG000BQLTW7",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:47.358Z"
+    },
+    {
+      "issuerEntity": "company:tesla",
+      "instrument": {
+        "id": "01a0dd12-2015-76b3-ba1f-aea510593eea",
+        "canonicalKey": "instrument:tesla:common_stock",
+        "name": "TESLA INC",
+        "type": "common_stock",
+        "shareClass": null,
+        "currency": null
+      },
+      "listings": [
+        {
+          "id": "01a0dd12-21cd-7bd7-bab1-c0f60a9c64c5",
+          "canonicalKey": "listing:tesla:common_stock:xngs",
+          "mic": "XNGS",
+          "ticker": "TSLA",
+          "currency": null,
+          "figi": "BBG000N9P426"
+        }
+      ],
+      "identifiers": {
+        "instrument": [
+          {
+            "scheme": "share_class_figi",
+            "value": "BBG001SQKGD7",
+            "scope": "global"
+          },
+          {
+            "scheme": "composite_figi",
+            "value": "BBG000N9MNX3",
+            "scope": "composite"
+          }
+        ]
+      },
+      "sources": [
+        "sec_edgar:company_tickers_exchange",
+        "openfigi:mapping_v3",
+        "iso_10383:mic_list"
+      ],
+      "observedAt": "2026-09-26T09:35:48.426Z"
+    }
+  ],
+  "metrics": {
+    "issuers": 10,
+    "instruments": 11,
+    "listings": 11,
+    "venues": 9,
+    "instrumentIdentifiers": 22,
+    "listingIdentifiers": 11,
+    "referenceObservations": 10487,
+    "instrumentsWithFigi": 11,
+    "listingsWithMic": 11,
+    "tickerCollisions": [],
+    "providerConflicts": [],
+    "unresolvedProviderRows": [
+      {
+        "issuer": "alphabet",
+        "ticker": "GOOGM",
+        "reason": "openfigi_no_result"
+      },
+      {
+        "issuer": "alphabet",
+        "ticker": "GOOGN",
+        "reason": "openfigi_no_result"
+      },
+      {
+        "issuer": "oracle",
+        "ticker": "ORCL-PD",
+        "reason": "openfigi_no_result"
+      }
+    ]
+  }
+}

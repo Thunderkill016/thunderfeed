@@ -4,6 +4,7 @@
  * never computes "what changed" itself — changes arrive pre-computed.
  */
 
+import type { Pool } from "pg";
 import { getPool } from "./pool";
 import {
   canonicalEntity,
@@ -835,8 +836,10 @@ export async function getEntityEvents(slug: string): Promise<{
   entity: CanonicalEntity | null;
   aliases: { alias: string; type: string; language: string | null }[];
   identifiers: { scheme: string; value: string; issuer: string | null }[];
-  /** current assertions only — superseded/expired rows stay queryable
-   *  in entity_relationships but don't appear as facts of the view */
+  /** Financial Instrument Master rows issued BY this entity.
+   *  Instruments are never entities — this is an issuer→instrument
+   *  projection, empty for non-issuers (brands, people, places). */
+  financialInstruments: EntityInstrument[];
   relationships: {
     type: string;
     direction: "out" | "in";
@@ -939,6 +942,34 @@ export async function getEntityEvents(slug: string): Promise<{
       )
     : Promise.resolve({
         rows: [] as { scheme: string; value: string; issuer: string | null }[],
+      });
+
+  const instrQ = entity
+    ? pool.query<{
+        id: string;
+        canonical_key: string;
+        instrument_type: string;
+        status: string;
+        name: string | null;
+        share_class: string | null;
+      }>(
+        `SELECT fi.id, fi.canonical_key, fi.instrument_type, fi.status,
+                iv.name, iv.share_class
+           FROM financial_instruments fi
+           LEFT JOIN instrument_versions iv ON iv.id = fi.current_version_id
+          WHERE fi.issuer_entity_id = $1
+          ORDER BY fi.canonical_key`,
+        [entity.id],
+      )
+    : Promise.resolve({
+        rows: [] as {
+          id: string;
+          canonical_key: string;
+          instrument_type: string;
+          status: string;
+          name: string | null;
+          share_class: string | null;
+        }[],
       });
 
   const relQ = entity
@@ -1056,6 +1087,7 @@ export async function getEntityEvents(slug: string): Promise<{
       value: r.value,
       issuer: r.issuer,
     })),
+    financialInstruments: await entityInstruments(pool, (await instrQ).rows),
     relationships: relRows.map((r) => ({
       type: r.relationship_type,
       direction: r.dir as "out" | "in",
@@ -1087,6 +1119,296 @@ export async function getEntityEvents(slug: string): Promise<{
       })),
       coOccurrence,
     },
+  };
+}
+
+// ── Financial Instrument Master reads ─────────────────────────────────────
+// Instruments live outside `entities` — these read functions project the
+// issuer→instrument/listing graph; identity keys are canonical_key / MIC,
+// never tickers.
+
+export interface EntityInstrumentListing {
+  id: string;
+  canonicalKey: string;
+  venue: { mic: string; name: string | null };
+  ticker: string | null;
+  currency: string | null;
+  status: string;
+  identifiers: { scheme: string; value: string }[];
+}
+
+export interface EntityInstrument {
+  id: string;
+  canonicalKey: string;
+  type: string;
+  status: string;
+  name: string | null;
+  shareClass: string | null;
+  identifiers: { scheme: string; value: string; scope: string }[];
+  listings: EntityInstrumentListing[];
+}
+
+async function entityInstruments(
+  pool: Pool,
+  instruments: {
+    id: string;
+    canonical_key: string;
+    instrument_type: string;
+    status: string;
+    name: string | null;
+    share_class: string | null;
+  }[],
+): Promise<EntityInstrument[]> {
+  if (!instruments.length) return [];
+  const ids = instruments.map((i) => i.id);
+  const identQ = pool.query<{
+    instrument_id: string;
+    scheme: string;
+    value: string;
+    scope: string;
+  }>(
+    `SELECT instrument_id, scheme, value, scope
+       FROM instrument_identifiers
+      WHERE instrument_id = ANY($1)
+        AND id NOT IN (
+          SELECT supersedes_identifier_id FROM instrument_identifiers
+           WHERE supersedes_identifier_id IS NOT NULL)
+      ORDER BY scheme`,
+    [ids],
+  );
+  const listQ = pool.query<{
+    id: string;
+    canonical_key: string;
+    instrument_id: string;
+    mic: string;
+    market_name: string | null;
+    ticker: string | null;
+    currency: string | null;
+    status: string;
+  }>(
+    `SELECT l.id, l.canonical_key, l.instrument_id,
+            v.mic, vv.market_name,
+            lv.ticker, lv.currency, l.status
+       FROM instrument_listings l
+       JOIN trading_venues v ON v.id = l.venue_id
+       LEFT JOIN trading_venue_versions vv ON vv.id = v.current_version_id
+       LEFT JOIN listing_versions lv ON lv.id = l.current_version_id
+      WHERE l.instrument_id = ANY($1)
+      ORDER BY l.canonical_key`,
+    [ids],
+  );
+  const lidQ = pool.query<{
+    listing_id: string;
+    scheme: string;
+    value: string;
+  }>(
+    `SELECT li.listing_id, li.scheme, li.value
+       FROM listing_identifiers li
+       JOIN instrument_listings l ON l.id = li.listing_id
+      WHERE l.instrument_id = ANY($1)
+        AND li.id NOT IN (
+          SELECT supersedes_identifier_id FROM listing_identifiers
+           WHERE supersedes_identifier_id IS NOT NULL)
+      ORDER BY li.scheme`,
+    [ids],
+  );
+  const [idents, listings, lidts] = await Promise.all([identQ, listQ, lidQ]);
+  const listingById = new Map<
+    string,
+    EntityInstrumentListing & { instrument_id: string }
+  >();
+  for (const l of listings.rows)
+    listingById.set(l.id, {
+      id: l.id,
+      canonicalKey: l.canonical_key,
+      instrument_id: l.instrument_id,
+      venue: { mic: l.mic, name: l.market_name },
+      ticker: l.ticker,
+      currency: l.currency,
+      status: l.status,
+      identifiers: [],
+    });
+  for (const i of lidts.rows)
+    listingById
+      .get(i.listing_id)
+      ?.identifiers.push({ scheme: i.scheme, value: i.value });
+  return instruments.map((i) => ({
+    id: i.id,
+    canonicalKey: i.canonical_key,
+    type: i.instrument_type,
+    status: i.status,
+    name: i.name,
+    shareClass: i.share_class,
+    identifiers: idents.rows
+      .filter((d) => d.instrument_id === i.id)
+      .map((d) => ({ scheme: d.scheme, value: d.value, scope: d.scope })),
+    listings: [...listingById.values()]
+      .filter((l) => l.instrument_id === i.id)
+      .map(({ instrument_id: _omit, ...l }) => l),
+  }));
+}
+
+/** Canonical instrument lookup — /api/instruments/<key>.
+ *  Returns instrument + issuer + identifiers + listings + observation
+ *  provenance chain. No prices, no recommendations. */
+export async function getInstrumentView(canonicalKey: string): Promise<{
+  instrument: {
+    id: string;
+    canonicalKey: string;
+    type: string;
+    status: string;
+    name: string | null;
+    shortName: string | null;
+    assetClass: string | null;
+    shareClass: string | null;
+    votingClass: string | null;
+    currency: string | null;
+  };
+  issuer: { canonicalKey: string; name: string; entityType: string } | null;
+  identifiers: {
+    scheme: string;
+    value: string;
+    scope: string;
+    provider: string;
+    observationId: string | null;
+  }[];
+  listings: (EntityInstrumentListing & {
+    identifiers: { scheme: string; value: string; provider: string }[];
+  })[];
+  versionCount: number;
+} | null> {
+  const pool = getPool();
+  const ins = await pool.query<{
+    id: string;
+    canonical_key: string;
+    instrument_type: string;
+    status: string;
+    issuer_entity_id: string | null;
+    name: string | null;
+    short_name: string | null;
+    asset_class: string | null;
+    share_class: string | null;
+    voting_class: string | null;
+    currency: string | null;
+  }>(
+    `SELECT fi.id, fi.canonical_key, fi.instrument_type, fi.status,
+            fi.issuer_entity_id,
+            iv.name, iv.short_name, iv.asset_class, iv.share_class,
+            iv.voting_class, iv.currency
+       FROM financial_instruments fi
+       LEFT JOIN instrument_versions iv ON iv.id = fi.current_version_id
+      WHERE fi.canonical_key = $1`,
+    [canonicalKey],
+  );
+  const i = ins.rows[0];
+  if (!i) return null;
+
+  const issuerQ = i.issuer_entity_id
+    ? pool.query<{
+        canonical_key: string;
+        canonical_name: string;
+        entity_type: string;
+      }>(
+        `SELECT canonical_key, canonical_name, entity_type FROM entities WHERE id=$1`,
+        [i.issuer_entity_id],
+      )
+    : null;
+  const identQ = pool.query(
+    `SELECT ii.scheme, ii.value, ii.scope, ii.provider, ii.observation_id
+       FROM instrument_identifiers ii
+      WHERE ii.instrument_id=$1
+        AND ii.id NOT IN (
+          SELECT supersedes_identifier_id FROM instrument_identifiers
+           WHERE supersedes_identifier_id IS NOT NULL)
+      ORDER BY ii.scheme`,
+    [i.id],
+  );
+  const versionsQ = pool.query<{ n: string }>(
+    `SELECT count(*) n FROM instrument_versions WHERE instrument_id=$1`,
+    [i.id],
+  );
+  const listQ = pool.query<{
+    id: string;
+    canonical_key: string;
+    mic: string;
+    market_name: string | null;
+    ticker: string | null;
+    currency: string | null;
+    status: string;
+  }>(
+    `SELECT l.id, l.canonical_key, v.mic, vv.market_name,
+            lv.ticker, lv.currency, l.status
+       FROM instrument_listings l
+       JOIN trading_venues v ON v.id = l.venue_id
+       LEFT JOIN trading_venue_versions vv ON vv.id = v.current_version_id
+       LEFT JOIN listing_versions lv ON lv.id = l.current_version_id
+      WHERE l.instrument_id=$1 ORDER BY l.canonical_key`,
+    [i.id],
+  );
+  const lidQ = pool.query(
+    `SELECT li.listing_id, li.scheme, li.value, li.provider
+       FROM listing_identifiers li
+       JOIN instrument_listings l ON l.id = li.listing_id
+      WHERE l.instrument_id=$1
+        AND li.id NOT IN (
+          SELECT supersedes_identifier_id FROM listing_identifiers
+           WHERE supersedes_identifier_id IS NOT NULL)
+      ORDER BY li.scheme`,
+    [i.id],
+  );
+  const [issuer, idents, versions, listings, lids] = await Promise.all([
+    issuerQ,
+    identQ,
+    versionsQ,
+    listQ,
+    lidQ,
+  ]);
+  const lidByListing = new Map<
+    string,
+    { scheme: string; value: string; provider: string }[]
+  >();
+  for (const r of lids.rows) {
+    const a = lidByListing.get(r.listing_id) ?? [];
+    a.push({ scheme: r.scheme, value: r.value, provider: r.provider });
+    lidByListing.set(r.listing_id, a);
+  }
+  return {
+    instrument: {
+      id: i.id,
+      canonicalKey: i.canonical_key,
+      type: i.instrument_type,
+      status: i.status,
+      name: i.name,
+      shortName: i.short_name,
+      assetClass: i.asset_class,
+      shareClass: i.share_class,
+      votingClass: i.voting_class,
+      currency: i.currency,
+    },
+    issuer: issuer
+      ? {
+          canonicalKey: issuer.rows[0]?.canonical_key ?? "",
+          name: issuer.rows[0]?.canonical_name ?? "",
+          entityType: issuer.rows[0]?.entity_type ?? "",
+        }
+      : null,
+    identifiers: idents.rows.map((r) => ({
+      scheme: r.scheme,
+      value: r.value,
+      scope: r.scope,
+      provider: r.provider,
+      observationId: r.observation_id,
+    })),
+    listings: listings.rows.map((l) => ({
+      id: l.id,
+      canonicalKey: l.canonical_key,
+      venue: { mic: l.mic, name: l.market_name },
+      ticker: l.ticker,
+      currency: l.currency,
+      status: l.status,
+      identifiers: lidByListing.get(l.id) ?? [],
+    })),
+    versionCount: Number(versions.rows[0].n),
   };
 }
 

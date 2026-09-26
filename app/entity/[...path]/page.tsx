@@ -121,6 +121,29 @@ export default async function EntityPage({
             </div>
           </div>
         )}
+        {view.financialInstruments.length > 0 && (
+          <div className="entity-related">
+            <span className="entity-related-label">Chứng khoán:</span>
+            <div className="entity-chips">
+              {view.financialInstruments.map((fi) => {
+                const listing = fi.listings[0];
+                const text = listing?.ticker
+                  ? `${listing.ticker} · ${fi.name ?? fi.canonicalKey}`
+                  : (fi.name ?? fi.canonicalKey);
+                return (
+                  <a
+                    key={fi.id}
+                    href={`/api/instruments/${fi.canonicalKey}`}
+                    className="entity-chip org"
+                    title={`${fi.canonicalKey} — ${listing ? `${listing.venue.mic} · ${fi.type}` : fi.type}`}
+                  >
+                    {text}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
         {view.related.coOccurrence.length > 0 && (
           <div className="entity-related">
             <span className="entity-related-label">Cùng xuất hiện:</span>

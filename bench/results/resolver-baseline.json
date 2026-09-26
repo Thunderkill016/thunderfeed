@@ -21322,7 +21322,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00022666666666666666,
+    "timeDeltaHours": 0.00023583333333333334,
     "sameLanguage": false
    }
   },
@@ -21366,7 +21366,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": true,
-    "timeDeltaHours": 0.0000838888888888889,
+    "timeDeltaHours": 0.00011055555555555555,
     "sameLanguage": true
    }
   },
@@ -21410,7 +21410,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.0002336111111111111,
+    "timeDeltaHours": 0.0002013888888888889,
     "sameLanguage": true
    }
   },
@@ -21461,7 +21461,7 @@
     ],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00008055555555555556,
+    "timeDeltaHours": 0.00002111111111111111,
     "sameLanguage": true
    }
   },
@@ -21507,7 +21507,7 @@
     ],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00022194444444444445,
+    "timeDeltaHours": 0.00013944444444444445,
     "sameLanguage": true
    }
   },
@@ -21554,7 +21554,7 @@
     ],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.0000911111111111111,
+    "timeDeltaHours": 0.0002513888888888889,
     "sameLanguage": true
    }
   },
@@ -21599,7 +21599,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": true,
-    "timeDeltaHours": 0.00005111111111111111,
+    "timeDeltaHours": 0.0000875,
     "sameLanguage": false
    }
   },
@@ -21643,7 +21643,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00022722222222222222,
+    "timeDeltaHours": 0.00016444444444444444,
     "sameLanguage": true
    }
   },
@@ -21691,7 +21691,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00013527777777777778,
+    "timeDeltaHours": 0.00025166666666666664,
     "sameLanguage": false
    }
   },
@@ -21733,7 +21733,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00006361111111111111,
+    "timeDeltaHours": 0.00009583333333333334,
     "sameLanguage": true
    }
   },
@@ -21781,7 +21781,7 @@
     "sharedBigrams": [],
     "numberAgreement": true,
     "numberConflict": false,
-    "timeDeltaHours": 0.000026944444444444445,
+    "timeDeltaHours": 0.00020444444444444443,
     "sameLanguage": false
    }
   },
@@ -21825,7 +21825,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00026722222222222224,
+    "timeDeltaHours": 0.00004,
     "sameLanguage": false
    }
   },
@@ -21873,7 +21873,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00012388888888888888,
+    "timeDeltaHours": 0.00014472222222222222,
     "sameLanguage": false
    }
   },
@@ -21922,7 +21922,7 @@
     ],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00020194444444444445,
+    "timeDeltaHours": 0.00023888888888888888,
     "sameLanguage": true
    }
   },
@@ -21966,7 +21966,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": true,
-    "timeDeltaHours": 0.000030833333333333335,
+    "timeDeltaHours": 0.000056666666666666664,
     "sameLanguage": true
    }
   },
@@ -22012,7 +22012,7 @@
     ],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.0001386111111111111,
+    "timeDeltaHours": 0.00013805555555555554,
     "sameLanguage": true
    }
   },
@@ -22060,7 +22060,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.0000075,
+    "timeDeltaHours": 0.00023194444444444445,
     "sameLanguage": true
    }
   },
@@ -22106,7 +22106,7 @@
     "sharedBigrams": [],
     "numberAgreement": false,
     "numberConflict": false,
-    "timeDeltaHours": 0.00013972222222222223,
+    "timeDeltaHours": 0.00004305555555555555,
     "sameLanguage": true
    }
   },
