@@ -1975,3 +1975,84 @@ button {
   color: var(--ink-soft);
   font-weight: 400;
 }
+
+/* ------- macro board ------- */
+.macro-page {
+  max-width: 960px;
+}
+.macro-empty {
+  padding: 40px 0;
+  color: var(--ink-faint);
+}
+.macro-group {
+  margin: 28px 0;
+}
+.macro-group-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  border-bottom: 2px solid var(--line);
+  padding-bottom: 6px;
+  margin: 0 0 0;
+}
+.macro-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.macro-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+  text-align: left;
+  padding: 8px 8px 4px;
+  border-bottom: 1px solid var(--line);
+}
+.macro-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: baseline;
+}
+.macro-table tr:hover td {
+  background: var(--bg-elev);
+}
+.macro-table .num {
+  text-align: right;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.macro-code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-right: 10px;
+}
+.macro-vi {
+  font-weight: 600;
+}
+.macro-units {
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-left: 8px;
+}
+.macro-value {
+  font-weight: 700;
+  font-size: 15px;
+}
+.macro-delta.up {
+  color: var(--priv);
+}
+.macro-delta.down {
+  color: var(--accent);
+}
+.macro-date {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
