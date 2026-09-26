@@ -2152,3 +2152,13 @@ h1 .macro-code {
   color: var(--ink-soft);
   line-height: 1.6;
 }
+
+/* entity → macro wire */
+.macro-chip-value {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.macro-entity-link {
+  color: var(--dom);
+  font-style: normal;
+}

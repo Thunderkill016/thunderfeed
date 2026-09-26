@@ -2643,6 +2643,47 @@ export async function getMacroSeries(
   };
 }
 
+/** Macro series scoped to an entity (country/region/CB) with latest
+ *  value — the entity-page "vĩ mô" projection. */
+export async function getEntityMacroSeries(
+  entityId: string,
+): Promise<MacroSeriesView[]> {
+  const pool = getPool();
+  const r = await pool.query(
+    `SELECT s.id, s.canonical_key, s.provider, s.series_code, s.title,
+            s.frequency, s.units, s.seasonal_adjustment, s.entity_id,
+            c.points, lp.obs_date AS latest_obs,
+            lv.value AS latest_val, lv.vintage_date AS latest_vint
+       FROM macro_series s
+       LEFT JOIN (
+         SELECT series_id, count(*) AS points, max(obs_date) AS latest_obs
+           FROM macro_points GROUP BY series_id
+       ) c ON c.series_id = s.id
+       LEFT JOIN macro_points lp
+         ON lp.series_id = s.id AND lp.obs_date = c.latest_obs
+       LEFT JOIN macro_point_versions lv ON lv.id = lp.current_version_id
+      WHERE s.status='active' AND s.entity_id=$1
+      ORDER BY s.canonical_key`,
+    [entityId],
+  );
+  return r.rows.map((row) => ({
+    id: row.id,
+    canonicalKey: row.canonical_key,
+    provider: row.provider,
+    seriesCode: row.series_code,
+    title: row.title,
+    frequency: row.frequency,
+    units: row.units,
+    seasonalAdjustment: row.seasonal_adjustment,
+    entityId: row.entity_id,
+    entityKey: null,
+    points: Number(row.points ?? 0),
+    latestObsDate: row.latest_obs ? isoDay(row.latest_obs) : null,
+    latestValue: row.latest_val,
+    latestVintage: row.latest_vint ? isoDay(row.latest_vint) : null,
+  }));
+}
+
 export interface MacroRevisionView {
   obsDate: string;
   versions: number;

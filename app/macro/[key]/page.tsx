@@ -6,6 +6,7 @@ import {
   getMacroRevisions,
   getMacroSeries,
 } from "../../../lib/db/read";
+import { entityHref } from "../../../lib/entities";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -109,7 +110,17 @@ export default async function MacroSeriesPage({
           {[series.units, series.frequency, series.seasonalAdjustment]
             .filter(Boolean)
             .join(" · ")}
-          {series.entityKey && <em> · {series.entityKey}</em>}
+          {series.entityKey && entityHref(series.entityKey) && (
+            <>
+              {" · "}
+              <a
+                className="macro-entity-link"
+                href={entityHref(series.entityKey)!}
+              >
+                {series.entityKey}
+              </a>
+            </>
+          )}
         </p>
         {cur && (
           <p className="macro-detail-latest">

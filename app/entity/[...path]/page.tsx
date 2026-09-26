@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { dbEnabled } from "../../../lib/db/pool";
-import { getEntityEvents } from "../../../lib/db/read";
+import { getEntityEvents, getEntityMacroSeries } from "../../../lib/db/read";
 import {
   entityHref,
   entityKindLabel,
@@ -46,6 +46,11 @@ export default async function EntityPage({
         : null;
   if (!slug || !dbEnabled()) notFound();
   const view = await getEntityEvents(slug);
+  // macro series scoped to this entity — the wire from news events to the
+  // official economic indicators of the country/institution being covered
+  const macroSeries = view.entity
+    ? await getEntityMacroSeries(view.entity.id)
+    : [];
   // a slug outside the gazetteer with no junction rows is a clean 404 —
   // a known entity that merely has no coverage yet still gets a page
   if (view.kind === null && view.events.length === 0 && !view.entity)
@@ -141,6 +146,29 @@ export default async function EntityPage({
                   </a>
                 );
               })}
+            </div>
+          </div>
+        )}
+        {macroSeries.length > 0 && (
+          <div className="entity-related">
+            <span className="entity-related-label">Chỉ số vĩ mô:</span>
+            <div className="entity-chips">
+              {macroSeries.map((s) => (
+                <a
+                  key={s.id}
+                  href={`/macro/${s.seriesCode}`}
+                  className="entity-chip org macro-chip"
+                  title={`${s.seriesCode} · ${s.title ?? ""} · kỳ ${s.latestObsDate ?? "—"} · vintage ${s.latestVintage ?? "—"}`}
+                >
+                  {s.seriesCode}
+                  {s.latestValue != null && (
+                    <b className="macro-chip-value">
+                      {" "}
+                      {Number(s.latestValue).toLocaleString("en-US")}
+                    </b>
+                  )}
+                </a>
+              ))}
             </div>
           </div>
         )}

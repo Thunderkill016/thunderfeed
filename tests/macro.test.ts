@@ -20,6 +20,7 @@ import {
 } from "../lib/db/macro";
 import { injectPool } from "../lib/db/pool";
 import {
+  getEntityMacroSeries,
   getMacroPointHistory,
   getMacroPoints,
   getMacroSeriesList,
@@ -210,6 +211,29 @@ test("macro apply — vintage-aware append-only revisions", async () => {
   const list = await getMacroSeriesList();
   assert.equal(list.length, 1);
   assert.equal(list[0].seriesCode, "CPIAUCSL");
+
+  // entity wire: series scoped via entity_id surface on the entity page read
+  // entity wire: series scoped via entity_id surface on the entity page read
+  const ent = await pool.query(
+    `INSERT INTO entities (canonical_key, canonical_name, entity_type)
+     VALUES ('country:us','United States','country')
+     ON CONFLICT (canonical_key) DO NOTHING
+     RETURNING id`,
+  );
+  const entityId =
+    (ent.rows[0]?.id as string | undefined) ??
+    ((
+      await pool.query(
+        `SELECT id FROM entities WHERE canonical_key='country:us'`,
+      )
+    ).rows[0].id as string);
+  await pool.query(`UPDATE macro_series SET entity_id=$1`, [entityId]);
+  const scoped = await getEntityMacroSeries(entityId);
+  assert.equal(scoped.length, 1);
+  assert.equal(scoped[0].seriesCode, "CPIAUCSL");
+  assert.equal(String(scoped[0].latestValue), "323.123"); // latest obs_date's current value
+  const none = await getEntityMacroSeries(randomUUID());
+  assert.equal(none.length, 0);
 });
 
 test("macro migration text — append-only + RLS + provider allowlist", () => {
