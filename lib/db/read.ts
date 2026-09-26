@@ -2598,3 +2598,114 @@ export async function getMacroPointHistory(
     observationId: row.observation_id,
   }));
 }
+
+export interface MacroSeriesDetail {
+  id: string;
+  canonicalKey: string;
+  seriesCode: string;
+  title: string | null;
+  frequency: string | null;
+  units: string | null;
+  seasonalAdjustment: string | null;
+  notes: string | null;
+  entityId: string | null;
+  entityKey: string | null;
+}
+
+/** One series by code or canonical key — detail-page header. */
+export async function getMacroSeries(
+  ref: string,
+): Promise<MacroSeriesDetail | null> {
+  const pool = getPool();
+  const r = await pool.query(
+    `SELECT s.id, s.canonical_key, s.series_code, s.title, s.frequency,
+            s.units, s.seasonal_adjustment, s.entity_id,
+            s.metadata->>'notes' AS notes,
+            e.canonical_key AS entity_key
+       FROM macro_series s
+       LEFT JOIN entities e ON e.id = s.entity_id
+      WHERE s.series_code=$1 OR s.canonical_key=$1 OR s.id::text=$1`,
+    [ref],
+  );
+  const row = r.rows[0];
+  if (!row) return null;
+  return {
+    id: row.id,
+    canonicalKey: row.canonical_key,
+    seriesCode: row.series_code,
+    title: row.title,
+    frequency: row.frequency,
+    units: row.units,
+    seasonalAdjustment: row.seasonal_adjustment,
+    notes: row.notes,
+    entityId: row.entity_id,
+    entityKey: row.entity_key,
+  };
+}
+
+export interface MacroRevisionView {
+  obsDate: string;
+  versions: number;
+  firstValue: string | null;
+  latestValue: string | null;
+  firstVintage: string | null;
+  latestVintage: string | null;
+}
+
+/** Points that were actually REVISED — the append-only model made visible:
+ *  "the March number as known in April" vs "…as known in July". */
+export async function getMacroRevisions(
+  seriesRef: string,
+  limit = 50,
+): Promise<MacroRevisionView[]> {
+  const pool = getPool();
+  // phase 1: obs_dates with >1 version (GROUP BY + HAVING — pg-mem safe)
+  const d = await pool.query(
+    `SELECT p.obs_date, count(v.id) AS versions
+       FROM macro_points p
+       JOIN macro_series s ON s.id = p.series_id
+       JOIN macro_point_versions v ON v.point_id = p.id
+      WHERE (s.canonical_key=$1 OR s.series_code=$1 OR s.id::text=$1)
+      GROUP BY p.obs_date
+     HAVING count(v.id) > 1
+      ORDER BY p.obs_date DESC
+      LIMIT $2`,
+    [seriesRef, Math.min(Math.max(1, limit), 500)],
+  );
+  if (!d.rows.length) return [];
+  const dates = d.rows.map((r) => isoDay(r.obs_date));
+  const counts = new Map(
+    d.rows.map((r) => [isoDay(r.obs_date), Number(r.versions)]),
+  );
+  // phase 2: first + latest version per revised point
+  const inPh = dates.map((_, i) => `$${i + 2}`).join(",");
+  const v = await pool.query(
+    `SELECT p.obs_date, v.value, v.vintage_date, v.version_no
+       FROM macro_points p
+       JOIN macro_series s ON s.id = p.series_id
+       JOIN macro_point_versions v ON v.point_id = p.id
+      WHERE (s.canonical_key=$1 OR s.series_code=$1 OR s.id::text=$1)
+        AND p.obs_date IN (${inPh})
+      ORDER BY p.obs_date, v.version_no`,
+    [seriesRef, ...dates],
+  );
+  const byDate = new Map<string, { value: string; vintage: string }[]>();
+  for (const row of v.rows) {
+    const k = isoDay(row.obs_date);
+    byDate.set(k, [
+      ...(byDate.get(k) ?? []),
+      { value: row.value, vintage: isoDay(row.vintage_date) },
+    ]);
+  }
+  return dates.map((obsDate) => {
+    const vs = byDate.get(obsDate) ?? [];
+    return {
+      obsDate,
+      versions: counts.get(obsDate) ?? vs.length,
+      firstValue: vs[0]?.value ?? null,
+      latestValue: vs[vs.length - 1]?.value ?? null,
+      firstVintage: vs[0]?.vintage ?? null,
+      latestVintage: vs[vs.length - 1]?.vintage ?? null,
+    };
+  });
+}

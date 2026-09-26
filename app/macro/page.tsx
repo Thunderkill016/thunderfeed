@@ -137,7 +137,9 @@ export default async function MacroPage() {
               {rs.map(({ s, cur, d }) => (
                 <tr key={s.id}>
                   <td className="macro-name">
-                    <span className="macro-code">{s.seriesCode}</span>
+                    <a href={`/macro/${s.seriesCode}`} className="macro-code">
+                      {s.seriesCode}
+                    </a>
                     <span className="macro-vi">
                       {SERIES_VI[s.seriesCode]?.vi ?? s.title ?? s.seriesCode}
                     </span>
