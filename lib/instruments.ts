@@ -249,11 +249,14 @@ export interface InstrumentSeedPlan {
   cfi: string | null;
   /** share_class_figi once (global share-class identity) + every distinct
    *  composite_figi (country/market-level — one per market, per OpenFIGI
-   *  hierarchy), each tagged with the venue MICs that reported it. */
+   *  hierarchy), each tagged with the venue MICs that reported it.
+   *  `obsIds` = the exact reference_observations that asserted this
+   *  identifier — a shareClassFIGI seen in two venue responses carries both. */
   instrumentIdentifiers: {
     scheme: string;
     value: string;
     scope: string;
+    obsIds: string[];
     metadata?: Record<string, unknown>;
   }[];
   listings: ListingSeedPlan[];
@@ -315,7 +318,12 @@ export function deriveSeed(
     };
 
   const listings: ListingSeedPlan[] = [];
-  const composites = new Map<string, Set<string>>(); // compositeFigi → mics
+  // compositeFigi → which venue MICs/observations reported it
+  const composites = new Map<
+    string,
+    { mics: Set<string>; obsIds: Set<string> }
+  >();
+  const shareClassObsIds = new Set<string>();
   let shareClassFigi: string | undefined;
   let name: string | undefined;
   let currency: string | null = null;
@@ -362,13 +370,18 @@ export function deriveSeed(
         reason: `instrument_type_mismatch:${type}!=${t}@${mic}`,
       };
     shareClassFigi = r.shareClassFIGI;
+    shareClassObsIds.add(obsId);
     name ??= r.name ?? secRow.name;
     currency ??= r.currency ?? null;
     type ??= t;
     cfi ??= r.cfi;
-    const mics = composites.get(r.compositeFIGI) ?? new Set<string>();
-    mics.add(mic);
-    composites.set(r.compositeFIGI, mics);
+    const comp = composites.get(r.compositeFIGI) ?? {
+      mics: new Set<string>(),
+      obsIds: new Set<string>(),
+    };
+    comp.mics.add(mic);
+    comp.obsIds.add(obsId);
+    composites.set(r.compositeFIGI, comp);
     listings.push({
       listingKey: "", // filled after instrumentKey is known
       mic,
@@ -396,12 +409,18 @@ export function deriveSeed(
       currency,
       cfi: cfi ?? null,
       instrumentIdentifiers: [
-        { scheme: "share_class_figi", value: shareClassFigi!, scope: "global" },
-        ...[...composites.entries()].map(([value, mics]) => ({
+        {
+          scheme: "share_class_figi",
+          value: shareClassFigi!,
+          scope: "global",
+          obsIds: [...shareClassObsIds],
+        },
+        ...[...composites.entries()].map(([value, c]) => ({
           scheme: "composite_figi",
           value,
           scope: "composite",
-          metadata: { mics: [...mics] },
+          obsIds: [...c.obsIds],
+          metadata: { mics: [...c.mics] },
         })),
       ],
       listings,
@@ -421,14 +440,32 @@ const norm = (v: unknown): string => {
   return String(v);
 };
 
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Date columns come back as Date objects while provider rows carry
+ *  'YYYY-MM-DD' strings — compare them at day precision or every rerun
+ *  would look like a change. */
+const sameField = (a: unknown, b: unknown): boolean => {
+  if (a instanceof Date && typeof b === "string" && DATE_ONLY.test(b))
+    return a.toISOString().slice(0, 10) === b;
+  if (b instanceof Date && typeof a === "string" && DATE_ONLY.test(a))
+    return b.toISOString().slice(0, 10) === a;
+  return norm(a) === norm(b);
+};
+
 function fieldsChanged(
   cur: Record<string, unknown>,
   next: Record<string, unknown>,
   fields: readonly string[],
 ): boolean {
-  return fields.some((f) => norm(cur[f]) !== norm(next[f]));
+  return fields.some((f) => !sameField(cur[f], next[f]));
 }
 
+// All semantic columns persisted on instrument_versions are compared:
+// name, short_name, asset_class, instrument_type, currency, issue_date,
+// maturity_date, share_class, voting_class, cfi, status. Only
+// provenance/internal columns are excluded: observation_id,
+// previous_version_id, observed_at, metadata (adapter-internal).
 const INSTRUMENT_VERSION_FIELDS = [
   "name",
   "short_name",
@@ -450,6 +487,10 @@ export function instrumentVersionChanged(
   return fieldsChanged(cur, next, INSTRUMENT_VERSION_FIELDS);
 }
 
+// Persisted listing_versions semantic columns: ticker, currency, status,
+// is_primary_listing — all compared. valid_from/valid_to exist in the
+// schema but no current provider supplies them (always NULL); if a source
+// starts asserting listing validity windows, add them here.
 const LISTING_VERSION_FIELDS = [
   "ticker",
   "currency",
@@ -464,6 +505,8 @@ export function listingVersionChanged(
   return fieldsChanged(cur, next, LISTING_VERSION_FIELDS);
 }
 
+// Every semantic column persisted on trading_venue_versions is compared —
+// including validity bounds (ISO retires MICs by writing an expiry date).
 const VENUE_VERSION_FIELDS = [
   "market_name",
   "legal_entity_name",
@@ -475,6 +518,8 @@ const VENUE_VERSION_FIELDS = [
   "market_category",
   "acronym",
   "status",
+  "valid_from",
+  "valid_to",
 ] as const;
 
 export function venueVersionChanged(

@@ -2,8 +2,14 @@
  *
  * Reconciliation order for an equity instrument:
  *   1. share_class_figi identifier → existing instrument (durable identity)
- *   2. verify issuer_entity_id matches the SEC-filer entity
+ *   2. verify issuer_entity_id AND instrument_type — a mismatch on either
+ *      is an identity_conflict, never a silent merge
  *   3. else create; canonical_key is a label, never the identity proof.
+ *
+ * Listings reconcile by venue-level FIGI (then canonical_key) and must
+ * agree on BOTH instrument_id and venue_id or the result is a
+ * listing_identity_conflict — a returned conflict, not a throw, so the
+ * seeder can audit it.
  *
  * Versions are written only when *semantic* fields differ
  * (instrumentVersionChanged / listingVersionChanged) — re-importing
@@ -67,7 +73,10 @@ export type ReconcileResult =
   | { kind: "created"; instrumentId: string }
   | { kind: "conflict"; reason: string };
 
-/** Durable reconciliation: share_class_figi is the identity proof. */
+/** Durable reconciliation: share_class_figi is the identity proof.
+ *  A match is only reused when issuer AND instrument_type agree —
+ *  same FIGI on a different issuer or a different instrument type is an
+ *  identity_conflict, never a silent merge or a type-changing version. */
 export async function reconcileInstrument(
   db: Q,
   args: {
@@ -79,7 +88,8 @@ export async function reconcileInstrument(
 ): Promise<ReconcileResult> {
   if (args.shareClassFigi) {
     const hit = await db.query(
-      `SELECT i.id, i.issuer_entity_id FROM instrument_identifiers ii
+      `SELECT i.id, i.issuer_entity_id, i.instrument_type
+         FROM instrument_identifiers ii
          JOIN financial_instruments i ON i.id = ii.instrument_id
         WHERE ii.scheme='share_class_figi' AND ii.value=$1
           AND ii.id NOT IN (
@@ -94,15 +104,37 @@ export async function reconcileInstrument(
           kind: "conflict",
           reason: `share_class_figi_issuer_mismatch:${args.shareClassFigi}`,
         };
+      if (row.instrument_type !== args.instrumentType)
+        return {
+          kind: "conflict",
+          reason:
+            `share_class_figi_type_mismatch:${args.shareClassFigi}:` +
+            `${row.instrument_type}!=${args.instrumentType}`,
+        };
       return { kind: "existing", instrumentId: row.id };
     }
   }
   const byKey = await db.query(
-    `SELECT id FROM financial_instruments WHERE canonical_key=$1`,
+    `SELECT id, issuer_entity_id, instrument_type
+       FROM financial_instruments WHERE canonical_key=$1`,
     [args.canonicalKey],
   );
-  if (byKey.rows.length)
-    return { kind: "existing", instrumentId: byKey.rows[0].id };
+  if (byKey.rows.length) {
+    const row = byKey.rows[0];
+    if (row.issuer_entity_id !== args.issuerEntityId)
+      return {
+        kind: "conflict",
+        reason: `canonical_key_issuer_mismatch:${args.canonicalKey}`,
+      };
+    if (row.instrument_type !== args.instrumentType)
+      return {
+        kind: "conflict",
+        reason:
+          `canonical_key_type_mismatch:${args.canonicalKey}:` +
+          `${row.instrument_type}!=${args.instrumentType}`,
+      };
+    return { kind: "existing", instrumentId: row.id };
+  }
   const ins = await db.query(
     `INSERT INTO financial_instruments
        (canonical_key, issuer_entity_id, instrument_type)
@@ -112,15 +144,19 @@ export async function reconcileInstrument(
   return { kind: "created", instrumentId: ins.rows[0].id };
 }
 
-export interface ApplyResult {
-  instrumentId: string;
-  instrumentVersionId: string | null; // null when state unchanged
-  listingIds: string[];
-}
+export type ApplyOutcome =
+  | {
+      kind: "applied";
+      instrumentId: string;
+      instrumentVersionId: string | null; // null when state unchanged
+      listingIds: string[];
+    }
+  | { kind: "conflict"; reason: string };
 
 export interface ApplySources {
-  /** openfigi observation asserting the instrument version */
-  figiObsId: string;
+  /** openfigi observations asserting the instrument (one per venue line —
+   *  a shareClassFIGI corroborated on XNGS+XNYS carries both) */
+  figiObsIds: string[];
   /** SEC observation that discovered ticker↔issuer */
   secObsId: string;
   /** iso_10383 observation id per venue MIC (venue_reference) */
@@ -132,7 +168,7 @@ export async function applyInstrumentPlan(
   plan: InstrumentSeedPlan,
   issuerEntityId: string,
   sources: ApplySources,
-): Promise<ApplyResult> {
+): Promise<ApplyOutcome> {
   const shareClassFigi = plan.instrumentIdentifiers.find(
     (i) => i.scheme === "share_class_figi",
   )?.value;
@@ -142,8 +178,7 @@ export async function applyInstrumentPlan(
     instrumentType: plan.instrumentType,
     shareClassFigi: shareClassFigi ?? null,
   });
-  if (rec.kind === "conflict")
-    throw new Error(`identity conflict: ${rec.reason}`);
+  if (rec.kind === "conflict") return rec;
   const instrumentId = rec.instrumentId;
   await recordDerivation(
     db,
@@ -151,12 +186,13 @@ export async function applyInstrumentPlan(
     sources.secObsId,
     "discovers",
   );
-  await recordDerivation(
-    db,
-    { type: "instrument", id: instrumentId },
-    sources.figiObsId,
-    "asserts",
-  );
+  for (const obsId of sources.figiObsIds)
+    await recordDerivation(
+      db,
+      { type: "instrument", id: instrumentId },
+      obsId,
+      "asserts",
+    );
 
   // instrument version — only on semantic change
   const cur = await db.query(
@@ -193,7 +229,7 @@ export async function applyInstrumentPlan(
         nextAttrs.currency,
         nextAttrs.share_class,
         nextAttrs.cfi,
-        sources.figiObsId,
+        sources.figiObsIds[0] ?? null,
         curRow?.id ?? null,
       ],
     );
@@ -202,22 +238,41 @@ export async function applyInstrumentPlan(
       `UPDATE financial_instruments SET current_version_id=$1 WHERE id=$2`,
       [versionId, instrumentId],
     );
-    await recordDerivation(
-      db,
-      { type: "instrument_version", id: versionId },
-      sources.figiObsId,
-      "asserts",
-    );
+    for (const obsId of sources.figiObsIds)
+      await recordDerivation(
+        db,
+        { type: "instrument_version", id: versionId },
+        obsId,
+        "asserts",
+      );
     await recordDerivation(
       db,
       { type: "instrument_version", id: versionId },
       sources.secObsId,
       "corroborates",
     );
+  } else {
+    // unchanged semantic state + a fresh observation → provenance only:
+    // the CURRENT version gains corroborating derivations, no fake version
+    for (const obsId of sources.figiObsIds)
+      await recordDerivation(
+        db,
+        { type: "instrument_version", id: curRow.id as string },
+        obsId,
+        "corroborates",
+      );
+    await recordDerivation(
+      db,
+      { type: "instrument_version", id: curRow.id as string },
+      sources.secObsId,
+      "corroborates",
+    );
   }
 
-  // identifiers — assertions, dedupe, provenance per row
+  // identifiers — one derivation per observation that actually asserted
+  // this identifier (composite C1←O1, C2←O2; shareClassFIGI←all venues)
   for (const idf of plan.instrumentIdentifiers) {
+    const idfObs = idf.obsIds.length ? idf.obsIds : sources.figiObsIds;
     const ins = await db.query(
       `INSERT INTO instrument_identifiers
          (instrument_id, scheme, value, scope, provider, observation_id, metadata)
@@ -231,7 +286,7 @@ export async function applyInstrumentPlan(
         idf.scheme,
         idf.value,
         idf.scope,
-        sources.figiObsId,
+        idfObs[0] ?? null,
         JSON.stringify(idf.metadata ?? {}),
       ],
     );
@@ -243,12 +298,13 @@ export async function applyInstrumentPlan(
           [instrumentId, idf.scheme, idf.value],
         )
       ).rows[0].id) as string;
-    await recordDerivation(
-      db,
-      { type: "instrument_identifier", id: identId },
-      sources.figiObsId,
-      "asserts",
-    );
+    for (const obsId of idfObs)
+      await recordDerivation(
+        db,
+        { type: "instrument_identifier", id: identId },
+        obsId,
+        "asserts",
+      );
   }
 
   // listings — one per venue MIC that returned data
@@ -262,23 +318,51 @@ export async function applyInstrumentPlan(
     const venueId = venue.rows[0].id as string;
     const isoObsId = sources.venueObsIdByMic?.[lp.mic] ?? null;
 
-    // reconcile by venue-level FIGI first (durable), then canonical_key
+    // reconcile by venue-level FIGI first (durable), then canonical_key —
+    // BOTH invariants must hold on any reuse: same instrument AND same
+    // venue. A mismatch is a listing_identity_conflict, never silent reuse.
     let listingId: string | null = null;
+    const checkListing = (
+      row: { instrument_id: string; venue_id: string },
+      via: string,
+    ): { kind: "conflict"; reason: string } | null => {
+      if (row.instrument_id !== instrumentId)
+        return {
+          kind: "conflict",
+          reason:
+            `listing_identity_conflict:instrument_mismatch@${via}:` + lp.figi,
+        };
+      if (row.venue_id !== venueId)
+        return {
+          kind: "conflict",
+          reason: `listing_identity_conflict:venue_mismatch@${via}:${lp.figi}`,
+        };
+      return null;
+    };
     const byFigi = await db.query(
-      `SELECT listing_id FROM listing_identifiers
-        WHERE scheme='figi' AND value=$1
-          AND id NOT IN (
+      `SELECT li.listing_id, l.instrument_id, l.venue_id
+         FROM listing_identifiers li
+         JOIN instrument_listings l ON l.id = li.listing_id
+        WHERE li.scheme='figi' AND li.value=$1
+          AND li.id NOT IN (
             SELECT supersedes_identifier_id FROM listing_identifiers
              WHERE supersedes_identifier_id IS NOT NULL)`,
       [lp.figi],
     );
-    if (byFigi.rows.length) listingId = byFigi.rows[0].listing_id;
+    if (byFigi.rows.length) {
+      const bad = checkListing(byFigi.rows[0], "figi");
+      if (bad) return bad;
+      listingId = byFigi.rows[0].listing_id;
+    }
     if (!listingId) {
       const byKey = await db.query(
-        `SELECT id FROM instrument_listings WHERE canonical_key=$1`,
+        `SELECT id, instrument_id, venue_id FROM instrument_listings
+          WHERE canonical_key=$1`,
         [lp.listingKey],
       );
       if (byKey.rows.length) {
+        const bad = checkListing(byKey.rows[0], "canonical_key");
+        if (bad) return bad;
         listingId = byKey.rows[0].id;
       } else {
         const nl = await db.query(
@@ -293,12 +377,13 @@ export async function applyInstrumentPlan(
           sources.secObsId,
           "discovers",
         );
-        await recordDerivation(
-          db,
-          { type: "listing", id: listingId },
-          sources.figiObsId,
-          "asserts",
-        );
+        for (const obsId of sources.figiObsIds)
+          await recordDerivation(
+            db,
+            { type: "listing", id: listingId },
+            obsId,
+            "asserts",
+          );
         if (isoObsId)
           await recordDerivation(
             db,
@@ -359,6 +444,28 @@ export async function applyInstrumentPlan(
           isoObsId,
           "venue_reference",
         );
+    } else {
+      // unchanged: the current version gains provenance, not a new version
+      const curId = lcRow.id as string;
+      await recordDerivation(
+        db,
+        { type: "listing_version", id: curId },
+        lp.obsId,
+        "corroborates",
+      );
+      await recordDerivation(
+        db,
+        { type: "listing_version", id: curId },
+        sources.secObsId,
+        "corroborates",
+      );
+      if (isoObsId)
+        await recordDerivation(
+          db,
+          { type: "listing_version", id: curId },
+          isoObsId,
+          "venue_reference",
+        );
     }
 
     const lidInsert = await db.query(
@@ -388,7 +495,12 @@ export async function applyInstrumentPlan(
     );
     listingIds.push(lid);
   }
-  return { instrumentId, instrumentVersionId: versionId, listingIds };
+  return {
+    kind: "applied",
+    instrumentId,
+    instrumentVersionId: versionId,
+    listingIds,
+  };
 }
 
 /** Venue upsert driven by ISO 10383 row + version-diff — called by
@@ -402,10 +514,11 @@ export async function upsertVenue(
   action: "created" | "version_appended" | "unchanged";
 }> {
   const cur = await db.query(
-    `SELECT tv.id AS venue_id, tvv.version_no,
+    `SELECT tv.id AS venue_id, tv.current_version_id, tvv.version_no,
             tvv.market_name, tvv.legal_entity_name, tvv.lei,
             tvv.country_code, tvv.city, tvv.operating_mic, tvv.mic_role,
-            tvv.market_category, tvv.acronym, tvv.status
+            tvv.market_category, tvv.acronym, tvv.status,
+            tvv.valid_from, tvv.valid_to
        FROM trading_venues tv
        LEFT JOIN trading_venue_versions tvv ON tvv.id = tv.current_version_id
       WHERE tv.mic = $1`,
@@ -426,8 +539,17 @@ export async function upsertVenue(
     valid_to: v.validTo,
   };
   const row = cur.rows[0];
-  if (row?.venue_id && !venueVersionChanged(row, attrs))
+  if (row?.venue_id && !venueVersionChanged(row, attrs)) {
+    // unchanged venue metadata + a new registry snapshot → provenance only
+    if (row.current_version_id)
+      await recordDerivation(
+        db,
+        { type: "venue_version", id: row.current_version_id as string },
+        obsId,
+        "corroborates",
+      );
     return { mic: v.mic, action: "unchanged" };
+  }
 
   let venueId = row?.venue_id as string | undefined;
   if (!venueId) {
