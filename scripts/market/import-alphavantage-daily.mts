@@ -95,7 +95,7 @@ const listings = await c.query(
      LEFT JOIN listing_versions lv ON lv.id = l.current_version_id
      LEFT JOIN trading_venues v ON v.id = l.venue_id
     WHERE l.status='active' AND lv.ticker IS NOT NULL
-      ${ONLY_LISTING ? "AND (l.canonical_key = $2 OR l.id::text = $2)" : ""}
+      ${ONLY_LISTING ? "AND (l.canonical_key = $1 OR l.id::text = $1)" : ""}
     ORDER BY l.canonical_key
     ${LIMIT ? `LIMIT ${Math.max(1, Math.floor(LIMIT))}` : ""}`,
   ONLY_LISTING ? [ONLY_LISTING] : [],

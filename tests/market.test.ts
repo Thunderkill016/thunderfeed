@@ -36,6 +36,7 @@ import {
   getDailyBarsForListing,
   getDailyBarsForSeries,
   getInstrumentView,
+  isoDay,
 } from "../lib/db/read";
 
 const MIGRATION_SQL = readFileSync(
@@ -916,8 +917,10 @@ test("migration 0024 declares composite FKs + NOT NULL + OHLC CHECKs", () => {
 });
 
 // ── V1.2: Tiingo dual-provider ───────────────────────────────────────────
+// NB: Tiingo's real CSV order is date,close,high,low,open,volume,... —
+// the fixture mirrors it so the name-based column mapping is what we test
 const TIINGO_HEADER =
-  "date,open,high,low,close,volume,adjOpen,adjHigh,adjLow,adjClose,adjVolume,divCash,splitFactor";
+  "date,close,high,low,open,volume,adjClose,adjHigh,adjLow,adjOpen,adjVolume,divCash,splitFactor";
 const tiingoCsv = (rows: string[]) =>
   `${TIINGO_HEADER}\r\n${rows.join("\r\n")}\r\n`;
 const tiingoRow = (
@@ -931,7 +934,7 @@ const tiingoRow = (
   div = "0",
   split = "1",
 ) =>
-  `${date},${o},${h},${l},${c},${v},${o},${h},${l},${adjC},${v},${div},${split}`;
+  `${date},${c},${h},${l},${o},${v},${adjC},${h},${l},${o},${v},${div},${split}`;
 
 test("parseTiingoEod: valid CSV → DailyBar[] with exact decimal strings", () => {
   const r = parseTiingoEod({
@@ -1255,6 +1258,14 @@ test("compareDailySeries: volume-only divergence + missing sessions", () => {
     assert.equal(cmp[0].agreement, "volume_divergence");
   assert.equal(cmp[1].kind, "missing_in_tiingo");
   assert.equal(cmp[2].kind, "missing_in_alpha");
+});
+
+test("isoDay: local-midnight Date never shifts the session date", () => {
+  // the 2026 pilot bug: pg parses DATE as local-midnight Date; formatting
+  // through toISOString() shifted 2026-09-25 → 2026-09-24 in UTC+7
+  assert.equal(isoDay(new Date(2026, 8, 25)), "2026-09-25"); // local ctor
+  assert.equal(isoDay(new Date(2000, 0, 1)), "2000-01-01"); // month/day pad
+  assert.equal(isoDay("2026-09-25"), "2026-09-25"); // string passthrough
 });
 
 test("migration 0025 adds tiingo to provider allowlist, no new tables", () => {

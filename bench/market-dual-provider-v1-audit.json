@@ -1,0 +1,683 @@
+{
+  "generatedAt": "2026-09-26T17:58:24.625Z",
+  "livePilot": {
+    "status": "PASS_DUAL_PROVIDER",
+    "listingsCompared": 11,
+    "integrityClean": true
+  },
+  "crossProviderAudit": {
+    "listingsCompared": 11,
+    "overlappingSessions": 1100,
+    "exactAgreements": 1087,
+    "divergences": 13,
+    "comparisons": [
+      {
+        "listing": "listing:alphabet:class_a_common_stock:xngs",
+        "listingId": "01a0dd11-fa63-7e59-9a93-1e0070004975",
+        "alphaSeriesId": "01a0ded5-56db-769c-a291-d6dc4ad06004",
+        "tiingoSeriesId": "01a0ded5-807e-7dd8-8430-56e52e584117",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 100,
+        "priceDivergenceSessions": 0,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 0,
+        "highDivergences": 0,
+        "lowDivergences": 0,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": []
+      },
+      {
+        "listing": "listing:alphabet:class_c_common_stock:xngs",
+        "listingId": "01a0dd11-fe18-7351-a6c2-1daa46c84c0d",
+        "alphaSeriesId": "01a0ded5-d1fc-7e86-9603-555fd4a6bcdb",
+        "tiingoSeriesId": "01a0ded6-2510-792a-8afb-580b6ed34884",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 97,
+        "priceDivergenceSessions": 3,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 0,
+        "highDivergences": 2,
+        "lowDivergences": 1,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": [
+          {
+            "kind": "compared",
+            "sessionDate": "2026-05-14",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "393.7900",
+              "high": "399.1040",
+              "low": "392.7280",
+              "close": "397.1700",
+              "volume": "13805371"
+            },
+            "tiingo": {
+              "open": "393.79",
+              "high": "399.10400000000004",
+              "low": "392.728",
+              "close": "397.17",
+              "volume": "13805371"
+            },
+            "divergentFields": [
+              "high"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          },
+          {
+            "kind": "compared",
+            "sessionDate": "2026-07-29",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "333.5000",
+              "high": "341.9800",
+              "low": "330.4079",
+              "close": "335.7600",
+              "volume": "20242944"
+            },
+            "tiingo": {
+              "open": "333.5",
+              "high": "341.98",
+              "low": "330.407917",
+              "close": "335.76",
+              "volume": "20242944"
+            },
+            "divergentFields": [
+              "low"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          },
+          {
+            "kind": "compared",
+            "sessionDate": "2026-08-04",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "366.5200",
+              "high": "377.6690",
+              "low": "366.1600",
+              "close": "375.3500",
+              "volume": "19983340"
+            },
+            "tiingo": {
+              "open": "366.52",
+              "high": "377.66900000000004",
+              "low": "366.16",
+              "close": "375.35",
+              "volume": "19983340"
+            },
+            "divergentFields": [
+              "high"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          }
+        ]
+      },
+      {
+        "listing": "listing:amazon:common_stock:xngs",
+        "listingId": "01a0dd12-0382-7c79-96b4-f9367f8276ee",
+        "alphaSeriesId": "01a0ded6-4c41-7f1d-89eb-9e513ae76923",
+        "tiingoSeriesId": "01a0ded6-c9e8-762b-bb94-b9a2cba30fb8",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 100,
+        "priceDivergenceSessions": 0,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 0,
+        "highDivergences": 0,
+        "lowDivergences": 0,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": []
+      },
+      {
+        "listing": "listing:amd:common_stock:xngs",
+        "listingId": "01a0dd12-0771-7605-b9f2-7b68579f8077",
+        "alphaSeriesId": "01a0ded6-c6a0-7b3c-8a3e-67a35b425ace",
+        "tiingoSeriesId": "01a0ded7-6eba-764a-9775-aa8920b43529",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 99,
+        "priceDivergenceSessions": 1,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 0,
+        "highDivergences": 0,
+        "lowDivergences": 1,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": [
+          {
+            "kind": "compared",
+            "sessionDate": "2026-09-15",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "501.7000",
+              "high": "513.6650",
+              "low": "497.5110",
+              "close": "504.2000",
+              "volume": "17133990"
+            },
+            "tiingo": {
+              "open": "501.7",
+              "high": "513.665",
+              "low": "497.51099999999997",
+              "close": "504.2",
+              "volume": "17133990"
+            },
+            "divergentFields": [
+              "low"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          }
+        ]
+      },
+      {
+        "listing": "listing:apple:common_stock:xngs",
+        "listingId": "01a0dd12-0b62-7982-8418-6a1f4d9e43ba",
+        "alphaSeriesId": "01a0decb-441f-7a93-ae4d-1c197fc78fc6",
+        "tiingoSeriesId": "01a0decb-e718-72da-8e07-0b856db7e09f",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 98,
+        "priceDivergenceSessions": 2,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 2,
+        "highDivergences": 0,
+        "lowDivergences": 0,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": [
+          {
+            "kind": "compared",
+            "sessionDate": "2026-05-11",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "291.9790",
+              "high": "293.8800",
+              "low": "290.2300",
+              "close": "292.6800",
+              "volume": "42247285"
+            },
+            "tiingo": {
+              "open": "291.97900000000004",
+              "high": "293.88",
+              "low": "290.23",
+              "close": "292.68",
+              "volume": "42247285"
+            },
+            "divergentFields": [
+              "open"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          },
+          {
+            "kind": "compared",
+            "sessionDate": "2026-06-08",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "308.7390",
+              "high": "317.4000",
+              "low": "301.1700",
+              "close": "301.5400",
+              "volume": "77949082"
+            },
+            "tiingo": {
+              "open": "308.73900000000003",
+              "high": "317.4",
+              "low": "301.17",
+              "close": "301.54",
+              "volume": "77949082"
+            },
+            "divergentFields": [
+              "open"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          }
+        ]
+      },
+      {
+        "listing": "listing:intel:common_stock:xngs",
+        "listingId": "01a0dd12-0f5c-7c7b-bbee-0d2670011454",
+        "alphaSeriesId": "01a0ded7-7484-71d5-9fb5-32d23ddd8f81",
+        "tiingoSeriesId": "01a0ded8-5ba7-7330-88cf-75d8cf215428",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 98,
+        "priceDivergenceSessions": 2,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 0,
+        "highDivergences": 2,
+        "lowDivergences": 0,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": [
+          {
+            "kind": "compared",
+            "sessionDate": "2026-06-09",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "112.9900",
+              "high": "113.9980",
+              "low": "99.4600",
+              "close": "107.9200",
+              "volume": "149623108"
+            },
+            "tiingo": {
+              "open": "112.99",
+              "high": "113.99799999999999",
+              "low": "99.46",
+              "close": "107.92",
+              "volume": "149623108"
+            },
+            "divergentFields": [
+              "high"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          },
+          {
+            "kind": "compared",
+            "sessionDate": "2026-08-21",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "92.7100",
+              "high": "92.7680",
+              "low": "89.7500",
+              "close": "90.0700",
+              "volume": "91670104"
+            },
+            "tiingo": {
+              "open": "92.71",
+              "high": "92.76799999999999",
+              "low": "89.75",
+              "close": "90.07",
+              "volume": "91670104"
+            },
+            "divergentFields": [
+              "high"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          }
+        ]
+      },
+      {
+        "listing": "listing:meta_platforms:class_a_common_stock:xngs",
+        "listingId": "01a0dd12-134d-7204-b059-730861e858a7",
+        "alphaSeriesId": "01a0ded7-e0d5-7a35-8eff-245dbc5f6feb",
+        "tiingoSeriesId": "01a0ded9-08f6-7ff1-8eef-aca9ecd7499c",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 98,
+        "priceDivergenceSessions": 2,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 0,
+        "highDivergences": 1,
+        "lowDivergences": 1,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": [
+          {
+            "kind": "compared",
+            "sessionDate": "2026-08-04",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "581.5000",
+              "high": "592.7870",
+              "low": "578.2500",
+              "close": "587.9400",
+              "volume": "17959238"
+            },
+            "tiingo": {
+              "open": "581.5",
+              "high": "592.7869999999999",
+              "low": "578.25",
+              "close": "587.94",
+              "volume": "17959238"
+            },
+            "divergentFields": [
+              "high"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          },
+          {
+            "kind": "compared",
+            "sessionDate": "2026-09-24",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "744.3550",
+              "high": "779.8192",
+              "low": "743.0060",
+              "close": "777.5900",
+              "volume": "34808495"
+            },
+            "tiingo": {
+              "open": "744.355",
+              "high": "779.8192",
+              "low": "743.0060000000001",
+              "close": "777.59",
+              "volume": "34808495"
+            },
+            "divergentFields": [
+              "low"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          }
+        ]
+      },
+      {
+        "listing": "listing:microsoft:common_stock:xngs",
+        "listingId": "01a0dd12-173b-772a-8674-d529a9140a0c",
+        "alphaSeriesId": "01a0ded8-4c6f-709e-8c47-638a97ae6b59",
+        "tiingoSeriesId": "01a0ded9-af31-7b96-9a72-b6cd77e405f5",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 100,
+        "priceDivergenceSessions": 0,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 0,
+        "highDivergences": 0,
+        "lowDivergences": 0,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": []
+      },
+      {
+        "listing": "listing:nvidia:common_stock:xngs",
+        "listingId": "01a0dd12-1b29-7502-bf84-feac5d795f2d",
+        "alphaSeriesId": "01a0ded8-b853-78ed-b681-005b397ea811",
+        "tiingoSeriesId": "01a0deda-5599-78aa-b7cc-85b509c064bc",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 99,
+        "priceDivergenceSessions": 1,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 1,
+        "highDivergences": 0,
+        "lowDivergences": 0,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": [
+          {
+            "kind": "compared",
+            "sessionDate": "2026-05-22",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "220.9040",
+              "high": "221.0100",
+              "low": "214.8000",
+              "close": "215.3300",
+              "volume": "169275710"
+            },
+            "tiingo": {
+              "open": "220.90400000000002",
+              "high": "221.01",
+              "low": "214.8",
+              "close": "215.33",
+              "volume": "169275710"
+            },
+            "divergentFields": [
+              "open"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          }
+        ]
+      },
+      {
+        "listing": "listing:oracle:common_stock:xnys",
+        "listingId": "01a0dd0c-47fc-7f67-999a-91f1b8d3fe44",
+        "alphaSeriesId": "01a0ded9-2cb5-7061-a6ea-1f0ac4e6eae5",
+        "tiingoSeriesId": "01a0deda-fbd8-71f7-8929-f844ac1c122b",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 99,
+        "priceDivergenceSessions": 1,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 0,
+        "highDivergences": 0,
+        "lowDivergences": 1,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": [
+          {
+            "kind": "compared",
+            "sessionDate": "2026-06-05",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "229.4900",
+              "high": "231.4400",
+              "low": "209.4501",
+              "close": "213.6800",
+              "volume": "29019876"
+            },
+            "tiingo": {
+              "open": "229.49",
+              "high": "231.44",
+              "low": "209.45005",
+              "close": "213.68",
+              "volume": "29019876"
+            },
+            "divergentFields": [
+              "low"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          }
+        ]
+      },
+      {
+        "listing": "listing:tesla:common_stock:xngs",
+        "listingId": "01a0dd12-21cd-7bd7-bab1-c0f60a9c64c5",
+        "alphaSeriesId": "01a0ded9-9891-7f3e-8626-d6826c069ea1",
+        "tiingoSeriesId": "01a0dedb-a0ea-7c62-b9c5-e3b7c8d14d76",
+        "alphaBars": 100,
+        "tiingoBars": 125,
+        "overlapStart": "2026-05-05",
+        "overlapEnd": "2026-09-25",
+        "overlapSessions": 100,
+        "exactAgreementSessions": 99,
+        "priceDivergenceSessions": 1,
+        "volumeDivergenceSessions": 0,
+        "missingInAlpha": 25,
+        "missingInTiingo": 0,
+        "openDivergences": 0,
+        "highDivergences": 1,
+        "lowDivergences": 0,
+        "closeDivergences": 0,
+        "volumeDivergences": 0,
+        "largestCloseDifference": 0,
+        "largestCloseDifferenceBps": 0,
+        "sampleDivergences": [
+          {
+            "kind": "compared",
+            "sessionDate": "2026-06-25",
+            "agreement": "price_divergence",
+            "alpha": {
+              "open": "375.2700",
+              "high": "379.1170",
+              "low": "371.2210",
+              "close": "375.1200",
+              "volume": "30259987"
+            },
+            "tiingo": {
+              "open": "375.27",
+              "high": "379.11699999999996",
+              "low": "371.221",
+              "close": "375.12",
+              "volume": "30259987"
+            },
+            "divergentFields": [
+              "high"
+            ],
+            "closeDiff": 0,
+            "closeDiffBps": 0,
+            "volumeDiff": 0,
+            "volumeDiffPct": 0
+          }
+        ]
+      }
+    ]
+  },
+  "integrity": {
+    "series": 22,
+    "listingsCovered": 11,
+    "points": 2475,
+    "versions": 2475,
+    "dateMin": "2026-03-30",
+    "dateMax": "2026-09-25",
+    "duplicateSessionDates": 0,
+    "revisedPoints": 0,
+    "orphanMarketPoints": 0,
+    "orphanMarketVersions": 0,
+    "pointsWithMissingCurrentVersion": 0,
+    "pointsWhoseCurrentVersionBelongsElsewhere": 0,
+    "staleCurrentPointers": 0,
+    "versionsWhosePreviousBelongsElsewhere": 0,
+    "nonAdjacentPreviousLinks": 0,
+    "brokenPreviousChains": 0,
+    "invalidPersistedOHLC": 0,
+    "negativePersistedVolume": 0,
+    "missingObservationProvenance": 0,
+    "seriesWithoutListing": 0,
+    "barsWithUnknownCurrency": 2475,
+    "currentBarsPerListing": 11,
+    "byProvider": [
+      {
+        "provider": "alphavantage",
+        "dataset": "time_series_daily",
+        "series": "11",
+        "points": "1100",
+        "versions": "1100"
+      },
+      {
+        "provider": "tiingo",
+        "dataset": "eod_daily",
+        "series": "11",
+        "points": "1375",
+        "versions": "1375"
+      }
+    ],
+    "marketObservationsByProvider": [
+      {
+        "provider": "alphavantage",
+        "dataset": "time_series_daily",
+        "n": "11"
+      },
+      {
+        "provider": "tiingo",
+        "dataset": "eod_daily",
+        "n": "11"
+      },
+      {
+        "provider": "tiingo",
+        "dataset": "eod_metadata",
+        "n": "11"
+      }
+    ]
+  }
+}

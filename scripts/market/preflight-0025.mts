@@ -45,4 +45,23 @@ const cred = {
   TIINGO_API_TOKEN: process.env.TIINGO_API_TOKEN ? "PRESENT" : "ABSENT",
 };
 console.log("credentials:", JSON.stringify(cred));
+
+// leak check — credentials must never appear in stored provenance
+const urls = await c.query(
+  `SELECT provider, dataset, source_url FROM reference_observations
+    WHERE provider IN ('alphavantage','tiingo') ORDER BY provider LIMIT 6`,
+);
+console.log("sample source_urls:", JSON.stringify(urls.rows, null, 1));
+for (const secret of [
+  process.env.ALPHAVANTAGE_API_KEY,
+  process.env.TIINGO_API_TOKEN,
+]) {
+  if (!secret) continue;
+  const leak = await c.query(
+    `SELECT count(*) n FROM reference_observations
+      WHERE source_url LIKE '%'||$1||'%' OR payload::text LIKE '%'||$1||'%'`,
+    [secret],
+  );
+  console.log(`credential-substring rows: ${leak.rows[0].n}`);
+}
 await c.end();

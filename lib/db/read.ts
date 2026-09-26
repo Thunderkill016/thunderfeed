@@ -1964,9 +1964,15 @@ export async function getSourceReliability(): Promise<SourceReliability[]> {
 // Identity is always instrument_listings.id — a ticker is never accepted as
 // lookup identity (only as display/provenance echo).
 
-/** DATE column → 'YYYY-MM-DD'. pg driver returns Date; pg-mem may too. */
-function isoDay(v: unknown): string {
-  if (v instanceof Date) return v.toISOString().slice(0, 10);
+/** DATE column → 'YYYY-MM-DD'. pg driver returns Date parsed as LOCAL
+ *  midnight — toISOString() would shift the day in UTC+N timezones, so the
+ *  local getters are used deliberately: the date is a label, not an
+ *  instant. pg-mem may hand back the same shape or a bare string. */
+export function isoDay(v: unknown): string {
+  if (v instanceof Date) {
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${v.getFullYear()}-${p(v.getMonth() + 1)}-${p(v.getDate())}`;
+  }
   return String(v).slice(0, 10);
 }
 

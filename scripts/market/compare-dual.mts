@@ -139,8 +139,37 @@ for (const p of pairs.rows) {
   });
 }
 
+const integrity = await marketIntegrity(c);
+const hardZeros = [
+  "duplicateSessionDates",
+  "orphanMarketPoints",
+  "orphanMarketVersions",
+  "missingObservationProvenance",
+  "pointsWithMissingCurrentVersion",
+  "pointsWhoseCurrentVersionBelongsElsewhere",
+  "staleCurrentPointers",
+  "versionsWhosePreviousBelongsElsewhere",
+  "nonAdjacentPreviousLinks",
+  "brokenPreviousChains",
+  "invalidPersistedOHLC",
+  "negativePersistedVolume",
+  "seriesWithoutListing",
+] as const;
+const integrityClean = hardZeros.every(
+  (k) => (integrity as Record<string, unknown>)[k] === 0,
+);
 const audit = {
   generatedAt: new Date().toISOString(),
+  livePilot: {
+    status:
+      comparisons.length > 0 && integrityClean
+        ? "PASS_DUAL_PROVIDER"
+        : comparisons.length > 0
+          ? "PARTIAL_DUAL_PROVIDER"
+          : "AWAITING_INGESTION",
+    listingsCompared: comparisons.length,
+    integrityClean,
+  },
   crossProviderAudit: {
     listingsCompared: comparisons.length,
     overlappingSessions: comparisons.reduce(
@@ -160,7 +189,7 @@ const audit = {
     ),
     comparisons,
   },
-  integrity: await marketIntegrity(c),
+  integrity,
 };
 await c.end();
 writeFileSync(
