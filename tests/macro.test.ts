@@ -128,6 +128,14 @@ test("classifyFredResponse — error_code classes", () => {
     }),
     "invalid_series",
   );
+  // FRED also emits numeric error_code on some endpoints
+  assert.equal(
+    classifyFredResponse(400, {
+      error_code: 400,
+      error_message: "Bad Request.  The series does not exist.",
+    }),
+    "invalid_series",
+  );
   assert.equal(
     classifyFredResponse(400, {
       error_code: "BAD_REQUEST",

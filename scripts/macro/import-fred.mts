@@ -121,7 +121,7 @@ const UNIVERSE: { code: string; scope?: string[] }[] = [
   { code: "VIXCLS" },
   { code: "BAMLH0A0HYM2" },
   { code: "DCOILWTICO" },
-  { code: "GOLDAMGBD228NLBM" },
+  // gold omitted — FRED's LBMA fix series (GOLDAM/PMGBD228NLBM) discontinued
   { code: "DTWEXBGS" },
   // consumer / housing
   {

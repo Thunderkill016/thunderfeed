@@ -69,6 +69,10 @@ export interface ApplyMacroResult {
   unchanged: number;
 }
 
+/** Batched apply — daily series carry tens of thousands of observations,
+ *  so per-row round-trips are out. Three passes keep the same semantics:
+ *  get-or-create points → diff against existing versions → bulk-insert
+ *  new versions → one DISTINCT ON pointer update per series. */
 export async function applyMacroObservations(
   db: Q,
   seriesId: string,
@@ -81,63 +85,130 @@ export async function applyMacroObservations(
     versionsInserted: 0,
     unchanged: 0,
   };
-  for (const o of obs) {
-    // get-or-create the stable (series, obs_date) point — same pg-mem-safe
-    // pattern as market_points.
-    const ex = await db.query(
-      `SELECT id FROM macro_points WHERE series_id=$1 AND obs_date=$2`,
-      [seriesId, o.obsDate],
-    );
-    let pointId = ex.rows[0]?.id as string | undefined;
-    if (pointId == null) {
-      const p = await db.query(
-        `INSERT INTO macro_points (series_id, obs_date)
-         VALUES ($1,$2)
-         ON CONFLICT (series_id, obs_date) DO NOTHING
-         RETURNING id`,
-        [seriesId, o.obsDate],
-      );
-      pointId =
-        (p.rows[0]?.id as string | undefined) ??
-        ((
-          await db.query(
-            `SELECT id FROM macro_points WHERE series_id=$1 AND obs_date=$2`,
-            [seriesId, o.obsDate],
-          )
-        ).rows[0].id as string);
-      res.pointsInserted++;
-    }
 
-    // dedupe: this exact (vintage_date, value) assertion already recorded?
-    const dup = await db.query(
-      `SELECT id FROM macro_point_versions
-        WHERE point_id=$1 AND vintage_date=$2 AND value=$3::numeric`,
-      [pointId, o.vintageDate, o.value],
+  const readPoints = async () =>
+    new Map(
+      (
+        await db.query(
+          `SELECT id, obs_date FROM macro_points WHERE series_id=$1`,
+          [seriesId],
+        )
+      ).rows.map((r) => [isoDateOnly(r.obs_date), r.id as string]),
     );
-    if (dup.rows.length) {
+
+  let points = await readPoints();
+  const missing = [...new Set(obs.map((o) => o.obsDate))].filter(
+    (d) => !points.has(d),
+  );
+  for (const chunk of chunks(missing)) {
+    const ph = chunk.map((_, i) => `($1,$${i + 2}::date)`).join(",");
+    await db.query(
+      `INSERT INTO macro_points (series_id, obs_date)
+       VALUES ${ph}
+       ON CONFLICT (series_id, obs_date) DO NOTHING`,
+      [seriesId, ...chunk],
+    );
+  }
+  if (missing.length) {
+    res.pointsInserted = missing.length;
+    points = await readPoints();
+  }
+
+  // existing versions → dedupe set + per-point max version_no + current id
+  const existing = await db.query(
+    `SELECT v.point_id, v.id, v.vintage_date, v.value, v.version_no,
+            p.current_version_id
+       FROM macro_point_versions v
+       JOIN macro_points p ON p.id = v.point_id
+      WHERE p.series_id=$1`,
+    [seriesId],
+  );
+  const seen = new Set<string>();
+  const maxNo = new Map<string, number>();
+  const curId = new Map<string, string>();
+  for (const r of existing.rows) {
+    const pid = r.point_id as string;
+    seen.add(`${pid}|${isoDateOnly(r.vintage_date)}|${decimalKey(r.value)}`);
+    maxNo.set(pid, Math.max(maxNo.get(pid) ?? 0, r.version_no as number));
+    if (r.current_version_id) curId.set(pid, r.current_version_id as string);
+  }
+
+  const rows: [string, number, string, string, string, string | null][] = [];
+  for (const o of obs) {
+    const pid = points.get(o.obsDate);
+    if (!pid) continue;
+    const key = `${pid}|${o.vintageDate}|${decimalKey(o.value)}`;
+    if (seen.has(key)) {
       res.unchanged++;
       continue;
     }
-    const cur = await db.query(
-      `SELECT mpv.* FROM macro_points mp
-         JOIN macro_point_versions mpv ON mpv.id = mp.current_version_id
-        WHERE mp.id=$1`,
-      [pointId],
-    );
-    const curRow = cur.rows[0] ?? null;
-    const no = curRow ? (curRow.version_no as number) + 1 : 1;
-    const nv = await db.query(
+    seen.add(key);
+    const no = (maxNo.get(pid) ?? 0) + 1;
+    maxNo.set(pid, no);
+    rows.push([
+      pid,
+      no,
+      o.vintageDate,
+      o.value,
+      observationId,
+      curId.get(pid) ?? null,
+    ]);
+  }
+  for (const chunk of chunks(rows)) {
+    const ph = chunk
+      .map(
+        (_, i) =>
+          `($${i * 6 + 1}::uuid,$${i * 6 + 2},$${i * 6 + 3}::date,` +
+          `$${i * 6 + 4}::numeric,$${i * 6 + 5}::uuid,$${i * 6 + 6}::uuid)`,
+      )
+      .join(",");
+    await db.query(
       `INSERT INTO macro_point_versions
          (point_id, version_no, vintage_date, value, observation_id,
           previous_version_id)
-       VALUES ($1,$2,$3,$4::numeric,$5,$6) RETURNING id`,
-      [pointId, no, o.vintageDate, o.value, observationId, curRow?.id ?? null],
+       VALUES ${ph}`,
+      chunk.flat(),
     );
+  }
+  res.versionsInserted = rows.length;
+
+  if (rows.length) {
+    // current pointer = highest version_no per point (one statement/series).
+    // point ids come from the in-memory diff — the UPDATE target's table
+    // name must not reappear inside the FROM subquery (pg-mem limitation).
+    const touched = [...new Set(rows.map((r) => r[0]))];
+    const inPh = touched.map((_, i) => `$${i + 1}`).join(",");
     await db.query(
-      `UPDATE macro_points SET current_version_id=$1 WHERE id=$2`,
-      [nv.rows[0].id, pointId],
+      `UPDATE macro_points
+          SET current_version_id = nv.id
+         FROM (
+           SELECT DISTINCT ON (point_id) id, point_id
+             FROM macro_point_versions
+            WHERE point_id IN (${inPh})
+            ORDER BY point_id, version_no DESC
+         ) nv
+        WHERE macro_points.id = nv.point_id`,
+      touched,
     );
-    res.versionsInserted++;
   }
   return res;
+}
+
+const CHUNK = 500;
+function* chunks<T>(arr: T[]): Generator<T[]> {
+  for (let i = 0; i < arr.length; i += CHUNK) yield arr.slice(i, i + CHUNK);
+}
+/** DATE from either driver shape — pg returns 'YYYY-MM-DD' text, pg-mem a
+ *  Date; both reduce to the day label for dedupe keys. */
+function isoDateOnly(v: unknown): string {
+  if (v instanceof Date) {
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${v.getFullYear()}-${p(v.getMonth() + 1)}-${p(v.getDate())}`;
+  }
+  return String(v).slice(0, 10);
+}
+/** numeric dedupe must not be text-shaped: '322.560' ≡ 322.56 ≡ '322.56'. */
+function decimalKey(v: unknown): string {
+  const n = Number(v);
+  return Number.isFinite(n) ? String(n) : String(v);
 }

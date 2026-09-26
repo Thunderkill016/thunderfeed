@@ -29,7 +29,11 @@ export function classifyFredResponse(
   payload: unknown,
 ): FredClass {
   const p = payload as Record<string, unknown> | null;
-  if (p && typeof p.error_code === "string") {
+  // error_code arrives as a string on some endpoints, a number on others
+  if (
+    p &&
+    (typeof p.error_code === "string" || typeof p.error_code === "number")
+  ) {
     const msg = String(p.error_message ?? "").toLowerCase();
     const code = String(p.error_code).toUpperCase();
     if (

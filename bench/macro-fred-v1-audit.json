@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-09-26T21:44:35.469Z",
+  "runs": [
+    {
+      "series": "CPIAUCSL",
+      "title": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average",
+      "freq": "M",
+      "units": "Index 1982-1984=100",
+      "entityId": "01a0dbd4-f15f-74ec-845a-059cfffea078",
+      "obs": 955,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 955
+    }
+  ],
+  "metrics": {
+    "provider": "fred",
+    "requested": 1,
+    "successful": 1,
+    "providerErrors": 0,
+    "rateLimited": 0,
+    "invalidSeries": 0,
+    "observations": 2,
+    "totalPoints": 0,
+    "totalVersions": 0,
+    "totalUnchanged": 955,
+    "errors": []
+  }
+}
