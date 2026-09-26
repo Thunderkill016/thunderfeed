@@ -2430,3 +2430,171 @@ export async function getCorporateAction(
   if (!r.rows.length) return null;
   return caViewsForAction(r.rows[0]);
 }
+
+/* --------------------------- macro indicators ---------------------------- */
+
+export interface MacroSeriesView {
+  id: string;
+  canonicalKey: string;
+  provider: string;
+  seriesCode: string;
+  title: string | null;
+  frequency: string | null;
+  units: string | null;
+  seasonalAdjustment: string | null;
+  entityId: string | null;
+  entityKey: string | null;
+  points: number;
+  latestObsDate: string | null;
+  latestValue: string | null;
+  latestVintage: string | null;
+}
+
+export async function getMacroSeriesList(): Promise<MacroSeriesView[]> {
+  const pool = getPool();
+  const r = await pool.query(
+    `SELECT s.id, s.canonical_key, s.provider, s.series_code, s.title,
+            s.frequency, s.units, s.seasonal_adjustment, s.entity_id,
+            e.canonical_key AS entity_key,
+            COALESCE(c.points, 0) AS points,
+            lp.obs_date AS latest_obs,
+            lv.value AS latest_val,
+            lv.vintage_date AS latest_vint
+       FROM macro_series s
+       LEFT JOIN entities e ON e.id = s.entity_id
+       LEFT JOIN (
+         SELECT series_id, count(*) AS points, max(obs_date) AS latest_obs
+           FROM macro_points GROUP BY series_id
+       ) c ON c.series_id = s.id
+       LEFT JOIN macro_points lp
+         ON lp.series_id = s.id AND lp.obs_date = c.latest_obs
+       LEFT JOIN macro_point_versions lv ON lv.id = lp.current_version_id
+      WHERE s.status='active'
+      ORDER BY s.canonical_key`,
+  );
+  return r.rows.map((row) => ({
+    id: row.id,
+    canonicalKey: row.canonical_key,
+    provider: row.provider,
+    seriesCode: row.series_code,
+    title: row.title,
+    frequency: row.frequency,
+    units: row.units,
+    seasonalAdjustment: row.seasonal_adjustment,
+    entityId: row.entity_id,
+    entityKey: row.entity_key,
+    points: Number(row.points),
+    latestObsDate: row.latest_obs ? isoDay(row.latest_obs) : null,
+    latestValue: row.latest_val,
+    latestVintage: row.latest_vint ? isoDay(row.latest_vint) : null,
+  }));
+}
+
+export interface MacroPointView {
+  obsDate: string;
+  value: string;
+  vintageDate: string;
+  versionNo: number;
+  observedAt: string;
+  observationId: string | null;
+}
+
+/** Points for one macro series. `asOf` = ALFRED view: the value that was
+ *  official at that vintage date — the revision-aware read. Without it,
+ *  returns latest-vintage current values. */
+export async function getMacroPoints(
+  seriesRef: string,
+  opts: {
+    from?: string;
+    to?: string;
+    limit?: number;
+    order?: "asc" | "desc";
+    asOf?: string;
+  } = {},
+): Promise<MacroPointView[]> {
+  const pool = getPool();
+  const isUuid =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      seriesRef,
+    );
+  const s = await pool.query(
+    `SELECT id FROM macro_series
+      WHERE ${isUuid ? "id" : "canonical_key"} = $1`,
+    [seriesRef],
+  );
+  if (!s.rows.length) return [];
+  const seriesId = s.rows[0].id as string;
+  const limit = Math.min(Math.max(1, opts.limit ?? 200), 10000);
+  const order = opts.order === "desc" ? "DESC" : "ASC";
+  const params: unknown[] = [seriesId];
+  let cond = "";
+  if (opts.from) {
+    params.push(opts.from);
+    cond += ` AND p.obs_date >= $${params.length}`;
+  }
+  if (opts.to) {
+    params.push(opts.to);
+    cond += ` AND p.obs_date <= $${params.length}`;
+  }
+  const asOf = opts.asOf;
+  const r = asOf
+    ? await pool.query(
+        // as-of read: latest version whose vintage_date ≤ asOf
+        `SELECT obs_date, value, vintage_date, version_no, observed_at, observation_id
+           FROM (
+             SELECT DISTINCT ON (p.id)
+                    p.obs_date, v.value, v.vintage_date, v.version_no,
+                    v.observed_at, v.observation_id
+               FROM macro_points p
+               JOIN macro_point_versions v
+                 ON v.point_id = p.id AND v.vintage_date <= $${params.length + 1}
+              WHERE p.series_id=$1 ${cond}
+              ORDER BY p.id, v.vintage_date DESC, v.version_no DESC
+           ) pick
+          ORDER BY obs_date ${order} LIMIT $${params.length + 2}`,
+        [...params, asOf, limit],
+      )
+    : await pool.query(
+        `SELECT p.obs_date, v.value, v.vintage_date, v.version_no,
+                v.observed_at, v.observation_id
+           FROM macro_points p
+           JOIN macro_point_versions v ON v.id = p.current_version_id
+          WHERE p.series_id=$1 ${cond}
+          ORDER BY p.obs_date ${order} LIMIT $${params.length + 1}`,
+        [...params, limit],
+      );
+  return r.rows.map((row) => ({
+    obsDate: isoDay(row.obs_date),
+    value: row.value,
+    vintageDate: isoDay(row.vintage_date),
+    versionNo: row.version_no,
+    observedAt: row.observed_at,
+    observationId: row.observation_id,
+  }));
+}
+
+/** Full version history for one (series, obs_date) — the revision trail. */
+export async function getMacroPointHistory(
+  seriesRef: string,
+  obsDate: string,
+): Promise<MacroPointView[]> {
+  const pool = getPool();
+  const r = await pool.query(
+    `SELECT p.obs_date, v.value, v.vintage_date, v.version_no,
+            v.observed_at, v.observation_id
+       FROM macro_points p
+       JOIN macro_series s ON s.id = p.series_id
+       JOIN macro_point_versions v ON v.point_id = p.id
+      WHERE (s.canonical_key=$1 OR s.id::text=$1) AND p.obs_date=$2
+      ORDER BY v.version_no`,
+    [seriesRef, obsDate],
+  );
+  return r.rows.map((row) => ({
+    obsDate: isoDay(row.obs_date),
+    value: row.value,
+    vintageDate: isoDay(row.vintage_date),
+    versionNo: row.version_no,
+    observedAt: row.observed_at,
+    observationId: row.observation_id,
+  }));
+}
