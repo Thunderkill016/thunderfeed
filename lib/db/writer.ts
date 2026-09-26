@@ -652,6 +652,10 @@ export interface EvidenceEntityRow {
   role: string;
   title: boolean;
   method: string;
+  /** gazetteer slug whose surface matched — stored as matched_slug so a
+   *  row is explainable (surface → slug → entity) without re-guessing
+   *  from entity_id. Structured methods carry no slug. */
+  slug?: string;
 }
 
 export interface EvidenceEntityResult {
@@ -682,6 +686,7 @@ export async function evidenceEntityAssertions(
       role: titleEnts.has(slug) ? "subject" : "mentioned",
       title: titleEnts.has(slug),
       method: "gazetteer",
+      slug,
     });
   }
 
@@ -762,6 +767,21 @@ export async function evidenceEntityAssertions(
         !cur || (cur.method === "gazetteer" && r.method !== "gazetteer")
           ? r.method
           : cur.method,
+      // matched_slug follows the surviving row; between gazetteer slugs
+      // mapping to one entity the in-title slug wins, then smallest —
+      // same determinism as the junction dedupe
+      slug:
+        !cur || r.method !== "gazetteer"
+          ? r.slug
+          : cur.method !== "gazetteer"
+            ? cur.slug
+            : r.title === cur.title
+              ? (r.slug ?? "") < (cur.slug ?? "")
+                ? r.slug
+                : cur.slug
+              : r.title
+                ? r.slug
+                : cur.slug,
     });
   }
   return { rows: [...dedup.values()], unresolvedIssuers };
@@ -784,17 +804,19 @@ async function syncEvidenceEntities(
   if (!final.length) return;
   await client.query(
     `INSERT INTO evidence_entities
-       (evidence_version_id, entity_id, mention_role, in_title, method)
+       (evidence_version_id, entity_id, mention_role, in_title, method, matched_slug)
      VALUES ${final
        .map(
          (_, i) =>
-           `($1, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4}, $${i * 4 + 5})`,
+           `($1, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5}, $${i * 5 + 6})`,
        )
        .join(",")}
      ON CONFLICT DO NOTHING`,
     [
       evidenceVersionId,
-      ...final.flatMap((r) => [r.id, r.role, r.title, r.method] as const),
+      ...final.flatMap(
+        (r) => [r.id, r.role, r.title, r.method, r.slug ?? null] as const,
+      ),
     ],
   );
 }

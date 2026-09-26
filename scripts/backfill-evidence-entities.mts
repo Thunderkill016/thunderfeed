@@ -107,17 +107,19 @@ for (;;) {
       metrics.versionsWithEntities++;
       const res = await client.query(
         `INSERT INTO evidence_entities
-           (evidence_version_id, entity_id, mention_role, in_title, method)
+           (evidence_version_id, entity_id, mention_role, in_title, method, matched_slug)
          VALUES ${rows
            .map(
              (_, i) =>
-               `($1, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4}, $${i * 4 + 5})`,
+               `($1, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5}, $${i * 5 + 6})`,
            )
            .join(",")}
          ON CONFLICT DO NOTHING`,
         [
           v.id,
-          ...rows.flatMap((r) => [r.id, r.role, r.title, r.method] as const),
+          ...rows.flatMap(
+            (r) => [r.id, r.role, r.title, r.method, r.slug ?? null] as const,
+          ),
         ],
       );
       metrics.rowsInserted += res.rowCount ?? rows.length;

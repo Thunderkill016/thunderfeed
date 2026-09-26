@@ -172,22 +172,239 @@ const EXTRA_ENTITIES: {
   },
 ];
 
-/* Explicit relationships — only edges that are stable, public and
- * evidence-free to state (brand→company, institution HQ country).
- * Co-occurrence is NEVER asserted here. */
-const RELATIONSHIPS: [from: string, type: string, to: string][] = [
-  ["brand:google", "brand_of", "company:alphabet"],
-  ["brand:deepmind", "brand_of", "company:alphabet"],
-  ["brand:facebook", "brand_of", "company:meta_platforms"],
-  ["brand:tiktok", "brand_of", "company:bytedance"],
-  ["brand:chatgpt", "brand_of", "company:openai"],
-  ["brand:claude", "brand_of", "company:anthropic"],
-  ["brand:starlink", "brand_of", "company:spacex"],
-  ["brand:falcon", "brand_of", "company:spacex"],
-  ["brand:green_sm", "brand_of", "company:vinfast"],
-  ["central_bank:fed", "headquartered_in", "country:us"],
-  ["central_bank:sbv", "headquartered_in", "country:vietnam"],
-  ["central_bank:boj", "headquartered_in", "country:japan"],
+/* Explicit relationships — every edge carries the authoritative evidence
+ * behind it (Phase 8): provider + source document + observed_at + method.
+ * `supersedes` names the V1.1 curated assertion this edge replaces —
+ * corrections append, never rewrite. Co-occurrence is NEVER asserted. */
+interface RelSeed {
+  from: string;
+  type: string;
+  to: string;
+  prov: Record<string, string>;
+  /** the V1.1 assertion this supersedes (same or corrected edge) */
+  supersedes?: { from: string; type: string; to: string };
+}
+
+const OBSERVED = "2026-09-26";
+const SEC = (note: string) => ({
+  provider: "SEC EDGAR",
+  method: "registry_filing",
+  sourceUrl:
+    "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001652044&type=10-K",
+  observedAt: OBSERVED,
+  note,
+});
+const OFFICIAL = (provider: string, sourceUrl: string, note: string) => ({
+  provider,
+  method: "official_disclosure",
+  sourceUrl,
+  observedAt: OBSERVED,
+  note,
+});
+
+/* Edges WITHOUT a superseded predecessor are emitted as portable
+ * guarded inserts; edges that supersede a V1.1 assertion need a join
+ * on entity_relationships, which only real Postgres can evaluate —
+ * they land in the PG-ONLY tail (test fixtures provide their own). */
+const RELATIONSHIPS: RelSeed[] = [
+  {
+    /* V1.2: the brand belongs to the operating legal entity, which is
+     * itself an Alphabet subsidiary (10-K Exhibit 21) — not directly to
+     * Alphabet Inc. */
+    from: "brand:google",
+    type: "brand_of",
+    to: "company:google_llc",
+    prov: SEC(
+      "Alphabet 10-K: Google LLC is the operating entity behind the Google brand/services",
+    ),
+    supersedes: {
+      from: "brand:google",
+      type: "brand_of",
+      to: "company:alphabet",
+    },
+  },
+  {
+    from: "company:google_llc",
+    type: "subsidiary_of",
+    to: "company:alphabet",
+    prov: SEC(
+      "Alphabet 10-K Exhibit 21 lists Google LLC as a subsidiary of Alphabet Inc.",
+    ),
+  },
+  {
+    /* Google DeepMind is Google's AI division — inside the Google
+     * segment/LLC, not a direct Alphabet child brand */
+    from: "brand:deepmind",
+    type: "brand_of",
+    to: "company:google_llc",
+    prov: OFFICIAL(
+      "Google DeepMind",
+      "https://deepmind.google",
+      "DeepMind operates as Google DeepMind within Google",
+    ),
+    supersedes: {
+      from: "brand:deepmind",
+      type: "brand_of",
+      to: "company:alphabet",
+    },
+  },
+  {
+    from: "brand:facebook",
+    type: "brand_of",
+    to: "company:meta_platforms",
+    prov: {
+      provider: "SEC EDGAR",
+      method: "registry_filing",
+      sourceUrl:
+        "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001326801&type=10-K",
+      observedAt: OBSERVED,
+      note: "Meta Platforms 10-K: Facebook is a product/brand of Meta Platforms, Inc.",
+    },
+    supersedes: {
+      from: "brand:facebook",
+      type: "brand_of",
+      to: "company:meta_platforms",
+    },
+  },
+  {
+    from: "brand:tiktok",
+    type: "brand_of",
+    to: "company:bytedance",
+    prov: OFFICIAL(
+      "ByteDance",
+      "https://www.bytedance.com/en/",
+      "TikTok is a ByteDance product (private co — no SEC filing)",
+    ),
+    supersedes: {
+      from: "brand:tiktok",
+      type: "brand_of",
+      to: "company:bytedance",
+    },
+  },
+  {
+    from: "brand:chatgpt",
+    type: "brand_of",
+    to: "company:openai",
+    prov: OFFICIAL(
+      "OpenAI",
+      "https://openai.com/chatgpt/",
+      "ChatGPT is an OpenAI product",
+    ),
+    supersedes: {
+      from: "brand:chatgpt",
+      type: "brand_of",
+      to: "company:openai",
+    },
+  },
+  {
+    from: "brand:claude",
+    type: "brand_of",
+    to: "company:anthropic",
+    prov: OFFICIAL(
+      "Anthropic",
+      "https://www.anthropic.com/claude",
+      "Claude is an Anthropic product",
+    ),
+    supersedes: {
+      from: "brand:claude",
+      type: "brand_of",
+      to: "company:anthropic",
+    },
+  },
+  {
+    from: "brand:starlink",
+    type: "brand_of",
+    to: "company:spacex",
+    prov: OFFICIAL(
+      "SpaceX",
+      "https://www.starlink.com/",
+      "Starlink is a SpaceX service (site footer/legal terms)",
+    ),
+    supersedes: {
+      from: "brand:starlink",
+      type: "brand_of",
+      to: "company:spacex",
+    },
+  },
+  {
+    from: "brand:falcon",
+    type: "brand_of",
+    to: "company:spacex",
+    prov: OFFICIAL(
+      "SpaceX",
+      "https://www.spacex.com/vehicles/falcon-9/",
+      "Falcon 9/Falcon Heavy are SpaceX vehicles",
+    ),
+    supersedes: {
+      from: "brand:falcon",
+      type: "brand_of",
+      to: "company:spacex",
+    },
+  },
+  {
+    /* V1.2 correction: Xanh SM is operated by Green and Smart Mobility
+     * JSC — a separate legal entity. Shared founder (Phạm Nhật Vượng)
+     * is NOT ownership evidence, so the old brand_of→vinfast edge was
+     * wrong: 'operates' states only what the official site states. */
+    from: "company:gsm",
+    type: "operates",
+    to: "brand:green_sm",
+    prov: OFFICIAL(
+      "Xanh SM",
+      "https://xanhsm.com/",
+      "Xanh SM service operated by Công ty Cổ phần Di chuyển Xanh và Thông minh (Green and Smart Mobility JSC)",
+    ),
+    supersedes: {
+      from: "brand:green_sm",
+      type: "brand_of",
+      to: "company:vinfast",
+    },
+  },
+  {
+    from: "central_bank:fed",
+    type: "headquartered_in",
+    to: "country:us",
+    prov: OFFICIAL(
+      "Federal Reserve",
+      "https://www.federalreserve.gov/",
+      "Board of Governors, Washington D.C.",
+    ),
+    supersedes: {
+      from: "central_bank:fed",
+      type: "headquartered_in",
+      to: "country:us",
+    },
+  },
+  {
+    from: "central_bank:sbv",
+    type: "headquartered_in",
+    to: "country:vietnam",
+    prov: OFFICIAL(
+      "State Bank of Vietnam",
+      "https://sbv.gov.vn/",
+      "SBV headquarters, Hanoi",
+    ),
+    supersedes: {
+      from: "central_bank:sbv",
+      type: "headquartered_in",
+      to: "country:vietnam",
+    },
+  },
+  {
+    from: "central_bank:boj",
+    type: "headquartered_in",
+    to: "country:japan",
+    prov: OFFICIAL(
+      "Bank of Japan",
+      "https://www.boj.or.jp/en/",
+      "BOJ headquarters, Tokyo",
+    ),
+    supersedes: {
+      from: "central_bank:boj",
+      type: "headquartered_in",
+      to: "country:japan",
+    },
+  },
 ];
 
 /* The SEC issuer-name → canonical key lookup: filings carry issuer names
@@ -234,12 +451,14 @@ function aliasType(alias: string): string {
 const sql: string[] = [];
 sql.push("BEGIN;");
 sql.push("");
-sql.push("-- 0015: entity seed v2 — GENERATED by scripts/gen-entity-seed.mts.");
+sql.push("-- 0017: entity seed v3 — GENERATED by scripts/gen-entity-seed.mts.");
 sql.push("-- Every gazetteer slug becomes a canonical entity; aliases carry");
 sql.push("-- the matching surface so lookup never re-derives identity from");
-sql.push("-- raw text. V1.1: brand/product surfaces resolve to BRAND entities");
-sql.push("-- (never silently to the issuer); all inserts are ON CONFLICT-");
-sql.push("-- idempotent so this file is safe to re-apply after 0013/0014.");
+sql.push("-- raw text. V1.2: Google LLC + GSM are canonical legal entities;");
+sql.push("-- brand surfaces resolve to BRAND entities (never silently to");
+sql.push("-- the issuer); relationships carry authoritative provenance and");
+sql.push("-- corrected edges append as superseding assertions (V1.1 rows");
+sql.push("-- stay queryable as history). All inserts are idempotent.");
 sql.push("");
 
 const slugKeyPairs: [string, string][] = [];
@@ -366,33 +585,30 @@ sql.push(
 sql.push(identInserts.join(",\n") + "\nON CONFLICT DO NOTHING;");
 sql.push("");
 
-/* explicit relationships — source_method 'curated' + provenance marks
- * them as hand-asserted structure, never extracted evidence. Rows are
- * assertions (no natural unique key), so idempotency uses a guarded
- * INSERT…SELECT per edge — auditable one assertion per line. */
-const REL_PROV =
-  `'{"provider":"thunderfeed-curation","method":"curated_seed",` +
-  `"note":"V1.1 seed: curated brand/company and central-bank HQ graph; ` +
-  `not evidence-derived"}'::jsonb`;
-for (const [f, t, to] of RELATIONSHIPS) {
-  // LEFT-JOIN guard instead of ON CONFLICT (assertions have no natural
-  // key) and instead of scalar subqueries (pg-mem can't host them in an
-  // INSERT…SELECT list) — the anti-join keeps the file re-runnable
+/* explicit relationships — every edge is an append-only assertion with
+ * authoritative provenance; a corrected edge links to the V1.1 row it
+ * supersedes via supersedes_relationship_id (resolved through the old
+ * edge's entities so the SQL stays portable). Rows are assertions (no
+ * natural unique key), so idempotency uses a guarded INSERT…SELECT that
+ * skips once a live (non-superseded) edge exists. */
+const newEdges = RELATIONSHIPS.filter((r) => !r.supersedes);
+const corrected = RELATIONSHIPS.filter((r) => r.supersedes);
+for (const r of newEdges) {
   sql.push(
     `INSERT INTO entity_relationships\n` +
-      `  (from_entity_id, to_entity_id, relationship_type, source_method, provenance)\n` +
-      `SELECT ef.id, et.id, ${q(t)}, 'curated', ${REL_PROV}\n` +
+      `  (from_entity_id, to_entity_id, relationship_type, source_method,\n` +
+      `   provenance, valid_from)\n` +
+      `SELECT ef.id, et.id, ${q(r.type)}, 'curated', ${q(JSON.stringify(r.prov))}::jsonb,\n` +
+      `       ${q(r.prov.observedAt)}::timestamptz\n` +
       `FROM entities ef\n` +
-      // explicit join keeps ef in scope for the LEFT JOIN's ON clause —
-      // a comma join binds looser and Postgres rejects ef in r's ON
       `JOIN entities et ON true\n` +
-      `LEFT JOIN entity_relationships r\n` +
-      `  ON r.from_entity_id = ef.id\n` +
-      `  AND r.to_entity_id = et.id\n` +
-      `  AND r.relationship_type = ${q(t)}\n` +
-      `WHERE ef.canonical_key = ${q(f)}\n` +
-      `  AND et.canonical_key = ${q(to)}\n` +
-      `  AND r.id IS NULL;`,
+      `LEFT JOIN entity_relationships r_new\n` +
+      `  ON r_new.from_entity_id = ef.id\n` +
+      `  AND r_new.to_entity_id = et.id\n` +
+      `  AND r_new.relationship_type = ${q(r.type)}\n` +
+      `WHERE ef.canonical_key = ${q(r.from)}\n` +
+      `  AND et.canonical_key = ${q(r.to)}\n` +
+      `  AND r_new.id IS NULL;`,
   );
 }
 sql.push("");
@@ -421,7 +637,8 @@ sql.push("");
  * only; test fixtures have no junction rows at migration time so the
  * PG-ONLY strip loses nothing. */
 sql.push("-- == PG-ONLY:");
-sql.push(`-- legacy junction slugs outside the gazetteer become 'unresolved'
+const pgOnly: string[] = [];
+pgOnly.push(`-- legacy junction slugs outside the gazetteer become 'unresolved'
 -- entities — documented, queryable, never silently dropped
 INSERT INTO entities (canonical_key, canonical_name, entity_type, status, metadata)
 SELECT 'legacy:' || s.entity_slug, s.entity_slug, 'other', 'unresolved',
@@ -439,12 +656,52 @@ FROM entities en
 WHERE ee.entity_id IS NULL
   AND en.canonical_key = 'legacy:' || ee.entity_slug;`);
 
+/* corrected edges live in the PG-ONLY tail — asserting a superseding
+ * row requires joining entity_relationships for the predecessor id,
+ * and test fixtures (pg-mem) cannot evaluate those joins. On pg-mem
+ * the V1.1 edge simply stays live; tests assert the corrected graph
+ * through fixture inserts instead. */
+for (const r of corrected) {
+  const s = r.supersedes!;
+  pgOnly.push(
+    `-- corrected assertion: ${s.from} -[${s.type}]-> ${s.to}\n` +
+      `--   superseded by   ${r.from} -[${r.type}]-> ${r.to}\n` +
+      `INSERT INTO entity_relationships\n` +
+      `  (from_entity_id, to_entity_id, relationship_type, source_method,\n` +
+      `   provenance, supersedes_relationship_id, valid_from)\n` +
+      `SELECT ef.id, et.id, ${q(r.type)}, 'curated', ${q(JSON.stringify(r.prov))}::jsonb,\n` +
+      `       r_old.id, ${q(r.prov.observedAt)}::timestamptz\n` +
+      `FROM entities ef\n` +
+      `JOIN entities et ON true\n` +
+      `LEFT JOIN entities osf ON osf.canonical_key = ${q(s.from)}\n` +
+      `LEFT JOIN entities ost ON ost.canonical_key = ${q(s.to)}\n` +
+      `LEFT JOIN entity_relationships r_old\n` +
+      `  ON r_old.from_entity_id = osf.id\n` +
+      `  AND r_old.to_entity_id = ost.id\n` +
+      `  AND r_old.relationship_type = ${q(s.type)}\n` +
+      `LEFT JOIN entity_relationships r_sup\n` +
+      `  ON r_sup.supersedes_relationship_id = r_old.id\n` +
+      `LEFT JOIN entity_relationships r_new\n` +
+      `  ON r_new.from_entity_id = ef.id\n` +
+      `  AND r_new.to_entity_id = et.id\n` +
+      `  AND r_new.relationship_type = ${q(r.type)}\n` +
+      `WHERE ef.canonical_key = ${q(r.from)}\n` +
+      `  AND et.canonical_key = ${q(r.to)}\n` +
+      `  AND r_sup.id IS NULL\n` +
+      /* same-triple corrections (provenance upgrade, identical edge):
+       * the predecessor itself matches r_new's join — it must NOT count
+       * as a duplicate, only a genuinely different live edge blocks */
+      `  AND (r_new.id IS NULL OR r_new.id = r_old.id);`,
+  );
+}
+sql.push(pgOnly.join("\n\n"));
+
 sql.push("");
 sql.push("COMMIT;");
 sql.push("");
 
 const out = fileURLToPath(
-  new URL("../db/migrations/0015_entity_seed_v2.sql", import.meta.url),
+  new URL("../db/migrations/0017_entity_seed_v3.sql", import.meta.url),
 );
 writeFileSync(out, sql.join("\n"));
 console.log(

@@ -18,6 +18,10 @@ import {
   dedupeEntityRows,
   evidenceEntityAssertions,
 } from "../lib/db/writer";
+import {
+  planEvidenceReconciliation,
+  applyEvidencePlan,
+} from "../lib/db/reconcile";
 import { entityHref } from "../lib/entities";
 import { extractClaims } from "../lib/db/extract";
 import {
@@ -83,6 +87,16 @@ function cluster(articles: Article[]): StoryCluster {
     significanceScore: 100,
     publishedAt: articles[0].publishedAt,
   };
+}
+
+/** entity_id → canonical_key lookup for assertion-shape tests */
+const keyById = new Map<string, string>();
+async function loadKeys() {
+  const { rows } = await getPool().query<{ id: string; key: string }>(
+    `SELECT id, canonical_key key FROM entities`,
+  );
+  keyById.clear();
+  for (const r of rows) keyById.set(r.id, r.key);
 }
 
 test("identity resolution: Fed aliases all land on one canonical entity", async () => {
@@ -184,9 +198,12 @@ test("co-occurrence never mints explicit relationships", async () => {
   const rels = await getPool().query<{ n: number }>(
     `SELECT count(*)::int AS n FROM entity_relationships`,
   );
+  // V1.1 seeds 12 curated assertions; 0017 adds one portable
+  // (google_llc subsidiary_of alphabet) — the superseding corrections
+  // are PG-ONLY and stripped on pg-mem
   assert.equal(
     rels.rows[0].n,
-    12,
+    13,
     "junction co-mention adds no graph edges — count stays at the curated seed",
   );
 
@@ -342,9 +359,38 @@ test("brand vs company: Google resolves to the brand, Alphabet to the company", 
   const google = await getEntityEvents("google");
   assert.equal(google.entity?.canonicalKey, "brand:google");
   assert.equal(google.entity?.type, "brand");
+
+  // V1.2 legal graph: brand_of now points at Google LLC (the operating
+  // entity), which is itself an Alphabet subsidiary. The superseding
+  // assertion is PG-ONLY in the seed — simulate the applied correction
+  // the same way production replays it: a new row superseding the V1.1
+  // assertion, which then drops out of the live edge list.
+  const pool = getPool();
+  const oldEdge = await pool.query<{ id: string }>(
+    `SELECT r.id FROM entity_relationships r
+       JOIN entities f ON f.id = r.from_entity_id
+       JOIN entities t ON t.id = r.to_entity_id
+     WHERE f.canonical_key = 'brand:google'
+       AND t.canonical_key = 'company:alphabet'
+       AND r.relationship_type = 'brand_of'`,
+  );
+  assert.ok(oldEdge.rows[0], "V1.1 assertion exists to be superseded");
+  const ids = await pool.query<{ id: string; key: string }>(
+    `SELECT id, canonical_key key FROM entities
+     WHERE canonical_key IN ('brand:google', 'company:google_llc')`,
+  );
+  const idOf = Object.fromEntries(ids.rows.map((r) => [r.key, r.id]));
+  await pool.query(
+    `INSERT INTO entity_relationships
+       (from_entity_id, to_entity_id, relationship_type, supersedes_relationship_id)
+     VALUES ($1, $2, 'brand_of', $3)`,
+    [idOf["brand:google"], idOf["company:google_llc"], oldEdge.rows[0].id],
+  );
+  const corrected = await getEntityEvents("brand:google");
   assert.deepEqual(
-    google.relationships.map((r) => `${r.type}:${r.other.canonicalKey}`),
-    ["brand_of:company:alphabet"],
+    corrected.relationships.map((r) => `${r.type}:${r.other.canonicalKey}`),
+    ["brand_of:company:google_llc"],
+    "superseded edge drops out of the live relationship list",
   );
 
   // the legal surface names the company — a distinct identity joined
@@ -496,4 +542,226 @@ test("historical evidence backfill: shared rules, zero duplicates on rerun", asy
     [vid],
   );
   assert.equal(n.rows[0].n, first);
+});
+
+/* ---------- Identity V1.2 — surface fidelity + legal graph ---------- */
+
+test("surface fidelity: brand/company extraction never cross-maps", async () => {
+  setupDb();
+  await loadKeys();
+  const pool = getPool();
+  const keys = async (text: string) => {
+    const { rows } = await evidenceEntityAssertions(pool as never, {
+      title: text,
+      summary: "",
+    });
+    return rows.map((r) => `${keyById.get(r.id) ?? "?"}:${r.role}`).sort();
+  };
+
+  // Alphabet-only → the legal entity; the brand must NOT appear
+  const alpha = await keys("Alphabet reports earnings above expectations");
+  assert.deepEqual(alpha, ["company:alphabet:subject"]);
+
+  // Google-only → the brand, not the issuer
+  const goog = await keys("Google launches Gemini 4");
+  assert.deepEqual(goog, ["brand:google:subject"]);
+
+  // both surfaces present → both identities, distinct roles by position
+  const both = await keys("Google parent Alphabet reports earnings");
+  assert.ok(both.includes("brand:google:subject"));
+  assert.ok(both.includes("company:alphabet:subject"));
+
+  // product-only → brand; parent company must NOT be inferred
+  const gpt = await keys("ChatGPT gets a new voice mode");
+  assert.deepEqual(gpt, ["brand:chatgpt:subject"]);
+
+  const openai = await keys("OpenAI announces a partnership with Azure");
+  assert.deepEqual(openai, ["company:openai:subject"]);
+
+  // Green SM surface → the operator brand; VinFast must NOT be inferred
+  const gsm = await keys("Xanh SM opens a new station network");
+  assert.deepEqual(gsm, ["brand:green_sm:subject"]);
+
+  // Google LLC is itself an extractable legal entity — and the string
+  // still contains the "google" surface, so the brand surfaces too;
+  // both assertions are surface-faithful
+  const llc = await keys("Google LLC settles with the FTC");
+  assert.ok(llc.includes("company:google_llc:subject"));
+  assert.ok(llc.includes("brand:google:subject"));
+});
+
+test("SEC filing: Alphabet issuer stays the legal entity", async () => {
+  setupDb();
+  await loadKeys();
+  const pool = getPool();
+  const { rows } = await evidenceEntityAssertions(pool as never, {
+    title: "Alphabet Inc. files annual report",
+    summary: "",
+    structuredData: { cik: "0001652044" },
+    sourceName: "sec",
+    sourceUrl: "https://sec.gov/edgar/10-K",
+    isPrimary: true,
+  });
+  const issuer = rows.find((r) => r.method === "structured_cik");
+  assert.ok(issuer, "structured CIK mints an issuer assertion");
+  assert.equal(keyById.get(issuer!.id), "company:alphabet");
+  assert.equal(issuer!.role, "issuer");
+  // whatever the brand gazetteer says, it cannot change issuer identity
+  assert.ok(
+    !rows.some(
+      (r) =>
+        r.method === "structured_cik" && keyById.get(r.id) === "brand:google",
+    ),
+  );
+});
+
+test("matched_slug: every gazetteer assertion records its surface", async () => {
+  setupDb();
+  const c = cluster([
+    art({
+      source: "Reuters",
+      title: "Google parent Alphabet reports earnings",
+      summary: "ChatGPT rival pressures Gemini.",
+    }),
+  ]);
+  await persistCluster(c, extractClaims(c));
+  const pool = getPool();
+  const { rows } = await pool.query<{
+    slug: string;
+    key: string;
+    title: boolean;
+  }>(
+    `SELECT ee.matched_slug slug, e.canonical_key key, ee.in_title title
+     FROM evidence_entities ee JOIN entities e ON e.id = ee.entity_id
+     WHERE ee.method = 'gazetteer'
+     ORDER BY key`,
+  );
+  const map = Object.fromEntries(rows.map((r) => [r.key, r.slug]));
+  assert.equal(map["brand:google"], "google");
+  assert.equal(map["company:alphabet"], "alphabet");
+  assert.equal(map["brand:chatgpt"], "chatgpt");
+  // every gazetteer row carries a slug — no nulls on fresh writes
+  assert.ok(rows.every((r) => r.slug !== null));
+});
+
+test("reconciliation: stale gazetteer rows rebuilt, structured untouched, idempotent", async () => {
+  setupDb();
+  const c = cluster([
+    art({ source: "Reuters", title: "TikTok faces an EU fine" }),
+  ]);
+  await persistCluster(c, extractClaims(c));
+  await loadKeys();
+  const pool = getPool();
+
+  const v = await pool.query<{ id: string }>(
+    `INSERT INTO evidence_versions
+       (document_id, version_no, title, summary, content_hash, observed_at)
+     SELECT d.id, 50, 'TikTok faces an EU fine',
+            'ByteDance-owned platform contests the ruling.',
+            'h-v12', now()
+     FROM evidence_documents d LIMIT 1 RETURNING id`,
+  );
+  const vid = v.rows[0].id;
+  const ids = await pool.query<{ key: string; id: string }>(
+    `SELECT canonical_key key, id FROM entities`,
+  );
+  const idOf = Object.fromEntries(ids.rows.map((r) => [r.key, r.id]));
+
+  // V1-shape stale row: brand surface extracted as the company (wrong),
+  // no matched_slug recorded. Plus a structured issuer row that must
+  // survive any reconciliation untouched.
+  await pool.query(
+    `INSERT INTO evidence_entities
+       (evidence_version_id, entity_id, mention_role, in_title, method)
+     VALUES ($1, $2, 'subject', true, 'gazetteer'),
+            ($1, $3, 'issuer', false, 'structured_cik')`,
+    [vid, idOf["company:bytedance"], idOf["company:bytedance"]],
+  );
+
+  const runReconcile = async () => {
+    const { rows: stored } = await pool.query(
+      `SELECT ee.id, ee.entity_id, e.canonical_key, ee.mention_role,
+              ee.in_title, ee.method, ee.matched_slug
+       FROM evidence_entities ee JOIN entities e ON e.id = ee.entity_id
+       WHERE ee.evidence_version_id = $1`,
+      [vid],
+    );
+    const { rows: expected } = await evidenceEntityAssertions(pool as never, {
+      title: "TikTok faces an EU fine",
+      summary: "ByteDance-owned platform contests the ruling.",
+    });
+    const plan = planEvidenceReconciliation(stored as never, expected);
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      await applyEvidencePlan(client, vid, plan);
+      await client.query("COMMIT");
+    } finally {
+      client.release();
+    }
+    return plan;
+  };
+
+  const plan1 = await runReconcile();
+  assert.equal(plan1.stale.length, 1, "stale company row identified");
+  assert.equal(plan1.stale[0].canonical_key, "company:bytedance");
+  assert.ok(
+    plan1.missing.some(
+      (r) => keyById.get(r.id) === "brand:tiktok" && r.role === "subject",
+    ),
+    "brand assertion identified as missing",
+  );
+
+  const after = await pool.query(
+    `SELECT ee.method, e.canonical_key k, ee.mention_role role,
+            ee.matched_slug slug
+     FROM evidence_entities ee JOIN entities e ON e.id = ee.entity_id
+     WHERE ee.evidence_version_id = $1 ORDER BY ee.method, k`,
+    [vid],
+  );
+  const gaz = after.rows.filter((r) => r.method === "gazetteer");
+  assert.ok(
+    gaz.some((r) => r.k === "brand:tiktok" && r.slug === "tiktok"),
+    "rebuilt assertion keeps surface → slug → entity trace",
+  );
+  assert.ok(
+    !gaz.some((r) => r.k === "company:bytedance" && r.role === "subject"),
+    "stale company subject removed",
+  );
+  assert.ok(
+    after.rows.some(
+      (r) => r.method === "structured_cik" && r.role === "issuer",
+    ),
+    "structured issuer row survives unchanged",
+  );
+
+  const plan2 = await runReconcile();
+  assert.equal(plan2.stale.length, 0);
+  assert.equal(plan2.missing.length, 0);
+  assert.equal(plan2.refresh.length, 0);
+});
+
+test("V1.2 migrations: matched_slug + corrective superseding graph", () => {
+  const dir = fileURLToPath(new URL("../db/migrations", import.meta.url));
+  const m16 = readFileSync(`${dir}/0016_identity_v12.sql`, "utf8");
+  assert.match(m16, /ADD COLUMN( IF NOT EXISTS)? matched_slug/);
+  assert.match(
+    m16,
+    /DERIVED\s+PROJECTION/i,
+    "projection-vs-history distinction documented",
+  );
+  const m17 = readFileSync(`${dir}/0017_entity_seed_v3.sql`, "utf8");
+  for (const key of ["company:google_llc", "company:gsm"]) {
+    assert.ok(m17.includes(key), `${key} seeded`);
+  }
+  assert.ok(m17.includes("subsidiary_of"), "subsidiary edge exists");
+  assert.ok(m17.includes("operates"), "operator edge exists");
+  assert.ok(m17.includes("supersedes_relationship_id"));
+  assert.ok(m17.includes("SEC EDGAR"), "authoritative provenance seeded");
+  // Phase 3: no fresh-install blind repoint — the V1.1 UPDATE that moved
+  // every company:alphabet gazetteer row to brand:google must not recur
+  assert.ok(
+    !m17.match(/UPDATE evidence_entities SET entity_id/i),
+    "no blanket entity_id repoint in the new seed",
+  );
 });

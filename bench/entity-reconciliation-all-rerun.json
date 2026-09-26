@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-09-26T07:27:18.809Z",
+  "applied": true,
+  "metrics": {
+    "versionsScanned": 4156,
+    "affectedVersions": 0,
+    "staleRemoved": 0,
+    "missingAdded": 0,
+    "unchanged": 12178,
+    "companyToBrand": 0,
+    "brandToCompany": 0,
+    "ambiguousVersions": 5,
+    "structuredRowsUntouched": 0,
+    "matchedSlugFilled": 0,
+    "failures": 0,
+    "applied": true
+  },
+  "junctionDrift": [],
+  "versions": []
+}

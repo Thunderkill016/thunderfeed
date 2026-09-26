@@ -398,7 +398,10 @@ const GAZETTEER: EntityDef[] = [
   E("meta", ["meta", "meta platforms"]),
   E("facebook", ["facebook"]),
   E("google", ["google"]),
-  E("alphabet", ["alphabet", "alphabet inc", "google llc", "google inc"]),
+  E("alphabet", ["alphabet", "alphabet inc"]),
+  /* legal entity under Alphabet — 'google llc/inc' surfaces are legal
+   * names, not the consumer brand */
+  E("googlellc", ["google llc", "google inc"]),
   E("deepmind", ["deepmind", "google deepmind"]),
   E("apple", ["apple"], ["\\bapple\\b"]),
   E("microsoft", ["microsoft"]),
@@ -407,6 +410,14 @@ const GAZETTEER: EntityDef[] = [
   E("tiktok", ["tiktok", "tik tok"]),
   E("vinfast", ["vinfast"]),
   E("greensm", ["green sm", "green s.m", "xanh sm"]),
+  /* the operator behind Xanh SM — legal surfaces only, never the brand */
+  E("gsm", [
+    "green and smart mobility",
+    "di chuyển xanh và thông minh",
+    "di chuyen xanh va thong minh",
+    "công ty di chuyển xanh và thông minh",
+    "cong ty di chuyen xanh va thong minh",
+  ]),
   /* people split out of company slugs in the audit */
   E("musk", ["elon musk", "ông musk"], ["\\bmusk\\b"]),
   E("zuckerberg", ["zuckerberg", "mark zuckerberg"]),
@@ -616,6 +627,8 @@ const LABEL_OVERRIDES: Record<string, string> = {
   tiktok: "TikTok",
   deepmind: "DeepMind",
   greensm: "Green SM",
+  gsm: "GSM",
+  googlellc: "Google LLC",
   starlink: "Starlink",
   claude: "Claude",
   falcon: "Falcon",
@@ -951,10 +964,15 @@ const CANONICAL: Record<string, CanonicalEntityRef> = {
   alphabet: CK(
     "company",
     "alphabet",
-    "the legal entity; 'google' surface is the separate brand slug. " +
-      "google llc/inc surfaces land here too — Google LLC is not separately " +
-      "modeled in V1",
+    "the legal entity; 'google' surface is the separate brand slug, " +
+      "'google llc/inc' surfaces are the separate Google LLC legal entity",
     "Alphabet Inc.",
+  ),
+  googlellc: CK(
+    "company",
+    "google_llc",
+    "Google LLC — Alphabet subsidiary; the legal entity behind the brand",
+    "Google LLC",
   ),
   deepmind: CK("brand", "deepmind", "AI lab brand of Alphabet"),
   apple: CK("company", "apple", undefined, "Apple Inc."),
@@ -966,7 +984,14 @@ const CANONICAL: Record<string, CanonicalEntityRef> = {
   greensm: CK(
     "brand",
     "green_sm",
-    "GSM (Green and Smart Mobility) — a brand, not the car maker",
+    "Xanh SM service brand — operated by company:gsm; NOT a VinFast entity",
+  ),
+  gsm: CK(
+    "company",
+    "gsm",
+    "Green and Smart Mobility JSC — operator of Xanh SM; legally distinct " +
+      "from VinFast (shared founder is not ownership)",
+    "Green and Smart Mobility JSC",
   ),
   /* people split out of company slugs in the audit */
   musk: CK("person", "elon_musk"),
