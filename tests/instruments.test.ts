@@ -11,8 +11,8 @@ import type { Pool } from "pg";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  classDescriptor,
   deriveSeed,
+  instrumentDescriptor,
   parseFigiMappingResponse,
   parseIsoMicCsv,
   parseSecTickersExchange,
@@ -168,12 +168,23 @@ test("OpenFIGI mapping response → results / error", () => {
   assert.ok("error" in err);
 });
 
-test("classDescriptor parses share class from issuer names", () => {
-  assert.deepEqual(classDescriptor("ALPHABET INC-CL A"), [
+test("instrumentDescriptor is type-aware, not hardcoded common_stock", () => {
+  assert.deepEqual(instrumentDescriptor("ALPHABET INC-CL A", "common_stock"), [
     "class_a_common_stock",
     "A",
   ]);
-  assert.deepEqual(classDescriptor("MICROSOFT CORP"), ["common_stock", null]);
+  assert.deepEqual(
+    instrumentDescriptor("ALPHABET INC-CL A", "depositary_receipt"),
+    ["class_a_adr", "A"],
+  );
+  assert.deepEqual(instrumentDescriptor("ACME PFD SER A", "preferred_stock"), [
+    "series_a_preferred_stock",
+    "A",
+  ]);
+  assert.deepEqual(instrumentDescriptor("MICROSOFT CORP", "common_stock"), [
+    "common_stock",
+    null,
+  ]);
 });
 
 // ── Phase 22: conservative promotion ──────────────────────────────────────
@@ -559,4 +570,355 @@ test("CIK stays on entities, ticker stays on listings — never instrument ids",
   assert.match(sql, /scheme IN \(\s*'figi','local_security_code','other'/);
   // no UNIQUE constraint may cover the ticker column
   assert.doesNotMatch(sql, /UNIQUE\s*\([^)]*\bticker\b/i);
+});
+
+// ── V1.1 regressions: durable reconciliation + provenance ─────────────────
+// These drive the real apply path (lib/db/instruments.ts) on pg-mem.
+
+import { applyInstrumentPlan, type ApplySources } from "../lib/db/instruments";
+import type { InstrumentSeedPlan } from "../lib/instruments";
+
+async function obsFixture(pool: Pool, key: string, provider = "openfigi") {
+  const r = await pool.query(
+    `INSERT INTO reference_observations
+       (provider, dataset, record_key, payload, content_hash)
+     VALUES ($1,'fixture',$2,'{}',$2) RETURNING id`,
+    [provider, key],
+  );
+  return r.rows[0].id as string;
+}
+
+function seedPlan(
+  over: Partial<InstrumentSeedPlan>,
+  defaultObsId = "",
+): InstrumentSeedPlan {
+  const listings = (
+    over.listings ?? [
+      {
+        listingKey: "listing:acme:common_stock:xngs",
+        mic: "XNGS",
+        ticker: "ACME",
+        currency: "USD",
+        figi: "BBG000VENUE1",
+        obsId: "",
+      },
+    ]
+  ).map((l) => ({ ...l, obsId: l.obsId || defaultObsId }));
+  return {
+    instrumentKey: "instrument:acme:common_stock",
+    instrumentName: "ACME CORP",
+    shareClass: null,
+    instrumentType: "common_stock",
+    issuerCik: "0000000001",
+    currency: "USD",
+    cfi: null,
+    instrumentIdentifiers: [
+      { scheme: "share_class_figi", value: "BBG001S5TEST", scope: "global" },
+      { scheme: "composite_figi", value: "BBG000COMPTE", scope: "composite" },
+    ],
+    ...over,
+    listings,
+  };
+}
+
+test("ticker rename: same shareClassFIGI → same instrument+listing, +1 version", async () => {
+  const pool = setupDb();
+  const issuer = await fixtureIssuer(pool, "company:acme_ren", "Acme Ren");
+  const venue = await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  void venue;
+  const sec = await obsFixture(pool, "sec:1", "sec_edgar");
+  const f1 = await obsFixture(pool, "figi:1");
+  const src: ApplySources = { figiObsId: f1, secObsId: sec };
+
+  const r1 = await applyInstrumentPlan(
+    pool,
+    seedPlan({ instrumentKey: "instrument:acme_ren:common_stock" }, f1),
+    issuer,
+    src,
+  );
+  // ticker rename ABC → XYZ, same shareClassFIGI + same venue figi
+  const f2 = await obsFixture(pool, "figi:2");
+  const plan2 = seedPlan({
+    instrumentKey: "instrument:acme_ren:common_stock",
+    instrumentName: "ACME CORP",
+    listings: [
+      {
+        listingKey: "listing:acme_ren:common_stock:xngs",
+        mic: "XNGS",
+        ticker: "XYZ",
+        currency: "USD",
+        figi: "BBG000VENUE1",
+        obsId: f2,
+      },
+    ],
+  });
+  const r2 = await applyInstrumentPlan(pool, plan2, issuer, {
+    figiObsId: f2,
+    secObsId: sec,
+  });
+  assert.equal(r2.instrumentId, r1.instrumentId);
+  assert.deepEqual(r2.listingIds, r1.listingIds);
+  const versions = await pool.query(
+    `SELECT version_no, ticker FROM listing_versions WHERE listing_id=$1 ORDER BY version_no`,
+    [r1.listingIds[0]],
+  );
+  assert.deepEqual(
+    versions.rows.map((r) => [r.version_no, r.ticker]),
+    [
+      [1, "ACME"],
+      [2, "XYZ"],
+    ],
+  );
+});
+
+test("company rename: same shareClassFIGI, new name → same instrument, +1 version", async () => {
+  const pool = setupDb();
+  const issuer = await fixtureIssuer(pool, "company:rename_co", "Rename Co");
+  await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  const sec = await obsFixture(pool, "sec:r", "sec_edgar");
+  const f1 = await obsFixture(pool, "figi:r1");
+  const r1 = await applyInstrumentPlan(
+    pool,
+    seedPlan({
+      instrumentKey: "instrument:rename_co:common_stock",
+      instrumentName: "RENAME CO",
+      instrumentIdentifiers: [
+        { scheme: "share_class_figi", value: "BBG001S5REN", scope: "global" },
+      ],
+      listings: [
+        {
+          listingKey: "listing:rename_co:common_stock:xngs",
+          mic: "XNGS",
+          ticker: "REN",
+          currency: "USD",
+          figi: "BBG000VENUE9",
+          obsId: f1,
+        },
+      ],
+    }),
+    issuer,
+    { figiObsId: f1, secObsId: sec },
+  );
+  const f2 = await obsFixture(pool, "figi:r2");
+  const r2 = await applyInstrumentPlan(
+    pool,
+    seedPlan({
+      instrumentKey: "instrument:rename_co:common_stock",
+      instrumentName: "RENAMED CORP", // name changed
+      instrumentIdentifiers: [
+        { scheme: "share_class_figi", value: "BBG001S5REN", scope: "global" },
+      ],
+      listings: [
+        {
+          listingKey: "listing:rename_co:common_stock:xngs",
+          mic: "XNGS",
+          ticker: "REN",
+          currency: "USD",
+          figi: "BBG000VENUE9",
+          obsId: f2,
+        },
+      ],
+    }),
+    issuer,
+    { figiObsId: f2, secObsId: sec },
+  );
+  assert.equal(r2.instrumentId, r1.instrumentId);
+  const vers = await pool.query(
+    `SELECT version_no, name FROM instrument_versions
+      WHERE instrument_id=$1 ORDER BY version_no`,
+    [r1.instrumentId],
+  );
+  assert.deepEqual(
+    vers.rows.map((r) => [r.version_no, r.name]),
+    [
+      [1, "RENAME CO"],
+      [2, "RENAMED CORP"],
+    ],
+  );
+  // unchanged rerun → no third version
+  const r3 = await applyInstrumentPlan(
+    pool,
+    seedPlan({
+      instrumentKey: "instrument:rename_co:common_stock",
+      instrumentName: "RENAMED CORP",
+      instrumentIdentifiers: [
+        { scheme: "share_class_figi", value: "BBG001S5REN", scope: "global" },
+      ],
+      listings: [
+        {
+          listingKey: "listing:rename_co:common_stock:xngs",
+          mic: "XNGS",
+          ticker: "REN",
+          currency: "USD",
+          figi: "BBG000VENUE9",
+          obsId: f2,
+        },
+      ],
+    }),
+    issuer,
+    { figiObsId: f2, secObsId: sec },
+  );
+  assert.equal(r3.instrumentVersionId, null);
+});
+
+test("two instruments may share the same CFI (classification, not identity)", async () => {
+  const pool = setupDb();
+  const issuer = await fixtureIssuer(pool, "company:cfi_a", "CFI A");
+  await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  const f = await obsFixture(pool, "figi:cfi");
+  const sec = await obsFixture(pool, "sec:cfi", "sec_edgar");
+  const mk = (suffix: string, scfigi: string, figi: string) =>
+    seedPlan({
+      instrumentKey: `instrument:cfi_${suffix}:common_stock`,
+      instrumentName: `CFI ${suffix} INC`,
+      cfi: "ESVUFR",
+      instrumentIdentifiers: [
+        { scheme: "share_class_figi", value: scfigi, scope: "global" },
+      ],
+      listings: [
+        {
+          listingKey: `listing:cfi_${suffix}:common_stock:xngs`,
+          mic: "XNGS",
+          ticker: suffix.toUpperCase(),
+          currency: "USD",
+          figi,
+          obsId: f,
+        },
+      ],
+    });
+  const a = await applyInstrumentPlan(
+    pool,
+    mk("a", "BBG001CFIA", "BBGVENCFIA"),
+    issuer,
+    { figiObsId: f, secObsId: sec },
+  );
+  const b = await applyInstrumentPlan(
+    pool,
+    mk("b", "BBG001CFIB", "BBGVENCFIB"),
+    issuer,
+    { figiObsId: f, secObsId: sec },
+  );
+  assert.notEqual(a.instrumentId, b.instrumentId);
+  const dup = await pool.query(
+    `SELECT cfi, count(DISTINCT instrument_id) n FROM instrument_versions
+      WHERE cfi='ESVUFR' GROUP BY cfi`,
+  );
+  assert.equal(Number(dup.rows[0].n), 2); // duplicate CFI is legal
+});
+
+test("multi-venue: same shareClassFIGI, distinct venue FIGIs → 1 instrument, 2 listings, none primary", async () => {
+  const pool = setupDb();
+  const issuer = await fixtureIssuer(pool, "company:multi", "Multi");
+  await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  await fixtureVenue(pool, "XNYS", "NYSE");
+  const sec = await obsFixture(pool, "sec:m", "sec_edgar");
+  const fa = await obsFixture(pool, "figi:m1");
+  const fb = await obsFixture(pool, "figi:m2");
+  const out = deriveSeed({
+    issuerSlug: "multi",
+    secRow: { cik: 1, name: "Multi", ticker: "MULT", exchange: "Nasdaq" },
+    venues: [
+      {
+        mic: "XNGS",
+        obsId: fa,
+        results: [
+          {
+            figi: "BBG000VENA",
+            ticker: "MULT",
+            name: "MULTI INC",
+            shareClassFIGI: "BBG001MULTI",
+            compositeFIGI: "BBGCOMPMULT",
+            securityType2: "Common Stock",
+          },
+        ],
+      },
+      {
+        mic: "XNYS",
+        obsId: fb,
+        results: [
+          {
+            figi: "BBG000VENB",
+            ticker: "MULT",
+            name: "MULTI INC",
+            shareClassFIGI: "BBG001MULTI",
+            compositeFIGI: "BBGCOMPMULT",
+            securityType2: "Common Stock",
+          },
+        ],
+      },
+    ],
+  });
+  assert.equal(out.kind, "plan");
+  if (out.kind !== "plan") return;
+  const r = await applyInstrumentPlan(pool, out.plan, issuer, {
+    figiObsId: fa,
+    secObsId: sec,
+  });
+  assert.equal(r.listingIds.length, 2);
+  const prim = await pool.query(
+    `SELECT count(*) n FROM listing_versions lv
+       JOIN instrument_listings l ON l.id = lv.listing_id
+      WHERE l.instrument_id=$1 AND lv.is_primary_listing IS NOT NULL`,
+    [r.instrumentId],
+  );
+  assert.equal(Number(prim.rows[0].n), 0); // no fake primary certainty
+});
+
+test("derivations trace instrument → SEC + OpenFIGI + ISO observations", async () => {
+  const pool = setupDb();
+  const issuer = await fixtureIssuer(pool, "company:prov", "Prov");
+  await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  const sec = await obsFixture(pool, "sec:p", "sec_edgar");
+  const iso = await obsFixture(pool, "iso:p", "iso_10383");
+  const f = await obsFixture(pool, "figi:p");
+  const r = await applyInstrumentPlan(
+    pool,
+    seedPlan({ instrumentKey: "instrument:prov:common_stock" }, f),
+    issuer,
+    { figiObsId: f, secObsId: sec, venueObsIdByMic: { XNGS: iso } },
+  );
+  const d = await pool.query(
+    `SELECT d.subject_type, d.role, ro.provider
+       FROM master_derivations d
+       JOIN reference_observations ro ON ro.id = d.observation_id
+      WHERE d.instrument_id=$1 OR d.listing_id=$2 OR d.listing_version_id IN (
+        SELECT id FROM listing_versions WHERE listing_id=$2)
+      ORDER BY d.subject_type, d.role`,
+    [r.instrumentId, r.listingIds[0]],
+  );
+  const providers = new Set(d.rows.map((x) => x.provider));
+  assert.ok(providers.has("sec_edgar"));
+  assert.ok(providers.has("openfigi"));
+  assert.ok(providers.has("iso_10383"));
+  assert.ok(
+    d.rows.some(
+      (x) =>
+        x.subject_type === "listing_version" && x.role === "venue_reference",
+    ),
+  );
+});
+
+test("identity collision: same shareClassFIGI, different issuer → conflict", async () => {
+  const pool = setupDb();
+  const a = await fixtureIssuer(pool, "company:coll_a", "CollA");
+  const b = await fixtureIssuer(pool, "company:coll_b", "CollB");
+  await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  const sec = await obsFixture(pool, "sec:c", "sec_edgar");
+  const f = await obsFixture(pool, "figi:c");
+  await applyInstrumentPlan(
+    pool,
+    seedPlan({ instrumentKey: "instrument:coll_a:common_stock" }, f),
+    a,
+    { figiObsId: f, secObsId: sec },
+  );
+  // same shareClassFIGI now claimed by issuer B → must NOT merge silently
+  await assert.rejects(
+    applyInstrumentPlan(
+      pool,
+      seedPlan({ instrumentKey: "instrument:coll_b:common_stock" }, f),
+      b,
+      { figiObsId: f, secObsId: sec },
+    ),
+    /share_class_figi_issuer_mismatch/,
+  );
 });

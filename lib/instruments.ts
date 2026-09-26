@@ -184,6 +184,7 @@ export interface FigiResult {
   micCode?: string;
   shareClassFIGI?: string;
   compositeFIGI?: string;
+  cfi?: string; // ISO 10962 classification — not an identifier
   securityType?: string;
   securityType2?: string;
   securityDescription?: string;
@@ -239,23 +240,63 @@ export interface ListingSeedPlan {
 }
 
 export interface InstrumentSeedPlan {
-  instrumentKey: string; // 'instrument:alphabet:class_a_common_stock'
+  instrumentKey: string; // stable internal label — identity proof is shareClassFIGI
   instrumentName: string;
   shareClass: string | null;
   instrumentType: string;
   issuerCik: string; // 10-digit, for provenance metadata
   currency: string | null;
-  instrumentIdentifiers: { scheme: string; value: string; scope: string }[];
+  cfi: string | null;
+  /** share_class_figi once (global share-class identity) + every distinct
+   *  composite_figi (country/market-level — one per market, per OpenFIGI
+   *  hierarchy), each tagged with the venue MICs that reported it. */
+  instrumentIdentifiers: {
+    scheme: string;
+    value: string;
+    scope: string;
+    metadata?: Record<string, unknown>;
+  }[];
   listings: ListingSeedPlan[];
 }
 
-/** 'ALPHABET INC-CL A' → 'class_a'; 'MICROSOFT CORP' → 'common_stock'.
- *  Returns [keyDescriptor, shareClass]. */
-export function classDescriptor(name: string): [string, string | null] {
-  const m = /(?:\bCL(?:ASS)?|\bSHS?)[ -]*(?:CL[ -]*)?([A-Z])\b/i.exec(name);
-  if (m)
-    return [`class_${m[1].toLowerCase()}_common_stock`, m[1].toUpperCase()];
-  return ["common_stock", null];
+/** instrument_type → key slug — the key encodes the REAL type,
+ *  not a hardcoded 'common_stock'. */
+const TYPE_KEY_SLUG: Readonly<Record<string, string>> = {
+  common_stock: "common_stock",
+  preferred_stock: "preferred_stock",
+  depositary_receipt: "adr",
+  bond: "bond",
+  note: "note",
+  etf: "etf",
+  fund: "fund",
+  index: "index",
+  future: "future",
+  option: "option",
+  other: "other",
+};
+
+/** Type-aware key descriptor.
+ *   ('ALPHABET INC-CL A', 'common_stock')      → 'class_a_common_stock'
+ *   ('ALPHABET INC-CL A', 'depositary_receipt') → 'class_a_adr'
+ *   ('ACME CORP PFD SER A', 'preferred_stock')  → 'series_a_preferred_stock'
+ *   ('MICROSOFT CORP', 'common_stock')          → 'common_stock'
+ *  Returns [descriptor, shareClass]. */
+export function instrumentDescriptor(
+  name: string,
+  instrumentType: string,
+): [string, string | null] {
+  const typeSlug = TYPE_KEY_SLUG[instrumentType] ?? "other";
+  const m =
+    /(?:\bCL(?:ASS)?|\bSHS?|\bSER(?:IES)?|\bPFD)[ -]*(?:CL[ -]*)?([A-Z])\b/i.exec(
+      name,
+    );
+  if (m) {
+    const cls = m[1].toUpperCase();
+    // preferred shares conventionally use 'series'; equity/ADR use 'class'
+    const prefix = instrumentType === "preferred_stock" ? "series" : "class";
+    return [`${prefix}_${cls.toLowerCase()}_${typeSlug}`, cls];
+  }
+  return [typeSlug, null];
 }
 
 /**
@@ -274,12 +315,12 @@ export function deriveSeed(
     };
 
   const listings: ListingSeedPlan[] = [];
+  const composites = new Map<string, Set<string>>(); // compositeFigi → mics
   let shareClassFigi: string | undefined;
-  let compositeFigi: string | undefined;
   let name: string | undefined;
   let currency: string | null = null;
   let type: string | null = null;
-  const seenShareClass = new Set<string>();
+  let cfi: string | undefined;
 
   for (const { mic, obsId, results } of venues) {
     if (!results.length) continue;
@@ -308,12 +349,26 @@ export function deriveSeed(
         kind: "unresolved",
         reason: "openfigi_missing_share_class_figi",
       };
-    shareClassFigi ??= r.shareClassFIGI;
-    compositeFigi ??= r.compositeFIGI;
+    // every venue line must agree on share-class identity + instrument type;
+    // compositeFIGI may differ per market — collected, never collapsed
+    if (shareClassFigi && shareClassFigi !== r.shareClassFIGI)
+      return {
+        kind: "conflict",
+        reason: "share_class_figi_mismatch_across_venues",
+      };
+    if (type && type !== t)
+      return {
+        kind: "conflict",
+        reason: `instrument_type_mismatch:${type}!=${t}@${mic}`,
+      };
+    shareClassFigi = r.shareClassFIGI;
     name ??= r.name ?? secRow.name;
     currency ??= r.currency ?? null;
     type ??= t;
-    seenShareClass.add(r.shareClassFIGI);
+    cfi ??= r.cfi;
+    const mics = composites.get(r.compositeFIGI) ?? new Set<string>();
+    mics.add(mic);
+    composites.set(r.compositeFIGI, mics);
     listings.push({
       listingKey: "", // filled after instrumentKey is known
       mic,
@@ -325,15 +380,8 @@ export function deriveSeed(
   }
   if (!listings.length)
     return { kind: "unresolved", reason: "openfigi_no_result" };
-  // every venue line of one instrument must agree on the share class —
-  // disagreement means our ticker→instrument grouping is wrong
-  if (seenShareClass.size > 1)
-    return {
-      kind: "conflict",
-      reason: "share_class_figi_mismatch_across_venues",
-    };
 
-  const [desc, shareClass] = classDescriptor(name ?? secRow.name);
+  const [desc, shareClass] = instrumentDescriptor(name ?? secRow.name, type!);
   const instrumentKey = `instrument:${issuerSlug}:${desc}`;
   for (const l of listings)
     l.listingKey = `listing:${issuerSlug}:${desc}:${l.mic.toLowerCase()}`;
@@ -346,11 +394,92 @@ export function deriveSeed(
       instrumentType: type!,
       issuerCik: String(secRow.cik).padStart(10, "0"),
       currency,
+      cfi: cfi ?? null,
       instrumentIdentifiers: [
         { scheme: "share_class_figi", value: shareClassFigi!, scope: "global" },
-        { scheme: "composite_figi", value: compositeFigi!, scope: "composite" },
+        ...[...composites.entries()].map(([value, mics]) => ({
+          scheme: "composite_figi",
+          value,
+          scope: "composite",
+          metadata: { mics: [...mics] },
+        })),
       ],
       listings,
     },
   };
+}
+
+// ── version-change detection (Phase 4) ────────────────────────────────────
+// A new version is written only when semantic state changed — re-observing
+// identical provider data must be a no-op. Comparison is NULL-safe and
+// normalizes dates/timestamps so '2024-01-01' === Date('2024-01-01').
+
+const norm = (v: unknown): string => {
+  if (v == null || v === "") return "";
+  if (v instanceof Date) return v.toISOString();
+  if (typeof v === "object") return JSON.stringify(v);
+  return String(v);
+};
+
+function fieldsChanged(
+  cur: Record<string, unknown>,
+  next: Record<string, unknown>,
+  fields: readonly string[],
+): boolean {
+  return fields.some((f) => norm(cur[f]) !== norm(next[f]));
+}
+
+const INSTRUMENT_VERSION_FIELDS = [
+  "name",
+  "short_name",
+  "asset_class",
+  "instrument_type",
+  "currency",
+  "issue_date",
+  "maturity_date",
+  "share_class",
+  "voting_class",
+  "cfi",
+  "status",
+] as const;
+
+export function instrumentVersionChanged(
+  cur: Record<string, unknown>,
+  next: Record<string, unknown>,
+): boolean {
+  return fieldsChanged(cur, next, INSTRUMENT_VERSION_FIELDS);
+}
+
+const LISTING_VERSION_FIELDS = [
+  "ticker",
+  "currency",
+  "status",
+  "is_primary_listing",
+] as const;
+
+export function listingVersionChanged(
+  cur: Record<string, unknown>,
+  next: Record<string, unknown>,
+): boolean {
+  return fieldsChanged(cur, next, LISTING_VERSION_FIELDS);
+}
+
+const VENUE_VERSION_FIELDS = [
+  "market_name",
+  "legal_entity_name",
+  "lei",
+  "country_code",
+  "city",
+  "operating_mic",
+  "mic_role",
+  "market_category",
+  "acronym",
+  "status",
+] as const;
+
+export function venueVersionChanged(
+  cur: Record<string, unknown>,
+  next: Record<string, unknown>,
+): boolean {
+  return fieldsChanged(cur, next, VENUE_VERSION_FIELDS);
 }

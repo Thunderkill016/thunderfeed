@@ -1276,6 +1276,21 @@ export async function getInstrumentView(canonicalKey: string): Promise<{
     identifiers: { scheme: string; value: string; provider: string }[];
   })[];
   versionCount: number;
+  /** Derivation provenance — which registry observations justify this
+   *  master record (SEC discovers, OpenFIGI asserts, ISO references the
+   *  venue). Observation ids resolve to reference_observations; payloads
+   *  stay internal. */
+  provenance: {
+    subjectType: string;
+    subjectId: string;
+    role: string;
+    observationId: string;
+    provider: string;
+    dataset: string;
+    recordKey: string;
+    observedAt: string | null;
+    retrievedAt: string;
+  }[];
 } | null> {
   const pool = getPool();
   const ins = await pool.query<{
@@ -1356,12 +1371,53 @@ export async function getInstrumentView(canonicalKey: string): Promise<{
       ORDER BY li.scheme`,
     [i.id],
   );
-  const [issuer, idents, versions, listings, lids] = await Promise.all([
+  const provQ = pool.query<{
+    subject_type: string;
+    subject_id: string;
+    role: string;
+    observation_id: string;
+    provider: string;
+    dataset: string;
+    record_key: string;
+    observed_at: string | null;
+    retrieved_at: string;
+  }>(
+    `SELECT d.subject_type,
+            coalesce(d.instrument_id, d.instrument_version_id,
+                     d.listing_id, d.listing_version_id,
+                     d.venue_id, d.venue_version_id,
+                     d.instrument_identifier_id,
+                     d.listing_identifier_id)::text AS subject_id,
+            d.role, d.observation_id,
+            ro.provider, ro.dataset, ro.record_key,
+            ro.observed_at, ro.retrieved_at
+       FROM master_derivations d
+       JOIN reference_observations ro ON ro.id = d.observation_id
+      WHERE d.instrument_id = $1
+         OR d.instrument_version_id IN (
+              SELECT id FROM instrument_versions WHERE instrument_id = $1)
+         OR d.listing_id IN (
+              SELECT id FROM instrument_listings WHERE instrument_id = $1)
+         OR d.listing_version_id IN (
+              SELECT lv.id FROM listing_versions lv
+                JOIN instrument_listings l ON l.id = lv.listing_id
+               WHERE l.instrument_id = $1)
+         OR d.instrument_identifier_id IN (
+              SELECT id FROM instrument_identifiers WHERE instrument_id = $1)
+         OR d.listing_identifier_id IN (
+              SELECT li.id FROM listing_identifiers li
+                JOIN instrument_listings l ON l.id = li.listing_id
+               WHERE l.instrument_id = $1)
+      ORDER BY d.subject_type, ro.provider`,
+    [i.id],
+  );
+  const [issuer, idents, versions, listings, lids, prov] = await Promise.all([
     issuerQ,
     identQ,
     versionsQ,
     listQ,
     lidQ,
+    provQ,
   ]);
   const lidByListing = new Map<
     string,
@@ -1409,6 +1465,17 @@ export async function getInstrumentView(canonicalKey: string): Promise<{
       identifiers: lidByListing.get(l.id) ?? [],
     })),
     versionCount: Number(versions.rows[0].n),
+    provenance: prov.rows.map((r) => ({
+      subjectType: r.subject_type,
+      subjectId: r.subject_id,
+      role: r.role,
+      observationId: r.observation_id,
+      provider: r.provider,
+      dataset: r.dataset,
+      recordKey: r.record_key,
+      observedAt: r.observed_at,
+      retrievedAt: r.retrieved_at,
+    })),
   };
 }
 

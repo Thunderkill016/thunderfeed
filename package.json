@@ -23,7 +23,8 @@
     "bench:label": "tsx scripts/bench/label.ts",
     "bench:resolver:v2": "tsx scripts/bench/resolver-v2.ts",
     "bench:semantic": "tsx scripts/bench/semantic-dist.ts",
-    "audit:db-security": "tsx scripts/audit-db-security.mts"
+    "audit:db-security": "tsx scripts/audit-db-security.mts",
+    "typecheck:scripts": "tsc --noEmit -p tsconfig.scripts.json"
   },
   "dependencies": {
     "entities": "^8.1.0",
