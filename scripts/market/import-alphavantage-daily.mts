@@ -36,6 +36,7 @@ import {
   AV_DAILY_DATASET,
 } from "../../lib/db/market.ts";
 import { connectDb, observe } from "../instruments/lib.mts";
+import { marketIntegrity } from "./lib.mts";
 
 try {
   for (const line of readFileSync(".env.local", "utf8").split("\n")) {
@@ -227,9 +228,8 @@ for (const l of AUDIT_ONLY ? [] : listings.rows) {
   }
 }
 
-// ── audit metrics (Phase 19) ─────────────────────────────────────────────
-const count = async (q: string, params: unknown[] = []) =>
-  Number((await c.query(q, params)).rows[0].n);
+// ── audit metrics — shared integrity collector (same queries for every
+//    provider importer); the run-scoped counters stay local ──────────────
 audit.metrics = {
   providers: AV_PROVIDER,
   requested,
@@ -240,93 +240,9 @@ audit.metrics = {
   pointsInserted,
   versionsInserted,
   unchanged,
-  invalidBars,
-  series: await count(`SELECT count(*) n FROM market_series`),
-  listingsCovered: await count(
-    `SELECT count(DISTINCT listing_id) n FROM market_series`,
-  ),
-  points: await count(`SELECT count(*) n FROM market_points`),
-  versions: await count(`SELECT count(*) n FROM market_point_versions`),
-  dateMin: (
-    await c.query(
-      `SELECT to_char(min(session_date),'YYYY-MM-DD') d FROM market_points`,
-    )
-  ).rows[0].d,
-  dateMax: (
-    await c.query(
-      `SELECT to_char(max(session_date),'YYYY-MM-DD') d FROM market_points`,
-    )
-  ).rows[0].d,
-  duplicateSessionDates: await count(
-    `SELECT count(*) n FROM (
-       SELECT series_id, session_date FROM market_points
-        GROUP BY series_id, session_date HAVING count(*)>1) t`,
-  ),
-  revisedPoints: await count(
-    `SELECT count(*) n FROM market_points mp
-       JOIN market_point_versions v ON v.id = mp.current_version_id
-      WHERE v.version_no > 1`,
-  ),
-  orphanMarketPoints: await count(
-    `SELECT count(*) n FROM market_points mp
-      WHERE NOT EXISTS (
-        SELECT 1 FROM market_point_versions v
-         WHERE v.point_id = mp.id)`,
-  ),
-  orphanMarketVersions: await count(
-    `SELECT count(*) n FROM market_point_versions v
-      WHERE NOT EXISTS (
-        SELECT 1 FROM market_points mp WHERE mp.id = v.point_id)`,
-  ),
   unchangedRows: unchanged,
-  // ── V1.1 pointer/chain/provenance integrity (all target 0) ─────────────
-  pointsWithMissingCurrentVersion: await count(
-    `SELECT count(*) n FROM market_points WHERE current_version_id IS NULL`,
-  ),
-  pointsWhoseCurrentVersionBelongsElsewhere: await count(
-    `SELECT count(*) n FROM market_points mp
-       JOIN market_point_versions v ON v.id = mp.current_version_id
-      WHERE v.point_id <> mp.id`,
-  ),
-  versionsWhosePreviousBelongsElsewhere: await count(
-    `SELECT count(*) n FROM market_point_versions v
-       JOIN market_point_versions p ON p.id = v.previous_version_id
-      WHERE p.point_id <> v.point_id`,
-  ),
-  // a v1 must have no previous; vN (N>1) must have one — broken otherwise
-  brokenPreviousChains: await count(
-    `SELECT count(*) n FROM market_point_versions
-      WHERE (version_no = 1 AND previous_version_id IS NOT NULL)
-         OR (version_no > 1 AND previous_version_id IS NULL)`,
-  ),
-  invalidPersistedOHLC: await count(
-    `SELECT count(*) n FROM market_point_versions
-      WHERE NOT (open > 0 AND high > 0 AND low > 0 AND close > 0
-                 AND low <= high
-                 AND open BETWEEN low AND high
-                 AND close BETWEEN low AND high)`,
-  ),
-  negativePersistedVolume: await count(
-    `SELECT count(*) n FROM market_point_versions WHERE volume < 0`,
-  ),
-  missingObservationProvenance: await count(
-    `SELECT count(*) n FROM market_point_versions
-      WHERE observation_id IS NULL`,
-  ),
-  seriesWithoutListing: await count(
-    `SELECT count(*) n FROM market_series ms
-      WHERE NOT EXISTS (
-        SELECT 1 FROM instrument_listings l WHERE l.id = ms.listing_id)`,
-  ),
-  barsWithUnknownCurrency: await count(
-    `SELECT count(*) n FROM market_point_versions WHERE currency IS NULL`,
-  ),
-  currentBarsPerListing: await count(
-    `SELECT count(*) n FROM (
-       SELECT ms.listing_id FROM market_series ms
-         JOIN market_points mp ON mp.series_id = ms.id
-        GROUP BY ms.listing_id) t`,
-  ),
+  invalidBars,
+  ...(await marketIntegrity(c)),
   errors,
 };
 await c.end();

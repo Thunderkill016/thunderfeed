@@ -11,18 +11,26 @@ import type { Pool } from "pg";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  compareDailySeries,
   isBigintString,
   isCalendarDate,
   logReturn,
   marketPointChanged,
   normalizeDecimalString,
   parseAvDaily,
+  parseCsv,
+  parseTiingoEod,
   resolveAlphaVantageSymbol,
+  resolveTiingoSymbol,
   simpleReturn,
   validateBar,
   type DailyBar,
 } from "../lib/market";
-import { applyDailyBars, getOrCreateSeries } from "../lib/db/market";
+import {
+  applyDailyBars,
+  getOrCreateSeries,
+  getOrCreateTiingoEodSeries,
+} from "../lib/db/market";
 import { injectPool } from "../lib/db/pool";
 import {
   getDailyBarsForListing,
@@ -60,11 +68,11 @@ function setupDb() {
     )
     .replace("CREATE EXTENSION IF NOT EXISTS pgcrypto;", "")
     .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/g, "")
-    // pg-mem path can't run the 0023 ALTER (its auto constraint name
-    // differs from prod) — relax the provider CHECK textually instead
+    // pg-mem path can't run the 0023/0025 ALTERs (its auto constraint
+    // name differs from prod) — relax the provider CHECK textually
     .replace(
       "'manual_verified', 'other'",
-      "'manual_verified', 'alphavantage', 'other'",
+      "'manual_verified', 'alphavantage', 'tiingo', 'other'",
     );
   db.public.registerFunction({
     name: "uuid_v7",
@@ -905,4 +913,362 @@ test("migration 0024 declares composite FKs + NOT NULL + OHLC CHECKs", () => {
   assert.match(MIGRATION_V11_SQL, /ALTER COLUMN observation_id SET NOT NULL/);
   assert.match(MIGRATION_V11_SQL, /market_point_versions_ohlc_valid/);
   assert.match(MIGRATION_V11_SQL, /volume IS NULL OR volume >= 0/);
+});
+
+// ── V1.2: Tiingo dual-provider ───────────────────────────────────────────
+const TIINGO_HEADER =
+  "date,open,high,low,close,volume,adjOpen,adjHigh,adjLow,adjClose,adjVolume,divCash,splitFactor";
+const tiingoCsv = (rows: string[]) =>
+  `${TIINGO_HEADER}\r\n${rows.join("\r\n")}\r\n`;
+const tiingoRow = (
+  date: string,
+  o: string,
+  h: string,
+  l: string,
+  c: string,
+  v: string,
+  adjC = c,
+  div = "0",
+  split = "1",
+) =>
+  `${date},${o},${h},${l},${c},${v},${o},${h},${l},${adjC},${v},${div},${split}`;
+
+test("parseTiingoEod: valid CSV → DailyBar[] with exact decimal strings", () => {
+  const r = parseTiingoEod({
+    status: 200,
+    body: tiingoCsv([
+      // ISO timestamps from the provider reduce to the session date —
+      // date part only, no timezone shifting
+      tiingoRow(
+        "2026-09-02T00:00:00.000Z",
+        "100.0000",
+        "102.5",
+        "99.9",
+        "101.5",
+        "1500000",
+      ),
+      tiingoRow(
+        "2026-09-01T00:00:00.000Z",
+        "100",
+        "101",
+        "99",
+        "100.0",
+        "1499900",
+      ),
+    ]),
+  });
+  assert.ok(r.kind === "series");
+  assert.equal(r.bars.length, 2);
+  assert.equal(r.bars[0].sessionDate, "2026-09-01"); // sorted ascending
+  assert.equal(r.bars[1].sessionDate, "2026-09-02");
+  // raw strings preserved byte-exact — no Number() anywhere
+  assert.equal(r.bars[1].open, "100.0000");
+  assert.equal(r.bars[0].close, "100.0");
+  assert.equal(r.bars[0].volume, "1499900");
+});
+
+test("parseTiingoEod: large exact decimal survives the CSV path", () => {
+  const big = "9007199254740992.5"; // past float53 precision
+  const r = parseTiingoEod({
+    status: 200,
+    body: tiingoCsv([tiingoRow("2026-09-01", "1", big, "1", big, "1")]),
+  });
+  assert.ok(r.kind === "series");
+  assert.equal(r.bars[0].close, big); // identical string, not a float
+});
+
+test("parseTiingoEod: empty volume → NULL, never fabricated 0", () => {
+  const r = parseTiingoEod({
+    status: 200,
+    body: tiingoCsv(["2026-09-01,100,101,99,100.5,,100,101,99,100.5,,0,1"]),
+  });
+  assert.ok(r.kind === "series");
+  assert.equal(r.bars[0].volume, null);
+});
+
+test("parseCsv: quoted fields and escaped quotes", () => {
+  const rows = parseCsv('a,b\n"1,234","say ""hi"""\n');
+  assert.deepEqual(rows, [
+    ["a", "b"],
+    ["1,234", 'say "hi"'],
+  ]);
+});
+
+test("parseTiingoEod: adjusted quarantine — adjClose ≠ close keeps RAW close", () => {
+  const r = parseTiingoEod({
+    status: 200,
+    body: tiingoCsv([
+      // split-adjusted close 95.2 vs raw close 100 — raw wins for V1
+      tiingoRow(
+        "2026-09-01",
+        "100",
+        "101",
+        "99",
+        "100",
+        "5000",
+        "95.2",
+        "0.5",
+        "1.05",
+      ),
+    ]),
+  });
+  assert.ok(r.kind === "series");
+  assert.equal(r.bars[0].close, "100"); // raw close, NOT the 95.2 adjClose
+  // the DailyBar shape cannot even carry adjusted/corporate-action fields
+  assert.deepEqual(Object.keys(r.bars[0]).sort(), [
+    "close",
+    "high",
+    "low",
+    "open",
+    "sessionDate",
+    "volume",
+  ]);
+});
+
+test("parseTiingoEod: provider errors classified, never promoted", () => {
+  const cases: [number, string, string][] = [
+    [401, `{"detail":"Error: API token required"}`, "unauthorized"],
+    [403, `{"detail":"Error: forbidden"}`, "unauthorized"],
+    [404, `{"detail":"Error: Ticker NOPE not supported"}`, "invalid_symbol"],
+    [429, `{"detail":"Error: monthly request limit"}`, "rate_limit"],
+    [500, "server error", "api_error"],
+    [200, "", "empty"],
+    [200, `{"detail":"weird"}`, "unexpected_schema"], // JSON where CSV expected
+    [200, "date,open\n2026-09-01,", "unexpected_schema"], // missing columns
+    [200, tiingoCsv(["2026-09-01,100,101,99,100.5"]), "unexpected_schema"], // ragged row
+    [
+      200,
+      tiingoCsv(["banana,100,101,99,100.5,5,1,1,1,1,1,0,1"]),
+      "unexpected_schema",
+    ], // bad date
+    [200, TIINGO_HEADER, "empty"], // header only, zero rows
+  ];
+  for (const [status, body, klass] of cases) {
+    const r = parseTiingoEod({ status, body });
+    assert.equal(
+      r.kind,
+      "provider_error",
+      `status=${status} body=${body.slice(0, 40)}`,
+    );
+    assert.equal(
+      r.errorClass,
+      klass,
+      `status=${status} body=${body.slice(0, 40)}`,
+    );
+  }
+});
+
+test("resolveTiingoSymbol: verified US venues only, never guessed", () => {
+  assert.deepEqual(resolveTiingoSymbol({ mic: "XNGS", ticker: "AAPL" }), {
+    kind: "symbol",
+    symbol: "AAPL",
+  });
+  assert.deepEqual(resolveTiingoSymbol({ mic: "XNYS", ticker: "ORCL" }), {
+    kind: "symbol",
+    symbol: "ORCL",
+  });
+  assert.deepEqual(resolveTiingoSymbol({ mic: "XLON", ticker: "VOD" }), {
+    kind: "unresolved_provider_symbol",
+    reason: "unsupported_venue:XLON",
+  });
+  assert.equal(
+    resolveTiingoSymbol({ mic: "XNGS", ticker: " " }).kind,
+    "unresolved_provider_symbol",
+  );
+});
+
+test("tiingo eod series: ticker rename keeps listing identity", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "tirenam");
+  const s1 = await getOrCreateTiingoEodSeries(
+    pool,
+    fx.listingId,
+    fx.listingKey,
+  );
+  const lv = await pool.query(
+    `INSERT INTO listing_versions
+       (listing_id, version_no, ticker, status, observation_id)
+     VALUES ($1,2,'NEWTK','active',$2) RETURNING id`,
+    [fx.listingId, fx.obsId],
+  );
+  await pool.query(
+    `UPDATE instrument_listings SET current_version_id=$1 WHERE id=$2`,
+    [lv.rows[0].id, fx.listingId],
+  );
+  const s2 = await getOrCreateTiingoEodSeries(
+    pool,
+    fx.listingId,
+    fx.listingKey,
+  );
+  assert.equal(s2, s1); // transport symbol renamed — identity untouched
+});
+
+test("tiingo eod: idempotent rerun + correction appends version", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "ticorr");
+  const seriesId = await getOrCreateTiingoEodSeries(
+    pool,
+    fx.listingId,
+    fx.listingKey,
+  );
+  const obs = async () =>
+    (
+      await pool.query(
+        `INSERT INTO reference_observations
+           (provider, dataset, record_key, payload, content_hash)
+         VALUES ('tiingo','eod_daily',$1,'{}',$1) RETURNING id`,
+        [`obs:ticorr:${randomUUID()}`],
+      )
+    ).rows[0].id as string;
+  const bars = [bar("2026-09-01", "100"), bar("2026-09-02", "101")];
+  const r1 = await applyDailyBars(pool, seriesId, bars, await obs());
+  assert.equal(r1.versionsInserted, 2);
+  const r2 = await applyDailyBars(pool, seriesId, bars, await obs());
+  assert.equal(r2.versionsInserted, 0);
+  assert.equal(r2.pointsInserted, 0);
+  // correction: same date, corrected close
+  const r3 = await applyDailyBars(
+    pool,
+    seriesId,
+    [bar("2026-09-01", "100.5")],
+    await obs(),
+  );
+  assert.equal(r3.versionsInserted, 1);
+  assert.equal(r3.pointsInserted, 0);
+  const hist = await pool.query(
+    `SELECT v.version_no, v.close::text c
+       FROM market_point_versions v
+       JOIN market_points mp ON mp.id = v.point_id
+      WHERE mp.session_date='2026-09-01' ORDER BY v.version_no`,
+  );
+  assert.deepEqual(
+    hist.rows.map((x) => x.c),
+    ["100", "100.5"],
+  );
+});
+
+// ── dual-provider: two assertions, divergence recorded, never merged ─────
+
+test("alpha=100 + tiingo=101 same listing/date → two series, divergence, no overwrite", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "dual");
+  const avSeries = await getOrCreateSeries(pool, fx.listingId, fx.listingKey);
+  const tiSeries = await getOrCreateTiingoEodSeries(
+    pool,
+    fx.listingId,
+    fx.listingKey,
+  );
+  assert.notEqual(avSeries, tiSeries);
+  const avObs = (
+    await pool.query(
+      `INSERT INTO reference_observations
+         (provider, dataset, record_key, payload, content_hash)
+       VALUES ('alphavantage','time_series_daily',$1,'{}',$1) RETURNING id`,
+      [`obs:dual-av:${randomUUID()}`],
+    )
+  ).rows[0].id as string;
+  const tiObs = (
+    await pool.query(
+      `INSERT INTO reference_observations
+         (provider, dataset, record_key, payload, content_hash)
+       VALUES ('tiingo','eod_daily',$1,'{}',$1) RETURNING id`,
+      [`obs:dual-ti:${randomUUID()}`],
+    )
+  ).rows[0].id as string;
+
+  const avBar = bar("2026-09-01", "100");
+  const tiBar = bar("2026-09-01", "101");
+  await applyDailyBars(pool, avSeries, [avBar], avObs);
+  await applyDailyBars(pool, tiSeries, [tiBar], tiObs);
+
+  // two points on the same calendar date — one per series
+  const pts = await pool.query(
+    `SELECT count(*) n FROM market_points WHERE session_date='2026-09-01'`,
+  );
+  assert.equal(Number(pts.rows[0].n), 2);
+
+  // each version's provenance points at ITS provider's observation
+  const prov = await pool.query(
+    `SELECT ms.provider, ro.provider obs_provider, v.close::text c
+       FROM market_point_versions v
+       JOIN market_points mp ON mp.id = v.point_id
+       JOIN market_series ms ON ms.id = mp.series_id
+       JOIN reference_observations ro ON ro.id = v.observation_id`,
+  );
+  assert.equal(prov.rows.length, 2);
+  for (const r of prov.rows) assert.equal(r.provider, r.obs_provider);
+
+  // comparison flags divergence — nothing was overwritten
+  const cmp = compareDailySeries([avBar], [tiBar]);
+  assert.equal(cmp[0].kind, "compared");
+  if (cmp[0].kind === "compared") {
+    assert.equal(cmp[0].agreement, "price_divergence");
+    assert.deepEqual(cmp[0].divergentFields, ["open", "high", "low", "close"]);
+    assert.equal(cmp[0].closeDiff, 1);
+  }
+  // reads stay isolated
+  assert.equal((await getDailyBarsForSeries(avSeries))[0].close, "100");
+  assert.equal((await getDailyBarsForSeries(tiSeries))[0].close, "101");
+  const avSel = await getDailyBarsForListing(fx.listingId, {
+    provider: "alphavantage",
+    dataset: "time_series_daily",
+    priceBasis: "as_traded",
+  });
+  const tiSel = await getDailyBarsForListing(fx.listingId, {
+    provider: "tiingo",
+    dataset: "eod_daily",
+    priceBasis: "as_traded",
+  });
+  assert.equal(avSel?.series.id, avSeries);
+  assert.equal(tiSel?.series.id, tiSeries);
+});
+
+test("compareDailySeries: equivalent decimals agree (100 = 100.000)", async () => {
+  const a = bar("2026-09-01", "100");
+  const t: DailyBar = {
+    ...a,
+    open: "100.000",
+    high: "100.000",
+    low: "100.000",
+    close: "100.000",
+  };
+  const cmp = compareDailySeries([a], [t]);
+  assert.equal(cmp[0].kind, "compared");
+  if (cmp[0].kind === "compared") {
+    assert.equal(cmp[0].agreement, "exact_agreement");
+    assert.deepEqual(cmp[0].divergentFields, []);
+  }
+});
+
+test("compareDailySeries: volume-only divergence + missing sessions", () => {
+  const a = [
+    { ...bar("2026-09-01", "100"), volume: "5000" },
+    bar("2026-09-02", "101"),
+  ];
+  const t = [
+    { ...bar("2026-09-01", "100"), volume: "6000" },
+    bar("2026-09-03", "102"),
+  ];
+  const cmp = compareDailySeries(a, t);
+  assert.equal(cmp[0].kind, "compared");
+  if (cmp[0].kind === "compared")
+    assert.equal(cmp[0].agreement, "volume_divergence");
+  assert.equal(cmp[1].kind, "missing_in_tiingo");
+  assert.equal(cmp[2].kind, "missing_in_alpha");
+});
+
+test("migration 0025 adds tiingo to provider allowlist, no new tables", () => {
+  const sql = readFileSync(
+    fileURLToPath(
+      new URL(
+        "../db/migrations/0025_market_provider_tiingo.sql",
+        import.meta.url,
+      ),
+    ),
+    "utf8",
+  );
+  assert.match(sql, /'tiingo'/);
+  assert.match(sql, /'alphavantage'/); // preserved, not replaced
+  assert.equal(sql.match(/CREATE TABLE/g), null);
+  assert.equal(sql.match(/ALTER TABLE instrument_|trading_venues/g), null);
 });

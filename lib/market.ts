@@ -279,6 +279,295 @@ export function resolveAlphaVantageSymbol(listing: {
   return { kind: "symbol", symbol: t };
 }
 
+/** Tiingo's US-equity coverage uses the plain ticker over the same
+ *  verified US venue set — unsupported venue → unresolved, never guessed. */
+export function resolveTiingoSymbol(listing: {
+  mic: string | null | undefined;
+  ticker: string | null | undefined;
+}): AvSymbolResolution {
+  return resolveAlphaVantageSymbol(listing); // same verified US MIC policy
+}
+
+// ── Tiingo EOD adapter ───────────────────────────────────────────────────
+// Endpoint: GET /tiingo/daily/<ticker>/prices?format=csv
+// Auth: Authorization: Token <TIINGO_API_TOKEN> — the token NEVER enters
+// the URL, logs, or reference_observations.source_url.
+// Raw CSV stores: open..volume PLUS adj*/divCash/splitFactor — the
+// adjusted/corporate-action fields stay quarantined in raw evidence; only
+// raw OHLCV normalizes into the as_traded series.
+
+export type TiingoErrorClass =
+  | "unauthorized"
+  | "rate_limit"
+  | "invalid_symbol"
+  | "empty"
+  | "unexpected_schema"
+  | "api_error";
+
+export type TiingoEodResult =
+  | {
+      kind: "series";
+      bars: DailyBar[];
+      meta: { columns: string[]; rows: number };
+    }
+  | { kind: "provider_error"; errorClass: TiingoErrorClass; detail: string };
+
+/** Minimal RFC-4180 CSV: quoted fields, "" escapes, CRLF/LF. Returns rows
+ *  of raw string cells — nothing passes through Number(). */
+export function parseCsv(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else inQuotes = false;
+      } else field += ch;
+      continue;
+    }
+    if (ch === '"') {
+      inQuotes = true;
+      continue;
+    }
+    if (ch === ",") {
+      row.push(field);
+      field = "";
+      continue;
+    }
+    if (ch === "\r") continue; // CR of CRLF
+    if (ch === "\n") {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+      continue;
+    }
+    field += ch;
+  }
+  if (field !== "" || row.length) {
+    row.push(field);
+    rows.push(row);
+  }
+  return rows;
+}
+
+/** Classify + parse a Tiingo EOD response. `status` is the HTTP code;
+ *  `body` is raw text (CSV on success, JSON/text error otherwise). */
+export function parseTiingoEod(res: {
+  status: number;
+  body: string;
+}): TiingoEodResult {
+  const { status, body } = res;
+  if (status === 401 || status === 403)
+    return {
+      kind: "provider_error",
+      errorClass: "unauthorized",
+      detail: body.slice(0, 200),
+    };
+  if (status === 404)
+    return {
+      kind: "provider_error",
+      errorClass: "invalid_symbol",
+      detail: body.slice(0, 200),
+    };
+  if (status === 429)
+    return {
+      kind: "provider_error",
+      errorClass: "rate_limit",
+      detail: body.slice(0, 200),
+    };
+  if (status < 200 || status >= 300)
+    return {
+      kind: "provider_error",
+      errorClass: "api_error",
+      detail: `HTTP ${status}: ${body.slice(0, 160)}`,
+    };
+  const trimmed = body.trim();
+  if (!trimmed)
+    return {
+      kind: "provider_error",
+      errorClass: "empty",
+      detail: "empty body",
+    };
+  // an unexpected JSON/HTML body in place of CSV is a schema error, not a
+  // zero-bar success
+  if (trimmed.startsWith("{") || trimmed.startsWith("["))
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: `JSON body on CSV request: ${trimmed.slice(0, 120)}`,
+    };
+
+  const rows = parseCsv(body);
+  if (!rows.length)
+    return { kind: "provider_error", errorClass: "empty", detail: "no rows" };
+  const header = rows[0].map((h) => h.trim());
+  const col = (name: string) => header.indexOf(name);
+  for (const need of ["date", "open", "high", "low", "close", "volume"])
+    if (col(need) < 0)
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `missing column '${need}' — header: ${header.join(",")}`,
+      };
+
+  const bars: DailyBar[] = [];
+  for (const [i, r] of rows.slice(1).entries()) {
+    if (r.length === 1 && r[0].trim() === "") continue; // trailing blank line
+    if (r.length !== header.length)
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `row ${i + 2} has ${r.length} fields, header has ${header.length}`,
+      };
+    const raw = r[col("date")].trim();
+    // Tiingo emits 'YYYY-MM-DD' or 'YYYY-MM-DDT00:00:00.000Z'; the market
+    // session date is the date part — no timezone shifting
+    const sessionDate = /^(\d{4}-\d{2}-\d{2})/.exec(raw)?.[1];
+    if (!sessionDate)
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `bad date '${raw}' on row ${i + 2}`,
+      };
+    const volRaw = r[col("volume")].trim();
+    bars.push({
+      sessionDate,
+      open: r[col("open")].trim(),
+      high: r[col("high")].trim(),
+      low: r[col("low")].trim(),
+      close: r[col("close")].trim(),
+      volume: volRaw === "" ? null : volRaw, // unknown stays NULL, never 0
+      // adjOpen/adjHigh/adjLow/adjClose/adjVolume/divCash/splitFactor
+      // deliberately NOT promoted — quarantined in the raw observation
+    });
+  }
+  if (!bars.length)
+    return {
+      kind: "provider_error",
+      errorClass: "empty",
+      detail: "CSV header but zero data rows",
+    };
+  bars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
+  return { kind: "series", bars, meta: { columns: header, rows: bars.length } };
+}
+
+// ── dual-provider comparison (diagnostics only — never persisted as fact) ─
+
+export type DayAgreement =
+  "exact_agreement" | "price_divergence" | "volume_divergence";
+
+export type SessionComparison =
+  | { kind: "missing_in_alpha"; sessionDate: string }
+  | { kind: "missing_in_tiingo"; sessionDate: string }
+  | {
+      kind: "compared";
+      sessionDate: string;
+      agreement: DayAgreement;
+      alpha: {
+        open: string;
+        high: string;
+        low: string;
+        close: string;
+        volume: string | null;
+      };
+      tiingo: {
+        open: string;
+        high: string;
+        low: string;
+        close: string;
+        volume: string | null;
+      };
+      divergentFields: ("open" | "high" | "low" | "close" | "volume")[];
+      /** labeled diagnostic: |Δclose| and Δbps use binary float for
+       *  magnitude ONLY — equality decisions stay exact-decimal */
+      closeDiff: number;
+      closeDiffBps: number;
+      volumeDiff: number | null;
+      volumeDiffPct: number | null;
+    };
+
+const decEq = (a: string | null, b: string | null): boolean => {
+  if (a == null || b == null) return a == null && b == null;
+  const na = normalizeDecimalString(a);
+  const nb = normalizeDecimalString(b);
+  return na != null && nb != null && na === nb;
+};
+
+/** Compare two providers' daily series for the SAME listing — two
+ *  independent assertions; a divergence is recorded, never averaged or
+ *  silently resolved. */
+export function compareDailySeries(
+  alphaBars: DailyBar[],
+  tiingoBars: DailyBar[],
+): SessionComparison[] {
+  const byA = new Map(alphaBars.map((b) => [b.sessionDate, b]));
+  const byT = new Map(tiingoBars.map((b) => [b.sessionDate, b]));
+  const dates = [...new Set([...byA.keys(), ...byT.keys()])].sort();
+  const out: SessionComparison[] = [];
+  for (const d of dates) {
+    const a = byA.get(d);
+    const t = byT.get(d);
+    if (!a) {
+      out.push({ kind: "missing_in_alpha", sessionDate: d });
+      continue;
+    }
+    if (!t) {
+      out.push({ kind: "missing_in_tiingo", sessionDate: d });
+      continue;
+    }
+    const divergentFields = (
+      ["open", "high", "low", "close", "volume"] as const
+    ).filter((f) => !decEq(a[f], t[f]));
+    const priceDiff = divergentFields.filter((f) => f !== "volume");
+    const agreement: DayAgreement = divergentFields.length
+      ? priceDiff.length
+        ? "price_divergence"
+        : "volume_divergence"
+      : "exact_agreement";
+    const ca = Number(a.close);
+    const ct = Number(t.close);
+    const va = a.volume == null ? null : Number(a.volume);
+    const vt = t.volume == null ? null : Number(t.volume);
+    out.push({
+      kind: "compared",
+      sessionDate: d,
+      agreement,
+      alpha: {
+        open: a.open,
+        high: a.high,
+        low: a.low,
+        close: a.close,
+        volume: a.volume,
+      },
+      tiingo: {
+        open: t.open,
+        high: t.high,
+        low: t.low,
+        close: t.close,
+        volume: t.volume,
+      },
+      divergentFields,
+      closeDiff: Math.abs(ct - ca), // diagnostic only
+      closeDiffBps:
+        Number.isFinite(ca) && ca !== 0
+          ? Math.round(((ct - ca) / ca) * 1e6) / 100 // bps, 2 decimals
+          : 0,
+      volumeDiff: va == null || vt == null ? null : Math.abs(vt - va),
+      volumeDiffPct:
+        va == null || vt == null || va === 0
+          ? null
+          : Math.round(((vt - va) / va) * 1e4) / 100,
+    });
+  }
+  return out;
+}
+
 /** Real calendar date 'YYYY-MM-DD' — rejects 2026-99-99 / 2026-02-31,
  *  unlike a shape regex alone. */
 export function isCalendarDate(s: unknown): s is string {

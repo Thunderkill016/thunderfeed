@@ -91,3 +91,25 @@ Audit production (fail non-zero nếu vi phạm):
 ```sh
 npm run audit:db-security
 ```
+
+## Market data providers
+
+Hai provider EOD là **hai assertions độc lập** — mỗi provider có
+`market_series` riêng (`provider+dataset+interval+session_type+price_basis`
+là identity, ticker chỉ là transport). Không average, không merge, không
+âm thầm chọn "giá đúng"; khác nhau → ghi divergence.
+
+- **Alpha Vantage** — `alphavantage` / `time_series_daily`, JSON daily.
+- **Tiingo** — `tiingo` / `eod_daily`, CSV daily (raw OHLCV; các trường
+  `adj*`/`divCash`/`splitFactor` chỉ nằm trong raw observation, chưa
+  promote — Corporate Actions phase sau).
+
+Importers: `scripts/market/import-alphavantage-daily.mts`,
+`scripts/market/import-tiingo-eod.mts`, `scripts/market/compare-dual.mts`.
+
+**Licensing**: dữ liệu Tiingo free/developer tier chỉ phù hợp internal/
+developer use — redistribution hay public-commercial use cần quyền
+provider phù hợp. Alpha Vantage tương tự theo provider terms. Raw payload
+provider không được expose public; schema không encode giả định licensing.
+Credentials chỉ tồn tại trong env — Tiingo token đi qua header
+`Authorization`, không bao giờ trong URL/logs/source_url.

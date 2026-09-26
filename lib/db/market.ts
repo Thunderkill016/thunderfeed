@@ -17,38 +17,91 @@ type Q = Pick<Pool, "query">;
 
 export const AV_PROVIDER = "alphavantage";
 export const AV_DAILY_DATASET = "time_series_daily";
+export const TIINGO_PROVIDER = "tiingo";
+export const TIINGO_EOD_DATASET = "eod_daily";
 
-/** get-or-create the canonical series for (listing, provider, dataset).
- *  V1 fixes interval/session_type/price_basis — the tuple is the
- *  identity, the canonical_key just a label. */
-export async function getOrCreateSeries(
+export interface SeriesSpec {
+  listingId: string;
+  listingKey: string;
+  provider: string;
+  dataset: string;
+  /** V1 dims — currently the only lawful values ('1d','regular','as_traded')
+   *  are what the DB CHECKs enforce; future providers/semantics arrive as a
+   *  deliberate migration, not a caller flag. */
+  interval?: "1d";
+  sessionType?: "regular";
+  priceBasis?: "as_traded";
+}
+
+/** get-or-create the canonical series for
+ *  (listing, provider, dataset, interval, session_type, price_basis) —
+ *  the tuple IS the identity; canonical_key is a label. */
+export async function getOrCreateMarketSeries(
   db: Q,
-  listingId: string,
-  listingKey: string,
+  s: SeriesSpec,
 ): Promise<string> {
+  const interval = s.interval ?? "1d";
+  const sessionType = s.sessionType ?? "regular";
+  const priceBasis = s.priceBasis ?? "as_traded";
   const key =
-    `series:${listingKey}:${AV_PROVIDER}:${AV_DAILY_DATASET}` +
-    `:1d:regular:as_traded`;
+    `series:${s.listingKey}:${s.provider}:${s.dataset}` +
+    `:${interval}:${sessionType}:${priceBasis}`;
   const ins = await db.query(
     `INSERT INTO market_series
        (canonical_key, listing_id, provider, dataset, "interval",
         session_type, price_basis)
-     VALUES ($1,$2,$3,$4,'1d','regular','as_traded')
+     VALUES ($1,$2,$3,$4,$5,$6,$7)
      ON CONFLICT (listing_id, provider, dataset, "interval",
                   session_type, price_basis)
      DO NOTHING
      RETURNING id`,
-    [key, listingId, AV_PROVIDER, AV_DAILY_DATASET],
+    [
+      key,
+      s.listingId,
+      s.provider,
+      s.dataset,
+      interval,
+      sessionType,
+      priceBasis,
+    ],
   );
   if (ins.rows.length) return ins.rows[0].id as string;
   const sel = await db.query(
     `SELECT id FROM market_series
       WHERE listing_id=$1 AND provider=$2 AND dataset=$3
-        AND "interval"='1d' AND session_type='regular'
-        AND price_basis='as_traded'`,
-    [listingId, AV_PROVIDER, AV_DAILY_DATASET],
+        AND "interval"=$4 AND session_type=$5 AND price_basis=$6`,
+    [s.listingId, s.provider, s.dataset, interval, sessionType, priceBasis],
   );
   return sel.rows[0].id as string;
+}
+
+/** V1 Alpha Vantage contract. */
+export function getOrCreateSeries(
+  db: Q,
+  listingId: string,
+  listingKey: string,
+): Promise<string> {
+  return getOrCreateMarketSeries(db, {
+    listingId,
+    listingKey,
+    provider: AV_PROVIDER,
+    dataset: AV_DAILY_DATASET,
+  });
+}
+
+/** V1 Tiingo EOD contract — same granularity/session/basis, different
+ *  provider identity. Never the same series row as Alpha Vantage. */
+export function getOrCreateTiingoEodSeries(
+  db: Q,
+  listingId: string,
+  listingKey: string,
+): Promise<string> {
+  return getOrCreateMarketSeries(db, {
+    listingId,
+    listingKey,
+    provider: TIINGO_PROVIDER,
+    dataset: TIINGO_EOD_DATASET,
+  });
 }
 
 export interface ApplyDailyResult {
