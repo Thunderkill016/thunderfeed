@@ -1442,6 +1442,9 @@ export async function getInstrumentView(canonicalKey: string): Promise<{
        JOIN market_point_versions v ON v.id = mp.current_version_id
        JOIN instrument_listings l ON l.id = ms.listing_id
       WHERE l.instrument_id = $1
+        -- explicit V1 series policy: the alphavantage as-traded series —
+        -- never "whatever provider happens to exist"
+        AND ms.provider = 'alphavantage' AND ms.dataset = 'time_series_daily'
         AND ms."interval" = '1d' AND ms.session_type = 'regular'
         AND ms.price_basis = 'as_traded'
       ORDER BY ms.listing_id, mp.session_date DESC`,
@@ -2031,8 +2034,53 @@ export async function getMarketSeriesForListing(
   }));
 }
 
-export async function getDailyBars(
-  listingId: string,
+export async function getMarketSeries(
+  seriesId: string,
+): Promise<MarketSeriesView | null> {
+  const pool = getPool();
+  const isUuid =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      seriesId,
+    );
+  const r = await pool.query<{
+    id: string;
+    canonical_key: string;
+    listing_id: string;
+    provider: string;
+    dataset: string;
+    interval: string;
+    session_type: string;
+    price_basis: string;
+    status: string;
+    created_at: string;
+  }>(
+    `SELECT id, canonical_key, listing_id, provider, dataset, "interval",
+            session_type, price_basis, status, created_at
+       FROM market_series
+      WHERE ${isUuid ? "id" : "canonical_key"} = $1`,
+    [seriesId],
+  );
+  const x = r.rows[0];
+  if (!x) return null;
+  return {
+    id: x.id,
+    canonicalKey: x.canonical_key,
+    listingId: x.listing_id,
+    provider: x.provider,
+    dataset: x.dataset,
+    interval: x.interval,
+    sessionType: x.session_type,
+    priceBasis: x.price_basis,
+    status: x.status,
+    createdAt: x.created_at,
+  };
+}
+
+/** Canonical primitive: bars for ONE series. Never merges providers — a
+ *  listing-level read must pick its series explicitly via
+ *  getDailyBarsForListing's provider/dataset/priceBasis selector. */
+export async function getDailyBarsForSeries(
+  seriesId: string,
   opts: {
     from?: string;
     to?: string;
@@ -2060,18 +2108,15 @@ export async function getDailyBars(
             v.open, v.high, v.low, v.close,
             v.volume, v.currency, v.version_no,
             ms.provider, v.observed_at, v.observation_id
-       FROM market_series ms
-       JOIN market_points mp ON mp.series_id = ms.id
+       FROM market_points mp
+       JOIN market_series ms ON ms.id = mp.series_id
        JOIN market_point_versions v ON v.id = mp.current_version_id
-      WHERE ms.listing_id = $1
-        AND ms."interval" = '1d'
-        AND ms.session_type = 'regular'
-        AND ms.price_basis = 'as_traded'
+      WHERE mp.series_id = $1
         AND ($2::date IS NULL OR mp.session_date >= $2::date)
         AND ($3::date IS NULL OR mp.session_date <= $3::date)
       ORDER BY mp.session_date ${order}
       LIMIT ${limit}`,
-    [listingId, opts.from ?? null, opts.to ?? null],
+    [seriesId, opts.from ?? null, opts.to ?? null],
   );
   return r.rows.map((x) => ({
     sessionDate: isoDay(x.session_date),
@@ -2088,9 +2133,47 @@ export async function getDailyBars(
   }));
 }
 
-export async function getLatestMarketBar(
+/** Listing-level convenience — series selection is EXPLICIT. Callers pass
+ *  the provider/dataset/priceBasis they mean; the default is the V1
+ *  Alpha Vantage as-traded contract, spelled out, never inferred from
+ *  "there happens to be one provider". Returns the chosen series with its
+ *  bars; null when no series matches the selector. */
+export async function getDailyBarsForListing(
   listingId: string,
+  selector: {
+    provider?: string;
+    dataset?: string;
+    priceBasis?: string;
+    from?: string;
+    to?: string;
+    limit?: number;
+    order?: "asc" | "desc";
+  } = {},
+): Promise<{ series: MarketSeriesView; bars: MarketBar[] } | null> {
+  const provider = selector.provider ?? "alphavantage";
+  const dataset = selector.dataset ?? "time_series_daily";
+  const priceBasis = selector.priceBasis ?? "as_traded";
+  const series = (await getMarketSeriesForListing(listingId)).filter(
+    (s) =>
+      s.provider === provider &&
+      s.dataset === dataset &&
+      s.priceBasis === priceBasis &&
+      s.interval === "1d" &&
+      s.sessionType === "regular",
+  );
+  if (series.length !== 1) return null; // 0 or ambiguous → caller must narrow
+  return {
+    series: series[0],
+    bars: await getDailyBarsForSeries(series[0].id, selector),
+  };
+}
+
+export async function getLatestMarketBar(
+  seriesId: string,
 ): Promise<MarketBar | null> {
-  const bars = await getDailyBars(listingId, { limit: 1, order: "desc" });
+  const bars = await getDailyBarsForSeries(seriesId, {
+    limit: 1,
+    order: "desc",
+  });
   return bars[0] ?? null;
 }

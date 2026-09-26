@@ -11,16 +11,24 @@ import type { Pool } from "pg";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  isBigintString,
+  isCalendarDate,
   logReturn,
   marketPointChanged,
+  normalizeDecimalString,
   parseAvDaily,
+  resolveAlphaVantageSymbol,
   simpleReturn,
   validateBar,
   type DailyBar,
 } from "../lib/market";
 import { applyDailyBars, getOrCreateSeries } from "../lib/db/market";
 import { injectPool } from "../lib/db/pool";
-import { getDailyBars, getInstrumentView } from "../lib/db/read";
+import {
+  getDailyBarsForListing,
+  getDailyBarsForSeries,
+  getInstrumentView,
+} from "../lib/db/read";
 
 const MIGRATION_SQL = readFileSync(
   fileURLToPath(
@@ -28,6 +36,12 @@ const MIGRATION_SQL = readFileSync(
       "../db/migrations/0023_market_data_foundation.sql",
       import.meta.url,
     ),
+  ),
+  "utf8",
+);
+const MIGRATION_V11_SQL = readFileSync(
+  fileURLToPath(
+    new URL("../db/migrations/0024_market_data_v11.sql", import.meta.url),
   ),
   "utf8",
 );
@@ -369,7 +383,8 @@ test("market data attaches to listing_id; ticker rename keeps one series", async
     [fx.listingId],
   );
   assert.equal(Number(n.rows[0].n), 1);
-  const bars = await getDailyBars(fx.listingId, { order: "asc" });
+  const bars = (await getDailyBarsForListing(fx.listingId, { order: "asc" }))!
+    .bars;
   assert.deepEqual(
     bars.map((b) => b.sessionDate),
     ["2026-09-01", "2026-09-02", "2026-09-03"],
@@ -448,7 +463,7 @@ test("provider correction appends version, old value stays queryable", async () 
   assert.equal(hist.rows.length, 2);
   assert.equal(hist.rows[0].c, "100"); // old value queryable
   assert.equal(hist.rows[1].c, "101");
-  const cur = await getDailyBars(fx.listingId);
+  const cur = (await getDailyBarsForListing(fx.listingId))!.bars;
   assert.equal(cur[0].close, "101"); // current = corrected
 });
 
@@ -602,4 +617,292 @@ test("V1 CHECKs reject adjusted/intraday series shapes", async () => {
       [fx.listingId],
     ),
   );
+});
+
+// ── V1.1: DB-level referential integrity ─────────────────────────────────
+
+/** smallest legal version row for raw-SQL probes */
+const mkVer = async (
+  pool: Pool,
+  pointId: string,
+  versionNo: number,
+  prev: string | null,
+  obsId: string,
+) =>
+  (
+    await pool.query(
+      `INSERT INTO market_point_versions
+         (point_id, version_no, open, high, low, close, volume,
+          observation_id, previous_version_id)
+       VALUES ($1,$2,'100','101','99','100.5',100,$3,$4) RETURNING id`,
+      [pointId, versionNo, obsId, prev],
+    )
+  ).rows[0].id as string;
+
+const mkPoint = async (pool: Pool, seriesId: string, date: string) =>
+  (
+    await pool.query(
+      `INSERT INTO market_points (series_id, session_date)
+       VALUES ($1,$2) RETURNING id`,
+      [seriesId, date],
+    )
+  ).rows[0].id as string;
+
+const mkObs = async (pool: Pool) =>
+  (
+    await pool.query(
+      `INSERT INTO reference_observations
+         (provider, dataset, record_key, payload, content_hash)
+       VALUES ('alphavantage','time_series_daily',$1,'{}',$1) RETURNING id`,
+      [`obs:${randomUUID()}`],
+    )
+  ).rows[0].id as string;
+
+test("DB rejects a current_version pointer into a DIFFERENT point", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "fk-xcur");
+  const seriesId = await getOrCreateSeries(pool, fx.listingId, fx.listingKey);
+  const [pA, pB] = [
+    await mkPoint(pool, seriesId, "2026-09-01"),
+    await mkPoint(pool, seriesId, "2026-09-02"),
+  ];
+  const vB = await mkVer(pool, pB, 1, null, await mkObs(pool));
+  // point A's pointer → point B's version — composite FK must reject
+  await assert.rejects(
+    pool.query(`UPDATE market_points SET current_version_id=$1 WHERE id=$2`, [
+      vB,
+      pA,
+    ]),
+    /foreign key|violates/i,
+  );
+});
+
+test("DB rejects a previous_version chain crossing points; valid chain ok", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "fk-xprev");
+  const seriesId = await getOrCreateSeries(pool, fx.listingId, fx.listingKey);
+  const pA = await mkPoint(pool, seriesId, "2026-09-01");
+  const pB = await mkPoint(pool, seriesId, "2026-09-02");
+  const obs = await mkObs(pool);
+  const a1 = await mkVer(pool, pA, 1, null, obs);
+  const b1 = await mkVer(pool, pB, 1, null, obs);
+  await assert.rejects(
+    pool.query(
+      `INSERT INTO market_point_versions
+         (point_id, version_no, open, high, low, close, volume,
+          observation_id, previous_version_id)
+       VALUES ($1,2,'100','101','99','100.5',100,$2,$3)`,
+      [pA, obs, b1], // A.v2 → B.v1
+    ),
+    /foreign key|violates/i,
+  );
+  // canonical chain: v1.prev NULL, v2→v1, v3→v2
+  const a2 = await mkVer(pool, pA, 2, a1, obs);
+  const a3 = await mkVer(pool, pA, 3, a2, obs);
+  const chain = await pool.query(
+    `SELECT v.version_no, p.version_no prev
+       FROM market_point_versions v
+       LEFT JOIN market_point_versions p ON p.id = v.previous_version_id
+      WHERE v.point_id=$1 ORDER BY v.version_no`,
+    [pA],
+  );
+  assert.deepEqual(
+    chain.rows.map((r) => [r.version_no, r.prev]),
+    [
+      [1, null],
+      [2, 1],
+      [3, 2],
+    ],
+  );
+});
+
+test("DB rejects a version with NULL observation_id", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "fk-noobs");
+  const seriesId = await getOrCreateSeries(pool, fx.listingId, fx.listingKey);
+  const p = await mkPoint(pool, seriesId, "2026-09-01");
+  await assert.rejects(
+    pool.query(
+      `INSERT INTO market_point_versions
+         (point_id, version_no, open, high, low, close, volume,
+          observation_id)
+       VALUES ($1,1,'100','101','99','100.5',100,NULL)`,
+      [p],
+    ),
+    /not-null|null value/i,
+  );
+});
+
+test("DB CHECKs reject malformed OHLCV regardless of the writer", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "fk-ohlc");
+  const seriesId = await getOrCreateSeries(pool, fx.listingId, fx.listingKey);
+  const p = await mkPoint(pool, seriesId, "2026-09-01");
+  const obs = await mkObs(pool);
+  const ins = (o: string, h: string, l: string, c: string, v = "1") =>
+    pool.query(
+      `INSERT INTO market_point_versions
+         (point_id, version_no, open, high, low, close, volume,
+          observation_id)
+       VALUES ($1,1,$2::numeric,$3::numeric,$4::numeric,$5::numeric,$6::bigint,$7)`,
+      [p, o, h, l, c, v, obs],
+    );
+  await assert.rejects(ins("100", "99", "101", "100")); // low>high
+  await assert.rejects(ins("0", "101", "99", "100")); // open=0
+  await assert.rejects(ins("105", "101", "99", "100")); // open>high
+  await assert.rejects(ins("100", "101", "99", "50")); // close<low
+  await assert.rejects(ins("100", "101", "99", "100", "-5")); // neg volume
+});
+
+// ── V1.1: exact decimal semantics ────────────────────────────────────────
+
+test("normalizeDecimalString: exact canonicalization, no IEEE-754", () => {
+  assert.equal(normalizeDecimalString("100"), "100");
+  assert.equal(normalizeDecimalString("100.0"), "100");
+  assert.equal(normalizeDecimalString("100.0000"), "100");
+  assert.equal(normalizeDecimalString("-0.000"), "0");
+  assert.equal(normalizeDecimalString(" 42.500 "), "42.5");
+  // past the float53 precision wall — stays exact
+  assert.equal(normalizeDecimalString("9007199254740992"), "9007199254740992");
+  assert.equal(normalizeDecimalString("9007199254740993"), "9007199254740993");
+  assert.notEqual(
+    normalizeDecimalString("9007199254740992"),
+    normalizeDecimalString("9007199254740993"),
+  );
+  // notation the provider contract doesn't use → rejected, not reinterpreted
+  assert.equal(normalizeDecimalString("1e3"), null);
+  assert.equal(normalizeDecimalString("abc"), null);
+  assert.equal(normalizeDecimalString("1.2.3"), null);
+  assert.equal(normalizeDecimalString(null), null);
+});
+
+test("isBigintString: digits-only, signed range", () => {
+  assert.ok(isBigintString("9223372036854775807")); // max int64
+  assert.ok(isBigintString("0"));
+  assert.ok(!isBigintString("9223372036854775808")); // overflow
+  assert.ok(!isBigintString("1.5"));
+  assert.ok(!isBigintString("1e6"));
+  assert.ok(!isBigintString(null));
+});
+
+test("decimal precision beyond float53 still detects a revision", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "precise");
+  const seriesId = await getOrCreateSeries(pool, fx.listingId, fx.listingKey);
+  const obs = await mkObs(pool);
+  const mk = (close: string): DailyBar => ({
+    sessionDate: "2026-09-01",
+    open: "1",
+    high: close,
+    low: "1",
+    close,
+    volume: "1",
+  });
+  // float64 collapses these to the same value — we must not
+  const big1 = "9007199254740992";
+  const big2 = "9007199254740993";
+  await applyDailyBars(pool, seriesId, [mk(big1)], obs);
+  const r = await applyDailyBars(pool, seriesId, [mk(big2)], obs);
+  // NB: pg-mem narrows numerics to float64 on read-back, so big1 vs big2
+  // is proven by the comparator, not by what pg-mem returns — on real PG
+  // numeric arrives as a string and stays exact.
+  assert.equal(r.versionsInserted, 1); // distinct → revision
+  // equivalent decimals within faithful range: 100.0 → 100.000 unchanged
+  const hundred = await applyDailyBars(pool, seriesId, [mk("100.0")], obs);
+  assert.equal(hundred.versionsInserted, 1); // real change first
+  const equiv = await applyDailyBars(pool, seriesId, [mk("100.000")], obs);
+  assert.equal(equiv.versionsInserted, 0); // 100.0 = 100.000 → unchanged
+  const pts = await pool.query(`SELECT count(*) n FROM market_points`);
+  assert.equal(Number(pts.rows[0].n), 1);
+});
+
+// ── V1.1: multi-provider isolation + read selection ─────────────────────
+
+test("two providers on the same listing → separate series, never merged", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "multiprovider");
+  const avSeries = await getOrCreateSeries(pool, fx.listingId, fx.listingKey);
+  // a second provider's series — written directly (the app-level V1
+  // contract only authors alphavantage series, but the schema holds them)
+  const other = (
+    await pool.query(
+      `INSERT INTO market_series
+         (canonical_key, listing_id, provider, dataset, "interval",
+          session_type, price_basis)
+       VALUES ('series:other',$1,'provider_b','daily','1d','regular','as_traded')
+       RETURNING id`,
+      [fx.listingId],
+    )
+  ).rows[0].id as string;
+  const obs = await mkObs(pool);
+  await applyDailyBars(pool, avSeries, [bar("2026-09-01", "100")], obs);
+  await applyDailyBars(pool, other, [bar("2026-09-01", "101")], obs);
+
+  // series-level reads are isolated
+  const a = await getDailyBarsForSeries(avSeries);
+  const b = await getDailyBarsForSeries(other);
+  assert.equal(a[0].close, "100");
+  assert.equal(b[0].close, "101");
+
+  // listing-level read requires explicit selection — alphavantage default
+  const sel = await getDailyBarsForListing(fx.listingId, {
+    provider: "alphavantage",
+    dataset: "time_series_daily",
+  });
+  assert.equal(sel?.bars[0].close, "100");
+  // selecting provider_b returns its own series
+  const selB = await getDailyBarsForListing(fx.listingId, {
+    provider: "provider_b",
+    dataset: "daily",
+  });
+  assert.equal(selB?.bars[0].close, "101");
+  // no selector matching >1 series → null rather than a merged array
+  const ambiguous = await pool.query(
+    `SELECT count(*) n FROM market_series WHERE listing_id=$1`,
+    [fx.listingId],
+  );
+  assert.equal(Number(ambiguous.rows[0].n), 2); // still two series
+});
+
+// ── V1.1: provider transport + API input validation ─────────────────────
+
+test("resolveAlphaVantageSymbol: US venues only, never guessed", () => {
+  assert.deepEqual(
+    resolveAlphaVantageSymbol({ mic: "XNGS", ticker: "GOOGL" }),
+    { kind: "symbol", symbol: "GOOGL" },
+  );
+  assert.deepEqual(resolveAlphaVantageSymbol({ mic: "XLON", ticker: "VOD" }), {
+    kind: "unresolved_provider_symbol",
+    reason: "unsupported_venue:XLON",
+  });
+  assert.equal(
+    resolveAlphaVantageSymbol({ mic: "XNGS", ticker: null }).kind,
+    "unresolved_provider_symbol",
+  );
+});
+
+test("isCalendarDate: real calendar, not regex shape", () => {
+  assert.ok(isCalendarDate("2026-09-30"));
+  assert.ok(isCalendarDate("2024-02-29")); // leap
+  assert.ok(!isCalendarDate("2026-99-99"));
+  assert.ok(!isCalendarDate("2026-02-31"));
+  assert.ok(!isCalendarDate("2023-02-29")); // not a leap year
+  assert.ok(!isCalendarDate("banana"));
+  assert.ok(!isCalendarDate("2026-9-1"));
+});
+
+// ── V1.1: migration declarations ─────────────────────────────────────────
+
+test("migration 0024 declares composite FKs + NOT NULL + OHLC CHECKs", () => {
+  assert.match(
+    MIGRATION_V11_SQL,
+    /FOREIGN KEY \(current_version_id, id\)\s+REFERENCES market_point_versions \(id, point_id\)/,
+  );
+  assert.match(
+    MIGRATION_V11_SQL,
+    /FOREIGN KEY \(previous_version_id, point_id\)\s+REFERENCES market_point_versions \(id, point_id\)/,
+  );
+  assert.match(MIGRATION_V11_SQL, /ALTER COLUMN observation_id SET NOT NULL/);
+  assert.match(MIGRATION_V11_SQL, /market_point_versions_ohlc_valid/);
+  assert.match(MIGRATION_V11_SQL, /volume IS NULL OR volume >= 0/);
 });

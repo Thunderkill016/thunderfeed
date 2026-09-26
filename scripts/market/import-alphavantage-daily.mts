@@ -4,20 +4,31 @@
  *     [--listing <canonical_key|id>] [--limit N] [--dry-run]
  *
  * Flow per listing:
- *   listing_id ──► current listing_version.ticker (request transport only)
+ *   listing_id ──► current listing_version.ticker + venue MIC
+ *        │        resolveAlphaVantageSymbol (verified US venue set only —
+ *        │        unsupported venues are skipped, never guessed)
  *        │        Alpha Vantage GET (raw JSON)
  *        │        → reference_observations (committed as evidence first)
  *        ▼
  *   classify response: series | rate_limit | invalid_symbol | error
  *        ▼
  *   BEGIN ── getOrCreateSeries ── applyDailyBars (validate+revise) ── COMMIT
- *   failure → ROLLBACK normalized state; raw observation stays committed.
+ *
+ * Two distinct failure semantics (do not conflate):
+ *   - one INVALID BAR → bar skipped, rest of batch still promotes, the
+ *     rejection lands in audit.invalidBars
+ *   - a runtime/DB error during promotion → the whole listing transaction
+ *     rolls back; the raw observation stays committed either way.
  *
  * Requires ALPHAVANTAGE_API_KEY — absent key stops the run clearly; no
  * unofficial source is substituted. The key is never logged or stored.
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { parseAvDaily, type AvDailyResult } from "../../lib/market.ts";
+import {
+  parseAvDaily,
+  resolveAlphaVantageSymbol,
+  type AvDailyResult,
+} from "../../lib/market.ts";
 import {
   applyDailyBars,
   getOrCreateSeries,
@@ -78,9 +89,10 @@ await c.connect();
 
 // ── listing universe ─────────────────────────────────────────────────────
 const listings = await c.query(
-  `SELECT l.id, l.canonical_key, lv.ticker
+  `SELECT l.id, l.canonical_key, lv.ticker, v.mic
      FROM instrument_listings l
      LEFT JOIN listing_versions lv ON lv.id = l.current_version_id
+     LEFT JOIN trading_venues v ON v.id = l.venue_id
     WHERE l.status='active' AND lv.ticker IS NOT NULL
       ${ONLY_LISTING ? "AND (l.canonical_key = $2 OR l.id::text = $2)" : ""}
     ORDER BY l.canonical_key
@@ -92,6 +104,7 @@ let requested = 0;
 let successful = 0;
 let providerErrors = 0;
 let rateLimited = 0;
+let unresolvedSymbols = 0;
 let pointsInserted = 0;
 let versionsInserted = 0;
 let unchanged = 0;
@@ -99,9 +112,20 @@ let invalidBars = 0;
 const errors: { listing: string; kind: string; detail: string }[] = [];
 
 for (const l of AUDIT_ONLY ? [] : listings.rows) {
+  // transport symbol resolution — verified US venues only; unsupported
+  // venues are skipped explicitly, never probed with a guessed symbol
+  const sym = resolveAlphaVantageSymbol({ mic: l.mic, ticker: l.ticker });
+  if (sym.kind !== "symbol") {
+    unresolvedSymbols++;
+    errors.push({
+      listing: l.canonical_key,
+      kind: "unresolved_provider_symbol",
+      detail: sym.reason,
+    });
+    continue;
+  }
+  const ticker = sym.symbol;
   requested++;
-  const ticker = l.ticker as string;
-  // US-equity listings in V1 — symbol is just the current ticker
   const url =
     `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY` +
     `&symbol=${encodeURIComponent(ticker)}&outputsize=compact` +
@@ -144,11 +168,18 @@ for (const l of AUDIT_ONLY ? [] : listings.rows) {
     });
     continue;
   }
-  // provider metadata sanity: symbol should echo our request ticker
-  if (
-    parsed.meta.symbol &&
-    parsed.meta.symbol.toUpperCase() !== ticker.toUpperCase()
-  ) {
+  // provider must echo the transport symbol — a silent/mismatched Meta
+  // Data block is a provider error, not a series to promote
+  if (!parsed.meta.symbol) {
+    providerErrors++;
+    errors.push({
+      listing: l.canonical_key,
+      kind: "unexpected_schema",
+      detail: "Meta Data present but '2. Symbol' missing",
+    });
+    continue;
+  }
+  if (parsed.meta.symbol.toUpperCase() !== ticker.toUpperCase()) {
     providerErrors++;
     errors.push({
       listing: l.canonical_key,
@@ -205,6 +236,7 @@ audit.metrics = {
   successful,
   providerErrors,
   rateLimitResponses: rateLimited,
+  unresolvedProviderSymbols: unresolvedSymbols,
   pointsInserted,
   versionsInserted,
   unchanged,
@@ -247,6 +279,36 @@ audit.metrics = {
         SELECT 1 FROM market_points mp WHERE mp.id = v.point_id)`,
   ),
   unchangedRows: unchanged,
+  // ── V1.1 pointer/chain/provenance integrity (all target 0) ─────────────
+  pointsWithMissingCurrentVersion: await count(
+    `SELECT count(*) n FROM market_points WHERE current_version_id IS NULL`,
+  ),
+  pointsWhoseCurrentVersionBelongsElsewhere: await count(
+    `SELECT count(*) n FROM market_points mp
+       JOIN market_point_versions v ON v.id = mp.current_version_id
+      WHERE v.point_id <> mp.id`,
+  ),
+  versionsWhosePreviousBelongsElsewhere: await count(
+    `SELECT count(*) n FROM market_point_versions v
+       JOIN market_point_versions p ON p.id = v.previous_version_id
+      WHERE p.point_id <> v.point_id`,
+  ),
+  // a v1 must have no previous; vN (N>1) must have one — broken otherwise
+  brokenPreviousChains: await count(
+    `SELECT count(*) n FROM market_point_versions
+      WHERE (version_no = 1 AND previous_version_id IS NOT NULL)
+         OR (version_no > 1 AND previous_version_id IS NULL)`,
+  ),
+  invalidPersistedOHLC: await count(
+    `SELECT count(*) n FROM market_point_versions
+      WHERE NOT (open > 0 AND high > 0 AND low > 0 AND close > 0
+                 AND low <= high
+                 AND open BETWEEN low AND high
+                 AND close BETWEEN low AND high)`,
+  ),
+  negativePersistedVolume: await count(
+    `SELECT count(*) n FROM market_point_versions WHERE volume < 0`,
+  ),
   missingObservationProvenance: await count(
     `SELECT count(*) n FROM market_point_versions
       WHERE observation_id IS NULL`,
@@ -275,6 +337,7 @@ writeFileSync(
 console.log(
   `alphavantage-daily: requested=${requested} ok=${successful} ` +
     `providerErrors=${providerErrors} rateLimited=${rateLimited} ` +
+    `unresolvedSymbols=${unresolvedSymbols} ` +
     `points+${pointsInserted} versions+${versionsInserted} ` +
     `unchanged=${unchanged} invalid=${invalidBars}`,
 );

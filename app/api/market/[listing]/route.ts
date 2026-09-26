@@ -1,14 +1,21 @@
 import { NextResponse } from "next/server";
 import { dbEnabled, getPool } from "../../../../lib/db/pool";
 import {
-  getDailyBars,
+  getDailyBarsForListing,
   getMarketSeriesForListing,
 } from "../../../../lib/db/read";
+import { isCalendarDate } from "../../../../lib/market";
 
 /* Read-only market data by stable listing identity:
- *   /api/market/<listing uuid|listing canonical_key>?from&to&limit&order
+ *   /api/market/<listing uuid|listing:canonical_key>
+ *     ?provider=alphavantage&dataset=time_series_daily&priceBasis=as_traded
+ *     &from=YYYY-MM-DD&to=YYYY-MM-DD&limit=1..5000&order=asc|desc
+ *
  * A bare ticker is NOT an identity here — tickers rename; listings don't.
- * Querying by ticker may become a convenience search endpoint later. */
+ * Bars are always returned under their explicit series identity, never
+ * merged across providers. */
+const bad = (error: string) => NextResponse.json({ error }, { status: 400 });
+
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ listing: string }> },
@@ -21,6 +28,29 @@ export async function GET(
   const isKey = /^listing:[a-z0-9_:]{1,160}$/.test(key);
   if (!isUuid && !isKey) return NextResponse.json(null, { status: 404 });
 
+  const url = new URL(req.url);
+  const from = url.searchParams.get("from");
+  const to = url.searchParams.get("to");
+  const provider = url.searchParams.get("provider") ?? undefined;
+  const dataset = url.searchParams.get("dataset") ?? undefined;
+  const priceBasis = url.searchParams.get("priceBasis") ?? undefined;
+  const limitP = url.searchParams.get("limit");
+  const order = url.searchParams.get("order") ?? "desc";
+
+  if (from != null && !isCalendarDate(from))
+    return bad("from must be a real calendar date YYYY-MM-DD");
+  if (to != null && !isCalendarDate(to))
+    return bad("to must be a real calendar date YYYY-MM-DD");
+  if (from != null && to != null && from > to) return bad("from > to");
+  let limit: number | undefined;
+  if (limitP != null) {
+    if (!/^\d+$/.test(limitP)) return bad("limit must be an integer 1..5000");
+    limit = Number(limitP);
+    if (limit < 1 || limit > 5000)
+      return bad("limit must be an integer 1..5000");
+  }
+  if (order !== "asc" && order !== "desc") return bad("order must be asc|desc");
+
   const pool = getPool();
   const l = await pool.query<{ id: string; canonical_key: string }>(
     isUuid
@@ -32,33 +62,29 @@ export async function GET(
   const row = l.rows[0];
   if (!row) return NextResponse.json(null, { status: 404 });
 
-  const url = new URL(req.url);
-  const from = url.searchParams.get("from") ?? undefined;
-  const to = url.searchParams.get("to") ?? undefined;
-  const limit = url.searchParams.get("limit");
-  const order = url.searchParams.get("order");
-  const dateOk = (s: string | undefined) =>
-    s == null || /^\d{4}-\d{2}-\d{2}$/.test(s);
-  if (!dateOk(from) || !dateOk(to))
+  const selected = await getDailyBarsForListing(row.id, {
+    provider,
+    dataset,
+    priceBasis,
+    from: from ?? undefined,
+    to: to ?? undefined,
+    limit,
+    order,
+  });
+  if (!selected)
     return NextResponse.json(
-      { error: "from/to must be YYYY-MM-DD" },
-      { status: 400 },
+      {
+        listing: { id: row.id, canonicalKey: row.canonical_key },
+        error:
+          "no unique series matches — pass provider/dataset/priceBasis to select explicitly",
+      },
+      { status: 404 },
     );
-
-  const [series, bars] = await Promise.all([
-    getMarketSeriesForListing(row.id),
-    getDailyBars(row.id, {
-      from,
-      to,
-      limit: limit ? Number(limit) : undefined,
-      order: order === "asc" ? "asc" : "desc",
-    }),
-  ]);
   return NextResponse.json(
     {
       listing: { id: row.id, canonicalKey: row.canonical_key },
-      series,
-      bars,
+      series: selected.series,
+      bars: selected.bars,
     },
     { headers: { "Cache-Control": "no-store" } },
   );
