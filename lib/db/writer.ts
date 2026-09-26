@@ -484,7 +484,15 @@ async function createEvent(
      VALUES ($1, $2, 'event_created', 'medium', $3, $4)`,
     [eventId, eventVersionId, `Sự kiện mới: ${args.title}`, now],
   );
-  await syncEventEntities(client, eventId, args.entitySignature);
+  // mirror the column's fallback — a caller that never distinguished
+  // core from full signature declares every slug headline-tier, same
+  // as the entity_signature_core value stored just above
+  await syncEventEntities(
+    client,
+    eventId,
+    args.entitySignature,
+    args.entitySignatureCore ?? args.entitySignature,
+  );
   return { eventId, eventVersionId, created: true };
 }
 
@@ -498,15 +506,32 @@ async function syncEventEntities(
   client: PoolClient,
   eventId: string,
   signature: string,
+  coreSignature?: string,
 ): Promise<void> {
+  const core = new Set((coreSignature ?? "").split(" ").filter(Boolean));
   const slugs = signature.split(" ").filter(Boolean);
   if (!slugs.length) return;
+  // in_title rides the same accumulate-only rule as the slug itself —
+  // a mention upgrades to headline when the slug joins the core
+  // signature, and is never demoted back
   await client.query(
-    `INSERT INTO event_entities (event_id, entity_slug)
-     VALUES ${slugs.map((_, i) => `($1, $${i + 2})`).join(",")}
+    `INSERT INTO event_entities (event_id, entity_slug, in_title)
+     VALUES ${slugs
+       .map((_, i) => `($1, $${i + 2}, $${slugs.length + 2 + i})`)
+       .join(",")}
      ON CONFLICT DO NOTHING`,
-    [eventId, ...slugs],
+    [eventId, ...slugs, ...slugs.map((s) => core.has(s))],
   );
+  const promoted = slugs.filter((s) => core.has(s));
+  if (promoted.length) {
+    await client.query(
+      `UPDATE event_entities SET in_title = true
+       WHERE event_id = $1 AND entity_slug IN (${promoted
+         .map((_, i) => `$${i + 2}`)
+         .join(",")})`,
+      [eventId, ...promoted],
+    );
+  }
 }
 
 /**
@@ -783,7 +808,12 @@ async function resolveEvent(
        WHERE id = $1`,
       [best.id, mergedSig, [...mergedCore].sort().join(" ")],
     );
-    await syncEventEntities(client, best.id, mergedSig);
+    await syncEventEntities(
+      client,
+      best.id,
+      mergedSig,
+      [...mergedCore].sort().join(" "),
+    );
     return {
       ref: {
         eventId: best.id,

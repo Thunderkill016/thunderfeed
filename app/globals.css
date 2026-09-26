@@ -1959,3 +1959,19 @@ button {
 .entity-status.emerging {
   color: var(--accent);
 }
+
+.entity-group-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  margin: 24px 0 0;
+}
+.entity-group-label.muted {
+  color: var(--ink-faint);
+}
+.entity-events.muted .entity-event-title {
+  color: var(--ink-soft);
+  font-weight: 400;
+}

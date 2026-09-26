@@ -711,6 +711,9 @@ export async function getEntityEvents(slug: string): Promise<{
     firstSeenAt: string;
     lastSeenAt: string;
     changeCount: number;
+    /** slug anchored at least one merged cluster's title — headline
+     *  entity, not a passing mention (RavenPack-style relevance tier) */
+    inTitle: boolean;
   }[];
   /** entities co-occurring on the same events — the junction's
    *  co-mention graph, ordered by shared-event count */
@@ -747,11 +750,12 @@ export async function getEntityEvents(slug: string): Promise<{
     first_seen_at: string;
     last_seen_at: string;
     change_count: string;
+    in_title: boolean;
   }>(
     `SELECT e.id, ev.title, e.status, e.topic,
             ev.importance_score AS importance,
             e.first_seen_at, e.last_seen_at,
-            count(ch.id) AS change_count
+            count(ch.id) AS change_count, ee.in_title
      FROM event_entities ee
      JOIN events e ON e.id = ee.event_id
      JOIN event_versions ev ON ev.id = e.current_version_id
@@ -759,8 +763,9 @@ export async function getEntityEvents(slug: string): Promise<{
      WHERE ee.entity_slug = $1
        AND e.status NOT IN ('merged', 'archived')
      GROUP BY e.id, ev.title, e.status, e.topic,
-              ev.importance_score, e.first_seen_at, e.last_seen_at
-     ORDER BY e.last_seen_at DESC`,
+              ev.importance_score, e.first_seen_at, e.last_seen_at,
+              ee.in_title
+     ORDER BY ee.in_title DESC, e.last_seen_at DESC`,
     [slug],
   );
   const related = (await relatedQ).rows.map((r) => ({
@@ -782,6 +787,7 @@ export async function getEntityEvents(slug: string): Promise<{
       firstSeenAt: r.first_seen_at,
       lastSeenAt: r.last_seen_at,
       changeCount: Number(r.change_count),
+      inTitle: r.in_title,
     })),
     related,
   };

@@ -84,23 +84,59 @@ export default async function EntityPage({
           Chưa có sự kiện nào được ghi nhận cho thực thể này.
         </p>
       ) : (
-        <ul className="entity-events">
-          {view.events.map((e) => (
-            <li key={e.id} className="entity-event">
-              <a href={`/?event=${e.id}`} className="entity-event-title">
-                {e.title}
-              </a>
-              <div className="entity-event-meta">
-                <span className={`entity-status ${e.status}`}>
-                  {STATUS_VI[e.status] ?? e.status}
-                </span>
-                <span>{timeAgo(e.lastSeenAt, now)}</span>
-                {e.changeCount > 0 && <span>{e.changeCount} thay đổi</span>}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <EntityEventGroups events={view.events} label={view.label} now={now} />
       )}
     </main>
+  );
+}
+
+type EntityEventRow = Awaited<
+  ReturnType<typeof getEntityEvents>
+>["events"][number];
+
+function EntityEventGroups({
+  events,
+  label,
+  now,
+}: {
+  events: EntityEventRow[];
+  label: string;
+  now: number;
+}) {
+  // headline entities headline the page; passing mentions stay visible
+  // but visibly secondary — the reader sees what the event is ABOUT
+  const about = events.filter((e) => e.inTitle);
+  const mentions = events.filter((e) => !e.inTitle);
+  const renderRow = (e: EntityEventRow) => (
+    <li key={e.id} className="entity-event">
+      <a href={`/?event=${e.id}`} className="entity-event-title">
+        {e.title}
+      </a>
+      <div className="entity-event-meta">
+        <span className={`entity-status ${e.status}`}>
+          {STATUS_VI[e.status] ?? e.status}
+        </span>
+        <span>{timeAgo(e.lastSeenAt, now)}</span>
+        {e.changeCount > 0 && <span>{e.changeCount} thay đổi</span>}
+      </div>
+    </li>
+  );
+  return (
+    <>
+      {about.length > 0 && (
+        <>
+          <h2 className="entity-group-label">Sự kiện về {label}</h2>
+          <ul className="entity-events">{about.map(renderRow)}</ul>
+        </>
+      )}
+      {mentions.length > 0 && (
+        <>
+          <h2 className="entity-group-label muted">
+            {about.length ? "Còn được nhắc trong" : `${label} được nhắc trong`}
+          </h2>
+          <ul className="entity-events muted">{mentions.map(renderRow)}</ul>
+        </>
+      )}
+    </>
   );
 }

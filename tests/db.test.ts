@@ -395,11 +395,14 @@ test("null-domain name row gets its domain backfilled, never stolen", async () =
 test("event_entities junction: create, accumulate on merge, entity reads", async () => {
   setupDb();
 
-  // an event naming the US + China in its title carries both slugs
+  // an event naming the US + China in its title carries both slugs;
+  // the summary mentions the Philippines in passing — headline tier
+  // (entity_signature_core) must NOT pick it up
   const c1 = cluster([
     art({
       source: "VnExpress",
       title: "Mỹ công bố thỏa thuận thương mại với Trung Quốc",
+      summary: "Thỏa thuận được Philippines quan tâm theo dõi sát.",
     }),
   ]);
   const r1 = await persistCluster(c1, extractClaims(c1));
@@ -423,9 +426,19 @@ test("event_entities junction: create, accumulate on merge, entity reads", async
   // the other through the co-occurrence edge
   assert.equal(us.kind, "place");
   assert.equal(cn.kind, "place");
+  // headline tier: title actors headline, summary mentions stay peripheral
+  assert.equal(us.events[0].inTitle, true);
+  assert.equal(cn.events[0].inTitle, true);
+  const ph = await getEntityEvents("philippines");
+  assert.equal(
+    ph.events[0]?.inTitle,
+    false,
+    "passing mention stays peripheral",
+  );
   assert.deepEqual(
     us.related.map((r) => r.slug),
-    ["china"],
+    ["china", "philippines"],
+    "even a mention-tier slug joins the co-occurrence edge",
   );
 
   // a later observation of the SAME story whose LEAD also names Japan
@@ -452,12 +465,36 @@ test("event_entities junction: create, accumulate on merge, entity reads", async
     "entity rows accumulate like the signature",
   );
 
-  // merge accumulated japan — us's neighbourhood now spans both
+  // merge accumulated japan — us's neighbourhood now spans three, and
+  // japan anchored a merged title so it upgrades to headline tier
   const us2 = await getEntityEvents("us");
   assert.deepEqual(
     us2.related.map((r) => r.slug).sort(),
-    ["china", "japan"],
+    ["china", "japan", "philippines"],
     "co-occurrence edge accumulates with the signature",
+  );
+  assert.equal(
+    jp2.events[0].inTitle,
+    true,
+    "a slug promoted into the merged core signature headlines",
+  );
+
+  // upgrade path: a third observation anchors the Philippines in its
+  // title — the existing junction row promotes mention → headline
+  const c3 = cluster([
+    art({
+      source: "VnExpress",
+      title:
+        "Mỹ công bố thỏa thuận thương mại với Trung Quốc, Philippines hoan nghênh",
+    }),
+  ]);
+  const r3 = await persistCluster(c3, extractClaims(c3));
+  assert.equal(r3.eventId, r1.eventId, "same story still attaches");
+  const ph2 = await getEntityEvents("philippines");
+  assert.equal(
+    ph2.events[0].inTitle,
+    true,
+    "headline promotion upgrades the row, never demotes",
   );
 
   // the watch-topic read path (junction-backed) returns the same event's
