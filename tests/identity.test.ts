@@ -806,4 +806,14 @@ test("0018: Data-API lockdown declares RLS + revoke + fixed search paths", () =>
     !m.match(/CREATE POLICY/i),
     "no RLS policies — raw access is denied, not filtered",
   );
+
+  // 0019: the SECURITY DEFINER event-trigger function is not RPC-callable
+  const m19 = readFileSync(
+    `${dir}/0019_revoke_event_trigger_execute.sql`,
+    "utf8",
+  );
+  assert.match(
+    m19,
+    /REVOKE EXECUTE ON FUNCTION public\.tf_enable_rls_on_new_table\(\)\s+FROM PUBLIC, anon, authenticated/,
+  );
 });
