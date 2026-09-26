@@ -78,7 +78,12 @@ export default async function InstrumentPage({
   params: Promise<{ key: string[] }>;
 }) {
   const { key } = await params;
-  const canonicalKey = key.join(":");
+  // both /instrument/apple/common_stock and the full canonical form
+  // /instrument/instrument/apple/common_stock resolve to the same key
+  const joined = key.join(":");
+  const canonicalKey = joined.startsWith("instrument:")
+    ? joined
+    : `instrument:${joined}`;
   if (!dbEnabled() || !/^instrument:[a-z0-9_:]{1,120}$/.test(canonicalKey))
     notFound();
   const view = await getInstrumentView(canonicalKey);

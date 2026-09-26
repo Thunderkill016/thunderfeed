@@ -2188,3 +2188,13 @@ h1 .macro-code {
   letter-spacing: 0.06em;
   color: var(--ink-soft);
 }
+
+/* delta cards are <a> — match the button card reset */
+a.change-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+a.change-card .change-card-event {
+  color: var(--dom);
+}

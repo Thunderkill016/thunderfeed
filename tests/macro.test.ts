@@ -246,6 +246,18 @@ test("macro apply — vintage-aware append-only revisions", async () => {
   const none = await getEntityMacroSeries(randomUUID());
   assert.equal(none.length, 0);
 
+  // vintage roll with identical value → version row still written, but
+  // NO delta — provenance churn is not a fact-change
+  const r5 = await applyMacroObservations(
+    pool,
+    seriesId,
+    [{ obsDate: "2025-12-01", vintageDate: "2026-04-01", value: "322.600" }],
+    obsId,
+  );
+  assert.equal(r5.versionsInserted, 1);
+  const d3 = await pool.query(`SELECT count(*) AS n FROM data_deltas`);
+  assert.equal(Number(d3.rows[0].n), 1, "vintage-only move must not emit");
+
   // a new obs_date on a series that exists → release delta, routine 'low'
   // (runs last — it moves the series' latest obs forward)
   const r4 = await applyMacroObservations(

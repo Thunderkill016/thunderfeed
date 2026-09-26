@@ -228,8 +228,9 @@ export async function applyMacroObservations(
 
     // data_deltas: only emit when the series already had versions —
     // a first-time backfill is baseline load, not a change. Releases are
-    // routine ('low'); revisions that actually move the value are the
-    // marquee delta ('medium'), vintage-only moves stay 'low'.
+    // routine ('low'). Revisions only emit when the value actually moved —
+    // a vintage roll with an identical value is provenance churn (version
+    // row still written), not a fact-change a reader should see.
     if (seriesHadVersions) {
       const code = (
         await db.query(`SELECT series_code FROM macro_series WHERE id=$1`, [
@@ -248,15 +249,15 @@ export async function applyMacroObservations(
         const vid = newVersionIds.get(`${s.pid}|${s.no}`);
         if (!vid) continue;
         const moved =
-          s.prevValue != null && decimalKey(s.prevValue) !== s.value;
+          s.prevValue != null &&
+          decimalKey(s.prevValue) !== decimalKey(s.value);
+        if (!s.release && !moved) continue; // vintage-only churn — no delta
         deltas.push([
           s.release ? "macro_release" : "macro_revision",
-          s.release ? "low" : moved ? "medium" : "low",
+          s.release ? "low" : "medium",
           s.release
             ? `${code} kỳ ${s.obsDate}: ${s.value}`
-            : s.prevValue != null && moved
-              ? `${code} kỳ ${s.obsDate}: ${s.prevValue} → ${s.value}`
-              : `${code} kỳ ${s.obsDate}: vintage mới, giá trị giữ ${s.value}`,
+            : `${code} kỳ ${s.obsDate}: ${s.prevValue} → ${s.value}`,
           s.pid,
           vid,
           s.prevVersionId,
