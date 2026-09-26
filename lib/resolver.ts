@@ -726,6 +726,19 @@ export function decide(
         semantic,
         `cosine ${semantic.toFixed(2)} + entity/claim anchor`,
       );
+    // facet path — a shared content bigram ("bóng đá", "trái phiếu")
+    // narrows a hub entity's umbrella to one facet: ASIAD *football*
+    // schedule ≡ ASIAD *football* results, but ≠ ASIAD *shooting*.
+    // The bigram alone is wire formula ("lịch thi đấu"); the hub alone
+    // is a beat, not an event; together + strong cosine they pin one
+    // storyline. Diff ceiling for bigram+core pairs is 0.727 — floor
+    // keeps a margin below the ambiguous band's merge examples.
+    if (semantic >= 0.77 && f.sharedBigrams.length > 0 && coreShared.length > 0)
+      return merge(
+        "semantic_facet",
+        semantic,
+        `cosine ${semantic.toFixed(2)} + facet "${f.sharedBigrams[0]}" + entity`,
+      );
   }
 
   // — entity-corroborated paths (vetoed by contradiction) —
