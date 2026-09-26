@@ -20,6 +20,7 @@ import {
   instrumentVersionChanged,
   listingVersionChanged,
   venueVersionChanged,
+  type ConflictClass,
   type InstrumentSeedPlan,
   type MicRow,
 } from "../instruments";
@@ -68,16 +69,19 @@ export async function recordDerivation(
   );
 }
 
-export type ReconcileResult =
+export type ResolveOutcome =
   | { kind: "existing"; instrumentId: string }
-  | { kind: "created"; instrumentId: string }
-  | { kind: "conflict"; reason: string };
+  | { kind: "create" }
+  | { kind: "conflict"; reason: string; conflictClass: ConflictClass };
 
-/** Durable reconciliation: share_class_figi is the identity proof.
- *  A match is only reused when issuer AND instrument_type agree —
- *  same FIGI on a different issuer or a different instrument type is an
- *  identity_conflict, never a silent merge or a type-changing version. */
-export async function reconcileInstrument(
+/** Durable reconciliation — READ-ONLY resolution, no writes.
+ *  share_class_figi is the identity proof: a FIGI hit is reused only when
+ *  issuer AND instrument_type agree. On the canonical-key fallback the
+ *  existing row's LIVE shareClassFIGI(s) are inspected: none → the
+ *  incoming durable id may attach; same → reuse; different →
+ *  durable_id_conflict. Two live shareClassFIGIs on one instrument is
+ *  never produced silently. */
+export async function resolveInstrument(
   db: Q,
   args: {
     canonicalKey: string;
@@ -85,7 +89,7 @@ export async function reconcileInstrument(
     instrumentType: string;
     shareClassFigi: string | null;
   },
-): Promise<ReconcileResult> {
+): Promise<ResolveOutcome> {
   if (args.shareClassFigi) {
     const hit = await db.query(
       `SELECT i.id, i.issuer_entity_id, i.instrument_type
@@ -102,11 +106,13 @@ export async function reconcileInstrument(
       if (row.issuer_entity_id !== args.issuerEntityId)
         return {
           kind: "conflict",
+          conflictClass: "identity_conflict",
           reason: `share_class_figi_issuer_mismatch:${args.shareClassFigi}`,
         };
       if (row.instrument_type !== args.instrumentType)
         return {
           kind: "conflict",
+          conflictClass: "identity_conflict",
           reason:
             `share_class_figi_type_mismatch:${args.shareClassFigi}:` +
             `${row.instrument_type}!=${args.instrumentType}`,
@@ -124,24 +130,62 @@ export async function reconcileInstrument(
     if (row.issuer_entity_id !== args.issuerEntityId)
       return {
         kind: "conflict",
+        conflictClass: "identity_conflict",
         reason: `canonical_key_issuer_mismatch:${args.canonicalKey}`,
       };
     if (row.instrument_type !== args.instrumentType)
       return {
         kind: "conflict",
+        conflictClass: "identity_conflict",
         reason:
           `canonical_key_type_mismatch:${args.canonicalKey}:` +
           `${row.instrument_type}!=${args.instrumentType}`,
       };
+    // durable-id guard: the keyed row may already carry a DIFFERENT live
+    // shareClassFIGI — attaching ours would mint a double-FIGI instrument
+    const live = await db.query(
+      `SELECT value FROM instrument_identifiers
+        WHERE instrument_id=$1 AND scheme='share_class_figi'
+          AND id NOT IN (
+            SELECT supersedes_identifier_id FROM instrument_identifiers
+             WHERE supersedes_identifier_id IS NOT NULL)`,
+      [row.id],
+    );
+    const liveSet = new Set(live.rows.map((r) => r.value as string));
+    if (
+      args.shareClassFigi &&
+      liveSet.size &&
+      !liveSet.has(args.shareClassFigi)
+    )
+      return {
+        kind: "conflict",
+        conflictClass: "durable_id_conflict",
+        reason:
+          `durable_identity_conflict:${args.canonicalKey}:` +
+          `${[...liveSet].join(",")}!=${args.shareClassFigi}`,
+      };
     return { kind: "existing", instrumentId: row.id };
   }
-  const ins = await db.query(
-    `INSERT INTO financial_instruments
-       (canonical_key, issuer_entity_id, instrument_type)
-     VALUES ($1,$2,$3) RETURNING id`,
-    [args.canonicalKey, args.issuerEntityId, args.instrumentType],
+  return { kind: "create" };
+}
+
+/** Same durable-id rule for a listing: key fallback may only attach the
+ *  incoming venue FIGI when the row has none live or already carries it. */
+async function listingDurableIdOk(
+  db: Q,
+  listingRowId: string,
+  incomingFigi: string,
+): Promise<boolean> {
+  const live = await db.query(
+    `SELECT value FROM listing_identifiers
+      WHERE listing_id=$1 AND scheme='figi'
+        AND id NOT IN (
+          SELECT supersedes_identifier_id FROM listing_identifiers
+           WHERE supersedes_identifier_id IS NOT NULL)`,
+    [listingRowId],
   );
-  return { kind: "created", instrumentId: ins.rows[0].id };
+  const liveSet = new Set(live.rows.map((r) => r.value as string));
+  return !liveSet.size || liveSet.has(incomingFigi);
 }
 
 export type ApplyOutcome =
@@ -151,7 +195,7 @@ export type ApplyOutcome =
       instrumentVersionId: string | null; // null when state unchanged
       listingIds: string[];
     }
-  | { kind: "conflict"; reason: string };
+  | { kind: "conflict"; reason: string; conflictClass: ConflictClass };
 
 export interface ApplySources {
   /** openfigi observations asserting the instrument (one per venue line —
@@ -172,14 +216,122 @@ export async function applyInstrumentPlan(
   const shareClassFigi = plan.instrumentIdentifiers.find(
     (i) => i.scheme === "share_class_figi",
   )?.value;
-  const rec = await reconcileInstrument(db, {
+
+  // ── Phase A: resolve every identity, write nothing ────────────────────
+  // A conflict found here (or anywhere below before Phase B) leaves zero
+  // promoted state — the seeder additionally wraps each plan in a
+  // SAVEPOINT for race/error defense on real Postgres.
+  const rec = await resolveInstrument(db, {
     canonicalKey: plan.instrumentKey,
     issuerEntityId,
     instrumentType: plan.instrumentType,
     shareClassFigi: shareClassFigi ?? null,
   });
   if (rec.kind === "conflict") return rec;
-  const instrumentId = rec.instrumentId;
+  // null when the instrument will be created — no existing listing can
+  // belong to it, so any preflight hit is a mismatch
+  const expectedInstrumentId =
+    rec.kind === "existing" ? rec.instrumentId : null;
+
+  type ResolvedListing = {
+    lp: InstrumentSeedPlan["listings"][number];
+    venueId: string;
+    isoObsId: string | null;
+    existingId: string | null;
+  };
+  const resolvedListings: ResolvedListing[] = [];
+  for (const lp of plan.listings) {
+    const venue = await db.query(`SELECT id FROM trading_venues WHERE mic=$1`, [
+      lp.mic,
+    ]);
+    if (!venue.rows.length)
+      throw new Error(`venue ${lp.mic} not imported — run import-mic first`);
+    const venueId = venue.rows[0].id as string;
+    const isoObsId = sources.venueObsIdByMic?.[lp.mic] ?? null;
+
+    // BOTH invariants on any reuse: same instrument AND same venue.
+    // Mismatch → listing_identity_conflict, never silent reuse.
+    const checkListing = (
+      row: { instrument_id: string; venue_id: string },
+      via: string,
+    ): ApplyOutcome | null => {
+      if (row.instrument_id !== expectedInstrumentId)
+        return {
+          kind: "conflict",
+          conflictClass: "identity_conflict",
+          reason:
+            `listing_identity_conflict:instrument_mismatch@${via}:` + lp.figi,
+        };
+      if (row.venue_id !== venueId)
+        return {
+          kind: "conflict",
+          conflictClass: "identity_conflict",
+          reason: `listing_identity_conflict:venue_mismatch@${via}:${lp.figi}`,
+        };
+      return null;
+    };
+    const byFigi = await db.query(
+      `SELECT li.listing_id, l.instrument_id, l.venue_id
+         FROM listing_identifiers li
+         JOIN instrument_listings l ON l.id = li.listing_id
+        WHERE li.scheme='figi' AND li.value=$1
+          AND li.id NOT IN (
+            SELECT supersedes_identifier_id FROM listing_identifiers
+             WHERE supersedes_identifier_id IS NOT NULL)`,
+      [lp.figi],
+    );
+    if (byFigi.rows.length) {
+      const bad = checkListing(byFigi.rows[0], "figi");
+      if (bad) return bad;
+      resolvedListings.push({
+        lp,
+        venueId,
+        isoObsId,
+        existingId: byFigi.rows[0].listing_id,
+      });
+      continue;
+    }
+    const byKey = await db.query(
+      `SELECT id, instrument_id, venue_id FROM instrument_listings
+        WHERE canonical_key=$1`,
+      [lp.listingKey],
+    );
+    if (byKey.rows.length) {
+      const bad = checkListing(byKey.rows[0], "canonical_key");
+      if (bad) return bad;
+      // durable-id guard: never attach a second live venue FIGI to an
+      // existing canonical listing identity
+      if (!(await listingDurableIdOk(db, byKey.rows[0].id, lp.figi)))
+        return {
+          kind: "conflict",
+          conflictClass: "durable_id_conflict",
+          reason:
+            `listing_durable_identity_conflict:${lp.listingKey}:` + lp.figi,
+        };
+      resolvedListings.push({
+        lp,
+        venueId,
+        isoObsId,
+        existingId: byKey.rows[0].id,
+      });
+      continue;
+    }
+    resolvedListings.push({ lp, venueId, isoObsId, existingId: null });
+  }
+
+  // ── Phase B: writes — every identity resolved, safe to materialize ────
+  let instrumentId: string;
+  if (rec.kind === "existing") {
+    instrumentId = rec.instrumentId;
+  } else {
+    const ins = await db.query(
+      `INSERT INTO financial_instruments
+         (canonical_key, issuer_entity_id, instrument_type)
+       VALUES ($1,$2,$3) RETURNING id`,
+      [plan.instrumentKey, issuerEntityId, plan.instrumentType],
+    );
+    instrumentId = ins.rows[0].id as string;
+  }
   await recordDerivation(
     db,
     { type: "instrument", id: instrumentId },
@@ -307,93 +459,41 @@ export async function applyInstrumentPlan(
       );
   }
 
-  // listings — one per venue MIC that returned data
+  // listings — one per venue MIC that returned data. Listing-level
+  // provenance is exact: the XNGS listing is asserted by the XNGS
+  // observation only — no cross-venue leakage (instrument-level subjects
+  // are the ones that carry every venue observation).
   const listingIds: string[] = [];
-  for (const lp of plan.listings) {
-    const venue = await db.query(`SELECT id FROM trading_venues WHERE mic=$1`, [
-      lp.mic,
-    ]);
-    if (!venue.rows.length)
-      throw new Error(`venue ${lp.mic} not imported — run import-mic first`);
-    const venueId = venue.rows[0].id as string;
-    const isoObsId = sources.venueObsIdByMic?.[lp.mic] ?? null;
-
-    // reconcile by venue-level FIGI first (durable), then canonical_key —
-    // BOTH invariants must hold on any reuse: same instrument AND same
-    // venue. A mismatch is a listing_identity_conflict, never silent reuse.
-    let listingId: string | null = null;
-    const checkListing = (
-      row: { instrument_id: string; venue_id: string },
-      via: string,
-    ): { kind: "conflict"; reason: string } | null => {
-      if (row.instrument_id !== instrumentId)
-        return {
-          kind: "conflict",
-          reason:
-            `listing_identity_conflict:instrument_mismatch@${via}:` + lp.figi,
-        };
-      if (row.venue_id !== venueId)
-        return {
-          kind: "conflict",
-          reason: `listing_identity_conflict:venue_mismatch@${via}:${lp.figi}`,
-        };
-      return null;
-    };
-    const byFigi = await db.query(
-      `SELECT li.listing_id, l.instrument_id, l.venue_id
-         FROM listing_identifiers li
-         JOIN instrument_listings l ON l.id = li.listing_id
-        WHERE li.scheme='figi' AND li.value=$1
-          AND li.id NOT IN (
-            SELECT supersedes_identifier_id FROM listing_identifiers
-             WHERE supersedes_identifier_id IS NOT NULL)`,
-      [lp.figi],
-    );
-    if (byFigi.rows.length) {
-      const bad = checkListing(byFigi.rows[0], "figi");
-      if (bad) return bad;
-      listingId = byFigi.rows[0].listing_id;
-    }
+  for (const rl of resolvedListings) {
+    const { lp, venueId, isoObsId, existingId } = rl;
+    let listingId = existingId;
     if (!listingId) {
-      const byKey = await db.query(
-        `SELECT id, instrument_id, venue_id FROM instrument_listings
-          WHERE canonical_key=$1`,
-        [lp.listingKey],
+      const nl = await db.query(
+        `INSERT INTO instrument_listings (canonical_key, instrument_id, venue_id)
+         VALUES ($1,$2,$3) RETURNING id`,
+        [lp.listingKey, instrumentId, venueId],
       );
-      if (byKey.rows.length) {
-        const bad = checkListing(byKey.rows[0], "canonical_key");
-        if (bad) return bad;
-        listingId = byKey.rows[0].id;
-      } else {
-        const nl = await db.query(
-          `INSERT INTO instrument_listings (canonical_key, instrument_id, venue_id)
-           VALUES ($1,$2,$3) RETURNING id`,
-          [lp.listingKey, instrumentId, venueId],
-        );
-        listingId = nl.rows[0].id as string;
+      listingId = nl.rows[0].id as string;
+      await recordDerivation(
+        db,
+        { type: "listing", id: listingId },
+        sources.secObsId,
+        "discovers",
+      );
+      await recordDerivation(
+        db,
+        { type: "listing", id: listingId },
+        lp.obsId,
+        "asserts",
+      );
+      if (isoObsId)
         await recordDerivation(
           db,
           { type: "listing", id: listingId },
-          sources.secObsId,
-          "discovers",
+          isoObsId,
+          "venue_reference",
         );
-        for (const obsId of sources.figiObsIds)
-          await recordDerivation(
-            db,
-            { type: "listing", id: listingId },
-            obsId,
-            "asserts",
-          );
-        if (isoObsId)
-          await recordDerivation(
-            db,
-            { type: "listing", id: listingId },
-            isoObsId,
-            "venue_reference",
-          );
-      }
     }
-    if (!listingId) throw new Error("listing identity failed to materialize");
     const lid = listingId;
 
     // listing version — semantic diff only; primary stays NULL unless a

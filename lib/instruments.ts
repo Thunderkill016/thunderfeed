@@ -217,9 +217,14 @@ export function figiInstrumentType(r: FigiResult): string | null {
 
 // ── derivation plan ───────────────────────────────────────────────────────
 
+export type ConflictClass =
+  | "provider_conflict" // provider responses disagree (deriveSeed level)
+  | "identity_conflict" // existing row claims different issuer/type/venue
+  | "durable_id_conflict"; // canonical key reuse would attach a second live FIGI
+
 export type SeedOutcome =
   | { kind: "seeded"; canonicalKey: string }
-  | { kind: "conflict"; reason: string }
+  | { kind: "conflict"; reason: string; conflictClass?: ConflictClass }
   | { kind: "unresolved"; reason: string };
 
 export interface SeedInput {
@@ -324,11 +329,11 @@ export function deriveSeed(
     { mics: Set<string>; obsIds: Set<string> }
   >();
   const shareClassObsIds = new Set<string>();
+  const cfis = new Set<string>(); // non-null CFI values across venues
+  const currencies = new Set<string>(); // non-null instrument currencies
   let shareClassFigi: string | undefined;
   let name: string | undefined;
-  let currency: string | null = null;
   let type: string | null = null;
-  let cfi: string | undefined;
 
   for (const { mic, obsId, results } of venues) {
     if (!results.length) continue;
@@ -338,12 +343,17 @@ export function deriveSeed(
         r.figi,
     );
     if (!matching.length)
-      return { kind: "conflict", reason: `openfigi_ticker_mismatch:${mic}` };
+      return {
+        kind: "conflict",
+        reason: `openfigi_ticker_mismatch:${mic}`,
+        conflictClass: "provider_conflict",
+      };
     const figis = new Set(matching.map((r) => r.figi));
     if (figis.size > 1)
       return {
         kind: "conflict",
         reason: `openfigi_ambiguous:${figis.size}_candidates@${mic}`,
+        conflictClass: "provider_conflict",
       };
     const r = matching[0];
     const t = figiInstrumentType(r);
@@ -363,18 +373,20 @@ export function deriveSeed(
       return {
         kind: "conflict",
         reason: "share_class_figi_mismatch_across_venues",
+        conflictClass: "provider_conflict",
       };
     if (type && type !== t)
       return {
         kind: "conflict",
         reason: `instrument_type_mismatch:${type}!=${t}@${mic}`,
+        conflictClass: "provider_conflict",
       };
     shareClassFigi = r.shareClassFIGI;
     shareClassObsIds.add(obsId);
     name ??= r.name ?? secRow.name;
-    currency ??= r.currency ?? null;
     type ??= t;
-    cfi ??= r.cfi;
+    if (r.cfi) cfis.add(r.cfi);
+    if (r.currency) currencies.add(r.currency);
     const comp = composites.get(r.compositeFIGI) ?? {
       mics: new Set<string>(),
       obsIds: new Set<string>(),
@@ -394,6 +406,21 @@ export function deriveSeed(
   if (!listings.length)
     return { kind: "unresolved", reason: "openfigi_no_result" };
 
+  // CFI is an instrument-level classification: providers must agree.
+  // Some venues omitting it is fine — one consistent non-null wins; two
+  // different non-null values is a provider classification conflict.
+  if (cfis.size > 1)
+    return {
+      kind: "conflict",
+      reason: `cfi_mismatch:${[...cfis].sort().join("!=")}`,
+      conflictClass: "provider_conflict",
+    };
+  // Instrument currency only when every asserted venue currency agrees —
+  // a share class trading USD@XNGS and GBP@XLON has no single instrument
+  // currency; per-listing currencies remain authoritative.
+  const currency = currencies.size === 1 ? [...currencies][0] : null;
+  const cfi = cfis.size === 1 ? [...cfis][0] : null;
+
   const [desc, shareClass] = instrumentDescriptor(name ?? secRow.name, type!);
   const instrumentKey = `instrument:${issuerSlug}:${desc}`;
   for (const l of listings)
@@ -407,7 +434,7 @@ export function deriveSeed(
       instrumentType: type!,
       issuerCik: String(secRow.cik).padStart(10, "0"),
       currency,
-      cfi: cfi ?? null,
+      cfi,
       instrumentIdentifiers: [
         {
           scheme: "share_class_figi",

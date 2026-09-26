@@ -1330,3 +1330,349 @@ test("multi-venue: composite derivations trace their own observations", async ()
   assert.deepEqual(byVal["BBGC2"], [o2]);
   assert.deepEqual(byVal["BBG001MVSC"], [o1, o2].sort());
 });
+
+// ── V1.3 regressions: durable-ID guards + atomic apply + leak-free provenance
+
+test("instrument durable-id collision: same key, live FIGI A, incoming B → conflict", async () => {
+  const pool = setupDb();
+  const issuer = await fixtureIssuer(pool, "company:dg", "DG");
+  await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  const sec = await obsFixture(pool, "sec:dg", "sec_edgar");
+  const f = await obsFixture(pool, "figi:dg");
+  const r1 = mustApply(
+    await applyInstrumentPlan(
+      pool,
+      seedPlan({ instrumentKey: "instrument:dg:common_stock" }, f),
+      issuer,
+      { figiObsIds: [f], secObsId: sec },
+    ),
+  );
+  // same canonical key + issuer + type, but a DIFFERENT shareClassFIGI
+  const out = await applyInstrumentPlan(
+    pool,
+    seedPlan(
+      {
+        instrumentKey: "instrument:dg:common_stock",
+        instrumentIdentifiers: [
+          {
+            scheme: "share_class_figi",
+            value: "BBG001DIFFERENT",
+            scope: "global",
+            obsIds: [f],
+          },
+        ],
+      },
+      f,
+    ),
+    issuer,
+    { figiObsIds: [f], secObsId: sec },
+  );
+  assert.equal(out.kind, "conflict");
+  if (out.kind === "conflict") {
+    assert.equal(out.conflictClass, "durable_id_conflict");
+    assert.match(out.reason, /durable_identity_conflict/);
+  }
+  // A remains the only live shareClassFIGI on the instrument
+  const live = await pool.query(
+    `SELECT value FROM instrument_identifiers
+      WHERE instrument_id=$1 AND scheme='share_class_figi'`,
+    [r1.instrumentId],
+  );
+  assert.deepEqual(
+    live.rows.map((r) => r.value),
+    ["BBG001S5TEST"],
+  );
+});
+
+test("listing durable-id collision: same listing key, venue FIGI A vs B → conflict", async () => {
+  const pool = setupDb();
+  const issuer = await fixtureIssuer(pool, "company:ldg", "LDG");
+  await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  const sec = await obsFixture(pool, "sec:ldg", "sec_edgar");
+  const f = await obsFixture(pool, "figi:ldg");
+  mustApply(
+    await applyInstrumentPlan(
+      pool,
+      seedPlan({ instrumentKey: "instrument:ldg:common_stock" }, f),
+      issuer,
+      { figiObsIds: [f], secObsId: sec },
+    ),
+  );
+  // same listing canonical key + same instrument + same venue, incoming
+  // venue-level FIGI is a DIFFERENT value → do not attach B
+  const out = await applyInstrumentPlan(
+    pool,
+    seedPlan(
+      {
+        instrumentKey: "instrument:ldg:common_stock",
+        listings: [
+          {
+            listingKey: "listing:acme:common_stock:xngs", // same key
+            mic: "XNGS",
+            ticker: "ACME",
+            currency: "USD",
+            figi: "BBG000DIFFERENT",
+            obsId: f,
+          },
+        ],
+      },
+      f,
+    ),
+    issuer,
+    { figiObsIds: [f], secObsId: sec },
+  );
+  assert.equal(out.kind, "conflict");
+  if (out.kind === "conflict") {
+    assert.equal(out.conflictClass, "durable_id_conflict");
+    assert.match(out.reason, /listing_durable_identity_conflict/);
+  }
+});
+
+test("atomic apply: listing 2 conflicts → entire plan leaves zero writes", async () => {
+  const pool = setupDb();
+  const issuer = await fixtureIssuer(pool, "company:atom", "Atom");
+  const other = await fixtureIssuer(pool, "company:atom_other", "AtomOther");
+  await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  await fixtureVenue(pool, "XNYS", "NYSE");
+  const sec = await obsFixture(pool, "sec:at", "sec_edgar");
+  const f = await obsFixture(pool, "figi:at");
+  // a stray listing ALREADY owns venue FIGI F_STRAY on another instrument —
+  // plan's second listing reusing that FIGI must conflict
+  const strayI = await pool.query(
+    `INSERT INTO financial_instruments
+       (canonical_key, issuer_entity_id, instrument_type)
+     VALUES ('instrument:atom_other:common_stock',$1,'common_stock')
+     RETURNING id`,
+    [other],
+  );
+  const strayL = await pool.query(
+    `INSERT INTO instrument_listings (canonical_key, instrument_id, venue_id)
+     SELECT 'listing:atom_other:common_stock:xnys',$1,id
+       FROM trading_venues WHERE mic='XNYS' RETURNING id`,
+    [strayI.rows[0].id],
+  );
+  await pool.query(
+    `INSERT INTO listing_identifiers (listing_id, scheme, value, provider)
+     VALUES ($1,'figi','BBG000STRAY','openfigi')`,
+    [strayL.rows[0].id],
+  );
+  const counts = async () => ({
+    fi: (await pool.query(`SELECT count(*) n FROM financial_instruments`))
+      .rows[0].n,
+    iv: (await pool.query(`SELECT count(*) n FROM instrument_versions`)).rows[0]
+      .n,
+    ii: (await pool.query(`SELECT count(*) n FROM instrument_identifiers`))
+      .rows[0].n,
+    l: (await pool.query(`SELECT count(*) n FROM instrument_listings`)).rows[0]
+      .n,
+    lv: (await pool.query(`SELECT count(*) n FROM listing_versions`)).rows[0].n,
+    li: (await pool.query(`SELECT count(*) n FROM listing_identifiers`)).rows[0]
+      .n,
+    md: (await pool.query(`SELECT count(*) n FROM master_derivations`)).rows[0]
+      .n,
+  });
+  const before = await counts();
+  const out = await applyInstrumentPlan(
+    pool,
+    seedPlan(
+      {
+        instrumentKey: "instrument:atom:common_stock",
+        instrumentIdentifiers: [
+          {
+            scheme: "share_class_figi",
+            value: "BBG001ATOM",
+            scope: "global",
+            obsIds: [f],
+          },
+        ],
+        listings: [
+          {
+            listingKey: "listing:atom:common_stock:xngs",
+            mic: "XNGS",
+            ticker: "ATM",
+            currency: "USD",
+            figi: "BBG000ATOMOK",
+            obsId: f,
+          },
+          {
+            listingKey: "listing:atom:common_stock:xnys",
+            mic: "XNYS",
+            ticker: "ATM",
+            currency: "USD",
+            figi: "BBG000STRAY", // ← collides with another instrument's listing
+            obsId: f,
+          },
+        ],
+      },
+      f,
+    ),
+    issuer,
+    { figiObsIds: [f], secObsId: sec },
+  );
+  assert.equal(out.kind, "conflict");
+  const after = await counts();
+  assert.deepEqual(after, before); // nothing promoted, nothing left behind
+});
+
+test("listing provenance is per-venue: no cross-listing assertion leaks", async () => {
+  const pool = setupDb();
+  const issuer = await fixtureIssuer(pool, "company:leak", "Leak");
+  await fixtureVenue(pool, "XNGS", "NASDAQ GS");
+  await fixtureVenue(pool, "XLON", "LSE");
+  const sec = await obsFixture(pool, "sec:lk", "sec_edgar");
+  const o1 = await obsFixture(pool, "XNGS:LK");
+  const o2 = await obsFixture(pool, "XLON:LK");
+  const out = deriveSeed({
+    issuerSlug: "leak",
+    secRow: { cik: 1, name: "LEAK INC", ticker: "LK", exchange: "Nasdaq" },
+    venues: [
+      {
+        mic: "XNGS",
+        obsId: o1,
+        results: [
+          {
+            figi: "BBG000LKA",
+            ticker: "LK",
+            shareClassFIGI: "BBG001LKSC",
+            compositeFIGI: "BBGLKC1",
+            securityType2: "Common Stock",
+          },
+        ],
+      },
+      {
+        mic: "XLON",
+        obsId: o2,
+        results: [
+          {
+            figi: "BBG000LKB",
+            ticker: "LK",
+            shareClassFIGI: "BBG001LKSC",
+            compositeFIGI: "BBGLKC2",
+            securityType2: "Common Stock",
+          },
+        ],
+      },
+    ],
+  });
+  assert.equal(out.kind, "plan");
+  if (out.kind !== "plan") return;
+  const r = mustApply(
+    await applyInstrumentPlan(pool, out.plan, issuer, {
+      figiObsIds: [o1, o2],
+      secObsId: sec,
+    }),
+  );
+  const perListing = await pool.query(
+    `SELECT tv.mic, d.observation_id
+       FROM master_derivations d
+       JOIN instrument_listings l ON l.id = d.listing_id
+       JOIN trading_venues tv ON tv.id = l.venue_id
+      WHERE d.role='asserts' AND l.instrument_id=$1
+      ORDER BY tv.mic`,
+    [r.instrumentId],
+  );
+  const byMic: Record<string, string[]> = {};
+  for (const row of perListing.rows)
+    (byMic[row.mic as string] ??= []).push(row.observation_id as string);
+  assert.deepEqual(byMic["XNGS"], [o1]);
+  assert.deepEqual(byMic["XLON"], [o2]);
+  // instrument-level assertion still carries both venues
+  const inst = await pool.query(
+    `SELECT observation_id FROM master_derivations
+      WHERE instrument_id=$1 AND role='asserts' ORDER BY observation_id`,
+    [r.instrumentId],
+  );
+  assert.deepEqual(
+    inst.rows.map((x) => x.observation_id).sort(),
+    [o1, o2].sort(),
+  );
+});
+
+test("CFI disagreement across venues → provider conflict, no promotion", () => {
+  const out = deriveSeed({
+    issuerSlug: "cfi",
+    secRow: { cik: 1, name: "CFI INC", ticker: "CFI", exchange: "Nasdaq" },
+    venues: [
+      {
+        mic: "XNGS",
+        obsId: "o1",
+        results: [
+          {
+            figi: "BBG000CFIA",
+            ticker: "CFI",
+            shareClassFIGI: "BBG001CFIX",
+            compositeFIGI: "BBGCFIC1",
+            securityType2: "Common Stock",
+            cfi: "ESVUFR",
+          },
+        ],
+      },
+      {
+        mic: "XLON",
+        obsId: "o2",
+        results: [
+          {
+            figi: "BBG000CFIB",
+            ticker: "CFI",
+            shareClassFIGI: "BBG001CFIX",
+            compositeFIGI: "BBGCFIC2",
+            securityType2: "Common Stock",
+            cfi: "ESXXXX",
+          },
+        ],
+      },
+    ],
+  });
+  assert.equal(out.kind, "conflict");
+  if (out.kind === "conflict") {
+    assert.match(out.reason, /cfi_mismatch/);
+    assert.equal(out.conflictClass, "provider_conflict");
+  }
+});
+
+test("currency disagreement → instrument currency unknown, listings keep theirs", () => {
+  const out = deriveSeed({
+    issuerSlug: "fx",
+    secRow: { cik: 1, name: "FX INC", ticker: "FX", exchange: "Nasdaq" },
+    venues: [
+      {
+        mic: "XNGS",
+        obsId: "o1",
+        results: [
+          {
+            figi: "BBG000FXA",
+            ticker: "FX",
+            shareClassFIGI: "BBG001FXSC",
+            compositeFIGI: "BBGFXC1",
+            securityType2: "Common Stock",
+            currency: "USD",
+          },
+        ],
+      },
+      {
+        mic: "XLON",
+        obsId: "o2",
+        results: [
+          {
+            figi: "BBG000FXB",
+            ticker: "FX",
+            shareClassFIGI: "BBG001FXSC",
+            compositeFIGI: "BBGFXC2",
+            securityType2: "Common Stock",
+            currency: "GBP",
+          },
+        ],
+      },
+    ],
+  });
+  assert.equal(out.kind, "plan");
+  if (out.kind !== "plan") return;
+  assert.equal(out.plan.currency, null); // never first-wins
+  assert.deepEqual(
+    out.plan.listings.map((l) => [l.mic, l.currency]),
+    [
+      ["XNGS", "USD"],
+      ["XLON", "GBP"],
+    ],
+  );
+});

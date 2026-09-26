@@ -6,7 +6,7 @@
  * Identity reconciliation: share_class_figi is the identity proof (durable);
  * canonical_key is a label. Conservative promotion — provider disagreement
  * → 'provider_conflict', nothing promoted. Writes
- * bench/instrument-master-v12-audit.json.
+ * bench/instrument-master-v13-audit.json.
  */
 import { writeFileSync } from "node:fs";
 import {
@@ -43,8 +43,20 @@ async function latestObs(
 
 const c = connectDb();
 await c.connect();
-const conflicts: { issuer: string; ticker: string; reason: string }[] = [];
+const conflicts: {
+  issuer: string;
+  ticker: string;
+  reason: string;
+  class: string;
+}[] = [];
 const unresolved: { issuer: string; ticker: string; reason: string }[] = [];
+const planStats = {
+  attempted: 0,
+  applied: 0,
+  unresolved: 0,
+  conflicted: 0,
+  rolledBack: 0, // savepoint rollbacks — must equal DB-level conflicts
+};
 try {
   // ISO venue observations for venue_reference derivations
   const isoObs = await c.query(
@@ -134,15 +146,19 @@ try {
         });
       }
       const outcome = deriveSeed({ issuerSlug: slug, secRow: p, venues });
+      planStats.attempted++;
       if (outcome.kind === "conflict") {
+        planStats.conflicted++;
         conflicts.push({
           issuer: slug,
           ticker: p.ticker,
           reason: outcome.reason,
+          class: outcome.conflictClass ?? "provider_conflict",
         });
         continue;
       }
       if (outcome.kind === "unresolved") {
+        planStats.unresolved++;
         unresolved.push({
           issuer: slug,
           ticker: p.ticker,
@@ -152,6 +168,9 @@ try {
       }
       if (outcome.kind !== "plan") continue; // defensive — 'seeded' never emitted
       const plan = outcome.plan;
+      // Each plan is its own atomic boundary: a mid-plan conflict must not
+      // leave partially promoted state behind.
+      await c.query("SAVEPOINT instrument_plan");
       const applied = await applyInstrumentPlan(c, plan, iss.id, {
         // every venue observation asserts the instrument — not one
         // arbitrarily chosen 'figiObsId'
@@ -160,13 +179,20 @@ try {
         venueObsIdByMic,
       });
       if (applied.kind === "conflict") {
+        await c.query("ROLLBACK TO SAVEPOINT instrument_plan");
+        await c.query("RELEASE SAVEPOINT instrument_plan");
+        planStats.conflicted++;
+        planStats.rolledBack++;
         conflicts.push({
           issuer: slug,
           ticker: p.ticker,
           reason: applied.reason,
+          class: applied.conflictClass,
         });
         continue;
       }
+      await c.query("RELEASE SAVEPOINT instrument_plan");
+      planStats.applied++;
       const { instrumentId, instrumentVersionId, listingIds } = applied;
       audit.instruments.push({
         issuerEntity: iss.canonical_key,
@@ -277,20 +303,110 @@ try {
          JOIN instrument_listings l ON l.current_version_id = lv.id
         WHERE lv.is_primary_listing IS NULL`,
     ),
+    // ── plan accounting ───────────────────────────────────────────────
+    plansAttempted: planStats.attempted,
+    plansApplied: planStats.applied,
+    plansUnresolved: planStats.unresolved,
+    plansConflicted: planStats.conflicted,
+    plansRolledBack: planStats.rolledBack,
+    // DB-level apply conflicts must equal savepoint rollbacks — anything
+    // else means a conflicted plan left writes behind
+    partialConflictWrites: Math.abs(
+      conflicts.filter((c) => c.class !== "provider_conflict").length -
+        planStats.rolledBack,
+    ),
+    providerClassificationConflicts: conflicts.filter((c) =>
+      c.reason.startsWith("cfi_mismatch"),
+    ).length,
+
     // ── integrity (all target 0) ───────────────────────────────────────
     integrity: {
-      // subject_type must agree with the non-null subject FK (also
-      // DB-enforced by master_derivations_subject_fk_match)
-      badSubjectTypeFkRows: await count(
-        `SELECT count(*) n FROM master_derivations WHERE
-           (subject_type='instrument' AND instrument_id IS NULL)
-        OR (subject_type='instrument_version' AND instrument_version_id IS NULL)
-        OR (subject_type='listing' AND listing_id IS NULL)
-        OR (subject_type='listing_version' AND listing_version_id IS NULL)
-        OR (subject_type='venue' AND venue_id IS NULL)
-        OR (subject_type='venue_version' AND venue_version_id IS NULL)
-        OR (subject_type='instrument_identifier' AND instrument_identifier_id IS NULL)
-        OR (subject_type='listing_identifier' AND listing_identifier_id IS NULL)`,
+      // exact mirror of master_derivations_subject_fk_match: the required
+      // FK must be set AND every other subject FK must be NULL
+      badTypedDerivations: await count(
+        `SELECT count(*) n FROM master_derivations WHERE NOT (
+           (subject_type='instrument' AND instrument_id IS NOT NULL
+              AND instrument_version_id IS NULL AND listing_id IS NULL
+              AND listing_version_id IS NULL AND venue_id IS NULL
+              AND venue_version_id IS NULL AND instrument_identifier_id IS NULL
+              AND listing_identifier_id IS NULL)
+        OR (subject_type='instrument_version' AND instrument_version_id IS NOT NULL
+              AND instrument_id IS NULL AND listing_id IS NULL
+              AND listing_version_id IS NULL AND venue_id IS NULL
+              AND venue_version_id IS NULL AND instrument_identifier_id IS NULL
+              AND listing_identifier_id IS NULL)
+        OR (subject_type='listing' AND listing_id IS NOT NULL
+              AND instrument_id IS NULL AND instrument_version_id IS NULL
+              AND listing_version_id IS NULL AND venue_id IS NULL
+              AND venue_version_id IS NULL AND instrument_identifier_id IS NULL
+              AND listing_identifier_id IS NULL)
+        OR (subject_type='listing_version' AND listing_version_id IS NOT NULL
+              AND instrument_id IS NULL AND instrument_version_id IS NULL
+              AND listing_id IS NULL AND venue_id IS NULL
+              AND venue_version_id IS NULL AND instrument_identifier_id IS NULL
+              AND listing_identifier_id IS NULL)
+        OR (subject_type='venue' AND venue_id IS NOT NULL
+              AND instrument_id IS NULL AND instrument_version_id IS NULL
+              AND listing_id IS NULL AND listing_version_id IS NULL
+              AND venue_version_id IS NULL AND instrument_identifier_id IS NULL
+              AND listing_identifier_id IS NULL)
+        OR (subject_type='venue_version' AND venue_version_id IS NOT NULL
+              AND instrument_id IS NULL AND instrument_version_id IS NULL
+              AND listing_id IS NULL AND listing_version_id IS NULL
+              AND venue_id IS NULL AND instrument_identifier_id IS NULL
+              AND listing_identifier_id IS NULL)
+        OR (subject_type='instrument_identifier' AND instrument_identifier_id IS NOT NULL
+              AND instrument_id IS NULL AND instrument_version_id IS NULL
+              AND listing_id IS NULL AND listing_version_id IS NULL
+              AND venue_id IS NULL AND venue_version_id IS NULL
+              AND listing_identifier_id IS NULL)
+        OR (subject_type='listing_identifier' AND listing_identifier_id IS NOT NULL
+              AND instrument_id IS NULL AND instrument_version_id IS NULL
+              AND listing_id IS NULL AND listing_version_id IS NULL
+              AND venue_id IS NULL AND venue_version_id IS NULL
+              AND instrument_identifier_id IS NULL))`,
+      ),
+      // hard invariant: ≤1 live shareClassFIGI per instrument
+      instrumentWithMultipleLiveShareClassFigi: await count(
+        `SELECT count(*) n FROM (
+           SELECT instrument_id FROM instrument_identifiers
+            WHERE scheme='share_class_figi'
+              AND id NOT IN (
+                SELECT supersedes_identifier_id FROM instrument_identifiers
+                 WHERE supersedes_identifier_id IS NOT NULL)
+            GROUP BY instrument_id
+            HAVING count(DISTINCT value) > 1) t`,
+      ),
+      // hard invariant: ≤1 live venue-level FIGI per listing
+      listingWithMultipleLiveVenueFigi: await count(
+        `SELECT count(*) n FROM (
+           SELECT listing_id FROM listing_identifiers
+            WHERE scheme='figi'
+              AND id NOT IN (
+                SELECT supersedes_identifier_id FROM listing_identifiers
+                 WHERE supersedes_identifier_id IS NOT NULL)
+            GROUP BY listing_id
+            HAVING count(DISTINCT value) > 1) t`,
+      ),
+      // an OpenFIGI observation asserting a listing subject must be the
+      // observation FOR that listing's venue (record_key 'MIC:ticker') —
+      // anything else is cross-venue provenance leakage
+      crossListingObservationLeaks: await count(
+        `SELECT count(*) n FROM master_derivations d
+           JOIN reference_observations ro ON ro.id = d.observation_id
+           JOIN (
+             SELECT id AS sid, venue_id FROM instrument_listings
+             UNION ALL SELECT listing_id, l.venue_id
+               FROM listing_versions lv
+               JOIN instrument_listings l ON l.id = lv.listing_id
+             UNION ALL SELECT li.id, l.venue_id
+               FROM listing_identifiers li
+               JOIN instrument_listings l ON l.id = li.listing_id
+           ) s ON s.sid = coalesce(d.listing_id, d.listing_version_id,
+                                   d.listing_identifier_id)
+           JOIN trading_venues tv ON tv.id = s.venue_id
+          WHERE d.role='asserts' AND ro.provider='openfigi'
+            AND ro.record_key NOT LIKE tv.mic || ':%'`,
       ),
       // a version row directly attributed to an observation but missing a
       // matching derivation = provenance gap
@@ -309,11 +425,23 @@ try {
                OR d.listing_version_id = v.sid
                OR d.venue_version_id = v.sid))`,
       ),
-      instrumentIdentityConflicts: conflicts.filter((r) =>
-        /share_class_figi_(issuer|type)_mismatch|canonical_key_/.test(r.reason),
+      instrumentIdentityConflicts: conflicts.filter(
+        (r) =>
+          r.class === "identity_conflict" && !r.reason.startsWith("listing_"),
       ).length,
-      listingIdentityConflicts: conflicts.filter((r) =>
-        r.reason.startsWith("listing_identity_conflict"),
+      listingIdentityConflicts: conflicts.filter(
+        (r) =>
+          r.class === "identity_conflict" && r.reason.startsWith("listing_"),
+      ).length,
+      canonicalKeyDurableInstrumentCollisions: conflicts.filter(
+        (r) =>
+          r.class === "durable_id_conflict" &&
+          r.reason.startsWith("durable_identity_conflict"),
+      ).length,
+      canonicalKeyDurableListingCollisions: conflicts.filter(
+        (r) =>
+          r.class === "durable_id_conflict" &&
+          r.reason.startsWith("listing_durable_identity_conflict"),
       ).length,
       // instrument header type must equal the live version's type
       currentTypeMismatches: await count(
@@ -355,7 +483,7 @@ try {
   await c.end();
 }
 writeFileSync(
-  "bench/instrument-master-v12-audit.json",
+  "bench/instrument-master-v13-audit.json",
   JSON.stringify(audit, null, 2),
 );
 console.log(
