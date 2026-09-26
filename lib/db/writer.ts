@@ -567,6 +567,25 @@ async function ensureEntity(client: PoolClient, slug: string): Promise<string> {
   return id;
 }
 
+/** Canonical uniqueness — two slugs can resolve to one entity (aliases
+ *  across defs). One row per entity_id: keep the in-title slug, else the
+ *  lexicographically smallest, and OR the title flags, so the stored
+ *  compat slug is deterministic. */
+export function dedupeEntityRows(
+  input: { slug: string; id: string; title: boolean }[],
+): { slug: string; id: string; title: boolean }[] {
+  const byEntity = new Map<
+    string,
+    { slug: string; id: string; title: boolean }
+  >();
+  for (const r of input) {
+    const cur = byEntity.get(r.id);
+    if (!cur || (r.title === cur.title ? r.slug < cur.slug : r.title))
+      byEntity.set(r.id, { ...r, title: cur?.title || r.title });
+  }
+  return [...byEntity.values()];
+}
+
 async function syncEventEntities(
   client: PoolClient,
   eventId: string,
@@ -581,19 +600,27 @@ async function syncEventEntities(
   // signature, and is never demoted back. entity_slug stays as the
   // transitional column; entity_id is the canonical read key.
   const ids = await Promise.all(slugs.map((s) => ensureEntity(client, s)));
+  // canonical uniqueness: two slugs can resolve to one entity (aliases
+  // across defs). One row per entity_id — keep the in-title slug, else
+  // the lexicographically smallest, so the compat slug is deterministic.
+  const rows = dedupeEntityRows(
+    slugs.map((s, i) => ({ slug: s, id: ids[i], title: core.has(s) })),
+  );
   await client.query(
     `INSERT INTO event_entities (event_id, entity_slug, entity_id, in_title)
-     VALUES ${slugs
+     VALUES ${rows
        .map((_, i) => `($1, $${i * 3 + 2}, $${i * 3 + 3}, $${i * 3 + 4})`)
        .join(",")}
      ON CONFLICT DO NOTHING`,
-    [eventId, ...slugs.flatMap((s, i) => [s, ids[i], core.has(s)] as const)],
+    [eventId, ...rows.flatMap((r, i) => [r.slug, r.id, r.title] as const)],
   );
-  const promoted = slugs.filter((s) => core.has(s));
+  const promoted = rows.filter((r) => r.title).map((r) => r.id);
   if (promoted.length) {
+    // promote by entity_id — the stored slug may be a different alias of
+    // the same canonical entity than the one now in the core signature
     await client.query(
       `UPDATE event_entities SET in_title = true
-       WHERE event_id = $1 AND entity_slug IN (${promoted
+       WHERE event_id = $1 AND entity_id IN (${promoted
          .map((_, i) => `$${i + 2}`)
          .join(",")})`,
       [eventId, ...promoted],
@@ -608,20 +635,47 @@ async function syncEventEntities(
  * signals (SEC cik, filing issuer name, cong-bao coQuan, or a primary
  * document published under the entity's own name).
  */
-async function syncEvidenceEntities(
+export interface EvidenceEntityInput {
+  title: string | null;
+  summary: string | null;
+  /** ingest structuredData / evidence_versions.structured_data */
+  structuredData?: Record<string, unknown> | null;
+  /** publisher surface for the source_publisher issuer rule */
+  sourceName?: string | null;
+  sourceUrl?: string | null;
+  /** source_publisher is gated to primary documents only */
+  isPrimary?: boolean;
+}
+
+export interface EvidenceEntityRow {
+  id: string;
+  role: string;
+  title: boolean;
+  method: string;
+}
+
+export interface EvidenceEntityResult {
+  rows: EvidenceEntityRow[];
+  /** structured issuer signals that named >1 entity or none — logged,
+   *  never guessed (the ambiguous-alias invariant) */
+  unresolvedIssuers: number;
+}
+
+/** The deterministic assertion set for one evidence version — shared by
+ *  the live writer and scripts/backfill-evidence-entities.mts so both
+ *  apply EXACTLY the same rules. No LLM anywhere on this path. */
+export async function evidenceEntityAssertions(
   client: PoolClient,
-  evidenceVersionId: string,
-  article: Article,
-): Promise<void> {
-  const title = article.title ?? "";
-  const summary = article.summary ?? "";
+  input: EvidenceEntityInput,
+): Promise<EvidenceEntityResult> {
+  const title = input.title ?? "";
+  const summary = input.summary ?? "";
   const titleEnts = new Set(extractEntities(title));
   const allEnts = new Set([
     ...titleEnts,
     ...extractEntities(`${title} ${summary}`),
   ]);
-  const rows: { id: string; role: string; title: boolean; method: string }[] =
-    [];
+  const rows: EvidenceEntityRow[] = [];
   for (const slug of allEnts) {
     rows.push({
       id: await ensureEntity(client, slug),
@@ -632,8 +686,7 @@ async function syncEvidenceEntities(
   }
 
   // issuer resolution — explicit structured signals only
-  const sd = article.ingest?.structuredData as
-    Record<string, unknown> | undefined;
+  const sd = input.structuredData;
   const cik = typeof sd?.cik === "string" ? sd.cik : null;
   if (cik) {
     const r = await client.query<{ entity_id: string }>(
@@ -650,6 +703,7 @@ async function syncEvidenceEntities(
       });
   }
   const coQuan = typeof sd?.coQuan === "string" ? sd.coQuan : null;
+  let unresolvedIssuers = 0;
   const issuerName =
     (typeof sd?.issuer === "string" ? sd.issuer : null) ?? coQuan;
   if (issuerName) {
@@ -667,13 +721,18 @@ async function syncEvidenceEntities(
         title: false,
         method: coQuan ? "structured_coquan" : "structured_issuer",
       });
+    else if (r.rows.length === 0) unresolvedIssuers++;
+    else unresolvedIssuers += r.rows.length - 1;
   }
   // a PRIMARY document published under the entity's own name is issued
   // by that entity (FOMC statement by "Federal Reserve" → fed). Gated
   // to primary sourceKind so a same-named news source can never mint
   // issuer edges.
-  if (article.ingest?.sourceKind === "primary") {
-    const src = canonicalSourceName(article.source, article.url);
+  if (input.isPrimary && input.sourceName) {
+    const src = canonicalSourceName(
+      input.sourceName,
+      input.sourceUrl ?? undefined,
+    );
     const r = await client.query<{ entity_id: string }>(
       `SELECT DISTINCT entity_id FROM entity_aliases
        WHERE normalized_alias = $1`,
@@ -686,13 +745,47 @@ async function syncEvidenceEntities(
         title: false,
         method: "source_publisher",
       });
+    else unresolvedIssuers++;
   }
 
-  if (!rows.length) return;
+  // canonical uniqueness: aliases across defs resolve to one entity —
+  // one row per (entity, role), in_title OR'd, structured method wins.
+  const dedup = new Map<string, EvidenceEntityRow>();
+  for (const r of rows) {
+    const k = `${r.id} ${r.role}`;
+    const cur = dedup.get(k);
+    dedup.set(k, {
+      id: r.id,
+      role: r.role,
+      title: (cur?.title ?? false) || r.title,
+      method:
+        !cur || (cur.method === "gazetteer" && r.method !== "gazetteer")
+          ? r.method
+          : cur.method,
+    });
+  }
+  return { rows: [...dedup.values()], unresolvedIssuers };
+}
+
+async function syncEvidenceEntities(
+  client: PoolClient,
+  evidenceVersionId: string,
+  article: Article,
+): Promise<void> {
+  const { rows: final } = await evidenceEntityAssertions(client, {
+    title: article.title,
+    summary: article.summary,
+    structuredData: article.ingest?.structuredData as
+      Record<string, unknown> | undefined,
+    sourceName: article.source,
+    sourceUrl: article.url,
+    isPrimary: article.ingest?.sourceKind === "primary",
+  });
+  if (!final.length) return;
   await client.query(
     `INSERT INTO evidence_entities
        (evidence_version_id, entity_id, mention_role, in_title, method)
-     VALUES ${rows
+     VALUES ${final
        .map(
          (_, i) =>
            `($1, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4}, $${i * 4 + 5})`,
@@ -701,7 +794,7 @@ async function syncEvidenceEntities(
      ON CONFLICT DO NOTHING`,
     [
       evidenceVersionId,
-      ...rows.flatMap((r) => [r.id, r.role, r.title, r.method] as const),
+      ...final.flatMap((r) => [r.id, r.role, r.title, r.method] as const),
     ],
   );
 }

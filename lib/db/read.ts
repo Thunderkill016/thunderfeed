@@ -873,6 +873,7 @@ export async function getEntityEvents(slug: string): Promise<{
     }[];
     coOccurrence: {
       slug: string;
+      canonicalKey: string | null;
       label: string;
       kind: EntityKind | null;
       shared: number;
@@ -890,19 +891,25 @@ export async function getEntityEvents(slug: string): Promise<{
 
   const relatedQ = pool.query<{
     entity_slug: string;
+    canonical_key: string | null;
+    canonical_name: string | null;
     shared: string;
   }>(
-    `SELECT ee2.entity_slug, count(*) AS shared
+    `SELECT min(ee2.entity_slug) AS entity_slug,
+            en.canonical_key, en.canonical_name, count(*) AS shared
      FROM event_entities ee1
      JOIN event_entities ee2
-       ON ee2.event_id = ee1.event_id AND ee2.entity_slug <> $2
+       ON ee2.event_id = ee1.event_id
+       AND ${entity ? `(ee2.entity_slug <> $2 AND (ee2.entity_id IS NULL OR ee2.entity_id <> $1))` : `ee2.entity_slug <> $1`}
+     LEFT JOIN entities en ON en.id = ee2.entity_id
      JOIN events e ON e.id = ee2.event_id
-     WHERE ${entity ? `ee1.entity_id = $1` : `ee1.entity_slug = $2`}
+     WHERE ${entity ? `ee1.entity_id = $1` : `ee1.entity_slug = $1`}
        AND e.status NOT IN ('merged', 'archived')
-     GROUP BY ee2.entity_slug
-     ORDER BY shared DESC, ee2.entity_slug
+     GROUP BY COALESCE(en.canonical_key, ee2.entity_slug),
+              en.canonical_key, en.canonical_name
+     ORDER BY shared DESC, COALESCE(en.canonical_key, ee2.entity_slug)
      LIMIT 8`,
-    params,
+    entity ? params : [slug],
   );
 
   const aliasQ = entity
@@ -1017,15 +1024,22 @@ export async function getEntityEvents(slug: string): Promise<{
   const coOccurrence = (await relatedQ).rows
     .map((r) => ({
       slug: r.entity_slug,
-      label: entityLabel(r.entity_slug),
+      canonicalKey: r.canonical_key,
+      label: r.canonical_name ?? entityLabel(r.entity_slug),
       kind: entityKind(r.entity_slug),
       shared: Number(r.shared),
-      key: canonicalEntity(r.entity_slug)?.key ?? null,
+      key: r.canonical_key ?? canonicalEntity(r.entity_slug)?.key ?? null,
     }))
     // an entity already named by an explicit edge doesn't re-appear as
     // a mere co-mention — keeps the two "related" senses disjoint
     .filter((r) => !r.key || !explicitKeys.has(r.key))
-    .map(({ slug, label, kind, shared }) => ({ slug, label, kind, shared }));
+    .map(({ slug, canonicalKey, label, kind, shared }) => ({
+      slug,
+      canonicalKey,
+      label,
+      kind,
+      shared,
+    }));
 
   return {
     slug,

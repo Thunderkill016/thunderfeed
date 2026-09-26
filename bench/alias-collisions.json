@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-09-26T05:17:15.066Z",
+  "normalization": "ThunderFeed normalizeText(): lowercase, diacritics stripped, punctuation stripped, whitespace collapsed",
+  "rule": "normalized aliases shared by >1 entity resolve to NULL — never first-row-wins",
+  "collisions": [
+    {
+      "normalized": "nha trang",
+      "entities": [
+        "country:us",
+        "place:nha_trang"
+      ],
+      "surfaces": [
+        {
+          "alias": "nhà trắng",
+          "type": "common_name",
+          "entity": "country:us"
+        },
+        {
+          "alias": "nha trang",
+          "type": "common_name",
+          "entity": "place:nha_trang"
+        }
+      ],
+      "resolution": "null (ambiguous)"
+    }
+  ]
+}

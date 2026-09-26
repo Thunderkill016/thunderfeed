@@ -7,7 +7,7 @@ import { MediaSpectrumBar, OwnershipBar } from "./Spectrum";
 import EventIntel from "./EventIntel";
 import Modal from "./Modal";
 import { timeAgo, typologyLabel, ownershipCamp } from "../lib/model";
-import { entityKindLabel } from "../lib/entities";
+import { entityHref, entityKindLabel } from "../lib/entities";
 
 const CAMPS = [
   { key: "state", label: "Báo nhà nước VN" },
@@ -55,9 +55,12 @@ export default function EventDetail({
             {view.entities.map((e) => (
               <a
                 key={e.slug}
-                href={`/entity/${e.slug}`}
+                href={entityHref(e.canonicalKey, e.slug) ?? `/entity/${e.slug}`}
                 className={`entity-chip ${e.kind ?? "unknown"}`}
-                title={e.kind ? entityKindLabel(e.kind) : undefined}
+                title={
+                  e.canonicalKey ??
+                  (e.kind ? entityKindLabel(e.kind) : undefined)
+                }
               >
                 {e.label}
               </a>

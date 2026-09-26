@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { dbEnabled } from "../../../lib/db/pool";
 import { getEntityEvents } from "../../../lib/db/read";
 import {
+  entityHref,
   entityKindLabel,
   entityRelationshipLabel,
   entityTypeLabel,
@@ -22,22 +23,28 @@ const STATUS_VI: Record<string, string> = {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ path: string[] }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  return { title: `ThunderFeed — ${slug}` };
+  const { path } = await params;
+  return { title: `ThunderFeed — ${path.join("/")}` };
 }
 
 export default async function EntityPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ path: string[] }>;
 }) {
-  const { slug } = await params;
-  // legacy slugs and canonical keys both route — ':' inside
-  // 'company:alphabet'-style keys is part of the identity, not a path
-  // separator
-  if (!/^[a-z0-9_:]{1,96}$/.test(slug) || !dbEnabled()) notFound();
+  const { path } = await params;
+  // two address forms resolve the same entity:
+  //   /entity/federal_reserve        legacy gazetteer slug
+  //   /entity/central_bank/fed       canonical key (type:name)
+  const slug =
+    path.length === 1 && /^[a-z0-9_]{1,64}$/.test(path[0])
+      ? path[0]
+      : path.length === 2 && path.every((p) => /^[a-z0-9_]{1,64}$/.test(p))
+        ? `${path[0]}:${path[1]}`
+        : null;
+  if (!slug || !dbEnabled()) notFound();
   const view = await getEntityEvents(slug);
   // a slug outside the gazetteer with no junction rows is a clean 404 —
   // a known entity that merely has no coverage yet still gets a page
@@ -90,11 +97,12 @@ export default async function EntityPage({
                   r.direction === "out"
                     ? `${view.label} ${entityRelationshipLabel(r.relationship)} ${r.name}`
                     : `${r.name} ${entityRelationshipLabel(r.relationship)} ${view.label}`
-                }`;
-                return r.gazetteerSlug ? (
+                } (${r.canonicalKey})`;
+                const href = entityHref(r.canonicalKey, r.gazetteerSlug);
+                return href ? (
                   <a
                     key={`${r.direction}:${r.relationship}:${r.canonicalKey}`}
-                    href={`/entity/${r.gazetteerSlug}`}
+                    href={href}
                     className="entity-chip org"
                     title={title}
                   >
@@ -104,7 +112,7 @@ export default async function EntityPage({
                   <span
                     key={`${r.direction}:${r.relationship}:${r.canonicalKey}`}
                     className="entity-chip org static"
-                    title={`${title} (${r.canonicalKey})`}
+                    title={title}
                   >
                     {text}
                   </span>
@@ -120,7 +128,9 @@ export default async function EntityPage({
               {view.related.coOccurrence.map((r) => (
                 <a
                   key={r.slug}
-                  href={`/entity/${r.slug}`}
+                  href={
+                    entityHref(r.canonicalKey, r.slug) ?? `/entity/${r.slug}`
+                  }
                   className={`entity-chip ${r.kind ?? "unknown"}`}
                   title={
                     r.kind

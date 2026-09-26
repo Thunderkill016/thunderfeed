@@ -383,20 +383,30 @@ const GAZETTEER: EntityDef[] = [
   E("pm", ["lê minh hưng", "thủ tướng", "prime minister", "thu tuong"]),
 
   /* ---- Companies / tech ----
-   * product/brand aliases stay (a "ChatGPT" story is an OpenAI story);
-   * person names were split into their own slugs in the audit — a
-   * Musk/Altman/Cook mention is a person, never a company mention */
-  E("openai", ["openai", "chatgpt"]),
-  E("anthropic", ["anthropic", "claude"]),
-  E("spacex", ["spacex", "starlink"], ["\\bfalcon\\b"]),
+   * surface naming a brand/product → brand entity; surface naming the
+   * legal org → company entity. The graph (brand_of) connects them —
+   * extraction never jumps from a brand mention to the issuer. Person
+   * names stay split (a Musk/Altman mention is a person). */
+  E("openai", ["openai"]),
+  E("chatgpt", ["chatgpt", "chat gpt"]),
+  E("anthropic", ["anthropic"]),
+  E("claude", ["claude", "claude ai", "claude sonnet", "claude opus"]),
+  E("spacex", ["spacex", "space x"]),
+  E("starlink", ["starlink"]),
+  E("falcon", ["falcon 9", "falcon heavy"]),
   E("tesla", ["tesla", "tesla inc"]),
-  E("meta", ["meta", "facebook"]),
-  E("google", ["google", "alphabet", "deepmind"]),
+  E("meta", ["meta", "meta platforms"]),
+  E("facebook", ["facebook"]),
+  E("google", ["google"]),
+  E("alphabet", ["alphabet", "alphabet inc", "google llc", "google inc"]),
+  E("deepmind", ["deepmind", "google deepmind"]),
   E("apple", ["apple"], ["\\bapple\\b"]),
   E("microsoft", ["microsoft"]),
   E("nvidia", ["nvidia"]),
-  E("bytedance", ["bytedance", "tiktok"]),
-  E("vinfast", ["vinfast", "green sm"]),
+  E("bytedance", ["bytedance"]),
+  E("tiktok", ["tiktok", "tik tok"]),
+  E("vinfast", ["vinfast"]),
+  E("greensm", ["green sm", "green s.m", "xanh sm"]),
   /* people split out of company slugs in the audit */
   E("musk", ["elon musk", "ông musk"], ["\\bmusk\\b"]),
   E("zuckerberg", ["zuckerberg", "mark zuckerberg"]),
@@ -600,6 +610,15 @@ const LABEL_OVERRIDES: Record<string, string> = {
   israel: "Israel",
   kimjongun: "Kim Jong-un",
   vonderleyen: "Von der Leyen",
+  // brands — casing isn't recoverable from the slug
+  alphabet: "Alphabet Inc.",
+  chatgpt: "ChatGPT",
+  tiktok: "TikTok",
+  deepmind: "DeepMind",
+  greensm: "Green SM",
+  starlink: "Starlink",
+  claude: "Claude",
+  falcon: "Falcon",
   // vietnamese short forms
   hcmc: "TP.HCM",
   dbscl: "ĐBSCL",
@@ -909,49 +928,45 @@ const CANONICAL: Record<string, CanonicalEntityRef> = {
     "role/office, not a person — 'lê minh hưng' alias binds the current holder",
   ),
 
-  /* Companies — product/brand aliases intentionally stay (a "ChatGPT"
-   * story is an OpenAI story); person names were split to person slugs
-   * in the audit. Canonical = the legal entity where it's the named
-   * actor (Alphabet for 'google', Meta Platforms for 'meta'). */
-  openai: CK(
-    "company",
-    "openai",
-    "'chatgpt' is a product brand alias",
-    "OpenAI, Inc.",
-  ),
-  anthropic: CK(
-    "company",
-    "anthropic",
-    "'claude' is a product brand alias",
-    "Anthropic PBC",
-  ),
-  spacex: CK(
-    "company",
-    "spacex",
-    "'starlink'/'falcon' are product brand aliases",
-    "SpaceX",
-  ),
+  /* Companies vs brands — a surface naming a brand/product resolves to
+   * the BRAND entity, a surface naming the legal org to the COMPANY.
+   * brand_of relationships connect them; the resolver input never gains
+   * an inferred issuer identity. Person names stay on person slugs. */
+  openai: CK("company", "openai", undefined, "OpenAI, Inc."),
+  chatgpt: CK("brand", "chatgpt", "product brand of OpenAI"),
+  anthropic: CK("company", "anthropic", undefined, "Anthropic PBC"),
+  claude: CK("brand", "claude", "product brand of Anthropic"),
+  spacex: CK("company", "spacex", undefined, "SpaceX"),
+  starlink: CK("brand", "starlink", "product brand of SpaceX"),
+  falcon: CK("brand", "falcon", "rocket family of SpaceX"),
   tesla: CK("company", "tesla", undefined, "Tesla, Inc."),
   meta: CK(
     "company",
     "meta_platforms",
-    "'facebook' is a brand of the company",
+    "the legal entity; 'facebook' is a separate brand slug",
     "Meta Platforms, Inc.",
   ),
-  google: CK(
+  facebook: CK("brand", "facebook", "product brand of Meta Platforms"),
+  google: CK("brand", "google", "product/service brand of Alphabet"),
+  alphabet: CK(
     "company",
     "alphabet",
-    "canonical = Alphabet Inc.; 'Google' is its brand",
+    "the legal entity; 'google' surface is the separate brand slug. " +
+      "google llc/inc surfaces land here too — Google LLC is not separately " +
+      "modeled in V1",
     "Alphabet Inc.",
   ),
+  deepmind: CK("brand", "deepmind", "AI lab brand of Alphabet"),
   apple: CK("company", "apple", undefined, "Apple Inc."),
   microsoft: CK("company", "microsoft"),
   nvidia: CK("company", "nvidia"),
-  bytedance: CK("company", "bytedance", "'tiktok' is a product brand alias"),
-  vinfast: CK(
-    "company",
-    "vinfast",
-    "'green sm' is the separate GSM brand, kept as alias for coverage",
+  bytedance: CK("company", "bytedance", undefined, "ByteDance Ltd."),
+  tiktok: CK("brand", "tiktok", "product brand of ByteDance"),
+  vinfast: CK("company", "vinfast", undefined, "VinFast"),
+  greensm: CK(
+    "brand",
+    "green_sm",
+    "GSM (Green and Smart Mobility) — a brand, not the car maker",
   ),
   /* people split out of company slugs in the audit */
   musk: CK("person", "elon_musk"),
@@ -1135,6 +1150,21 @@ function viTitleCase(s: string): string {
     /(^|\s)(\p{L})/gu,
     (_m, sp: string, ch: string) => sp + ch.toUpperCase(),
   );
+}
+
+/** Durable entity URL — canonical key → /entity/<type>/<name>
+ *  (/entity/company/alphabet); falls back to the legacy gazetteer slug
+ *  route only when no canonical identity exists. */
+export function entityHref(
+  canonicalKey: string | null | undefined,
+  gazetteerSlug?: string | null,
+): string | null {
+  if (canonicalKey) {
+    const i = canonicalKey.indexOf(":");
+    if (i > 0 && i < canonicalKey.length - 1)
+      return `/entity/${canonicalKey.slice(0, i)}/${canonicalKey.slice(i + 1)}`;
+  }
+  return gazetteerSlug ? `/entity/${gazetteerSlug}` : null;
 }
 
 /** Human-readable label for a canonical slug — "entity_" prefixes and

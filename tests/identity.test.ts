@@ -13,7 +13,12 @@ import { randomUUID } from "node:crypto";
 import { newDb, DataType } from "pg-mem";
 import type { Pool } from "pg";
 import { injectPool, getPool } from "../lib/db/pool";
-import { persistCluster } from "../lib/db/writer";
+import {
+  persistCluster,
+  dedupeEntityRows,
+  evidenceEntityAssertions,
+} from "../lib/db/writer";
+import { entityHref } from "../lib/entities";
 import { extractClaims } from "../lib/db/extract";
 import {
   getEntityEvents,
@@ -181,7 +186,7 @@ test("co-occurrence never mints explicit relationships", async () => {
   );
   assert.equal(
     rels.rows[0].n,
-    11,
+    12,
     "junction co-mention adds no graph edges — count stays at the curated seed",
   );
 
@@ -325,24 +330,30 @@ test("evidence provenance: mentions and issuers point at versions", async () => 
   );
 });
 
-test("brand vs company: Google resolves to Alphabet identity", async () => {
+test("brand vs company: Google resolves to the brand, Alphabet to the company", async () => {
   setupDb();
   const c = cluster([
     art({ source: "Reuters", title: "Google unveils new Gemini model" }),
   ]);
   await persistCluster(c, extractClaims(c));
 
+  // surface "google" names the brand; the junction resolves to the
+  // brand entity, never jumps to the issuer
   const google = await getEntityEvents("google");
-  // the gazetteer slug 'google' is the Alphabet identity — the brand
-  // node exists separately and links back through brand_of
-  assert.equal(google.entity?.canonicalKey, "company:alphabet");
-  assert.equal(google.entity?.type, "company");
-  const brand = await getEntityEvents("brand:google");
-  assert.equal(brand.entity?.type, "brand");
+  assert.equal(google.entity?.canonicalKey, "brand:google");
+  assert.equal(google.entity?.type, "brand");
   assert.deepEqual(
-    brand.relationships.map((r) => `${r.type}:${r.other.canonicalKey}`),
+    google.relationships.map((r) => `${r.type}:${r.other.canonicalKey}`),
     ["brand_of:company:alphabet"],
   );
+
+  // the legal surface names the company — a distinct identity joined
+  // by the graph edge, not by shared aliases
+  const alphabet = await getEntityEvents("alphabet");
+  assert.equal(alphabet.entity?.canonicalKey, "company:alphabet");
+  assert.equal(alphabet.entity?.type, "company");
+  const googleEvents = await getEntityEvents("brand:google");
+  assert.equal(googleEvents.entity?.type, "brand");
 });
 
 test("ambiguous aliases stay unresolved instead of guessing", async () => {
@@ -368,4 +379,121 @@ test("ambiguous aliases stay unresolved instead of guessing", async () => {
     null,
     "two entities sharing an alias → explicit non-resolution, no guess",
   );
+});
+
+test("schema declares relationship append-only + canonical junction uniqueness", () => {
+  // pg-mem cannot run triggers or prove partial-index rejection; the
+  // schema must declare them so a real Postgres enforces both — the
+  // UPDATE/DELETE rejection itself is verified on the live database
+  const dir = fileURLToPath(new URL("../db/migrations", import.meta.url));
+  const mig = readFileSync(`${dir}/0014_identity_hardening.sql`, "utf8");
+  assert.match(mig, /CREATE TRIGGER entity_relationships_append_only/);
+  assert.match(mig, /BEFORE UPDATE OR DELETE ON entity_relationships/);
+  assert.match(mig, /reject_history_mutation\(\)/);
+  assert.match(
+    mig,
+    /CREATE UNIQUE INDEX uq_event_entities_entity\s+ON event_entities \(event_id, entity_id\) WHERE entity_id IS NOT NULL/,
+  );
+});
+
+test("canonical junction dedupe: two slugs, one entity, deterministic", () => {
+  const E = "11111111-1111-1111-1111-111111111111";
+  // alias in title + alias as mention → one row, title slug wins
+  assert.deepEqual(
+    dedupeEntityRows([
+      { slug: "alphabet", id: E, title: false },
+      { slug: "google", id: E, title: true },
+    ]),
+    [{ slug: "google", id: E, title: true }],
+  );
+  // neither in title → smallest slug kept, title flag OR'd
+  assert.deepEqual(
+    dedupeEntityRows([
+      { slug: "zeta", id: E, title: false },
+      { slug: "alpha", id: E, title: false },
+    ]),
+    [{ slug: "alpha", id: E, title: false }],
+  );
+  // distinct entities untouched
+  const O = "22222222-2222-2222-2222-222222222222";
+  assert.equal(
+    dedupeEntityRows([
+      { slug: "a", id: E, title: false },
+      { slug: "b", id: O, title: false },
+    ]).length,
+    2,
+  );
+});
+
+test("canonical route: entityHref prefers the durable type/name URL", () => {
+  assert.equal(entityHref("company:alphabet"), "/entity/company/alphabet");
+  assert.equal(entityHref("brand:google"), "/entity/brand/google");
+  assert.equal(entityHref("central_bank:fed"), "/entity/central_bank/fed");
+  // legacy compatibility — slug-only entities keep the old route
+  assert.equal(entityHref(null, "federal_reserve"), "/entity/federal_reserve");
+  assert.equal(entityHref(undefined, "nvidia"), "/entity/nvidia");
+  assert.equal(entityHref(null, null), null);
+});
+
+test("canonical key and legacy slug resolve the same entity id", async () => {
+  setupDb();
+  const viaSlug = await getEntityEvents("alphabet");
+  const viaKey = await getEntityEvents("company:alphabet");
+  assert.ok(viaSlug.entity && viaKey.entity);
+  assert.equal(viaSlug.entity.id, viaKey.entity.id);
+  assert.equal(viaKey.entity.canonicalKey, "company:alphabet");
+});
+
+test("historical evidence backfill: shared rules, zero duplicates on rerun", async () => {
+  setupDb();
+  const c = cluster([
+    art({
+      source: "Reuters",
+      title: "Federal Reserve cuts rates as Trump urges easing",
+      summary: "The Fed moved after pressure; Vietnam exporters watch.",
+    }),
+  ]);
+  await persistCluster(c, extractClaims(c));
+  const pool = getPool();
+
+  // a version minted WITHOUT evidence_entities rows — the historical
+  // shape the backfill command processes
+  const v = await pool.query<{ id: string }>(
+    `INSERT INTO evidence_versions
+       (document_id, version_no, title, summary, content_hash, observed_at)
+     SELECT d.id, 99, 'NVIDIA earnings beat as Alphabet capex rises',
+            'Tesla supply chain note', 'h-bfill', now()
+     FROM evidence_documents d LIMIT 1
+     RETURNING id`,
+  );
+  const vid = v.rows[0].id;
+  const insert = async () => {
+    const { rows } = await evidenceEntityAssertions(pool as never, {
+      title: "NVIDIA earnings beat as Alphabet capex rises",
+      summary: "Tesla supply chain note",
+    });
+    if (!rows.length) return 0;
+    const res = await pool.query(
+      `INSERT INTO evidence_entities
+         (evidence_version_id, entity_id, mention_role, in_title, method)
+       VALUES ${rows
+         .map(
+           (_, i) =>
+             `($1, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4}, $${i * 4 + 5})`,
+         )
+         .join(",")}
+       ON CONFLICT DO NOTHING`,
+      [vid, ...rows.flatMap((r) => [r.id, r.role, r.title, r.method] as const)],
+    );
+    return res.rowCount ?? 0;
+  };
+  const first = await insert();
+  const second = await insert();
+  assert.ok(first > 0, "first pass inserts assertion rows");
+  assert.equal(second, 0, "rerun inserts zero duplicates");
+  const n = await pool.query<{ n: number }>(
+    `SELECT count(*)::int n FROM evidence_entities WHERE evidence_version_id = $1`,
+    [vid],
+  );
+  assert.equal(n.rows[0].n, first);
 });
