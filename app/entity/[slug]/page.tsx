@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { dbEnabled } from "../../../lib/db/pool";
 import { getEntityEvents } from "../../../lib/db/read";
-import { entityKindLabel } from "../../../lib/entities";
+import {
+  entityKindLabel,
+  entityRelationshipLabel,
+  entityTypeLabel,
+} from "../../../lib/entities";
 import { timeAgo } from "../../../lib/model";
 
 export const revalidate = 60;
@@ -30,11 +34,15 @@ export default async function EntityPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  if (!/^[a-z0-9_]{1,64}$/.test(slug) || !dbEnabled()) notFound();
+  // legacy slugs and canonical keys both route — ':' inside
+  // 'company:alphabet'-style keys is part of the identity, not a path
+  // separator
+  if (!/^[a-z0-9_:]{1,96}$/.test(slug) || !dbEnabled()) notFound();
   const view = await getEntityEvents(slug);
   // a slug outside the gazetteer with no junction rows is a clean 404 —
   // a known entity that merely has no coverage yet still gets a page
-  if (view.kind === null && view.events.length === 0) notFound();
+  if (view.kind === null && view.events.length === 0 && !view.entity)
+    notFound();
 
   const now = Date.now();
   const totalChanges = view.events.reduce((n, e) => n + e.changeCount, 0);
@@ -52,15 +60,52 @@ export default async function EntityPage({
               {entityKindLabel(view.kind)}
             </span>
           )}
+          {view.entity && (
+            <span className="entity-chip type">
+              {entityTypeLabel(view.entity.type)}
+            </span>
+          )}
         </div>
+        {view.entity && (
+          <p className="entity-canonical">
+            <code>{view.entity.canonicalKey}</code>
+            {view.entity.countryCode && ` · ${view.entity.countryCode}`}
+            {view.aliases.length > 1 &&
+              ` · ${view.aliases
+                .slice(0, 4)
+                .map((a) => a.alias)
+                .join(" · ")}`}
+          </p>
+        )}
         <p className="entity-stats">
           {view.events.length} sự kiện · {totalChanges} thay đổi được ghi nhận
         </p>
-        {view.related.length > 0 && (
+        {view.related.explicit.length > 0 && (
           <div className="entity-related">
-            <span className="entity-related-label">Liên quan:</span>
+            <span className="entity-related-label">Quan hệ:</span>
             <div className="entity-chips">
-              {view.related.map((r) => (
+              {view.related.explicit.map((r) => (
+                <a
+                  key={`${r.direction}:${r.relationship}:${r.canonicalKey}`}
+                  href={`/entity/${encodeURIComponent(r.canonicalKey)}`}
+                  className="entity-chip org"
+                  title={`${r.name} — ${
+                    r.direction === "out"
+                      ? `${view.label} ${entityRelationshipLabel(r.relationship)} ${r.name}`
+                      : `${r.name} ${entityRelationshipLabel(r.relationship)} ${view.label}`
+                  }`}
+                >
+                  {entityRelationshipLabel(r.relationship)} · {r.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        {view.related.coOccurrence.length > 0 && (
+          <div className="entity-related">
+            <span className="entity-related-label">Cùng xuất hiện:</span>
+            <div className="entity-chips">
+              {view.related.coOccurrence.map((r) => (
                 <a
                   key={r.slug}
                   href={`/entity/${r.slug}`}

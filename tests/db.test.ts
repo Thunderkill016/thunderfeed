@@ -436,7 +436,7 @@ test("event_entities junction: create, accumulate on merge, entity reads", async
     "passing mention stays peripheral",
   );
   assert.deepEqual(
-    us.related.map((r) => r.slug),
+    us.related.coOccurrence.map((r) => r.slug),
     ["china", "philippines"],
     "even a mention-tier slug joins the co-occurrence edge",
   );
@@ -469,7 +469,7 @@ test("event_entities junction: create, accumulate on merge, entity reads", async
   // japan anchored a merged title so it upgrades to headline tier
   const us2 = await getEntityEvents("us");
   assert.deepEqual(
-    us2.related.map((r) => r.slug).sort(),
+    us2.related.coOccurrence.map((r) => r.slug).sort(),
     ["china", "japan", "philippines"],
     "co-occurrence edge accumulates with the signature",
   );

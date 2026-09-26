@@ -8,9 +8,9 @@ export async function GET(
 ) {
   if (!dbEnabled()) return NextResponse.json(null, { status: 404 });
   const { slug } = await params;
-  // canonical slugs are lowercase word characters — anything else can
-  // never join the junction and is a clean not-found
-  if (!/^[a-z0-9_]{1,64}$/.test(slug))
+  // legacy slugs and canonical keys both route — ':' inside
+  // 'company:alphabet'-style keys is part of the identity
+  if (!/^[a-z0-9_:]{1,96}$/.test(slug))
     return NextResponse.json(null, { status: 404 });
   const view = await getEntityEvents(slug);
   return NextResponse.json(view, {

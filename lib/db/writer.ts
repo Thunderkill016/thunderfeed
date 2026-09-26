@@ -18,7 +18,7 @@ import type { PoolClient } from "pg";
 import { getPool, toJsonb, canonValue } from "./pool";
 import { normalizeText } from "../model";
 import { canonicalSourceName, mediaInfoFor } from "../mediaData";
-import { entitySignature } from "../entities";
+import { entitySignature, extractEntities, canonicalEntity } from "../entities";
 import {
   buildIncomingSide,
   clusterRepTextV2,
@@ -359,6 +359,9 @@ async function ingestEvidence(
        WHERE id = $3`,
       [ver.rows[0].id, now, documentId],
     );
+    // mention provenance rides with the immutable version — the same
+    // content always asserts the same entity mentions
+    await syncEvidenceEntities(client, ver.rows[0].id, article);
     return { documentId, evidenceVersionId: ver.rows[0].id, newVersion: true };
   }
 
@@ -502,6 +505,68 @@ async function createEvent(
  * text. Signature semantics are accumulate-only, so the sync is a
  * pure upsert: rows a slug joined when first observed stay forever.
  */
+/**
+ * slug → canonical entity id, per-client cached. Slugs outside the
+ * gazetteer (legacy data, new patterns ahead of the seed) get a
+ * documented 'unresolved' legacy entity instead of NULL — junction
+ * rows always carry a canonical id.
+ */
+const ENTITY_ID_CACHE = new WeakMap<PoolClient, Map<string, string>>();
+
+async function ensureEntity(client: PoolClient, slug: string): Promise<string> {
+  let cache = ENTITY_ID_CACHE.get(client);
+  if (!cache) {
+    cache = new Map();
+    ENTITY_ID_CACHE.set(client, cache);
+  }
+  const hit = cache.get(slug);
+  if (hit !== undefined) return hit;
+
+  const canon = canonicalEntity(slug);
+  const key = canon?.key ?? `legacy:${slug}`;
+  const found = await client.query<{ id: string }>(
+    `SELECT id FROM entities WHERE canonical_key = $1`,
+    [key],
+  );
+  let id = found.rows[0]?.id;
+  if (!id) {
+    const ins = await client.query<{ id: string }>(
+      `INSERT INTO entities
+         (canonical_key, canonical_name, entity_type, status, metadata)
+       VALUES ($1, $2, $3, $4, $5::jsonb)
+       ON CONFLICT (canonical_key) DO NOTHING RETURNING id`,
+      canon
+        ? [
+            key,
+            canon.name ?? slug,
+            canon.type,
+            "active",
+            toJsonb({
+              gazetteerSlug: slug,
+              ambiguity: canon.ambiguity ?? null,
+            }),
+          ]
+        : [
+            key,
+            slug,
+            "other",
+            "unresolved",
+            toJsonb({ unresolved: true, legacySlug: slug }),
+          ],
+    );
+    id =
+      ins.rows[0]?.id ??
+      (
+        await client.query<{ id: string }>(
+          `SELECT id FROM entities WHERE canonical_key = $1`,
+          [key],
+        )
+      ).rows[0].id;
+  }
+  cache.set(slug, id);
+  return id;
+}
+
 async function syncEventEntities(
   client: PoolClient,
   eventId: string,
@@ -513,14 +578,16 @@ async function syncEventEntities(
   if (!slugs.length) return;
   // in_title rides the same accumulate-only rule as the slug itself —
   // a mention upgrades to headline when the slug joins the core
-  // signature, and is never demoted back
+  // signature, and is never demoted back. entity_slug stays as the
+  // transitional column; entity_id is the canonical read key.
+  const ids = await Promise.all(slugs.map((s) => ensureEntity(client, s)));
   await client.query(
-    `INSERT INTO event_entities (event_id, entity_slug, in_title)
+    `INSERT INTO event_entities (event_id, entity_slug, entity_id, in_title)
      VALUES ${slugs
-       .map((_, i) => `($1, $${i + 2}, $${slugs.length + 2 + i})`)
+       .map((_, i) => `($1, $${i * 3 + 2}, $${i * 3 + 3}, $${i * 3 + 4})`)
        .join(",")}
      ON CONFLICT DO NOTHING`,
-    [eventId, ...slugs, ...slugs.map((s) => core.has(s))],
+    [eventId, ...slugs.flatMap((s, i) => [s, ids[i], core.has(s)] as const)],
   );
   const promoted = slugs.filter((s) => core.has(s));
   if (promoted.length) {
@@ -532,6 +599,111 @@ async function syncEventEntities(
       [eventId, ...promoted],
     );
   }
+}
+
+/**
+ * Evidence-level mention provenance — WHY an entity attaches to a
+ * version. Deterministic V1: title hits are 'subject', body-only are
+ * 'mentioned'; 'issuer' edges come only from explicit structured
+ * signals (SEC cik, filing issuer name, cong-bao coQuan, or a primary
+ * document published under the entity's own name).
+ */
+async function syncEvidenceEntities(
+  client: PoolClient,
+  evidenceVersionId: string,
+  article: Article,
+): Promise<void> {
+  const title = article.title ?? "";
+  const summary = article.summary ?? "";
+  const titleEnts = new Set(extractEntities(title));
+  const allEnts = new Set([
+    ...titleEnts,
+    ...extractEntities(`${title} ${summary}`),
+  ]);
+  const rows: { id: string; role: string; title: boolean; method: string }[] =
+    [];
+  for (const slug of allEnts) {
+    rows.push({
+      id: await ensureEntity(client, slug),
+      role: titleEnts.has(slug) ? "subject" : "mentioned",
+      title: titleEnts.has(slug),
+      method: "gazetteer",
+    });
+  }
+
+  // issuer resolution — explicit structured signals only
+  const sd = article.ingest?.structuredData as
+    Record<string, unknown> | undefined;
+  const cik = typeof sd?.cik === "string" ? sd.cik : null;
+  if (cik) {
+    const r = await client.query<{ entity_id: string }>(
+      `SELECT entity_id FROM entity_identifiers
+       WHERE scheme = 'cik' AND value = $1`,
+      [cik],
+    );
+    for (const row of r.rows)
+      rows.push({
+        id: row.entity_id,
+        role: "issuer",
+        title: false,
+        method: "structured_cik",
+      });
+  }
+  const coQuan = typeof sd?.coQuan === "string" ? sd.coQuan : null;
+  const issuerName =
+    (typeof sd?.issuer === "string" ? sd.issuer : null) ?? coQuan;
+  if (issuerName) {
+    const r = await client.query<{ entity_id: string }>(
+      `SELECT DISTINCT entity_id FROM entity_aliases
+       WHERE normalized_alias = $1`,
+      [normalizeText(issuerName)],
+    );
+    // an alias naming more than one entity is ambiguous — per the
+    // invariant it stays unresolved instead of guessing an issuer
+    if (r.rows.length === 1)
+      rows.push({
+        id: r.rows[0].entity_id,
+        role: "issuer",
+        title: false,
+        method: coQuan ? "structured_coquan" : "structured_issuer",
+      });
+  }
+  // a PRIMARY document published under the entity's own name is issued
+  // by that entity (FOMC statement by "Federal Reserve" → fed). Gated
+  // to primary sourceKind so a same-named news source can never mint
+  // issuer edges.
+  if (article.ingest?.sourceKind === "primary") {
+    const src = canonicalSourceName(article.source, article.url);
+    const r = await client.query<{ entity_id: string }>(
+      `SELECT DISTINCT entity_id FROM entity_aliases
+       WHERE normalized_alias = $1`,
+      [normalizeText(src)],
+    );
+    if (r.rows.length === 1)
+      rows.push({
+        id: r.rows[0].entity_id,
+        role: "issuer",
+        title: false,
+        method: "source_publisher",
+      });
+  }
+
+  if (!rows.length) return;
+  await client.query(
+    `INSERT INTO evidence_entities
+       (evidence_version_id, entity_id, mention_role, in_title, method)
+     VALUES ${rows
+       .map(
+         (_, i) =>
+           `($1, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4}, $${i * 4 + 5})`,
+       )
+       .join(",")}
+     ON CONFLICT DO NOTHING`,
+    [
+      evidenceVersionId,
+      ...rows.flatMap((r) => [r.id, r.role, r.title, r.method] as const),
+    ],
+  );
 }
 
 /**

@@ -6,9 +6,11 @@
 
 import { getPool } from "./pool";
 import {
+  canonicalEntity,
   extractEntitiesNormalized,
   entityKind,
   entityLabel,
+  kindOfType,
   type EntityKind,
 } from "../entities";
 import { normalizeText } from "../model";
@@ -63,9 +65,17 @@ export interface EventView {
   topic: string;
   firstSeenAt: string;
   lastUpdatedAt: string;
-  /** canonical entities in signature order — kind null when the slug is
-   *  outside the gazetteer (junction-only slug from an older taxonomy) */
-  entities: { slug: string; label: string; kind: EntityKind | null }[];
+  /** canonical entities attached via the junction — entityId/canonicalKey
+   *  are the durable identity; slug+kind kept for transitional reads */
+  entities: {
+    slug: string;
+    entityId: string | null;
+    canonicalKey: string | null;
+    type: string | null;
+    label: string;
+    kind: EntityKind | null;
+    inTitle: boolean;
+  }[];
   claims: ClaimView[];
   latestChanges: ChangeView[];
   /** canonical state history — append-only event_versions, newest first */
@@ -383,6 +393,23 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     [eventId],
   );
 
+  const entitiesQ = pool.query<{
+    entity_slug: string;
+    entity_id: string | null;
+    canonical_key: string | null;
+    entity_type: string | null;
+    canonical_name: string | null;
+    in_title: boolean;
+  }>(
+    `SELECT ee.entity_slug, ee.entity_id, ee.in_title,
+            en.canonical_key, en.entity_type, en.canonical_name
+     FROM event_entities ee
+     LEFT JOIN entities en ON en.id = ee.entity_id
+     WHERE ee.event_id = $1
+     ORDER BY ee.first_seen_at, ee.entity_slug`,
+    [eventId],
+  );
+
   const [
     claimsR,
     claimCountsR,
@@ -391,6 +418,7 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     evidenceR,
     positionsR,
     docsR,
+    entitiesR,
     contraR,
   ] = await Promise.all([
     claimsQ,
@@ -400,6 +428,7 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     evidenceQ,
     positionsQ,
     docsQ,
+    entitiesQ,
     contradictionsQ,
   ]);
 
@@ -526,14 +555,15 @@ export async function getEventView(eventId: string): Promise<EventView | null> {
     topic: event.topic,
     firstSeenAt: event.first_seen_at,
     lastUpdatedAt: event.last_seen_at,
-    entities: event.entity_signature
-      .split(" ")
-      .filter(Boolean)
-      .map((slug) => ({
-        slug,
-        label: entityLabel(slug),
-        kind: entityKind(slug),
-      })),
+    entities: entitiesR.rows.map((r) => ({
+      slug: r.entity_slug,
+      entityId: r.entity_id,
+      canonicalKey: r.canonical_key,
+      type: r.entity_type,
+      label: r.canonical_name ?? entityLabel(r.entity_slug),
+      kind: kindOfType(r.entity_type) ?? entityKind(r.entity_slug),
+      inTitle: r.in_title,
+    })),
     claims,
     latestChanges: changesR.rows.map((r) => ({
       type: r.type,
@@ -661,6 +691,20 @@ export async function getChangesForEntities(
 > {
   if (entities.length === 0) return [];
   const pool = getPool();
+  // legacy slugs (watch storage) resolve to canonical ids; junction rows
+  // pre-migration stay reachable via the slug clause — a slug that
+  // resolves nothing still queries literally, never silently widened
+  const resolved = await Promise.all(entities.map(resolveEntityRef));
+  const ids = resolved.map((r) => r?.id).filter((v): v is string => !!v);
+  const orphanSlugs = entities.filter((_, i) => !resolved[i]);
+  const clauses: string[] = [];
+  let p = 1; // $1 is limit
+  if (ids.length)
+    clauses.push(`ee.entity_id IN (${ids.map(() => `$${++p}`).join(",")})`);
+  if (orphanSlugs.length)
+    clauses.push(
+      `ee.entity_slug IN (${orphanSlugs.map(() => `$${++p}`).join(",")})`,
+    );
   const { rows } = await pool.query<{
     id: string;
     event_id: string;
@@ -679,11 +723,11 @@ export async function getChangesForEntities(
        AND ${channelFilterClause(filter)}
        AND e.id IN (
          SELECT ee.event_id FROM event_entities ee
-         WHERE ee.entity_slug IN (${entities.map((_, i) => `$${i + 2}`).join(",")})
+         WHERE ${clauses.join(" OR ")}
        )
      ORDER BY ch.detected_at DESC
      LIMIT $1`,
-    [limit, ...entities],
+    [limit, ...ids, ...orphanSlugs],
   );
   return rows.map((r) => ({
     id: r.id,
@@ -696,12 +740,108 @@ export async function getChangesForEntities(
   }));
 }
 
+export interface CanonicalEntity {
+  id: string;
+  canonicalKey: string;
+  name: string;
+  type: string;
+  status: string;
+  countryCode: string | null;
+}
+
+/**
+ * slug / canonical_key / alias → canonical entity. Order:
+ * gazetteer canonical_key → exact canonical_key (deep links like
+ * 'company:alphabet') → `legacy:` unresolved entity → normalized alias
+ * (single match only — an ambiguous alias resolves to nothing instead
+ * of guessing). NULL when nothing resolves: callers fall back to
+ * slug-based junction reads.
+ */
+export async function resolveEntityRef(
+  ref: string,
+): Promise<CanonicalEntity | null> {
+  const pool = getPool();
+  const keys = [
+    canonicalEntity(ref)?.key,
+    ref.includes(":") ? ref : null,
+    `legacy:${ref}`,
+  ].filter((k): k is string => !!k);
+  for (const key of keys) {
+    const { rows } = await pool.query<{
+      id: string;
+      canonical_key: string;
+      canonical_name: string;
+      entity_type: string;
+      status: string;
+      country_code: string | null;
+    }>(
+      `SELECT id, canonical_key, canonical_name, entity_type, status,
+              country_code
+       FROM entities WHERE canonical_key = $1`,
+      [key],
+    );
+    if (rows[0]) return canonicalRow(rows[0]);
+  }
+  const aliasR = await pool.query<{ entity_id: string }>(
+    `SELECT DISTINCT entity_id FROM entity_aliases
+     WHERE normalized_alias = $1`,
+    [normalizeText(ref)],
+  );
+  if (aliasR.rows.length === 1) {
+    const { rows } = await pool.query<{
+      id: string;
+      canonical_key: string;
+      canonical_name: string;
+      entity_type: string;
+      status: string;
+      country_code: string | null;
+    }>(
+      `SELECT id, canonical_key, canonical_name, entity_type, status,
+              country_code FROM entities WHERE id = $1`,
+      [aliasR.rows[0].entity_id],
+    );
+    if (rows[0]) return canonicalRow(rows[0]);
+  }
+  return null;
+}
+
+function canonicalRow(r: {
+  id: string;
+  canonical_key: string;
+  canonical_name: string;
+  entity_type: string;
+  status: string;
+  country_code: string | null;
+}): CanonicalEntity {
+  return {
+    id: r.id,
+    canonicalKey: r.canonical_key,
+    name: r.canonical_name,
+    type: r.entity_type,
+    status: r.status,
+    countryCode: r.country_code,
+  };
+}
+
 /** Every live event carrying a canonical entity slug — the entity-page
  *  read behind "theo dõi Fed": junction rows, newest activity first. */
 export async function getEntityEvents(slug: string): Promise<{
   slug: string;
   label: string;
   kind: EntityKind | null;
+  /** resolved canonical identity — null only when the slug exists
+   *  nowhere (pre-migration data and unknown keys alike fall back to
+   *  the legacy label path) */
+  entity: CanonicalEntity | null;
+  aliases: { alias: string; type: string; language: string | null }[];
+  identifiers: { scheme: string; value: string; issuer: string | null }[];
+  /** current assertions only — superseded/expired rows stay queryable
+   *  in entity_relationships but don't appear as facts of the view */
+  relationships: {
+    type: string;
+    direction: "out" | "in";
+    other: { canonicalKey: string; name: string; entityType: string };
+  }[];
   events: {
     id: string;
     title: string;
@@ -715,16 +855,35 @@ export async function getEntityEvents(slug: string): Promise<{
      *  entity, not a passing mention (RavenPack-style relevance tier) */
     inTitle: boolean;
   }[];
-  /** entities co-occurring on the same events — the junction's
-   *  co-mention graph, ordered by shared-event count */
+  /** two different kinds of "related" — never conflated:
+   *    explicit: asserted entity_relationships edges (curated/graph facts)
+   *    coOccurrence: junction co-mentions on the same events — NOT a
+   *    claimed relationship between the entities */
   related: {
-    slug: string;
-    label: string;
-    kind: EntityKind | null;
-    shared: number;
-  }[];
+    explicit: {
+      canonicalKey: string;
+      name: string;
+      entityType: string;
+      relationship: string;
+      direction: "out" | "in";
+    }[];
+    coOccurrence: {
+      slug: string;
+      label: string;
+      kind: EntityKind | null;
+      shared: number;
+    }[];
+  };
 }> {
   const pool = getPool();
+  const entity = await resolveEntityRef(slug);
+  // canonical id is the read key when resolved; entity_slug stays as
+  // the compatibility clause for un-migrated or junction-only slugs
+  const whereEntity = entity
+    ? `(ee.entity_id = $1 OR ee.entity_slug = $2)`
+    : `ee.entity_slug = $2`;
+  const params = entity ? [entity.id, slug] : [slug];
+
   const relatedQ = pool.query<{
     entity_slug: string;
     shared: string;
@@ -732,15 +891,91 @@ export async function getEntityEvents(slug: string): Promise<{
     `SELECT ee2.entity_slug, count(*) AS shared
      FROM event_entities ee1
      JOIN event_entities ee2
-       ON ee2.event_id = ee1.event_id AND ee2.entity_slug <> $1
+       ON ee2.event_id = ee1.event_id AND ee2.entity_slug <> $2
      JOIN events e ON e.id = ee2.event_id
-     WHERE ee1.entity_slug = $1
+     WHERE ${entity ? `ee1.entity_id = $1` : `ee1.entity_slug = $2`}
        AND e.status NOT IN ('merged', 'archived')
      GROUP BY ee2.entity_slug
      ORDER BY shared DESC, ee2.entity_slug
      LIMIT 8`,
-    [slug],
+    params,
   );
+
+  const aliasQ = entity
+    ? pool.query<{
+        alias: string;
+        alias_type: string;
+        language: string | null;
+      }>(
+        `SELECT alias, alias_type, language FROM entity_aliases
+         WHERE entity_id = $1
+         ORDER BY alias_type, alias`,
+        [entity.id],
+      )
+    : Promise.resolve({
+        rows: [] as {
+          alias: string;
+          alias_type: string;
+          language: string | null;
+        }[],
+      });
+
+  const identQ = entity
+    ? pool.query<{ scheme: string; value: string; issuer: string | null }>(
+        `SELECT scheme, value, issuer FROM entity_identifiers
+         WHERE entity_id = $1 ORDER BY scheme, value`,
+        [entity.id],
+      )
+    : Promise.resolve({
+        rows: [] as { scheme: string; value: string; issuer: string | null }[],
+      });
+
+  const relQ = entity
+    ? pool.query<{
+        relationship_type: string;
+        dir: string;
+        o_key: string;
+        o_name: string;
+        o_type: string;
+      }>(
+        `SELECT relationship_type, dir, o_key, o_name, o_type
+         FROM (
+           SELECT r.relationship_type, 'out' AS dir, r.id,
+                  o.canonical_key AS o_key, o.canonical_name AS o_name,
+                  o.entity_type AS o_type
+           FROM entity_relationships r
+           JOIN entities o ON o.id = r.to_entity_id
+           WHERE r.from_entity_id = $1
+             AND r.valid_to IS NULL
+             AND r.id NOT IN (
+               SELECT supersedes_relationship_id
+               FROM entity_relationships
+               WHERE supersedes_relationship_id IS NOT NULL)
+           UNION ALL
+           SELECT r.relationship_type, 'in' AS dir, r.id,
+                  o.canonical_key, o.canonical_name, o.entity_type
+           FROM entity_relationships r
+           JOIN entities o ON o.id = r.from_entity_id
+           WHERE r.to_entity_id = $1
+             AND r.valid_to IS NULL
+             AND r.id NOT IN (
+               SELECT supersedes_relationship_id
+               FROM entity_relationships
+               WHERE supersedes_relationship_id IS NOT NULL)
+         ) rel
+         ORDER BY rel.relationship_type, rel.o_key`,
+        [entity.id],
+      )
+    : Promise.resolve({
+        rows: [] as {
+          relationship_type: string;
+          dir: string;
+          o_key: string;
+          o_name: string;
+          o_type: string;
+        }[],
+      });
+
   const { rows } = await pool.query<{
     id: string;
     title: string;
@@ -760,24 +995,54 @@ export async function getEntityEvents(slug: string): Promise<{
      JOIN events e ON e.id = ee.event_id
      JOIN event_versions ev ON ev.id = e.current_version_id
      LEFT JOIN changes ch ON ch.event_id = e.id
-     WHERE ee.entity_slug = $1
+     WHERE ${whereEntity}
        AND e.status NOT IN ('merged', 'archived')
      GROUP BY e.id, ev.title, e.status, e.topic,
               ev.importance_score, e.first_seen_at, e.last_seen_at,
               ee.in_title
      ORDER BY ee.in_title DESC, e.last_seen_at DESC`,
-    [slug],
+    params,
   );
-  const related = (await relatedQ).rows.map((r) => ({
-    slug: r.entity_slug,
-    label: entityLabel(r.entity_slug),
-    kind: entityKind(r.entity_slug),
-    shared: Number(r.shared),
-  }));
+
+  const relRows = (await relQ).rows;
+  const explicitKeys = new Set(relRows.map((r) => r.o_key));
+  const coOccurrence = (await relatedQ).rows
+    .map((r) => ({
+      slug: r.entity_slug,
+      label: entityLabel(r.entity_slug),
+      kind: entityKind(r.entity_slug),
+      shared: Number(r.shared),
+      key: canonicalEntity(r.entity_slug)?.key ?? null,
+    }))
+    // an entity already named by an explicit edge doesn't re-appear as
+    // a mere co-mention — keeps the two "related" senses disjoint
+    .filter((r) => !r.key || !explicitKeys.has(r.key))
+    .map(({ slug, label, kind, shared }) => ({ slug, label, kind, shared }));
+
   return {
     slug,
-    label: entityLabel(slug),
-    kind: entityKind(slug),
+    label: entity?.name ?? entityLabel(slug),
+    kind: (entity ? kindOfType(entity.type) : null) ?? entityKind(slug),
+    entity,
+    aliases: (await aliasQ).rows.map((r) => ({
+      alias: r.alias,
+      type: r.alias_type,
+      language: r.language,
+    })),
+    identifiers: (await identQ).rows.map((r) => ({
+      scheme: r.scheme,
+      value: r.value,
+      issuer: r.issuer,
+    })),
+    relationships: relRows.map((r) => ({
+      type: r.relationship_type,
+      direction: r.dir as "out" | "in",
+      other: {
+        canonicalKey: r.o_key,
+        name: r.o_name,
+        entityType: r.o_type,
+      },
+    })),
     events: rows.map((r) => ({
       id: r.id,
       title: r.title,
@@ -789,7 +1054,16 @@ export async function getEntityEvents(slug: string): Promise<{
       changeCount: Number(r.change_count),
       inTitle: r.in_title,
     })),
-    related,
+    related: {
+      explicit: relRows.map((r) => ({
+        canonicalKey: r.o_key,
+        name: r.o_name,
+        entityType: r.o_type,
+        relationship: r.relationship_type,
+        direction: r.dir as "out" | "in",
+      })),
+      coOccurrence,
+    },
   };
 }
 

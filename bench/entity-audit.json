@@ -1,0 +1,2498 @@
+{
+  "summary": {
+    "totalSlugs": 180,
+    "mapped": 180,
+    "unmapped": 0,
+    "ambiguous": 18,
+    "byType": {
+      "country": 74,
+      "place": 33,
+      "region": 9,
+      "multilateral_organization": 11,
+      "event_series": 3,
+      "central_bank": 4,
+      "person": 22,
+      "government_body": 1,
+      "company": 16,
+      "topic": 6,
+      "commodity": 1
+    }
+  },
+  "entities": [
+    {
+      "slug": "vietnam",
+      "currentLabel": "Việt Nam",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:vietnam",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "việt nam",
+        "vietnam",
+        "viet nam",
+        "vietnamese"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "hanoi",
+      "currentLabel": "Hà Nội",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:hanoi",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "hà nội",
+        "ha noi",
+        "hanoi"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "hcmc",
+      "currentLabel": "TP.HCM",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:ho_chi_minh_city",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "tp.hcm",
+        "tp hcm",
+        "tphcm",
+        "hồ chí minh",
+        "ho chi minh",
+        "sài gòn",
+        "sai gon"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "danang",
+      "currentLabel": "Đà Nẵng",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:da_nang",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "đà nẵng",
+        "da nang",
+        "danang"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "haiphong",
+      "currentLabel": "Hải Phòng",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:hai_phong",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "hải phòng",
+        "hai phong",
+        "haiphong"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "cantho",
+      "currentLabel": "Cần Thơ",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:can_tho",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "cần thơ",
+        "can tho"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "hue",
+      "currentLabel": "Huế",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:hue",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "huế",
+        "hue"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "nhatrang",
+      "currentLabel": "Nha Trang",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:nha_trang",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "nha trang"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "dalat",
+      "currentLabel": "Đà Lạt",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:da_lat",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "đà lạt",
+        "da lat"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "quangninh",
+      "currentLabel": "Quảng Ninh",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:quang_ninh",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "quảng ninh",
+        "quang ninh"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "hatinh",
+      "currentLabel": "Hà Tĩnh",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:ha_tinh",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "hà tĩnh",
+        "ha tinh"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "nghean",
+      "currentLabel": "Nghệ An",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:nghe_an",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "nghệ an",
+        "nghe an"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "thanhhoa",
+      "currentLabel": "Thanh Hóa",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:thanh_hoa",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "thanh hóa",
+        "thanh hoa"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "laocai",
+      "currentLabel": "Lào Cai",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:lao_cai",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "lào cai",
+        "lao cai"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "langson",
+      "currentLabel": "Lạng Sơn",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:lang_son",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "lạng sơn",
+        "lang son"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "caobang",
+      "currentLabel": "Cao Bằng",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:cao_bang",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "cao bằng",
+        "cao bang"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "dienbien",
+      "currentLabel": "Điện Biên",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:dien_bien",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "điện biên",
+        "dien bien"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "sonla",
+      "currentLabel": "Sơn La",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:son_la",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "sơn la",
+        "son la"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "gialai",
+      "currentLabel": "Gia Lai",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:gia_lai",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "gia lai"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "daklak",
+      "currentLabel": "Đắk Lắk",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:dak_lak",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "đắk lắk",
+        "dak lak",
+        "daklak"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "angiang",
+      "currentLabel": "An Giang",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:an_giang",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "an giang"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "kiengiang",
+      "currentLabel": "Kiên Giang",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:kien_giang",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "kiên giang",
+        "kien giang"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "camau",
+      "currentLabel": "Cà Mau",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:ca_mau",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "cà mau",
+        "ca mau"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "binhduong",
+      "currentLabel": "Bình Dương",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:binh_duong",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "bình dương",
+        "binh duong"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "dongnai",
+      "currentLabel": "Đồng Nai",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:dong_nai",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "đồng nai",
+        "dong nai"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "bariavungtau",
+      "currentLabel": "Bà Rịa",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:ba_ria_vung_tau",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "bà rịa",
+        "vũng tàu",
+        "vung tau",
+        "ba ria"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "bacninh",
+      "currentLabel": "Bắc Ninh",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:bac_ninh",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "bắc ninh",
+        "bac ninh"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "phuquoc",
+      "currentLabel": "Phú Quốc",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:phu_quoc",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "phú quốc",
+        "phu quoc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "quangtri",
+      "currentLabel": "Quảng Trị",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:quang_tri",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "quảng trị",
+        "quang tri"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "khanhhoa",
+      "currentLabel": "Khánh Hòa",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:khanh_hoa",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "khánh hòa",
+        "khanh hoa"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "lamdong",
+      "currentLabel": "Lâm Đồng",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:lam_dong",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "lâm đồng",
+        "lam dong"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "mientrung",
+      "currentLabel": "Miền Trung",
+      "currentKind": "place",
+      "proposedCanonicalKey": "region:central_vietnam",
+      "proposedCanonicalType": "region",
+      "aliases": [
+        "miền trung",
+        "mien trung",
+        "central vietnam"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "mienbac",
+      "currentLabel": "Miền Bắc",
+      "currentKind": "place",
+      "proposedCanonicalKey": "region:northern_vietnam",
+      "proposedCanonicalType": "region",
+      "aliases": [
+        "miền bắc",
+        "mien bac",
+        "northern vietnam",
+        "bắc bộ",
+        "bac bo"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "miennam",
+      "currentLabel": "Miền Nam",
+      "currentKind": "place",
+      "proposedCanonicalKey": "region:southern_vietnam",
+      "proposedCanonicalType": "region",
+      "aliases": [
+        "miền nam",
+        "mien nam",
+        "southern vietnam",
+        "nam bộ",
+        "nam bo"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "taynguyen",
+      "currentLabel": "Tây Nguyên",
+      "currentKind": "place",
+      "proposedCanonicalKey": "region:central_highlands",
+      "proposedCanonicalType": "region",
+      "aliases": [
+        "tây nguyên",
+        "tay nguyen",
+        "central highlands"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "dbscl",
+      "currentLabel": "ĐBSCL",
+      "currentKind": "place",
+      "proposedCanonicalKey": "region:mekong_delta",
+      "proposedCanonicalType": "region",
+      "aliases": [
+        "đồng bằng sông cửu long",
+        "dong bang song cuu long",
+        "mekong delta"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "halong",
+      "currentLabel": "Hạ Long",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:ha_long",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "hạ long",
+        "ha long"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "china",
+      "currentLabel": "Trung Quốc",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:china",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "trung quốc",
+        "trung hoa",
+        "china",
+        "bắc kinh",
+        "beijing"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "japan",
+      "currentLabel": "Nhật Bản",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:japan",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "nhật bản",
+        "japan",
+        "tokyo"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "southkorea",
+      "currentLabel": "Hàn Quốc",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:south_korea",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "hàn quốc",
+        "han quoc",
+        "south korea",
+        "seoul"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "northkorea",
+      "currentLabel": "Triều Tiên",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:north_korea",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "triều tiên",
+        "trieu tien",
+        "north korea",
+        "pyongyang"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "taiwan",
+      "currentLabel": "Đài Loan",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:taiwan",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "đài loan",
+        "dai loan",
+        "taiwan",
+        "taipei",
+        "đài bắc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "hongkong",
+      "currentLabel": "Hồng Kông",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:hong_kong",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "hong kong",
+        "hồng kông"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "thailand",
+      "currentLabel": "Thái Lan",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:thailand",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "thái lan",
+        "thai lan",
+        "thailand",
+        "bangkok"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "myanmar",
+      "currentLabel": "Miến Điện",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:myanmar",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "myanmar",
+        "miến điện",
+        "yangon"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "laos",
+      "currentLabel": "Lào",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:laos",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "lào",
+        "laos",
+        "vientiane",
+        "viêng chăn"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "cambodia",
+      "currentLabel": "Campuchia",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:cambodia",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "campuchia",
+        "cambodia",
+        "phnom penh"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "malaysia",
+      "currentLabel": "Mã Lai",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:malaysia",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "malaysia",
+        "mã lai",
+        "kuala lumpur"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "singapore",
+      "currentLabel": "Singapore",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:singapore",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "singapore"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "indonesia",
+      "currentLabel": "Indonesia",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:indonesia",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "indonesia",
+        "jakarta"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "philippines",
+      "currentLabel": "Philippines",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:philippines",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "philippines",
+        "manila"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "india",
+      "currentLabel": "Ấn Độ",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:india",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "ấn độ",
+        "an do",
+        "india",
+        "new delhi"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "pakistan",
+      "currentLabel": "Pakistan",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:pakistan",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "pakistan"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "bangladesh",
+      "currentLabel": "Bangladesh",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:bangladesh",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "bangladesh"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "australia",
+      "currentLabel": "Úc",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:australia",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "australia",
+        "australian",
+        "sydney",
+        "canberra"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "newzealand",
+      "currentLabel": "New Zealand",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:new_zealand",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "new zealand"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "israel",
+      "currentLabel": "Israel",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:israel",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "israel",
+        "do thái",
+        "tel aviv",
+        "jerusalem"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "palestine",
+      "currentLabel": "Palestine",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:palestine",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "palestine",
+        "gaza",
+        "dải gaza"
+      ],
+      "ambiguity": "state recognition disputed; aliases reach into Gaza",
+      "notes": ""
+    },
+    {
+      "slug": "iran",
+      "currentLabel": "Iran",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:iran",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "iran",
+        "tehran"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "iraq",
+      "currentLabel": "Iraq",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:iraq",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "iraq"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "syria",
+      "currentLabel": "Syria",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:syria",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "syria",
+        "syri",
+        "damascus"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "lebanon",
+      "currentLabel": "Li Băng",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:lebanon",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "lebanon",
+        "li băng",
+        "beirut"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "yemen",
+      "currentLabel": "Yemen",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:yemen",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "yemen",
+        "houthi"
+      ],
+      "ambiguity": "'houthi' alias is a faction, not the state",
+      "notes": ""
+    },
+    {
+      "slug": "saudi",
+      "currentLabel": "Ả Rập Xê Út",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:saudi_arabia",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "saudi",
+        "saudi arabia",
+        "ả rập",
+        "arab saudi",
+        "arap xeut",
+        "riyadh"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "uae",
+      "currentLabel": "UAE",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:united_arab_emirates",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "uae",
+        "emirates",
+        "dubai",
+        "abu dhabi"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "qatar",
+      "currentLabel": "Qatar",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:qatar",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "qatar",
+        "doha"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "turkey",
+      "currentLabel": "Thổ Nhĩ Kỳ",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:turkey",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "thổ nhĩ kỳ",
+        "tho nhi ky",
+        "turkey",
+        "türkiye",
+        "ankara",
+        "istanbul"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "russia",
+      "currentLabel": "Nga",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:russia",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "russia",
+        "moscow",
+        "matxcơva",
+        "kremlin"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "ukraine",
+      "currentLabel": "Ukraine",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:ukraine",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "ukraine",
+        "ukraina",
+        "kyiv",
+        "kiev"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "uk",
+      "currentLabel": "Anh",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:united_kingdom",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "anh quốc",
+        "united kingdom",
+        "britain",
+        "london",
+        "nước anh"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "france",
+      "currentLabel": "Pháp",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:france",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "france",
+        "paris",
+        "tây ban pháp"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "germany",
+      "currentLabel": "Đức",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:germany",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "germany",
+        "berlin",
+        "đức quốc",
+        "nước đức"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "italy",
+      "currentLabel": "Ý",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:italy",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "italy",
+        "italia",
+        "rome",
+        "nước ý",
+        "ý quốc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "spain",
+      "currentLabel": "Tây Ban Nha",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:spain",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "tây ban nha",
+        "tay ban nha",
+        "spain",
+        "madrid"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "poland",
+      "currentLabel": "Ba Lan",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:poland",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "ba lan",
+        "poland",
+        "warsaw"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "netherlands",
+      "currentLabel": "Hà Lan",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:netherlands",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "hà lan",
+        "ha lan",
+        "netherlands",
+        "amsterdam"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "belgium",
+      "currentLabel": "Bỉ",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:belgium",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "belgium",
+        "brussels"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "switzerland",
+      "currentLabel": "Thụy Sĩ",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:switzerland",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "thụy sĩ",
+        "thuy si",
+        "switzerland",
+        "geneva",
+        "zurich"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "sweden",
+      "currentLabel": "Thụy Điển",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:sweden",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "thụy điển",
+        "thuy dien",
+        "sweden",
+        "stockholm"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "norway",
+      "currentLabel": "Na Uy",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:norway",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "na uy",
+        "norway",
+        "oslo"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "denmark",
+      "currentLabel": "Đan Mạch",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:denmark",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "đan mạch",
+        "dan mach",
+        "denmark",
+        "copenhagen"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "finland",
+      "currentLabel": "Phần Lan",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:finland",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "phần lan",
+        "phan lan",
+        "finland",
+        "helsinki"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "austria",
+      "currentLabel": "Áo",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:austria",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "áo quốc",
+        "nước áo",
+        "austria",
+        "vienna"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "greece",
+      "currentLabel": "Hy Lạp",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:greece",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "hy lạp",
+        "hy lap",
+        "greece",
+        "athens"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "portugal",
+      "currentLabel": "Bồ Đào Nha",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:portugal",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "bồ đào nha",
+        "bo dao nha",
+        "portugal",
+        "lisbon"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "ireland",
+      "currentLabel": "Ireland",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:ireland",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "ireland",
+        "dublin"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "hungary",
+      "currentLabel": "Hungary",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:hungary",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "hungary",
+        "budapest"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "czech",
+      "currentLabel": "Séc",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:czechia",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "czech",
+        "cộng hòa séc",
+        "cong hoa sec",
+        "prague",
+        "séc quốc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "romania",
+      "currentLabel": "Romania",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:romania",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "romania",
+        "rumania",
+        "bucharest"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "eu",
+      "currentLabel": "EU",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:european_union",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "european union",
+        "liên minh châu âu",
+        "lien minh chau au"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "us",
+      "currentLabel": "Mỹ",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:us",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "hoa kỳ",
+        "hoa ky",
+        "united states",
+        "usa",
+        "u s a",
+        "america",
+        "washington",
+        "white house",
+        "nhà trắng",
+        "pentagon",
+        "lầu năm góc",
+        "lau nam goc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "canada",
+      "currentLabel": "Canada",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:canada",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "canada",
+        "ottawa",
+        "toronto"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "mexico",
+      "currentLabel": "Mê Hi Cô",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:mexico",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "mexico",
+        "mê hi cô"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "brazil",
+      "currentLabel": "Brazil",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:brazil",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "brazil",
+        "brasil"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "argentina",
+      "currentLabel": "Argentina",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:argentina",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "argentina",
+        "buenos aires"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "chile",
+      "currentLabel": "Chile",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:chile",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "chile",
+        "santiago"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "peru",
+      "currentLabel": "Peru",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:peru",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "peru",
+        "lima"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "colombia",
+      "currentLabel": "Colombia",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:colombia",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "colombia",
+        "bogota"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "venezuela",
+      "currentLabel": "Venezuela",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:venezuela",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "venezuela",
+        "caracas"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "cuba",
+      "currentLabel": "Cuba",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:cuba",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "cuba",
+        "havana"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "panama",
+      "currentLabel": "Panama",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:panama",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "panama"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "haiti",
+      "currentLabel": "Haiti",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:haiti",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "haiti"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "egypt",
+      "currentLabel": "Ai Cập",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:egypt",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "ai cập",
+        "ai cap",
+        "egypt",
+        "cairo"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "southafrica",
+      "currentLabel": "Nam Phi",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:south_africa",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "nam phi",
+        "south africa"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "nigeria",
+      "currentLabel": "Nigeria",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:nigeria",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "nigeria"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "kenya",
+      "currentLabel": "Kenya",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:kenya",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "kenya",
+        "nairobi"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "sudan",
+      "currentLabel": "Sudan",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:sudan",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "sudan"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "ethiopia",
+      "currentLabel": "Ethiopia",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:ethiopia",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "ethiopia"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "morocco",
+      "currentLabel": "Ma Rốc",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:morocco",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "morocco",
+        "ma rốc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "libya",
+      "currentLabel": "Libya",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:libya",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "libya"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "congo",
+      "currentLabel": "Congo",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:congo",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "congo"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "southsudan",
+      "currentLabel": "Nam Sudan",
+      "currentKind": "place",
+      "proposedCanonicalKey": "country:south_sudan",
+      "proposedCanonicalType": "country",
+      "aliases": [
+        "nam sudan",
+        "south sudan"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "nato",
+      "currentLabel": "NATO",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:nato",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "nato"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "un",
+      "currentLabel": "Liên Hợp Quốc",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:united_nations",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "liên hợp quốc",
+        "lien hop quoc",
+        "united nations",
+        "lhq"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "asean",
+      "currentLabel": "ASEAN",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:asean",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "asean"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "aseancup",
+      "currentLabel": "ASEAN Cup",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "event_series:asean_cup",
+      "proposedCanonicalType": "event_series",
+      "aliases": [
+        "fifa asean cup",
+        "asean cup",
+        "aff cup"
+      ],
+      "ambiguity": "a sports competition, not the ASEAN body",
+      "notes": ""
+    },
+    {
+      "slug": "asiad",
+      "currentLabel": "ASIAD",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "event_series:asiad",
+      "proposedCanonicalType": "event_series",
+      "aliases": [
+        "asiad",
+        "asian games",
+        "đại hội thể thao châu á",
+        "dai hoi the thao chau a"
+      ],
+      "ambiguity": "recurring games; each edition is a distinct sub-story",
+      "notes": ""
+    },
+    {
+      "slug": "unga",
+      "currentLabel": "Đại Hội Đồng Liên Hợp Quốc",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "event_series:un_general_assembly",
+      "proposedCanonicalType": "event_series",
+      "aliases": [
+        "đại hội đồng liên hợp quốc",
+        "dai hoi dong lien hop quoc",
+        "un general assembly"
+      ],
+      "ambiguity": "annual session, not the UN organ itself",
+      "notes": ""
+    },
+    {
+      "slug": "brics",
+      "currentLabel": "BRICS",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:brics",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "brics",
+        "thượng đỉnh brics"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "g20",
+      "currentLabel": "G20",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:g20",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "g20",
+        "thượng đỉnh g20"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "middleeast",
+      "currentLabel": "Trung Đông",
+      "currentKind": "place",
+      "proposedCanonicalKey": "region:middle_east",
+      "proposedCanonicalType": "region",
+      "aliases": [
+        "trung đông",
+        "trung dong",
+        "middle east"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "baltic",
+      "currentLabel": "Biển Đen",
+      "currentKind": "place",
+      "proposedCanonicalKey": "region:black_sea",
+      "proposedCanonicalType": "region",
+      "aliases": [
+        "biển đen",
+        "bien den",
+        "black sea",
+        "baltic"
+      ],
+      "ambiguity": "label says Baltic but aliases are Black Sea — name mismatch",
+      "notes": ""
+    },
+    {
+      "slug": "southchinasea",
+      "currentLabel": "Biển Đông",
+      "currentKind": "place",
+      "proposedCanonicalKey": "region:south_china_sea",
+      "proposedCanonicalType": "region",
+      "aliases": [
+        "biển đông",
+        "bien dong",
+        "south china sea",
+        "hoàng sa",
+        "hoang sa",
+        "trường sa",
+        "truong sa"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "redsea",
+      "currentLabel": "Biển Đỏ",
+      "currentKind": "place",
+      "proposedCanonicalKey": "region:red_sea",
+      "proposedCanonicalType": "region",
+      "aliases": [
+        "biển đỏ",
+        "bien do",
+        "red sea",
+        "bab al mandab"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "federal_reserve",
+      "currentLabel": "FED",
+      "currentKind": "org",
+      "proposedCanonicalKey": "central_bank:fed",
+      "proposedCanonicalType": "central_bank",
+      "aliases": [
+        "federal reserve",
+        "fomc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "nhnn",
+      "currentLabel": "NHNN",
+      "currentKind": "org",
+      "proposedCanonicalKey": "central_bank:sbv",
+      "proposedCanonicalType": "central_bank",
+      "aliases": [
+        "ngân hàng nhà nước",
+        "ngan hang nha nuoc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "ecb",
+      "currentLabel": "ECB",
+      "currentKind": "org",
+      "proposedCanonicalKey": "central_bank:ecb",
+      "proposedCanonicalType": "central_bank",
+      "aliases": [
+        "european central bank"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "boj",
+      "currentLabel": "BOJ",
+      "currentKind": "org",
+      "proposedCanonicalKey": "central_bank:boj",
+      "proposedCanonicalType": "central_bank",
+      "aliases": [
+        "bank of japan"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "opec",
+      "currentLabel": "Tổ Chức Các Nước Xuất Khẩu Dầu",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:opec",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "opec",
+        "opec+",
+        "tổ chức các nước xuất khẩu dầu"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "imf",
+      "currentLabel": "IMF",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:imf",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "quỹ tiền tệ quốc tế"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "worldbank",
+      "currentLabel": "Ngân hàng Thế giới",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:world_bank",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "world bank",
+        "ngân hàng thế giới"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "wto",
+      "currentLabel": "WTO",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:wto",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "who",
+      "currentLabel": "WHO",
+      "currentKind": "org",
+      "proposedCanonicalKey": "multilateral_organization:who",
+      "proposedCanonicalType": "multilateral_organization",
+      "aliases": [
+        "tổ chức y tế thế giới"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "trump",
+      "currentLabel": "Donald Trump",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:donald_trump",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "trump",
+        "donald trump",
+        "ông trump",
+        "tổng thống mỹ",
+        "tong thong my"
+      ],
+      "ambiguity": "'tổng thống mỹ' alias is a role title — temporally bound",
+      "notes": ""
+    },
+    {
+      "slug": "putin",
+      "currentLabel": "Ông Putin",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:vladimir_putin",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "putin",
+        "ông putin",
+        "tổng thống nga"
+      ],
+      "ambiguity": "'tổng thống nga' alias is a role title",
+      "notes": ""
+    },
+    {
+      "slug": "zelensky",
+      "currentLabel": "Zelensky",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:volodymyr_zelensky",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "zelensky",
+        "zelenskyy",
+        "volodymyr zelensky"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "xijinping",
+      "currentLabel": "Tập Cận Bình",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:xi_jinping",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "tập cận bình",
+        "tap can binh",
+        "xi jinping",
+        "ông tập",
+        "chủ tịch trung quốc",
+        "chu tich trung quoc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "hunsen",
+      "currentLabel": "Ông Hun Sen",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:hun_sen",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "hun sen",
+        "ông hun sen"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "kimsangsik",
+      "currentLabel": "Kim Sang-sik",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:kim_sang_sik",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "kim sang-sik",
+        "kim sang sik"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "kimjongun",
+      "currentLabel": "Kim Jong-un",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:kim_jong_un",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "kim jong",
+        "kim jong-un",
+        "kim jong un"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "netanyahu",
+      "currentLabel": "Netanyahu",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:benjamin_netanyahu",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "netanyahu"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "modi",
+      "currentLabel": "Modi",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:narendra_modi",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "modi"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "milei",
+      "currentLabel": "Milei",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:javier_milei",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "milei"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "lam",
+      "currentLabel": "Tô Lâm",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:to_lam",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "tô lâm",
+        "to lam",
+        "tổng bí thư tô lâm"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "biden",
+      "currentLabel": "Biden",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:joe_biden",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "biden"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "macron",
+      "currentLabel": "Macron",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:emmanuel_macron",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "macron"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "starmer",
+      "currentLabel": "Starmer",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:keir_starmer",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "starmer"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "vonderleyen",
+      "currentLabel": "Von der Leyen",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:ursula_von_der_leyen",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "von der leyen",
+        "ursula von der leyen"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "pm",
+      "currentLabel": "Thủ tướng",
+      "currentKind": "org",
+      "proposedCanonicalKey": "government_body:prime_minister_office",
+      "proposedCanonicalType": "government_body",
+      "aliases": [
+        "lê minh hưng",
+        "thủ tướng",
+        "prime minister",
+        "thu tuong"
+      ],
+      "ambiguity": "role/office, not a person — 'lê minh hưng' alias binds the current holder",
+      "notes": ""
+    },
+    {
+      "slug": "openai",
+      "currentLabel": "OpenAI",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:openai",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "openai",
+        "chatgpt"
+      ],
+      "ambiguity": "'chatgpt' is a product brand alias",
+      "notes": ""
+    },
+    {
+      "slug": "anthropic",
+      "currentLabel": "Anthropic",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:anthropic",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "anthropic",
+        "claude"
+      ],
+      "ambiguity": "'claude' is a product brand alias",
+      "notes": ""
+    },
+    {
+      "slug": "spacex",
+      "currentLabel": "SpaceX",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:spacex",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "spacex",
+        "starlink"
+      ],
+      "ambiguity": "'starlink'/'falcon' are product brand aliases",
+      "notes": ""
+    },
+    {
+      "slug": "tesla",
+      "currentLabel": "Tesla",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:tesla",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "tesla",
+        "tesla inc"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "meta",
+      "currentLabel": "Meta",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:meta_platforms",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "meta",
+        "facebook"
+      ],
+      "ambiguity": "'facebook' is a brand of the company",
+      "notes": ""
+    },
+    {
+      "slug": "google",
+      "currentLabel": "Google",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:alphabet",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "google",
+        "alphabet",
+        "deepmind"
+      ],
+      "ambiguity": "canonical = Alphabet Inc.; 'Google' is its brand",
+      "notes": ""
+    },
+    {
+      "slug": "apple",
+      "currentLabel": "Apple",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:apple",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "apple"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "microsoft",
+      "currentLabel": "Microsoft",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:microsoft",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "microsoft"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "nvidia",
+      "currentLabel": "NVIDIA",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:nvidia",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "nvidia"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "bytedance",
+      "currentLabel": "ByteDance",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:bytedance",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "bytedance",
+        "tiktok"
+      ],
+      "ambiguity": "'tiktok' is a product brand alias",
+      "notes": ""
+    },
+    {
+      "slug": "vinfast",
+      "currentLabel": "VinFast",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:vinfast",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "vinfast",
+        "green sm"
+      ],
+      "ambiguity": "'green sm' is the separate GSM brand, kept as alias for coverage",
+      "notes": ""
+    },
+    {
+      "slug": "musk",
+      "currentLabel": "Elon Musk",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:elon_musk",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "elon musk",
+        "ông musk"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "zuckerberg",
+      "currentLabel": "Mark Zuckerberg",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:mark_zuckerberg",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "zuckerberg",
+        "mark zuckerberg"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "samaltman",
+      "currentLabel": "Sam Altman",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:sam_altman",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "sam altman",
+        "altman"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "amodei",
+      "currentLabel": "Dario Amodei",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:dario_amodei",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "dario amodei",
+        "amodei"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "jensenhuang",
+      "currentLabel": "Jensen Huang",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:jensen_huang",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "jensen huang"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "timcook",
+      "currentLabel": "Tim Cook",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:tim_cook",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "tim cook"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "phamnhatvuong",
+      "currentLabel": "Phạm Nhật Vượng",
+      "currentKind": "person",
+      "proposedCanonicalKey": "person:pham_nhat_vuong",
+      "proposedCanonicalType": "person",
+      "aliases": [
+        "phạm nhật vượng",
+        "pham nhat vuong"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "viettel",
+      "currentLabel": "Viettel",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:viettel",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "viettel"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "samsung",
+      "currentLabel": "Samsung",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:samsung_electronics",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "samsung"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "intel",
+      "currentLabel": "Intel",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:intel",
+      "proposedCanonicalType": "company",
+      "aliases": [],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "boeing",
+      "currentLabel": "Boeing",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:boeing",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "boeing"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "airbus",
+      "currentLabel": "Airbus",
+      "currentKind": "org",
+      "proposedCanonicalKey": "company:airbus",
+      "proposedCanonicalType": "company",
+      "aliases": [
+        "airbus"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "pipeline",
+      "currentLabel": "đường ống dầu",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "topic:oil_pipeline",
+      "proposedCanonicalType": "topic",
+      "aliases": [
+        "đường ống",
+        "duong ong",
+        "pipeline",
+        "tuyến ống",
+        "tuyen ong"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "oil",
+      "currentLabel": "dầu thô",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "commodity:crude_oil",
+      "proposedCanonicalType": "commodity",
+      "aliases": [
+        "dầu thô",
+        "dau tho",
+        "dầu brent",
+        "dau brent",
+        "brent",
+        "xuất khẩu dầu",
+        "xuat khau dau",
+        "oil",
+        "crude oil",
+        "wti"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "drone",
+      "currentLabel": "UAV",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "topic:uav",
+      "proposedCanonicalType": "topic",
+      "aliases": [
+        "uav",
+        "drone",
+        "máy bay không người lái",
+        "may bay khong nguoi lai"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "ai",
+      "currentLabel": "AI",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "topic:artificial_intelligence",
+      "proposedCanonicalType": "topic",
+      "aliases": [
+        "trí tuệ nhân tạo",
+        "tri tue nhan tao",
+        "artificial intelligence",
+        "mô hình ai",
+        "mo hinh ai",
+        "generative ai",
+        "genai",
+        "ai model"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "semiconductor",
+      "currentLabel": "bán dẫn",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "topic:semiconductor_industry",
+      "proposedCanonicalType": "topic",
+      "aliases": [
+        "bán dẫn",
+        "ban dan",
+        "semiconductor",
+        "chips",
+        "vi mạch",
+        "vi mach"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "trade_surplus",
+      "currentLabel": "thặng dư thương mại",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "topic:trade_balance",
+      "proposedCanonicalType": "topic",
+      "aliases": [
+        "thặng dư thương mại",
+        "thang du thuong mai",
+        "cán cân thương mại",
+        "can can thuong mai",
+        "trade surplus"
+      ],
+      "ambiguity": null,
+      "notes": ""
+    },
+    {
+      "slug": "song_hong",
+      "currentLabel": "sông Hồng",
+      "currentKind": "place",
+      "proposedCanonicalKey": "place:red_river",
+      "proposedCanonicalType": "place",
+      "aliases": [
+        "sông hồng",
+        "song hong",
+        "ven sông hồng",
+        "ven song hong",
+        "khu tái định cư",
+        "khu tai dinh cu"
+      ],
+      "ambiguity": "a river treated as a story anchor",
+      "notes": ""
+    },
+    {
+      "slug": "nine_eleven",
+      "currentLabel": "11/9",
+      "currentKind": "topic",
+      "proposedCanonicalKey": "topic:september_11_attacks",
+      "proposedCanonicalType": "topic",
+      "aliases": [
+        "khủng bố 11/9",
+        "vụ 11/9",
+        "thảm kịch 11/9",
+        "tưởng niệm 11/9",
+        "9/11",
+        "september 11",
+        "tháp đôi 11/9"
+      ],
+      "ambiguity": "a historical event, kept as a topic anchor",
+      "notes": ""
+    }
+  ]
+}
