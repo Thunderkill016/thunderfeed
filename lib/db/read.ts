@@ -1135,6 +1135,14 @@ export interface EntityInstrumentListing {
   currency: string | null;
   status: string;
   identifiers: { scheme: string; value: string }[];
+  /** latest as-traded regular daily bar — null when no market data yet */
+  latestMarket?: {
+    sessionDate: string;
+    close: string;
+    volume: string | null;
+    currency: string | null;
+    provider: string;
+  } | null;
 }
 
 export interface EntityInstrument {
@@ -1274,6 +1282,13 @@ export async function getInstrumentView(canonicalKey: string): Promise<{
   }[];
   listings: (EntityInstrumentListing & {
     identifiers: { scheme: string; value: string; provider: string }[];
+    latestMarket: {
+      sessionDate: string;
+      close: string;
+      volume: string | null;
+      currency: string | null;
+      provider: string;
+    } | null;
   })[];
   versionCount: number;
   /** Derivation provenance — which registry observations justify this
@@ -1411,14 +1426,38 @@ export async function getInstrumentView(canonicalKey: string): Promise<{
       ORDER BY d.subject_type, ro.provider`,
     [i.id],
   );
-  const [issuer, idents, versions, listings, lids, prov] = await Promise.all([
-    issuerQ,
-    identQ,
-    versionsQ,
-    listQ,
-    lidQ,
-    provQ,
-  ]);
+  const marketQ = pool.query<{
+    listing_id: string;
+    session_date: string;
+    close: string;
+    volume: string | null;
+    currency: string | null;
+    provider: string;
+  }>(
+    `SELECT DISTINCT ON (ms.listing_id)
+            ms.listing_id, mp.session_date,
+            v.close, v.volume, v.currency, ms.provider
+       FROM market_series ms
+       JOIN market_points mp ON mp.series_id = ms.id
+       JOIN market_point_versions v ON v.id = mp.current_version_id
+       JOIN instrument_listings l ON l.id = ms.listing_id
+      WHERE l.instrument_id = $1
+        AND ms."interval" = '1d' AND ms.session_type = 'regular'
+        AND ms.price_basis = 'as_traded'
+      ORDER BY ms.listing_id, mp.session_date DESC`,
+    [i.id],
+  );
+  const [issuer, idents, versions, listings, lids, prov, market] =
+    await Promise.all([
+      issuerQ,
+      identQ,
+      versionsQ,
+      listQ,
+      lidQ,
+      provQ,
+      marketQ,
+    ]);
+  const latestByListing = new Map(market.rows.map((m) => [m.listing_id, m]));
   const lidByListing = new Map<
     string,
     { scheme: string; value: string; provider: string }[]
@@ -1455,15 +1494,28 @@ export async function getInstrumentView(canonicalKey: string): Promise<{
       provider: r.provider,
       observationId: r.observation_id,
     })),
-    listings: listings.rows.map((l) => ({
-      id: l.id,
-      canonicalKey: l.canonical_key,
-      venue: { mic: l.mic, name: l.market_name },
-      ticker: l.ticker,
-      currency: l.currency,
-      status: l.status,
-      identifiers: lidByListing.get(l.id) ?? [],
-    })),
+    listings: listings.rows.map((l) => {
+      const m = latestByListing.get(l.id);
+      return {
+        id: l.id,
+        canonicalKey: l.canonical_key,
+        venue: { mic: l.mic, name: l.market_name },
+        ticker: l.ticker,
+        currency: l.currency,
+        status: l.status,
+        identifiers: lidByListing.get(l.id) ?? [],
+        // latest as-traded regular daily bar, or null — never fabricated
+        latestMarket: m
+          ? {
+              sessionDate: isoDay(m.session_date),
+              close: String(m.close),
+              volume: m.volume == null ? null : String(m.volume),
+              currency: m.currency,
+              provider: m.provider,
+            }
+          : null,
+      };
+    }),
     versionCount: Number(versions.rows[0].n),
     provenance: prov.rows.map((r) => ({
       subjectType: r.subject_type,
@@ -1903,4 +1955,142 @@ export async function getSourceReliability(): Promise<SourceReliability[]> {
       };
     })
     .sort((a, b) => b.score - a.score || b.documents - a.documents);
+}
+
+// ── Market Data read model ────────────────────────────────────────────────
+// Identity is always instrument_listings.id — a ticker is never accepted as
+// lookup identity (only as display/provenance echo).
+
+/** DATE column → 'YYYY-MM-DD'. pg driver returns Date; pg-mem may too. */
+function isoDay(v: unknown): string {
+  if (v instanceof Date) return v.toISOString().slice(0, 10);
+  return String(v).slice(0, 10);
+}
+
+export interface MarketSeriesView {
+  id: string;
+  canonicalKey: string;
+  listingId: string;
+  provider: string;
+  dataset: string;
+  interval: string;
+  sessionType: string;
+  priceBasis: string;
+  status: string;
+  createdAt: string;
+}
+
+export interface MarketBar {
+  sessionDate: string; // YYYY-MM-DD
+  open: string;
+  high: string;
+  low: string;
+  close: string;
+  volume: string | null;
+  currency: string | null;
+  versionNo: number;
+  provider: string;
+  observedAt: string;
+  observationId: string | null;
+}
+
+export async function getMarketSeriesForListing(
+  listingId: string,
+): Promise<MarketSeriesView[]> {
+  const pool = getPool();
+  const r = await pool.query<{
+    id: string;
+    canonical_key: string;
+    listing_id: string;
+    provider: string;
+    dataset: string;
+    interval: string;
+    session_type: string;
+    price_basis: string;
+    status: string;
+    created_at: string;
+  }>(
+    `SELECT id, canonical_key, listing_id, provider, dataset, "interval",
+            session_type, price_basis, status, created_at
+       FROM market_series
+      WHERE listing_id = $1
+      ORDER BY provider, dataset`,
+    [listingId],
+  );
+  return r.rows.map((x) => ({
+    id: x.id,
+    canonicalKey: x.canonical_key,
+    listingId: x.listing_id,
+    provider: x.provider,
+    dataset: x.dataset,
+    interval: x.interval,
+    sessionType: x.session_type,
+    priceBasis: x.price_basis,
+    status: x.status,
+    createdAt: x.created_at,
+  }));
+}
+
+export async function getDailyBars(
+  listingId: string,
+  opts: {
+    from?: string;
+    to?: string;
+    limit?: number;
+    order?: "asc" | "desc";
+  } = {},
+): Promise<MarketBar[]> {
+  const pool = getPool();
+  const limit = Math.min(Math.max(1, opts.limit ?? 100), 5000);
+  const order = opts.order === "asc" ? "ASC" : "DESC";
+  const r = await pool.query<{
+    session_date: string;
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    volume: string | null;
+    currency: string | null;
+    version_no: number;
+    provider: string;
+    observed_at: string;
+    observation_id: string | null;
+  }>(
+    `SELECT mp.session_date,
+            v.open, v.high, v.low, v.close,
+            v.volume, v.currency, v.version_no,
+            ms.provider, v.observed_at, v.observation_id
+       FROM market_series ms
+       JOIN market_points mp ON mp.series_id = ms.id
+       JOIN market_point_versions v ON v.id = mp.current_version_id
+      WHERE ms.listing_id = $1
+        AND ms."interval" = '1d'
+        AND ms.session_type = 'regular'
+        AND ms.price_basis = 'as_traded'
+        AND ($2::date IS NULL OR mp.session_date >= $2::date)
+        AND ($3::date IS NULL OR mp.session_date <= $3::date)
+      ORDER BY mp.session_date ${order}
+      LIMIT ${limit}`,
+    [listingId, opts.from ?? null, opts.to ?? null],
+  );
+  return r.rows.map((x) => ({
+    sessionDate: isoDay(x.session_date),
+    open: String(x.open),
+    high: String(x.high),
+    low: String(x.low),
+    close: String(x.close),
+    volume: x.volume == null ? null : String(x.volume),
+    currency: x.currency,
+    versionNo: x.version_no,
+    provider: x.provider,
+    observedAt: x.observed_at,
+    observationId: x.observation_id,
+  }));
+}
+
+export async function getLatestMarketBar(
+  listingId: string,
+): Promise<MarketBar | null> {
+  const bars = await getDailyBars(listingId, { limit: 1, order: "desc" });
+  return bars[0] ?? null;
 }
