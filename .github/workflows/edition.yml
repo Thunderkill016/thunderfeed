@@ -41,10 +41,13 @@ jobs:
           DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
           GEMINI_API_KEY: ${{ secrets.TF_GEMINI_API_KEY }}
         run: npm run build:edition
-      - name: Telegram alerts
-        if: always() # send accumulated changes even if the build failed
-        env:
-          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TF_TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TF_TELEGRAM_CHAT_ID }}
-        run: npm run alerts:telegram
+      # Telegram alerts disabled — every-30-min pushes were spam. The
+      # alerts:telegram script stays; re-enable by restoring this step
+      # when delivery is redesigned as an interruption-budgeted digest.
+      # - name: Telegram alerts
+      #   if: always()
+      #   env:
+      #     DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+      #     TELEGRAM_BOT_TOKEN: ${{ secrets.TF_TELEGRAM_BOT_TOKEN }}
+      #     TELEGRAM_CHAT_ID: ${{ secrets.TF_TELEGRAM_CHAT_ID }}
+      #   run: npm run alerts:telegram
