@@ -100,6 +100,31 @@ const functions = (
   )
 ).rows;
 
+/* Active denial probes — emulate PostgREST exactly: each Data API
+ * request runs in a transaction under SET LOCAL ROLE <jwt-role>. Every
+ * op must be denied; catalog grants alone can't prove enforcement. */
+const probes: { role: string; op: string; denied: boolean }[] = [];
+const PROBE_SQL: [string, string][] = [
+  ["SELECT", `SELECT * FROM entities LIMIT 1`],
+  ["INSERT", `INSERT INTO sources (name) VALUES ('__audit_probe__')`],
+  ["UPDATE", `UPDATE entities SET canonical_name = canonical_name WHERE true`],
+  ["DELETE", `DELETE FROM sources WHERE true`],
+];
+for (const role of API_ROLES) {
+  for (const [op, sql] of PROBE_SQL) {
+    await client.query("BEGIN");
+    await client.query(`SET LOCAL ROLE ${role}`);
+    let denied = false;
+    try {
+      await client.query(sql);
+    } catch {
+      denied = true;
+    }
+    await client.query("ROLLBACK");
+    probes.push({ role, op, denied });
+  }
+}
+
 await client.end();
 
 const rlsDisabled = tables.filter((t) => !t.relrowsecurity);
@@ -110,6 +135,7 @@ const readableGrants = grants.filter(
   (g) => !FORBIDDEN.includes(g.privilege_type),
 );
 const mutableFns = functions.filter((f) => f.mutable);
+const probesFailed = probes.filter((p) => !p.denied);
 
 const summary = {
   generatedAt: new Date().toISOString(),
@@ -132,12 +158,18 @@ const summary = {
     total: functions.length,
     mutableSearchPath: mutableFns.map((f) => f.proname),
   },
+  roleProbes: {
+    total: probes.length,
+    denied: probes.filter((p) => p.denied).length,
+    failed: probesFailed.map((p) => `${p.role}:${p.op}`),
+  },
   owners: [...new Set(tables.map((t) => t.tableowner))],
 };
 const pass =
   rlsDisabled.length === 0 &&
   forbiddenGrants.length === 0 &&
-  mutableFns.length === 0;
+  mutableFns.length === 0 &&
+  probesFailed.length === 0;
 
 if (SNAPSHOT) {
   writeFileSync(
