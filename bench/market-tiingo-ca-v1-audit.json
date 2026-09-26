@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2026-09-26T18:43:35.472Z",
+  "runs": [],
+  "metrics": {
+    "providers": "tiingo",
+    "datasets": [
+      "corporate_actions_distributions",
+      "corporate_actions_splits"
+    ],
+    "requested": 1,
+    "successful": 0,
+    "providerErrors": 0,
+    "entitlementBlocked": 1,
+    "rateLimitResponses": 0,
+    "unresolvedProviderSymbols": 0,
+    "observations": 0,
+    "assertions": 0,
+    "deduped": 0,
+    "asserted": 0,
+    "corroborated": 0,
+    "corrected": 0,
+    "conflicted": 0,
+    "fallbackNote": "when entitlement is absent, Tiingo EOD divCash/splitFactor remains the official Tiingo assertion source (import-tiingo-eod.mts)",
+    "errors": [
+      {
+        "listing": "listing:apple:common_stock:xngs",
+        "kind": "entitlement_required",
+        "detail": "distributions → HTTP 403 — endpoint requires a paid entitlement; EOD divCash/splitFactor remains the official Tiingo assertion source"
+      }
+    ]
+  }
+}

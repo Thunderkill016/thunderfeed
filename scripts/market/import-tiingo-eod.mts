@@ -12,9 +12,11 @@
  * Auth: Authorization: Token <TIINGO_API_TOKEN> header. The token never
  * enters the URL, logs, errors, or reference_observations.source_url.
  *
- * Normalization promotes raw OHLCV only — adjOpen/adjHigh/adjLow/adjClose/
- * adjVolume/divCash/splitFactor remain quarantined in the raw payload for
- * the future Corporate Actions phase. price_basis stays as_traded.
+ * Normalization now produces THREE lawful derivations from the SAME raw
+ * observation: raw OHLCV → as_traded series; adjOpen/adjHigh/adjLow/
+ * adjClose/adjVolume → provider_adjusted series (provider's own values —
+ * never recomputed); divCash≠0 / splitFactor≠1 → corporate-action
+ * assertions. The two series stay separate forever.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import {
@@ -25,9 +27,12 @@ import {
 import {
   applyDailyBars,
   getOrCreateTiingoEodSeries,
+  getOrCreateTiingoAdjustedSeries,
   TIINGO_PROVIDER,
   TIINGO_EOD_DATASET,
 } from "../../lib/db/market.ts";
+import { applyActionAssertion } from "../../lib/db/corporate-actions.ts";
+import { tiingoHintToSemantics } from "../../lib/corporate-actions.ts";
 import { connectDb, observe } from "../instruments/lib.mts";
 import { marketIntegrity } from "./lib.mts";
 
@@ -102,7 +107,7 @@ const c = connectDb(dbUrl);
 await c.connect();
 
 const listings = await c.query(
-  `SELECT l.id, l.canonical_key, lv.ticker, v.mic
+  `SELECT l.id, l.canonical_key, l.instrument_id, lv.ticker, v.mic
      FROM instrument_listings l
      LEFT JOIN listing_versions lv ON lv.id = l.current_version_id
      LEFT JOIN trading_venues v ON v.id = l.venue_id
@@ -122,6 +127,9 @@ let pointsInserted = 0;
 let versionsInserted = 0;
 let unchanged = 0;
 let invalidBars = 0;
+let adjustedPoints = 0;
+let adjustedVersions = 0;
+let caAssertions = 0;
 const errors: { listing: string; kind: string; detail: string }[] = [];
 const fail = (
   listing: string,
@@ -268,7 +276,10 @@ for (const l of AUDIT_ONLY ? [] : listings.rows) {
   }
 
   // normalized promotion is its own transaction — identical semantics to
-  // the Alpha adapter: bad batch rolls back, raw evidence stays committed
+  // the Alpha adapter: bad batch rolls back, raw evidence stays committed.
+  // The SAME observation also feeds the provider_adjusted series and the
+  // EOD-derived corporate-action assertions — one payload, three lawful
+  // derivations, provenance intact.
   await c.query("BEGIN");
   try {
     const seriesId = await getOrCreateTiingoEodSeries(
@@ -277,13 +288,60 @@ for (const l of AUDIT_ONLY ? [] : listings.rows) {
       l.canonical_key as string,
     );
     const r = await applyDailyBars(c, seriesId, parsed.bars, obsId);
+
+    // provider-adjusted series — the provider's own adj* columns; the
+    // as_traded series above is untouched by them
+    let adjusted: typeof r | null = null;
+    if (parsed.adjustedBars) {
+      const adjSeriesId = await getOrCreateTiingoAdjustedSeries(
+        c,
+        l.id as string,
+        l.canonical_key as string,
+      );
+      adjusted = await applyDailyBars(
+        c,
+        adjSeriesId,
+        parsed.adjustedBars,
+        obsId,
+      );
+    }
+
+    // EOD-derived CA assertions — divCash≠0 → cash_dividend,
+    // splitFactor≠1 → stock_split, ex_date = row session date
+    let caApplied = 0;
+    for (const hint of parsed.actionHints)
+      for (const { type, s } of tiingoHintToSemantics(hint)) {
+        await applyActionAssertion(c, {
+          instrumentId: l.instrument_id as string,
+          sourceListingId: l.id as string,
+          provider: TIINGO_PROVIDER,
+          dataset: TIINGO_EOD_DATASET,
+          providerRecordKey: `${ticker}:eod:${s.exDate}:${type}`,
+          actionType: type,
+          ...s,
+          observationId: obsId,
+        });
+        caApplied++;
+      }
+
     await c.query("COMMIT");
     successful++;
     pointsInserted += r.pointsInserted;
     versionsInserted += r.versionsInserted;
     unchanged += r.unchanged;
     invalidBars += r.invalid.length;
-    audit.runs.push({ listing: l.canonical_key, ticker, ...r });
+    if (adjusted) {
+      adjustedPoints += adjusted.pointsInserted;
+      adjustedVersions += adjusted.versionsInserted;
+    }
+    caAssertions += caApplied;
+    audit.runs.push({
+      listing: l.canonical_key,
+      ticker,
+      ...r,
+      adjusted,
+      caAssertions: caApplied,
+    });
   } catch (e) {
     await c.query("ROLLBACK");
     providerErrors++;
@@ -307,6 +365,9 @@ audit.metrics = {
   unchanged,
   unchangedRows: unchanged,
   invalidBars,
+  adjustedPointsInserted: adjustedPoints,
+  adjustedVersionsInserted: adjustedVersions,
+  corporateActionAssertions: caAssertions,
   ...(await marketIntegrity(c)),
   errors,
 };

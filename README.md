@@ -100,12 +100,42 @@ là identity, ticker chỉ là transport). Không average, không merge, không
 âm thầm chọn "giá đúng"; khác nhau → ghi divergence.
 
 - **Alpha Vantage** — `alphavantage` / `time_series_daily`, JSON daily.
-- **Tiingo** — `tiingo` / `eod_daily`, CSV daily (raw OHLCV; các trường
-  `adj*`/`divCash`/`splitFactor` chỉ nằm trong raw observation, chưa
-  promote — Corporate Actions phase sau).
+- **Tiingo** — `tiingo` / `eod_daily`, CSV daily. Một raw CSV của Tiingo
+  nuôi ba derivations hợp lệ từ cùng observation: OHLCV thô → series
+  `as_traded`; các cột `adj*` của provider → series riêng
+  `price_basis='provider_adjusted'` (giá trị của provider — không tự tính
+  adjustment); `divCash`/`splitFactor` ≠ mặc định → corporate-action
+  assertions.
 
 Importers: `scripts/market/import-alphavantage-daily.mts`,
-`scripts/market/import-tiingo-eod.mts`, `scripts/market/compare-dual.mts`.
+`scripts/market/import-tiingo-eod.mts`, `scripts/market/compare-dual.mts`,
+`scripts/market/import-alpha-ca.mts`, `scripts/market/import-tiingo-ca.mts`,
+`scripts/market/compare-ca.mts`.
+
+## Corporate actions
+
+`corporate_actions` attach vào `financial_instruments.id` — không bao giờ
+vào ticker hay market series; listing chỉ là `source_listing_id`
+(transport/provenance). Canonical identity = (instrument, type, ex_date);
+amount/ratio/dates là semantic fields — provider sửa được bằng append-only
+versions, không phải identity.
+
+```
+raw provider payload → reference_observations
+  → corporate_action_assertions (provider truth, immutable)
+  → corporate_action_versions (canonical, append-only)
+  → corporate_action_derivations (asserts / corroborates / conflicts)
+```
+
+- **Alpha Vantage**: `DIVIDENDS` + `SPLITS` endpoints.
+- **Tiingo**: rich `corporate-actions/*` endpoints đang bị entitlement
+  (HTTP 403 free tier) — fallback hợp lệ là `divCash`/`splitFactor` của
+  EOD CSV (dataset `eod_daily`).
+- Canonical authorship: dedicated CA endpoint outrank cột EOD-derived;
+  cross-provider disagreement ghi `role='conflicts'` + `divergence` —
+  không bao giờ average.
+- Read: `/api/instruments/<instrument-key>/corporate-actions`,
+  `getCorporateActionsFor{Instrument,Listing}` + `getCorporateAction`.
 
 **Licensing**: dữ liệu Tiingo free/developer tier chỉ phù hợp internal/
 developer use — redistribution hay public-commercial use cần quyền

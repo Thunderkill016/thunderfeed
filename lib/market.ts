@@ -292,9 +292,10 @@ export function resolveTiingoSymbol(listing: {
 // Endpoint: GET /tiingo/daily/<ticker>/prices?format=csv
 // Auth: Authorization: Token <TIINGO_API_TOKEN> — the token NEVER enters
 // the URL, logs, or reference_observations.source_url.
-// Raw CSV stores: open..volume PLUS adj*/divCash/splitFactor — the
-// adjusted/corporate-action fields stay quarantined in raw evidence; only
-// raw OHLCV normalizes into the as_traded series.
+// Raw CSV stores: open..volume PLUS adj*/divCash/splitFactor — one raw
+// observation feeds THREE lawful derivations: as_traded bars (raw OHLCV),
+// provider_adjusted bars (the provider's own adj* columns — never
+// recomputed), and corporate-action hints (divCash≠0 / splitFactor≠1).
 
 export type TiingoErrorClass =
   | "unauthorized"
@@ -304,10 +305,26 @@ export type TiingoErrorClass =
   | "unexpected_schema"
   | "api_error";
 
+/** Corporate-action hint embedded in a Tiingo EOD row — ex_date is the
+ *  row's session date; divCash/splitFactor are provider assertions, not
+ *  inputs to any homemade adjustment formula. */
+export interface TiingoActionHint {
+  exDate: string;
+  divCash: string;
+  splitFactor: string;
+}
+
 export type TiingoEodResult =
   | {
       kind: "series";
       bars: DailyBar[];
+      /** provider-supplied adjusted bars (adjOpen..adjVolume) — a SECOND
+       *  series assertion (price_basis='provider_adjusted'), never merged
+       *  into as_traded and never computed locally */
+      adjustedBars: DailyBar[] | null;
+      /** rows where divCash≠0 or splitFactor≠1 — CA assertions keyed by
+       *  the row's session date as ex-date */
+      actionHints: TiingoActionHint[];
       meta: { columns: string[]; rows: number };
     }
   | { kind: "provider_error"; errorClass: TiingoErrorClass; detail: string };
@@ -417,6 +434,19 @@ export function parseTiingoEod(res: {
       };
 
   const bars: DailyBar[] = [];
+  const adjustedBars: DailyBar[] = [];
+  const actionHints: TiingoActionHint[] = [];
+  // adjusted + CA columns are optional on the provider side
+  const adjIdx = {
+    open: col("adjOpen"),
+    high: col("adjHigh"),
+    low: col("adjLow"),
+    close: col("adjClose"),
+    volume: col("adjVolume"),
+  };
+  const hasAdjusted = Object.values(adjIdx).every((i) => i >= 0);
+  const divIdx = col("divCash");
+  const splitIdx = col("splitFactor");
   for (const [i, r] of rows.slice(1).entries()) {
     if (r.length === 1 && r[0].trim() === "") continue; // trailing blank line
     if (r.length !== header.length)
@@ -443,9 +473,29 @@ export function parseTiingoEod(res: {
       low: r[col("low")].trim(),
       close: r[col("close")].trim(),
       volume: volRaw === "" ? null : volRaw, // unknown stays NULL, never 0
-      // adjOpen/adjHigh/adjLow/adjClose/adjVolume/divCash/splitFactor
-      // deliberately NOT promoted — quarantined in the raw observation
     });
+    if (hasAdjusted) {
+      const adjVol = r[adjIdx.volume].trim();
+      adjustedBars.push({
+        sessionDate,
+        open: r[adjIdx.open].trim(),
+        high: r[adjIdx.high].trim(),
+        low: r[adjIdx.low].trim(),
+        close: r[adjIdx.close].trim(),
+        volume: adjVol === "" ? null : adjVol,
+      });
+    }
+    const divCash = divIdx >= 0 ? r[divIdx].trim() : "";
+    const splitFactor = splitIdx >= 0 ? r[splitIdx].trim() : "";
+    // CA hints: any nonzero dividend or non-1 split factor on this row
+    // is a provider assertion with ex_date = the session date. Malformed
+    // decimals (normalize → null) never become hints.
+    const nd = divCash === "" ? null : normalizeDecimalString(divCash);
+    const ns = splitFactor === "" ? null : normalizeDecimalString(splitFactor);
+    const isDiv = nd != null && nd !== "0";
+    const isSplit = ns != null && ns !== "1";
+    if (isDiv || isSplit)
+      actionHints.push({ exDate: sessionDate, divCash, splitFactor });
   }
   if (!bars.length)
     return {
@@ -454,7 +504,15 @@ export function parseTiingoEod(res: {
       detail: "CSV header but zero data rows",
     };
   bars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
-  return { kind: "series", bars, meta: { columns: header, rows: bars.length } };
+  adjustedBars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
+  actionHints.sort((a, b) => a.exDate.localeCompare(b.exDate));
+  return {
+    kind: "series",
+    bars,
+    adjustedBars: hasAdjusted ? adjustedBars : null,
+    actionHints,
+    meta: { columns: header, rows: bars.length },
+  };
 }
 
 // ── dual-provider comparison (diagnostics only — never persisted as fact) ─

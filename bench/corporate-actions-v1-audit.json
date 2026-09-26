@@ -1,0 +1,170 @@
+{
+  "generatedAt": "2026-09-26T19:04:59.603Z",
+  "actions": 94,
+  "versions": 94,
+  "assertions": 100,
+  "dividends": 88,
+  "splits": 6,
+  "byProvider": [
+    {
+      "provider": "alphavantage",
+      "dataset": "dividends",
+      "n": "80"
+    },
+    {
+      "provider": "alphavantage",
+      "dataset": "splits",
+      "n": "6"
+    },
+    {
+      "provider": "tiingo",
+      "dataset": "eod_daily",
+      "n": "14"
+    }
+  ],
+  "agreements": 6,
+  "divergences": 0,
+  "providerOnly": {
+    "alphavantage": 80,
+    "tiingo": 8
+  },
+  "ambiguous": 0,
+  "divergentActions": [],
+  "derivations": 100,
+  "derivationsByRole": [
+    {
+      "role": "asserts",
+      "n": "94"
+    },
+    {
+      "role": "corroborates",
+      "n": "6"
+    }
+  ],
+  "missingInstrument": 0,
+  "missingObservation": 0,
+  "badVersionChains": 0,
+  "duplicateProviderAssertions": 0,
+  "actionsWithoutCurrentVersion": 0,
+  "assertionsWithoutDerivation": 0,
+  "cancelledActions": 0,
+  "adjustedSeries": 11,
+  "adjustedPoints": 1375,
+  "adjustedVersions": 1375,
+  "rawAdjustedSameObservationCoverage": 11,
+  "adjustmentDiagnostics": [
+    {
+      "listing": "listing:apple:common_stock:xngs",
+      "exDate": "2026-05-10T17:00:00.000Z",
+      "rawClose": "292.68",
+      "adjClose": "292.4238706122581",
+      "closesDiffer": true,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:apple:common_stock:xngs",
+      "exDate": "2026-08-09T17:00:00.000Z",
+      "rawClose": "308.26",
+      "adjClose": "308.26",
+      "closesDiffer": false,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:alphabet:class_c_common_stock:xngs",
+      "exDate": "2026-06-07T17:00:00.000Z",
+      "rawClose": "361.17",
+      "adjClose": "360.9331883885197",
+      "closesDiffer": true,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:alphabet:class_c_common_stock:xngs",
+      "exDate": "2026-09-03T17:00:00.000Z",
+      "rawClose": "335.31",
+      "adjClose": "335.31",
+      "closesDiffer": false,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:alphabet:class_a_common_stock:xngs",
+      "exDate": "2026-06-07T17:00:00.000Z",
+      "rawClose": "363.31",
+      "adjClose": "363.0740008267391",
+      "closesDiffer": true,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:alphabet:class_a_common_stock:xngs",
+      "exDate": "2026-09-03T17:00:00.000Z",
+      "rawClose": "338.46",
+      "adjClose": "338.46",
+      "closesDiffer": false,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:meta_platforms:class_a_common_stock:xngs",
+      "exDate": "2026-06-14T17:00:00.000Z",
+      "rawClose": "593.48",
+      "adjClose": "593.0599547029402",
+      "closesDiffer": true,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:meta_platforms:class_a_common_stock:xngs",
+      "exDate": "2026-09-20T17:00:00.000Z",
+      "rawClose": "741.245",
+      "adjClose": "741.245",
+      "closesDiffer": false,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:microsoft:common_stock:xngs",
+      "exDate": "2026-05-20T17:00:00.000Z",
+      "rawClose": "419.09",
+      "adjClose": "418.2988704725553",
+      "closesDiffer": true,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:microsoft:common_stock:xngs",
+      "exDate": "2026-08-19T17:00:00.000Z",
+      "rawClose": "481.15",
+      "adjClose": "481.15",
+      "closesDiffer": false,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:nvidia:common_stock:xngs",
+      "exDate": "2026-06-03T17:00:00.000Z",
+      "rawClose": "218.66",
+      "adjClose": "218.409942820548",
+      "closesDiffer": true,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:nvidia:common_stock:xngs",
+      "exDate": "2026-09-09T17:00:00.000Z",
+      "rawClose": "218.36",
+      "adjClose": "218.36",
+      "closesDiffer": false,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:oracle:common_stock:xnys",
+      "exDate": "2026-04-08T17:00:00.000Z",
+      "rawClose": "137.86",
+      "adjClose": "137.37161966841435",
+      "closesDiffer": true,
+      "sameObservation": true
+    },
+    {
+      "listing": "listing:oracle:common_stock:xnys",
+      "exDate": "2026-07-09T17:00:00.000Z",
+      "rawClose": "140.64",
+      "adjClose": "140.64",
+      "closesDiffer": false,
+      "sameObservation": true
+    }
+  ],
+  "adjustmentDiagnosticsNote": "Diagnostic only: divCash/splitFactor sessions are checked against raw-vs-adjusted close differences. No local adjustment formula is used; a mismatch is never evidence Tiingo is wrong."
+}

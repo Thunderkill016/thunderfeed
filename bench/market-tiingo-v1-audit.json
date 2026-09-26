@@ -1,46 +1,10 @@
 {
-  "generatedAt": "2026-09-26T17:48:46.934Z",
+  "generatedAt": "2026-09-26T19:05:23.963Z",
   "window": {
     "start": "2026-03-30",
     "end": "2026-09-26"
   },
   "runs": [
-    {
-      "listing": "listing:alphabet:class_a_common_stock:xngs",
-      "ticker": "GOOGL",
-      "seriesId": "01a0ded5-807e-7dd8-8430-56e52e584117",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
-    },
-    {
-      "listing": "listing:alphabet:class_c_common_stock:xngs",
-      "ticker": "GOOG",
-      "seriesId": "01a0ded6-2510-792a-8afb-580b6ed34884",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
-    },
-    {
-      "listing": "listing:amazon:common_stock:xngs",
-      "ticker": "AMZN",
-      "seriesId": "01a0ded6-c9e8-762b-bb94-b9a2cba30fb8",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
-    },
-    {
-      "listing": "listing:amd:common_stock:xngs",
-      "ticker": "AMD",
-      "seriesId": "01a0ded7-6eba-764a-9775-aa8920b43529",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
-    },
     {
       "listing": "listing:apple:common_stock:xngs",
       "ticker": "AAPL",
@@ -48,79 +12,36 @@
       "pointsInserted": 0,
       "versionsInserted": 0,
       "unchanged": 125,
-      "invalid": []
-    },
-    {
-      "listing": "listing:intel:common_stock:xngs",
-      "ticker": "INTC",
-      "seriesId": "01a0ded8-5ba7-7330-88cf-75d8cf215428",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
-    },
-    {
-      "listing": "listing:meta_platforms:class_a_common_stock:xngs",
-      "ticker": "META",
-      "seriesId": "01a0ded9-08f6-7ff1-8eef-aca9ecd7499c",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
-    },
-    {
-      "listing": "listing:microsoft:common_stock:xngs",
-      "ticker": "MSFT",
-      "seriesId": "01a0ded9-af31-7b96-9a72-b6cd77e405f5",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
-    },
-    {
-      "listing": "listing:nvidia:common_stock:xngs",
-      "ticker": "NVDA",
-      "seriesId": "01a0deda-5599-78aa-b7cc-85b509c064bc",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
-    },
-    {
-      "listing": "listing:oracle:common_stock:xnys",
-      "ticker": "ORCL",
-      "seriesId": "01a0deda-fbd8-71f7-8929-f844ac1c122b",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
-    },
-    {
-      "listing": "listing:tesla:common_stock:xngs",
-      "ticker": "TSLA",
-      "seriesId": "01a0dedb-a0ea-7c62-b9c5-e3b7c8d14d76",
-      "pointsInserted": 125,
-      "versionsInserted": 125,
-      "unchanged": 0,
-      "invalid": []
+      "invalid": [],
+      "adjusted": {
+        "seriesId": "01a0df08-0bee-7cb6-a71f-1c0ec3561982",
+        "pointsInserted": 0,
+        "versionsInserted": 0,
+        "unchanged": 125,
+        "invalid": []
+      },
+      "caAssertions": 2
     }
   ],
   "metrics": {
     "providers": "tiingo",
-    "requested": 11,
-    "successful": 11,
+    "requested": 1,
+    "successful": 1,
     "providerErrors": 0,
     "rateLimitResponses": 0,
     "unresolvedProviderSymbols": 0,
-    "pointsInserted": 1250,
-    "versionsInserted": 1250,
+    "pointsInserted": 0,
+    "versionsInserted": 0,
     "unchanged": 125,
     "unchangedRows": 125,
     "invalidBars": 0,
-    "series": 22,
+    "adjustedPointsInserted": 0,
+    "adjustedVersionsInserted": 0,
+    "corporateActionAssertions": 2,
+    "series": 33,
     "listingsCovered": 11,
-    "points": 2475,
-    "versions": 2475,
+    "points": 3850,
+    "versions": 3850,
     "dateMin": "2026-03-30",
     "dateMax": "2026-09-25",
     "duplicateSessionDates": 0,
@@ -137,7 +58,7 @@
     "negativePersistedVolume": 0,
     "missingObservationProvenance": 0,
     "seriesWithoutListing": 0,
-    "barsWithUnknownCurrency": 2475,
+    "barsWithUnknownCurrency": 3850,
     "currentBarsPerListing": 11,
     "byProvider": [
       {
@@ -150,9 +71,9 @@
       {
         "provider": "tiingo",
         "dataset": "eod_daily",
-        "series": "11",
-        "points": "1375",
-        "versions": "1375"
+        "series": "22",
+        "points": "2750",
+        "versions": "2750"
       }
     ],
     "marketObservationsByProvider": [

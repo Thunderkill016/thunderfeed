@@ -1,8 +1,11 @@
 /* Market Data — DB apply layer (pg-mem testable).
  *
- * Normalization is atomic per listing ingestion:
- *   one bar invalid → the whole batch rolls back (provider payload stays
- *   in reference_observations — evidence is kept, nothing half-promoted).
+ * Per-bar failure semantics (do not conflate):
+ *   one bar invalid → that bar is skipped + audited; the rest of the
+ *     batch still promotes (provider payload stays in
+ *     reference_observations either way — evidence is kept)
+ *   a runtime/DB error during promotion → the whole listing transaction
+ *     rolls back; nothing half-promoted.
  *
  * Revision semantics:
  *   same (series, session_date) + same OHLCV → 0 new versions
@@ -25,12 +28,12 @@ export interface SeriesSpec {
   listingKey: string;
   provider: string;
   dataset: string;
-  /** V1 dims — currently the only lawful values ('1d','regular','as_traded')
-   *  are what the DB CHECKs enforce; future providers/semantics arrive as a
-   *  deliberate migration, not a caller flag. */
+  /** V1 dims — the DB CHECKs enforce the lawful set; 'provider_adjusted'
+   *  arrived with 0026 and means provider-supplied adjusted bars, never
+   *  locally computed. */
   interval?: "1d";
   sessionType?: "regular";
-  priceBasis?: "as_traded";
+  priceBasis?: "as_traded" | "provider_adjusted";
 }
 
 /** get-or-create the canonical series for
@@ -101,6 +104,23 @@ export function getOrCreateTiingoEodSeries(
     listingKey,
     provider: TIINGO_PROVIDER,
     dataset: TIINGO_EOD_DATASET,
+  });
+}
+
+/** Tiingo provider-adjusted series — SAME listing, SAME provider, SAME
+ *  dataset, different price_basis. Values are the provider's own adj*
+ *  columns; nothing is recomputed from divCash/splitFactor. */
+export function getOrCreateTiingoAdjustedSeries(
+  db: Q,
+  listingId: string,
+  listingKey: string,
+): Promise<string> {
+  return getOrCreateMarketSeries(db, {
+    listingId,
+    listingKey,
+    provider: TIINGO_PROVIDER,
+    dataset: TIINGO_EOD_DATASET,
+    priceBasis: "provider_adjusted",
   });
 }
 

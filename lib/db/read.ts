@@ -15,6 +15,8 @@ import {
   type EntityKind,
 } from "../entities";
 import { normalizeText } from "../model";
+import { normalizeDecimalString } from "../market";
+import { caDivergentFields } from "../corporate-actions";
 
 export interface EvidenceView {
   source: string;
@@ -2182,4 +2184,249 @@ export async function getLatestMarketBar(
     order: "desc",
   });
   return bars[0] ?? null;
+}
+
+// ── Corporate Actions (0026) ─────────────────────────────────────────────
+// Canonical action + current version + every attached provider assertion +
+// derivations. Provider disagreement is NEVER hidden — the agreement block
+// names the fields providers diverge on; nothing is averaged.
+
+export interface CaAssertionView {
+  id: string;
+  provider: string;
+  dataset: string;
+  providerRecordKey: string;
+  actionType: string;
+  exDate: string;
+  declarationDate: string | null;
+  recordDate: string | null;
+  paymentDate: string | null;
+  cashAmount: string | null;
+  currency: string | null;
+  splitFrom: string | null;
+  splitTo: string | null;
+  splitFactor: string | null;
+  providerStatus: string | null;
+  sourceListingId: string | null;
+  observationId: string;
+  observedAt: string;
+  createdAt: string;
+}
+
+export interface CaVersionView {
+  id: string;
+  versionNo: number;
+  exDate: string | null;
+  declarationDate: string | null;
+  recordDate: string | null;
+  paymentDate: string | null;
+  cashAmount: string | null;
+  currency: string | null;
+  splitFrom: string | null;
+  splitTo: string | null;
+  splitFactor: string | null;
+  status: string;
+  observationId: string;
+  previousVersionId: string | null;
+  createdAt: string;
+}
+
+export interface CaDerivationView {
+  id: string;
+  actionVersionId: string;
+  assertionId: string;
+  observationId: string;
+  role: "asserts" | "corroborates" | "conflicts";
+  provider: string;
+  dataset: string;
+}
+
+export interface CorporateActionView {
+  id: string;
+  canonicalKey: string;
+  instrumentId: string;
+  actionType: string;
+  status: string;
+  currentVersion: CaVersionView | null;
+  assertions: CaAssertionView[];
+  derivations: CaDerivationView[];
+  agreement: {
+    state: "agreement" | "divergence" | "single_source";
+    providers: string[];
+    divergentFields: string[];
+  };
+}
+
+function caAssertionView(r: Record<string, unknown>): CaAssertionView {
+  const d = (v: unknown) => (v == null ? null : isoDay(v));
+  const s = (v: unknown) => (v == null ? null : String(v));
+  return {
+    id: String(r.id),
+    provider: String(r.provider),
+    dataset: String(r.dataset),
+    providerRecordKey: String(r.provider_record_key),
+    actionType: String(r.action_type),
+    exDate: isoDay(r.ex_date),
+    declarationDate: d(r.declaration_date),
+    recordDate: d(r.record_date),
+    paymentDate: d(r.payment_date),
+    cashAmount: s(r.cash_amount),
+    currency: s(r.currency),
+    splitFrom: s(r.split_from),
+    splitTo: s(r.split_to),
+    splitFactor: s(r.split_factor),
+    providerStatus: s(r.provider_status),
+    sourceListingId: s(r.source_listing_id),
+    observationId: String(r.observation_id),
+    observedAt: String(r.observed_at),
+    createdAt: String(r.created_at),
+  };
+}
+
+function caVersionView(r: Record<string, unknown>): CaVersionView {
+  const d = (v: unknown) => (v == null ? null : isoDay(v));
+  const s = (v: unknown) => (v == null ? null : String(v));
+  return {
+    id: String(r.id),
+    versionNo: Number(r.version_no),
+    exDate: d(r.ex_date),
+    declarationDate: d(r.declaration_date),
+    recordDate: d(r.record_date),
+    paymentDate: d(r.payment_date),
+    cashAmount: s(r.cash_amount),
+    currency: s(r.currency),
+    splitFrom: s(r.split_from),
+    splitTo: s(r.split_to),
+    splitFactor: s(r.split_factor),
+    status: String(r.status),
+    observationId: String(r.observation_id),
+    previousVersionId: s(r.previous_version_id),
+    createdAt: String(r.created_at),
+  };
+}
+
+/** Agreement = no pair of assertions disagrees on a field BOTH assert.
+ *  NULL ("provider didn't say") never counts as divergence — an EOD
+ *  assertion with only the amount corroborates a richer dedicated-feed
+ *  assertion when the amounts match. */
+function caAgreement(
+  assertions: CaAssertionView[],
+): CorporateActionView["agreement"] {
+  const providers = [...new Set(assertions.map((a) => a.provider))];
+  if (assertions.length <= 1 || providers.length <= 1)
+    return { state: "single_source", providers, divergentFields: [] };
+  const divergentFields = new Set<string>();
+  for (let i = 0; i < assertions.length; i++)
+    for (let j = i + 1; j < assertions.length; j++) {
+      const a = assertions[i];
+      const b = assertions[j];
+      if (a.provider === b.provider) continue; // same provider ≠ cross-check
+      for (const f of caDivergentFields(a, b)) divergentFields.add(f);
+    }
+  return divergentFields.size
+    ? { state: "divergence", providers, divergentFields: [...divergentFields] }
+    : { state: "agreement", providers, divergentFields: [] };
+}
+
+async function caViewsForAction(
+  action: Record<string, unknown>,
+): Promise<CorporateActionView> {
+  const pool = getPool();
+  const [vers, asr, der] = await Promise.all([
+    pool.query(
+      `SELECT * FROM corporate_action_versions WHERE action_id=$1
+        ORDER BY version_no`,
+      [action.id],
+    ),
+    pool.query(
+      `SELECT * FROM corporate_action_assertions WHERE action_id=$1
+        ORDER BY provider, dataset, ex_date`,
+      [action.id],
+    ),
+    pool.query(
+      `SELECT d.*, a.provider, a.dataset
+         FROM corporate_action_derivations d
+         JOIN corporate_action_assertions a ON a.id = d.assertion_id
+        WHERE d.action_id=$1`,
+      [action.id],
+    ),
+  ]);
+  const assertions = asr.rows.map(caAssertionView);
+  const curRow = action.current_version_id
+    ? vers.rows.find((v) => v.id === action.current_version_id)
+    : null;
+  return {
+    id: String(action.id),
+    canonicalKey: String(action.canonical_key),
+    instrumentId: String(action.instrument_id),
+    actionType: String(action.action_type),
+    status: String(action.status),
+    currentVersion: curRow ? caVersionView(curRow) : null,
+    assertions,
+    derivations: der.rows.map((d) => ({
+      id: String(d.id),
+      actionVersionId: String(d.action_version_id),
+      assertionId: String(d.assertion_id),
+      observationId: String(d.observation_id),
+      role: d.role as CaDerivationView["role"],
+      provider: String(d.provider),
+      dataset: String(d.dataset),
+    })),
+    agreement: caAgreement(assertions),
+  };
+}
+
+/** All canonical actions for an instrument — instrument ref is a uuid or
+ *  its canonical_key ('instrument:apple:common_stock'). Never a ticker. */
+export async function getCorporateActionsForInstrument(
+  instrumentRef: string,
+): Promise<CorporateActionView[]> {
+  const pool = getPool();
+  const isUuid =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      instrumentRef,
+    );
+  const r = await pool.query(
+    `SELECT * FROM corporate_actions
+      WHERE instrument_id = ${isUuid ? "$1" : "(SELECT id FROM financial_instruments WHERE canonical_key=$1)"}
+      ORDER BY canonical_key`,
+    [instrumentRef],
+  );
+  return Promise.all(r.rows.map(caViewsForAction));
+}
+
+/** Actions visible through a listing — resolves listing → instrument so a
+ *  caller holding listing identity still lands on instrument-level truth. */
+export async function getCorporateActionsForListing(
+  listingRef: string,
+): Promise<CorporateActionView[]> {
+  const pool = getPool();
+  const isUuid =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      listingRef,
+    );
+  const l = await pool.query(
+    `SELECT instrument_id FROM instrument_listings
+      WHERE ${isUuid ? "id" : "canonical_key"} = $1`,
+    [listingRef],
+  );
+  if (!l.rows.length) return [];
+  return getCorporateActionsForInstrument(l.rows[0].instrument_id);
+}
+
+/** One action by uuid or canonical_key. */
+export async function getCorporateAction(
+  actionRef: string,
+): Promise<CorporateActionView | null> {
+  const pool = getPool();
+  const isUuid =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      actionRef,
+    );
+  const r = await pool.query(
+    `SELECT * FROM corporate_actions WHERE ${isUuid ? "id" : "canonical_key"}=$1`,
+    [actionRef],
+  );
+  if (!r.rows.length) return null;
+  return caViewsForAction(r.rows[0]);
 }

@@ -69,11 +69,16 @@ function setupDb() {
     )
     .replace("CREATE EXTENSION IF NOT EXISTS pgcrypto;", "")
     .replace(/-- == PG-ONLY:[\s\S]*?(?=COMMIT;)/g, "")
-    // pg-mem path can't run the 0023/0025 ALTERs (its auto constraint
-    // name differs from prod) — relax the provider CHECK textually
+    // pg-mem path can't run the 0023/0025/0026 ALTERs (its auto constraint
+    // name differs from prod) — relax the provider/price-basis CHECKs
+    // textually instead
     .replace(
       "'manual_verified', 'other'",
       "'manual_verified', 'alphavantage', 'tiingo', 'other'",
+    )
+    .replace(
+      "price_basis IN ('as_traded')",
+      "price_basis IN ('as_traded','provider_adjusted')",
     );
   db.public.registerFunction({
     name: "uuid_v7",
