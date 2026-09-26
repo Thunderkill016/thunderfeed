@@ -57,3 +57,37 @@ từ `kagisearch/kite-public` (MIT — xem `data/KITE_LICENSE.txt`), bổ sung
   được fact set, không khuyến nghị, không bịa (fail-closed → deterministic).
 - Điểm mù truyền thông: sự kiện chỉ một phía đưa được gắn nhãn, không giấu.
 - Source health luôn hiển thị — nguồn lỗi không âm thầm biến mất.
+
+## Bảo mật dữ liệu
+
+Browser **không** nói chuyện trực tiếp với Supabase Data API — không có
+`@supabase/supabase-js`, không có `NEXT_PUBLIC_SUPABASE_*`, không có anon key
+trong client. Mọi truy cập đi qua server:
+
+```
+Browser → Next.js API/server → `pg` (role postgres qua pooler) → DB
+Browser  ✗→  raw PostgREST tables
+```
+
+`db/migrations/0018_data_api_lockdown.sql` khoá raw surface:
+
+- `ENABLE ROW LEVEL SECURITY` trên mọi bảng `public`, **không policy** →
+  deny-by-default cho `anon`/`authenticated`.
+- `REVOKE ALL` table/sequence privileges khỏi `anon`, `authenticated`.
+- `ALTER DEFAULT PRIVILEGES FOR ROLE postgres` → bảng mới sinh ra không có
+  auto-grant; event trigger `tf_enable_rls_on_create` tự bật RLS.
+- `SET search_path` cố định trên `uuid_v7` (`pg_catalog, extensions`) và
+  `reject_history_mutation` (`pg_catalog`).
+
+**Invariant cho Instrument Master** (và mọi bảng tài chính sau này):
+`financial_instruments`, `instrument_versions`, `trading_venues`,
+`instrument_listings`, `listing_versions`, `*_identifiers` … phải sinh ra
+**không có anonymous raw-table access**. App access chỉ qua server API/read
+models. Nếu sau này cố ý cho client query trực tiếp, thêm RLS policies hẹp
+lúc đó — không tạo sẵn policy permissive.
+
+Audit production (fail non-zero nếu vi phạm):
+
+```sh
+npm run audit:db-security
+```

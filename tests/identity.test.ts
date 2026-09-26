@@ -765,3 +765,45 @@ test("V1.2 migrations: matched_slug + corrective superseding graph", () => {
     "no blanket entity_id repoint in the new seed",
   );
 });
+
+/* ---------- Data-API lockdown (0018) ---------- */
+
+test("0018: Data-API lockdown declares RLS + revoke + fixed search paths", () => {
+  const dir = fileURLToPath(new URL("../db/migrations", import.meta.url));
+  const m = readFileSync(`${dir}/0018_data_api_lockdown.sql`, "utf8");
+
+  // RLS deny-by-default on every current public table — count the
+  // ALTER TABLE ... ENABLE ROW LEVEL SECURITY statements, not just one
+  const rlsCount = (
+    m.match(/ALTER TABLE \w+\s+ENABLE ROW LEVEL SECURITY/g) ?? []
+  ).length;
+  assert.ok(rlsCount >= 25, `25+ tables locked, found ${rlsCount}`);
+
+  // grants revoked from the PostgREST roles, now and for future tables
+  assert.match(m, /REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public/);
+  assert.match(m, /FROM anon, authenticated/);
+  assert.match(m, /ALTER DEFAULT PRIVILEGES FOR ROLE postgres/);
+  assert.match(m, /REVOKE ALL ON TABLES FROM anon, authenticated/);
+
+  // auto-RLS event trigger so the invariant survives new tables
+  assert.match(m, /CREATE EVENT TRIGGER tf_enable_rls_on_create/);
+  assert.match(m, /pg_event_trigger_ddl_commands/);
+
+  // functions pinned to explicit search paths — uuid_v7 needs
+  // extensions.* (pgcrypto), the trigger needs pg_catalog only
+  assert.match(
+    m,
+    /ALTER FUNCTION public\.uuid_v7\(\)\s+SET search_path = pg_catalog, extensions/,
+  );
+  assert.match(
+    m,
+    /ALTER FUNCTION public\.reject_history_mutation\(\)\s+SET search_path = pg_catalog/,
+  );
+
+  // and critically: no permissive policy was created just to silence
+  // the advisor — deny-all is the intent
+  assert.ok(
+    !m.match(/CREATE POLICY/i),
+    "no RLS policies — raw access is denied, not filtered",
+  );
+});

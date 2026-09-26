@@ -1,0 +1,167 @@
+{
+  "generatedAt": "2026-09-26T08:30:05.661Z",
+  "tables": {
+    "total": 25,
+    "rlsEnabled": 25,
+    "rlsDisabled": []
+  },
+  "apiPrivileges": {
+    "anon": 0,
+    "authenticated": 0,
+    "readableOnly": 0
+  },
+  "functions": {
+    "total": 3,
+    "mutableSearchPath": []
+  },
+  "owners": [
+    "postgres"
+  ],
+  "detail": {
+    "tables": [
+      {
+        "relname": "changes",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "claim_evidence",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "claim_versions",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "claims",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "delivery_state",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "edition_snapshots",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "entities",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "entity_aliases",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "entity_identifiers",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "entity_relationships",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "event_embeddings",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "event_entities",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "event_evidence",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "event_versions",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "events",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "evidence_discoveries",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "evidence_documents",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "evidence_entities",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "evidence_lineage",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "evidence_metadata_observations",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "evidence_versions",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "ingest_cycles",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "ingest_source_stats",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "resolver_decisions",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      },
+      {
+        "relname": "sources",
+        "relrowsecurity": true,
+        "tableowner": "postgres"
+      }
+    ],
+    "grants": [],
+    "functions": [
+      {
+        "proname": "reject_history_mutation",
+        "proowner": "postgres",
+        "mutable": false
+      },
+      {
+        "proname": "tf_enable_rls_on_new_table",
+        "proowner": "postgres",
+        "mutable": false
+      },
+      {
+        "proname": "uuid_v7",
+        "proowner": "postgres",
+        "mutable": false
+      }
+    ]
+  }
+}
