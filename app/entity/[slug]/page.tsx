@@ -84,20 +84,32 @@ export default async function EntityPage({
           <div className="entity-related">
             <span className="entity-related-label">Quan hệ:</span>
             <div className="entity-chips">
-              {view.related.explicit.map((r) => (
-                <a
-                  key={`${r.direction}:${r.relationship}:${r.canonicalKey}`}
-                  href={`/entity/${encodeURIComponent(r.canonicalKey)}`}
-                  className="entity-chip org"
-                  title={`${r.name} — ${
-                    r.direction === "out"
-                      ? `${view.label} ${entityRelationshipLabel(r.relationship)} ${r.name}`
-                      : `${r.name} ${entityRelationshipLabel(r.relationship)} ${view.label}`
-                  }`}
-                >
-                  {entityRelationshipLabel(r.relationship)} · {r.name}
-                </a>
-              ))}
+              {view.related.explicit.map((r) => {
+                const text = `${entityRelationshipLabel(r.relationship)} · ${r.name}`;
+                const title = `${r.name} — ${
+                  r.direction === "out"
+                    ? `${view.label} ${entityRelationshipLabel(r.relationship)} ${r.name}`
+                    : `${r.name} ${entityRelationshipLabel(r.relationship)} ${view.label}`
+                }`;
+                return r.gazetteerSlug ? (
+                  <a
+                    key={`${r.direction}:${r.relationship}:${r.canonicalKey}`}
+                    href={`/entity/${r.gazetteerSlug}`}
+                    className="entity-chip org"
+                    title={title}
+                  >
+                    {text}
+                  </a>
+                ) : (
+                  <span
+                    key={`${r.direction}:${r.relationship}:${r.canonicalKey}`}
+                    className="entity-chip org static"
+                    title={`${title} (${r.canonicalKey})`}
+                  >
+                    {text}
+                  </span>
+                );
+              })}
             </div>
           </div>
         )}

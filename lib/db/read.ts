@@ -864,6 +864,10 @@ export async function getEntityEvents(slug: string): Promise<{
       canonicalKey: string;
       name: string;
       entityType: string;
+      /** gazetteer slug when the counterpart has one — the page links
+       *  through it since slug URLs are the proven route; null for
+       *  identity-only entities (brands, extras) which render as text */
+      gazetteerSlug: string | null;
       relationship: string;
       direction: "out" | "in";
     }[];
@@ -937,12 +941,14 @@ export async function getEntityEvents(slug: string): Promise<{
         o_key: string;
         o_name: string;
         o_type: string;
+        o_slug: string | null;
       }>(
-        `SELECT relationship_type, dir, o_key, o_name, o_type
+        `SELECT relationship_type, dir, o_key, o_name, o_type, o_slug
          FROM (
            SELECT r.relationship_type, 'out' AS dir, r.id,
                   o.canonical_key AS o_key, o.canonical_name AS o_name,
-                  o.entity_type AS o_type
+                  o.entity_type AS o_type,
+                  o.metadata->>'gazetteerSlug' AS o_slug
            FROM entity_relationships r
            JOIN entities o ON o.id = r.to_entity_id
            WHERE r.from_entity_id = $1
@@ -953,7 +959,8 @@ export async function getEntityEvents(slug: string): Promise<{
                WHERE supersedes_relationship_id IS NOT NULL)
            UNION ALL
            SELECT r.relationship_type, 'in' AS dir, r.id,
-                  o.canonical_key, o.canonical_name, o.entity_type
+                  o.canonical_key, o.canonical_name, o.entity_type,
+                  o.metadata->>'gazetteerSlug'
            FROM entity_relationships r
            JOIN entities o ON o.id = r.from_entity_id
            WHERE r.to_entity_id = $1
@@ -973,6 +980,7 @@ export async function getEntityEvents(slug: string): Promise<{
           o_key: string;
           o_name: string;
           o_type: string;
+          o_slug: string | null;
         }[],
       });
 
@@ -1059,6 +1067,7 @@ export async function getEntityEvents(slug: string): Promise<{
         canonicalKey: r.o_key,
         name: r.o_name,
         entityType: r.o_type,
+        gazetteerSlug: r.o_slug,
         relationship: r.relationship_type,
         direction: r.dir as "out" | "in",
       })),
