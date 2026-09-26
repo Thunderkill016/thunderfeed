@@ -1,0 +1,135 @@
+{
+  "generatedAt": "2026-09-26T20:07:47.721Z",
+  "runs": [],
+  "metrics": {
+    "providers": "alphavantage",
+    "datasets": [
+      "dividends",
+      "splits"
+    ],
+    "requested": 22,
+    "successful": 0,
+    "providerErrors": 22,
+    "rateLimitResponses": 22,
+    "unresolvedProviderSymbols": 0,
+    "observations": 22,
+    "assertions": 0,
+    "deduped": 0,
+    "asserted": 0,
+    "corroborated": 0,
+    "corrected": 0,
+    "conflicted": 0,
+    "errors": [
+      {
+        "listing": "listing:alphabet:class_a_common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:alphabet:class_a_common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:alphabet:class_c_common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:alphabet:class_c_common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:amazon:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:amazon:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:amd:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:amd:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:apple:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:apple:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:intel:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:intel:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:meta_platforms:class_a_common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:meta_platforms:class_a_common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:microsoft:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:microsoft:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:nvidia:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:nvidia:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:oracle:common_stock:xnys",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:oracle:common_stock:xnys",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:tesla:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      },
+      {
+        "listing": "listing:tesla:common_stock:xngs",
+        "kind": "rate_limit",
+        "detail": "We have detected your API key as [REDACTED] and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly re"
+      }
+    ]
+  }
+}

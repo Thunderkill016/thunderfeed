@@ -138,7 +138,7 @@ export default async function EntityPage({
                 return (
                   <a
                     key={fi.id}
-                    href={`/api/instruments/${fi.canonicalKey}`}
+                    href={`/instrument/${fi.canonicalKey.split(":").join("/")}`}
                     className="entity-chip org"
                     title={`${fi.canonicalKey} — ${listing ? `${listing.venue.mic} · ${fi.type}` : fi.type}`}
                   >

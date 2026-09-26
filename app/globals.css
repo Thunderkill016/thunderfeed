@@ -2162,3 +2162,21 @@ h1 .macro-code {
   color: var(--dom);
   font-style: normal;
 }
+
+/* corporate-action agreement badges */
+.ca-agree {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+.ca-agree.agreement {
+  color: var(--priv);
+  border-color: var(--priv);
+}
+.ca-agree.divergence {
+  color: var(--accent);
+  border-color: var(--accent);
+}
