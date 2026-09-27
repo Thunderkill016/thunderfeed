@@ -1372,14 +1372,23 @@ button {
   .masthead {
     padding: 12px 16px;
   }
-  /* nav can't shrink to fit — drop it to its own row and let it scroll */
+  /* nav can't shrink to fit — let the masthead wrap, cap the left group
+   * at viewport width so flex-basis:100% resolves to the visible row,
+   * and let the nav scroll horizontally inside it */
+  .masthead {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
   .masthead-left {
     flex-wrap: wrap;
     row-gap: 6px;
+    min-width: 0;
+    max-width: 100%;
   }
   .site-nav {
     display: flex;
     flex-basis: 100%;
+    min-width: 0;
     margin-left: 0;
     overflow-x: auto;
     scrollbar-width: none;
