@@ -33,7 +33,7 @@ export default async function SourcesPage() {
             ThunderFeed
           </a>
           <span className="edition-tag">NGUỒN</span>
-          <SiteNav />
+          <SiteNav active="sources" />
         </div>
         <div className="masthead-right">
           <span className="edition-date">

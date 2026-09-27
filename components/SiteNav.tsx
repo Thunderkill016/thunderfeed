@@ -3,7 +3,7 @@
 export default function SiteNav({
   active,
 }: {
-  active?: "news" | "macro" | "markets";
+  active?: "news" | "macro" | "markets" | "sources";
 }) {
   return (
     <nav className="site-nav" aria-label="Sản phẩm">
@@ -24,6 +24,12 @@ export default function SiteNav({
         className={active === "markets" ? "site-nav-item on" : "site-nav-item"}
       >
         Chứng khoán
+      </a>
+      <a
+        href="/sources"
+        className={active === "sources" ? "site-nav-item on" : "site-nav-item"}
+      >
+        Nguồn
       </a>
     </nav>
   );
