@@ -1262,3 +1262,56 @@ export function computeRatioBars(
   bars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
   return bars;
 }
+
+// ── signal → news context ────────────────────────────────────────────────
+// A signal without an explanation is a number. These helpers link a
+// delta's ticker to recent evidence-pipeline events by keyword — cheap
+// title matching, honestly labelled "có thể liên quan" in the UI.
+
+/** Fold a headline for matching: lowercase + strip combining marks, so
+ *  "vàng"/"VÀNG"/"vang" all compare equal. */
+export function foldSearchText(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+/** Keyword vocabulary per tracked ticker — folded, Vietnamese-first.
+ *  Equity tickers match themselves as whole words, so no entry needed. */
+const SIGNAL_KEYWORDS: Record<string, string[]> = {
+  SJC9999: ["vang", "sjc"],
+  "DOJI-GOLD": ["vang", "doji"],
+  DOJI: ["vang", "doji"],
+  "PNJ-GOLD": ["vang", "pnj"],
+  PNJ: ["vang", "pnj"],
+  BTMC: ["vang", "bao tin"],
+  XAUUSD: ["vang", "gold", "xau"],
+  "SJC-PREM": ["vang", "sjc"],
+  BTCUSDT: ["bitcoin", "btc"],
+  ETHUSDT: ["ethereum", "eth"],
+  SOLUSDT: ["solana"],
+  BNBUSDT: ["bnb"],
+  USDVND: ["ty gia", "usd", "do la", "dollar", "ngoai te"],
+  USDTVND: ["usdt", "ty gia"],
+  "USDT-GAP": ["usdt", "ty gia"],
+  VNINDEX: ["vn-index", "vnindex", "chung khoan"],
+  VN30: ["vn30", "chung khoan"],
+  HNXINDEX: ["hnx", "chung khoan"],
+};
+
+/** Folded keyword list for a ticker: its own symbol always matches as a
+ *  standalone word (VN equity headlines print tickers uppercase), plus
+ *  any vocabulary entry above. */
+export function signalKeywordsFor(ticker: string): string[] {
+  return [foldSearchText(ticker), ...(SIGNAL_KEYWORDS[ticker] ?? [])];
+}
+
+/** Whole-word/substring match — "vnm" must not hit inside "vnmode". */
+export function matchSignalKeywords(ticker: string, title: string): boolean {
+  const folded = foldSearchText(title);
+  return signalKeywordsFor(ticker).some((kw) => {
+    const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(folded);
+  });
+}

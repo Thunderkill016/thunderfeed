@@ -14,6 +14,9 @@ import {
   compareDailySeries,
   computePremiumBars,
   computeRatioBars,
+  foldSearchText,
+  matchSignalKeywords,
+  signalKeywordsFor,
   goldPremiumPct,
   isBigintString,
   isCalendarDate,
@@ -2078,4 +2081,33 @@ test("premium_shift honors per-series pp thresholds", async () => {
     highPp: 0.75,
   });
   assert.equal(r.shifted, true); // tight band fires
+});
+
+// ── signal → news keyword matching ────────────────────────────────────────
+
+test("foldSearchText: lowercase + strip diacritics", () => {
+  assert.equal(foldSearchText("VÀNG SJC Tăng Mạnh"), "vang sjc tang manh");
+  assert.equal(foldSearchText("TỶ GIÁ USD/VND"), "ty gia usd/vnd");
+});
+
+test("signalKeywordsFor: ticker itself always matches, plus vocabulary", () => {
+  assert.ok(signalKeywordsFor("VNM").includes("vnm"));
+  assert.ok(signalKeywordsFor("BTCUSDT").includes("bitcoin"));
+  assert.ok(signalKeywordsFor("SJC9999").includes("sjc"));
+});
+
+test("matchSignalKeywords: whole-word, diacritic-insensitive", () => {
+  // crypto vocabulary hits
+  assert.ok(matchSignalKeywords("BTCUSDT", "Bitcoin vượt 90.000 USD"));
+  assert.ok(matchSignalKeywords("BTCUSDT", "BTC lao dốc sau tin ETF"));
+  // gold board hits on folded "vang"
+  assert.ok(matchSignalKeywords("SJC9999", "Giá VÀNG trong nước quay đầu"));
+  // FX vocabulary
+  assert.ok(matchSignalKeywords("USDVND", "Tỷ giá trung tâm tăng 15 đồng"));
+  // equity ticker whole-word
+  assert.ok(matchSignalKeywords("VNM", "Cổ phiếu VNM tăng trần"));
+  // negatives: substring must not match inside a longer word
+  assert.ok(!matchSignalKeywords("VNM", "Nền tảng vnmode ra mắt"));
+  assert.ok(!matchSignalKeywords("BTCUSDT", "Giá vàng thế giới giảm"));
+  assert.ok(!matchSignalKeywords("BID", "Ngân hàng bidv báo lãi")); // "bidv" whole word ≠ "bid"
 });

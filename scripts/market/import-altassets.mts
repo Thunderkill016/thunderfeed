@@ -100,8 +100,8 @@ const ALT_UNIVERSE: AltEntry[] = [
     provider: "giavang",
     dataset: "gold_board_daily",
     priceBasis: "quoted",
-    materialMovePct: 1.5,
-    highMovePct: 3,
+    materialMovePct: 0.8,
+    highMovePct: 1.5,
     seriesMeta: { quote: "bid_ask", unit: "VND/lượng" },
   },
   {
@@ -121,8 +121,8 @@ const ALT_UNIVERSE: AltEntry[] = [
     provider: "giavang",
     dataset: "gold_board_daily",
     priceBasis: "quoted",
-    materialMovePct: 1.5,
-    highMovePct: 3,
+    materialMovePct: 0.8,
+    highMovePct: 1.5,
     seriesMeta: { quote: "bid_ask", unit: "VND/lượng" },
   },
   {
@@ -142,8 +142,8 @@ const ALT_UNIVERSE: AltEntry[] = [
     provider: "giavang",
     dataset: "gold_board_daily",
     priceBasis: "quoted",
-    materialMovePct: 1.5,
-    highMovePct: 3,
+    materialMovePct: 0.8,
+    highMovePct: 1.5,
     seriesMeta: { quote: "bid_ask", unit: "VND/lượng" },
   },
   {
@@ -163,8 +163,8 @@ const ALT_UNIVERSE: AltEntry[] = [
     provider: "giavang",
     dataset: "gold_board_daily",
     priceBasis: "quoted",
-    materialMovePct: 1.5,
-    highMovePct: 3,
+    materialMovePct: 0.8,
+    highMovePct: 1.5,
     seriesMeta: { quote: "bid_ask", unit: "VND/lượng" },
   },
   // ── World spot gold — the leg the SJC premium is measured against ──────
@@ -182,8 +182,8 @@ const ALT_UNIVERSE: AltEntry[] = [
     provider: "giavang",
     dataset: "gold_spot_daily",
     priceBasis: "quoted",
-    materialMovePct: 1.5,
-    highMovePct: 3,
+    materialMovePct: 0.8,
+    highMovePct: 1.5,
     seriesMeta: { quote: "single", unit: "USD/troy_oz" },
   },
   // ── Crypto majors (Binance spot) ───────────────────────────────────────
@@ -206,8 +206,8 @@ const ALT_UNIVERSE: AltEntry[] = [
     provider: "binance" as const,
     dataset: "klines_1d",
     priceBasis: "as_traded" as const,
-    materialMovePct: 8,
-    highMovePct: 15,
+    materialMovePct: 3,
+    highMovePct: 6,
     // volume_spike detector — a crypto session ≥3× its 20-day median
     // volume is signal (equities/indexes/quote boards don't opt in)
     seriesMeta: { volumeSpikeMult: 3, volumeSpikeLookback: 20 },
@@ -227,8 +227,8 @@ const ALT_UNIVERSE: AltEntry[] = [
     provider: "er_api",
     dataset: "reference_rate_daily",
     priceBasis: "quoted",
-    materialMovePct: 0.5,
-    highMovePct: 1,
+    materialMovePct: 0.3,
+    highMovePct: 0.6,
   },
   {
     // fawaz's dated tags carry real history — this series backfills the
@@ -246,8 +246,8 @@ const ALT_UNIVERSE: AltEntry[] = [
     provider: "fawaz",
     dataset: "v1_daily",
     priceBasis: "quoted",
-    materialMovePct: 0.5,
-    highMovePct: 1,
+    materialMovePct: 0.3,
+    highMovePct: 0.6,
   },
   {
     code: "USD",
@@ -263,8 +263,8 @@ const ALT_UNIVERSE: AltEntry[] = [
     provider: "vietcombank",
     dataset: "tygia",
     priceBasis: "quoted",
-    materialMovePct: 0.5,
-    highMovePct: 1,
+    materialMovePct: 0.3,
+    highMovePct: 0.6,
     seriesMeta: { quote: "bid_ask", unit: "VND" },
   },
   {

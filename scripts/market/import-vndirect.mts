@@ -834,6 +834,21 @@ for (const { listingId, listingKey, entry } of targets) {
       payload,
     });
     const seriesId = await getOrCreateVndirectSeries(c, listingId, listingKey);
+    /* series-level materiality policy — VN equities move in wide daily
+     * bands (HOSE ±7%, HNX ±10%, UPCoM ±15%), so a "material" signal is
+     * ~4% medium / 7% high (at-ceiling). Indices swing far less — a 1.5%
+     * index day is already a headline. */
+    await c.query(
+      `UPDATE market_series SET metadata = metadata || $2::jsonb WHERE id=$1`,
+      [
+        seriesId,
+        JSON.stringify(
+          entry.type === "index"
+            ? { materialMovePct: 1.5, highMovePct: 3 }
+            : { materialMovePct: 4, highMovePct: 7 },
+        ),
+      ],
+    );
     const r = await applyDailyBars(c, seriesId, parsed.bars, obsId);
     summary.imported++;
     console.log(
