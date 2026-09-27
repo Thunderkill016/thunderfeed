@@ -36,7 +36,10 @@ export default async function EntityIndex() {
   const Row = ({ r }: { r: (typeof rows)[number] }) => (
     <tr key={r.id}>
       <td className="macro-name">
-        <a className="macro-code" href={entityHref(r.canonicalKey) ?? "#"}>
+        <a
+          className="macro-code"
+          href={entityHref(r.canonicalKey) ?? undefined}
+        >
           {r.name}
         </a>
         <span className="macro-vi">{r.canonicalKey}</span>
@@ -95,7 +98,7 @@ export default async function EntityIndex() {
                   <td className="macro-name">
                     <a
                       className="macro-code"
-                      href={entityHref(r.canonicalKey) ?? "#"}
+                      href={entityHref(r.canonicalKey) ?? undefined}
                     >
                       {r.name}
                     </a>

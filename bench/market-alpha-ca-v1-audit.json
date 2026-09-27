@@ -3,10 +3,7 @@
   "runs": [],
   "metrics": {
     "providers": "alphavantage",
-    "datasets": [
-      "dividends",
-      "splits"
-    ],
+    "datasets": ["dividends", "splits"],
     "requested": 22,
     "successful": 0,
     "providerErrors": 22,

@@ -35,9 +35,7 @@
             "value": "BBG009S39JX6",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]
@@ -83,9 +81,7 @@
             "value": "BBG009S3NB30",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]
@@ -131,9 +127,7 @@
             "value": "BBG000BVPV84",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]
@@ -179,9 +173,7 @@
             "value": "BBG000BBQCY0",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]
@@ -227,9 +219,7 @@
             "value": "BBG000B9XRY4",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]
@@ -275,9 +265,7 @@
             "value": "BBG000C0G1D1",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]
@@ -323,9 +311,7 @@
             "value": "BBG000MM2P62",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]
@@ -371,9 +357,7 @@
             "value": "BBG000BPH459",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]
@@ -419,9 +403,7 @@
             "value": "BBG000BBJQV0",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]
@@ -467,9 +449,7 @@
             "value": "BBG000BQLTW7",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNYS"
-              ]
+              "mics": ["XNYS"]
             }
           }
         ]
@@ -515,9 +495,7 @@
             "value": "BBG000N9MNX3",
             "scope": "composite",
             "metadata": {
-              "mics": [
-                "XNGS"
-              ]
+              "mics": ["XNGS"]
             }
           }
         ]

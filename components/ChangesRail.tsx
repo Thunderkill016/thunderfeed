@@ -140,7 +140,7 @@ export default function ChangesRail({
               <a
                 key={item.d.id}
                 className={`change-card data ${mat}`}
-                href={href ?? "#"}
+                href={href ?? undefined}
               >
                 <span className={`change-badge ${mat}`}>
                   {DELTA_LABEL[item.d.kind] ?? "DATA"}

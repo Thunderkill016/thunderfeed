@@ -61,7 +61,9 @@ const summary = {
   }, {}),
 };
 
-const out = fileURLToPath(new URL("../../bench/entity-audit.json", import.meta.url));
+const out = fileURLToPath(
+  new URL("../../bench/entity-audit.json", import.meta.url),
+);
 mkdirSync(fileURLToPath(new URL("../../bench", import.meta.url)), {
   recursive: true,
 });

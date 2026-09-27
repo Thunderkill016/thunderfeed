@@ -296,7 +296,7 @@ export async function fetchHackerNews(): Promise<Article[]> {
             { signal: AbortSignal.timeout(5000) },
           );
           if (!itemRes.ok) return null;
-          const data = (await res.json()) as {
+          const data = (await itemRes.json()) as {
             title?: string;
             url?: string;
             score?: number;

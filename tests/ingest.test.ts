@@ -310,3 +310,54 @@ test("sec: genuinely quiet window (ok responses, no priority forms) → empty", 
     globalThis.fetch = realFetch;
   }
 });
+
+test("hacker news: item bodies parse into articles (item-res regression)", async () => {
+  const realFetch = globalThis.fetch;
+  const stories = [
+    {
+      id: 101,
+      title: "Show HN: a useful thing",
+      url: "https://example.com/a",
+      score: 42,
+      descendants: 7,
+      time: 1_700_000_000,
+    },
+    {
+      id: 102,
+      title: "Ask HN: why?",
+      score: 5,
+      descendants: 3,
+      time: 1_700_000_100,
+    },
+  ];
+  globalThis.fetch = ((input: RequestInfo | URL) => {
+    const u = String(input);
+    if (u.endsWith("topstories.json")) {
+      return Promise.resolve(
+        new Response(JSON.stringify(stories.map((s) => s.id)), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    }
+    const m = u.match(/item\/(\d+)\.json/);
+    const s = stories.find((x) => x.id === Number(m?.[1]));
+    return Promise.resolve(
+      s
+        ? new Response(JSON.stringify(s), { status: 200 })
+        : new Response("nf", { status: 404 }),
+    );
+  }) as never;
+  try {
+    const { fetchHackerNews } = await import("../lib/news");
+    const articles = await fetchHackerNews();
+    // Regression: parsing the topstories response object (wrong variable)
+    // produced zero articles even though both items were healthy.
+    assert.equal(articles.length, 2);
+    assert.equal(articles[0].title, "Show HN: a useful thing");
+    assert.equal(articles[1].url, "https://news.ycombinator.com/item?id=102");
+    assert.equal(articles[0].ingest?.discoveredVia, "hn");
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});

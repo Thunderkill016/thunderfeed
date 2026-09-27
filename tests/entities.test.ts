@@ -31,11 +31,7 @@ test("entityLabel: entity_ prefix and unknown slugs degrade cleanly", () => {
   assert.equal(entityLabel("some_thing_new"), "Some Thing New");
 });
 
-import {
-  canonicalEntity,
-  entityKind,
-  gazetteerEntries,
-} from "../lib/entities";
+import { canonicalEntity, entityKind, gazetteerEntries } from "../lib/entities";
 
 test("entityKind: gazetteer slugs resolve to the curated kind", () => {
   // countries & localities default to place

@@ -3,10 +3,7 @@
   "runs": [],
   "metrics": {
     "providers": "tiingo",
-    "datasets": [
-      "corporate_actions_distributions",
-      "corporate_actions_splits"
-    ],
+    "datasets": ["corporate_actions_distributions", "corporate_actions_splits"],
     "requested": 1,
     "successful": 0,
     "providerErrors": 0,

@@ -506,3 +506,20 @@ test("event_entities junction: create, accumulate on merge, entity reads", async
     "watching 'japan' surfaces this event's changes",
   );
 });
+
+test("pgSsl: loopback plaintext, supabase pinned-CA verify, unknown remote rejects insecure", async () => {
+  const { pgSsl, SUPABASE_POOLER_CA } = await import("../lib/db/supabaseCa");
+  // Local dev: no TLS at all
+  assert.equal(pgSsl("postgres://x@127.0.0.1:5432/db"), undefined);
+  assert.equal(pgSsl("postgres://x@localhost/db"), undefined);
+  // Supabase pooler/host: verify-full with the pinned CA chain — never
+  // rejectUnauthorized:false (that was the MITM-hole config).
+  const sb = pgSsl("postgres://x@aws-0-x.pooler.supabase.com:6543/postgres");
+  assert.equal(sb?.rejectUnauthorized, true);
+  assert.equal(sb?.ca, SUPABASE_POOLER_CA);
+  const sb2 = pgSsl("postgres://x@db.abcdef.supabase.co/postgres");
+  assert.equal(sb2?.rejectUnauthorized, true);
+  // Unknown remote host: still verify (fail closed, no silent plaintext)
+  const other = pgSsl("postgres://x@db.example.com/postgres");
+  assert.equal(other?.rejectUnauthorized, true);
+});

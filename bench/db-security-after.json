@@ -19,9 +19,7 @@
     "denied": 8,
     "failed": []
   },
-  "owners": [
-    "postgres"
-  ],
+  "owners": ["postgres"],
   "detail": {
     "tables": [
       {

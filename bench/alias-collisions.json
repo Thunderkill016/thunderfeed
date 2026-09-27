@@ -5,10 +5,7 @@
   "collisions": [
     {
       "normalized": "nha trang",
-      "entities": [
-        "country:us",
-        "place:nha_trang"
-      ],
+      "entities": ["country:us", "place:nha_trang"],
       "surfaces": [
         {
           "alias": "nhà trắng",

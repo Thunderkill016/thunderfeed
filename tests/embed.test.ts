@@ -38,7 +38,9 @@ test("embedArticles: daily-quota 429 (retry in hours) returns fast, no hang", as
   globalThis.fetch = (() =>
     Promise.resolve(
       new Response(
-        JSON.stringify({ error: { message: "Quota exceeded, retry in 3600s" } }),
+        JSON.stringify({
+          error: { message: "Quota exceeded, retry in 3600s" },
+        }),
         { status: 429, headers: { "Content-Type": "application/json" } },
       ),
     )) as never;
@@ -63,7 +65,9 @@ test("embedArticles: quota breaker makes subsequent calls return instantly", asy
     calls++;
     return Promise.resolve(
       new Response(
-        JSON.stringify({ error: { message: "Quota exceeded, retry in 3600s" } }),
+        JSON.stringify({
+          error: { message: "Quota exceeded, retry in 3600s" },
+        }),
         { status: 429, headers: { "Content-Type": "application/json" } },
       ),
     );

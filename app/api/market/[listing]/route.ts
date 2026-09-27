@@ -22,7 +22,12 @@ export async function GET(
 ) {
   if (!dbEnabled()) return NextResponse.json(null, { status: 404 });
   const { listing } = await params;
-  const key = decodeURIComponent(listing);
+  let key: string;
+  try {
+    key = decodeURIComponent(listing);
+  } catch {
+    return NextResponse.json(null, { status: 404 });
+  }
   const isUuid =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(key);
   const isKey = /^listing:[a-z0-9_:]{1,160}$/.test(key);

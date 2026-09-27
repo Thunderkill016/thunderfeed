@@ -31,7 +31,9 @@ try {
 const SOURCE = process.env.SOURCE_DATABASE_URL ?? process.env.DATABASE_URL;
 const TARGET = process.env.TARGET_DATABASE_URL;
 if (!SOURCE || !TARGET) {
-  console.error("need SOURCE_DATABASE_URL|DATABASE_URL and TARGET_DATABASE_URL");
+  console.error(
+    "need SOURCE_DATABASE_URL|DATABASE_URL and TARGET_DATABASE_URL",
+  );
   process.exit(1);
 }
 
@@ -110,7 +112,9 @@ async function main() {
         src.query(copy.to(`COPY "${t}" TO STDOUT`)),
         dst.query(copy.from(`COPY "${t}" FROM STDIN`)),
       );
-      console.log(`  ${t}: ${n} rows in ${((Date.now() - started) / 1000).toFixed(1)}s`);
+      console.log(
+        `  ${t}: ${n} rows in ${((Date.now() - started) / 1000).toFixed(1)}s`,
+      );
     }
     await dst.query(`SET session_replication_role = 'origin'`);
 

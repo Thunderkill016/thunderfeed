@@ -1,0 +1,45 @@
+name: verify
+
+# Quality gates that the edition workflow deliberately doesn't carry
+# (it only builds the edition). Typecheck + node:test suite + prod build
+# run on every PR/push; the live-DB security audit only runs on main
+# where the TF_DATABASE_URL secret is available — fork PRs see it skip.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run typecheck:scripts
+      - run: npm test
+      - run: npm run build
+      # Supply-chain tripwire: report high-severity known vulns. Kept
+      # non-blocking — transitives flap faster than upstream patches.
+      - run: npm audit --audit-level=high || true
+
+  db-security:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run audit:db-security
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}

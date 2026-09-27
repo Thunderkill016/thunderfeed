@@ -79,9 +79,7 @@ export default async function EventPage({
             ))}
           </div>
         )}
-        {view.summary && (
-          <p className="macro-detail-latest">{view.summary}</p>
-        )}
+        {view.summary && <p className="macro-detail-latest">{view.summary}</p>}
       </section>
 
       <EventIntel view={view} />

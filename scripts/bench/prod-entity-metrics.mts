@@ -1,11 +1,12 @@
 import { Client } from "pg";
+import { SUPABASE_POOLER_CA } from "../../lib/db/supabaseCa";
 const client = new Client({
   host: "aws-0-ap-southeast-1.pooler.supabase.com",
   port: 6543,
   database: "postgres",
   user: "postgres.vwpudirxzaxhbczknaan",
   password: process.env.SUPABASE_DB_PASS,
-  ssl: { rejectUnauthorized: false },
+  ssl: { rejectUnauthorized: true, ca: SUPABASE_POOLER_CA },
 });
 await client.connect();
 const q = async (s: string) => (await client.query(s)).rows;

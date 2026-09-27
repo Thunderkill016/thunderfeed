@@ -82,19 +82,47 @@ test("validateClaims rejects malformed payloads", () => {
 
 test("claimSalience: protocol trivia demotes to peripheral", () => {
   const trivia = [
-    { predicate: "an_trua_lam_viec", label: "ăn trưa làm việc với Chủ tịch Thượng viện", valueType: "text" as const },
-    { predicate: "trang_phuc", label: "Bành Lệ Viên mặc trang phục tông màu xám", valueType: "text" as const },
-    { predicate: "le_don", label: "đeo găng tay da khi đón tại sân bay", valueType: "text" as const },
-    { predicate: "handshake", label: "handshake on the red carpet", valueType: "text" as const },
+    {
+      predicate: "an_trua_lam_viec",
+      label: "ăn trưa làm việc với Chủ tịch Thượng viện",
+      valueType: "text" as const,
+    },
+    {
+      predicate: "trang_phuc",
+      label: "Bành Lệ Viên mặc trang phục tông màu xám",
+      valueType: "text" as const,
+    },
+    {
+      predicate: "le_don",
+      label: "đeo găng tay da khi đón tại sân bay",
+      valueType: "text" as const,
+    },
+    {
+      predicate: "handshake",
+      label: "handshake on the red carpet",
+      valueType: "text" as const,
+    },
   ];
   for (const c of trivia) assert.equal(claimSalience(c), "peripheral", c.label);
 });
 
 test("claimSalience: state-changing facts stay core", () => {
   const core = [
-    { predicate: "deaths", label: "20 người thiệt mạng", valueType: "number" as const },
-    { predicate: "policy_approved", label: "Quốc hội thông qua luật", valueType: "text" as const },
-    { predicate: "quan_he", label: "nâng cấp quan hệ lên Đối tác chiến lược", valueType: "text" as const },
+    {
+      predicate: "deaths",
+      label: "20 người thiệt mạng",
+      valueType: "number" as const,
+    },
+    {
+      predicate: "policy_approved",
+      label: "Quốc hội thông qua luật",
+      valueType: "text" as const,
+    },
+    {
+      predicate: "quan_he",
+      label: "nâng cấp quan hệ lên Đối tác chiến lược",
+      valueType: "text" as const,
+    },
   ];
   for (const c of core) assert.equal(claimSalience(c), "core", c.label);
 });

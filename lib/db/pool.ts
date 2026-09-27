@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { pgSsl } from "./supabaseCa";
 
 /**
  * Single shared pool. DATABASE_URL points at Postgres (Supabase included).
@@ -17,13 +18,15 @@ export function getPool(): Pool {
     throw new Error("DATABASE_URL is not set — db layer disabled");
   }
   const url = process.env.DATABASE_URL;
-  // SSL only for remote hosts — loopback Postgres speaks plain TCP.
-  const isLocal = /(?:localhost|127\.|::1|\[::1\])/.test(url);
   pool ??= new Pool({
     connectionString: url,
-    ssl: isLocal ? undefined : { rejectUnauthorized: false },
+    ssl: pgSsl(url),
     max: 4,
   });
+  // an idle client's connection error must not take the process down
+  pool.on("error", (err) =>
+    console.error("[pg pool] idle client error:", err.message),
+  );
   return pool;
 }
 

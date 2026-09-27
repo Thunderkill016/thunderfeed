@@ -3,10 +3,12 @@
  * (append-only, content-hash deduped) before any derived row is written. */
 import { createHash } from "node:crypto";
 import pg from "pg";
+import { pgSsl } from "../../lib/db/supabaseCa";
 
 export function connectDb(url = process.env.DATABASE_URL): pg.Client {
   if (!url) throw new Error("DATABASE_URL required");
-  const c = new pg.Client({ connectionString: url });
+  // no ssl option → plaintext on remote hosts; pgSsl pins the pooler CA
+  const c = new pg.Client({ connectionString: url, ssl: pgSsl(url) });
   const orig = c.connect.bind(c);
   (c as { connect: () => Promise<pg.Client> }).connect = async () => {
     await orig();

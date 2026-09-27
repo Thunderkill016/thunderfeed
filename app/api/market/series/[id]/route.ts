@@ -19,7 +19,15 @@ export async function GET(
 ) {
   if (!dbEnabled()) return NextResponse.json(null, { status: 404 });
   const { id } = await params;
-  const key = decodeURIComponent(id);
+  let key: string;
+  try {
+    key = decodeURIComponent(id);
+  } catch {
+    return NextResponse.json(null, { status: 404 });
+  }
+  // series uuid or series:canonical_key — bound the shape before querying
+  if (!/^[0-9a-f-]{36}$|^series:[a-z0-9_:.-]{1,200}$/i.test(key))
+    return NextResponse.json(null, { status: 404 });
   const series = await getMarketSeries(key);
   if (!series) return NextResponse.json(null, { status: 404 });
 

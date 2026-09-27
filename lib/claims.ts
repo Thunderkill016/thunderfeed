@@ -322,7 +322,11 @@ export function validateExtractedClaims(
       assertedBy: source,
       articleId: article?.id,
       method: "model",
-      salience: claimSalience({ predicate, label, valueType: typeof value === "number" ? "number" : "text" }),
+      salience: claimSalience({
+        predicate,
+        label,
+        valueType: typeof value === "number" ? "number" : "text",
+      }),
     });
   }
   return out;
