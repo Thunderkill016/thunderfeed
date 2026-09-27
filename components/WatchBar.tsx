@@ -27,7 +27,11 @@ export function loadWatch(): WatchList {
 }
 
 export function saveWatch(w: WatchList) {
-  localStorage.setItem(WATCH_KEY, JSON.stringify(w));
+  const json = JSON.stringify(w);
+  localStorage.setItem(WATCH_KEY, json);
+  /* mirror to a cookie so the radar homepage can score relevance
+   * server-side — localStorage alone never reaches SSR */
+  document.cookie = `tf_watch=${encodeURIComponent(json)}; path=/; max-age=31536000; samesite=lax`;
 }
 
 /** URL `?e=a,b&t=x,y` overrides storage so a link is shareable. */

@@ -33,13 +33,13 @@ export default function SiteNav({
         href="/macro"
         className={active === "macro" ? "site-nav-item on" : "site-nav-item"}
       >
-        Tín hiệu
+        Vĩ mô
       </a>
       <a
         href="/instrument"
         className={active === "markets" ? "site-nav-item on" : "site-nav-item"}
       >
-        Dữ liệu
+        Tài sản
       </a>
       <a
         href="/search"

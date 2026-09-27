@@ -691,6 +691,7 @@ export interface DataDeltaView {
   entityKey: string | null;
   actionType: string | null;
   instrumentKey: string | null;
+  ticker: string | null;
 }
 
 export async function getLatestDataDeltas(
@@ -708,12 +709,14 @@ export async function getLatestDataDeltas(
     entity_key: string | null;
     action_type: string | null;
     instrument_key: string | null;
+    ticker: string | null;
   }>(
     `SELECT d.id, d.kind, d.materiality, d.summary, d.detected_at,
             s.canonical_key AS series_key, s.series_code,
             e.canonical_key AS entity_key,
             a.action_type,
-            COALESCE(i.canonical_key, fi.canonical_key) AS instrument_key
+            COALESCE(i.canonical_key, fi.canonical_key) AS instrument_key,
+            lv.ticker
        FROM data_deltas d
        LEFT JOIN macro_points p ON p.id = d.point_id
        LEFT JOIN macro_series s ON s.id = p.series_id
@@ -724,6 +727,7 @@ export async function getLatestDataDeltas(
        LEFT JOIN market_series ms ON ms.id = mp.series_id
        LEFT JOIN instrument_listings il ON il.id = ms.listing_id
        LEFT JOIN financial_instruments fi ON fi.id = il.instrument_id
+       LEFT JOIN listing_versions lv ON lv.id = il.current_version_id
       ORDER BY d.detected_at DESC
       LIMIT $1`,
     [limit],
@@ -739,6 +743,7 @@ export async function getLatestDataDeltas(
     entityKey: r.entity_key,
     actionType: r.action_type,
     instrumentKey: r.instrument_key,
+    ticker: r.ticker,
   }));
 }
 

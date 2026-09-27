@@ -5,7 +5,7 @@
  * resolver uses — never against headline heuristics. Pure functions so the
  * ranking is unit-testable and identical on server and client.
  */
-import type { StoryCluster, Topic, Edition } from "./model";
+import { topics, type StoryCluster, type Topic, type Edition } from "./model";
 import { extractEntities } from "./entities";
 
 export interface WatchList {
@@ -34,6 +34,28 @@ export function parseWatch(searchParams: URLSearchParams): WatchList {
     .map((s) => s.trim())
     .filter(Boolean) as Topic[];
   return { entities, topics };
+}
+
+/** Cookie twin of parseWatch — the client mirrors localStorage into
+ *  `tf_watch` so SSR can score relevance before hydration. Malformed
+ *  input degrades to an empty watch, never an error. */
+export function watchFromCookie(raw: string | undefined): WatchList {
+  if (!raw) return { entities: [], topics: [] };
+  try {
+    const j = JSON.parse(decodeURIComponent(raw));
+    return {
+      entities: Array.isArray(j.entities)
+        ? j.entities.filter((s: unknown) => typeof s === "string")
+        : [],
+      topics: Array.isArray(j.topics)
+        ? j.topics.filter((s: unknown): s is Topic =>
+            topics.some((t) => t.id === s),
+          )
+        : [],
+    };
+  } catch {
+    return { entities: [], topics: [] };
+  }
 }
 
 export function emptyWatch(w: WatchList): boolean {

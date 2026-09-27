@@ -1,56 +1,38 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { dbEnabled } from "../lib/db/pool";
 import {
   getGoldPremium,
-  getMarketDeltas,
+  getLatestDataDeltas,
   getRadarBoard,
   getRecentEvents,
-  getSignalOutcomeStats,
   type RadarSeriesRow,
 } from "../lib/db/read";
-import { matchSignalKeywords } from "../lib/market";
+import { buildRadarFeed } from "../lib/radar";
+import { emptyWatch, watchFromCookie } from "../lib/relevance";
+import { extractEntities } from "../lib/entities";
+import { timeAgo } from "../lib/model";
 import SiteNav from "../components/SiteNav";
+import RadarWatch from "../components/RadarWatch";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "ThunderFeed — Radar tín hiệu" };
+export const metadata: Metadata = { title: "ThunderFeed — Radar cá nhân" };
 
-/** Board ordering for a VN investor — domestic gold leads because the
- *  SJC/world spread is the differentiated signal, then VN equities,
- *  crypto majors, FX, indices, anything else. */
-const GROUP_ORDER = [
-  "commodity",
-  "equity",
-  "crypto",
-  "fx",
-  "index",
-  "fixed_income",
-];
-const KIND_VI: Record<string, string> = {
-  market_move: "GIÁ ĐỘT BIẾN",
-  premium_shift: "CHÊNH DỊCH",
-  volume_spike: "VOL ĐỘT BIẾN",
-};
+/** One morning screen answering: "since I last looked, what changed that
+ *  I need to know, why does it matter to me, and where's the evidence?"
+ *  Events, market deltas and macro deltas are all just RadarItems in one
+ *  score-sorted feed — the board below is context, not the product. */
 
-const GROUP_VI: Record<string, string> = {
-  commodity: "VÀNG & HÀNG HÓA",
-  equity: "CỔ PHIẾU",
-  crypto: "CRYPTO",
-  fx: "TỶ GIÁ",
-  index: "CHỈ SỐ",
-  fixed_income: "TRÁI PHIẾU",
-};
-
-function fmt(v: string | number | null, currency?: string | null): string {
+function fmt(v: string | number | null): string {
   if (v == null) return "—";
   const n = typeof v === "string" ? Number(v) : v;
   if (!Number.isFinite(n)) return "—";
   const abs = Math.abs(n);
   const digits = abs >= 1000 ? 0 : abs >= 10 ? 2 : 4;
-  const s = n.toLocaleString("en-US", {
+  return n.toLocaleString("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: digits,
   });
-  return currency ? `${s} ${currency}` : s;
 }
 
 function Pct({ v }: { v: number | null }) {
@@ -65,60 +47,67 @@ function Pct({ v }: { v: number | null }) {
   );
 }
 
-function groupRows(rows: RadarSeriesRow[]) {
-  const byClass = new Map<string, RadarSeriesRow[]>();
-  for (const r of rows) {
-    // indices carry asset_class 'equity' in the instrument master —
-    // instrument_type is the honest grouping for the board
-    const k =
-      r.instrumentType === "index" ? "index" : (r.assetClass ?? "other");
-    byClass.set(k, [...(byClass.get(k) ?? []), r]);
+/** The compact context strip — a handful of series a VN investor checks
+ *  first, picked by instrument slug, not a 58-row dump. */
+const STRIP_PICKS: { slug: string; label: string; provider?: string }[] = [
+  { slug: "vang_sjc_9999", label: "SJC" },
+  { slug: "xau_usd_spot", label: "XAU/USD" },
+  { slug: "bitcoin", label: "BTC" },
+  { slug: "ethereum", label: "ETH" },
+  { slug: "usd_vnd", label: "USD/VND", provider: "vietcombank" },
+  { slug: "usdt_vnd", label: "USDT P2P" },
+  { slug: "vnindex", label: "VN-Index" },
+];
+
+function pickStrip(board: RadarSeriesRow[]): RadarSeriesRow[] {
+  const out: RadarSeriesRow[] = [];
+  for (const p of STRIP_PICKS) {
+    const hit = board.find(
+      (r) =>
+        r.instrumentKey.includes(p.slug) &&
+        (!p.provider || r.provider === p.provider),
+    );
+    if (hit) out.push(hit);
   }
-  const keys = [...byClass.keys()].sort((a, b) => {
-    const ia = GROUP_ORDER.indexOf(a);
-    const ib = GROUP_ORDER.indexOf(b);
-    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
-  });
-  return keys.map((k) => ({ key: k, rows: byClass.get(k)! }));
+  return out;
+}
+
+/** Frequency-ranked entity suggestions for the watch editor — the real
+ *  entities currently moving through the feed, not a static taxonomy. */
+function suggestedEntities(
+  events: { title: string }[],
+  watchEntities: string[],
+  cap = 12,
+): string[] {
+  const freq = new Map<string, number>();
+  for (const e of events)
+    for (const slug of extractEntities(e.title))
+      freq.set(slug, (freq.get(slug) ?? 0) + 1);
+  return [...freq.entries()]
+    .filter(([s]) => !watchEntities.includes(s))
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, cap)
+    .map(([s]) => s);
 }
 
 export default async function RadarPage() {
-  const [board, premium, stats, marketDeltas, events] = dbEnabled()
+  const jar = await cookies();
+  const watch = watchFromCookie(jar.get("tf_watch")?.value);
+  const nowMs = Date.now();
+  /* The homepage degrades to an empty radar rather than a 500 when the
+   *  DB is unreachable — each lane fails independently. */
+  const [board, premium, deltas, events] = dbEnabled()
     ? await Promise.all([
-        getRadarBoard(),
-        getGoldPremium(),
-        getSignalOutcomeStats(),
-        getMarketDeltas(15),
-        getRecentEvents(250),
+        getRadarBoard().catch(() => [] as RadarSeriesRow[]),
+        getGoldPremium().catch(() => null),
+        getLatestDataDeltas(40).catch(() => [] as never[]),
+        getRecentEvents(250).catch(() => [] as never[]),
       ])
-    : [[], null, [], [], []];
-  const groups = groupRows(board);
-  const resolved = stats.filter((s) => s.status === "resolved");
-  const pending = stats
-    .filter((s) => s.status === "pending")
-    .reduce((a, s) => a + s.count, 0);
-
-  /* Morning-brief strip: what moved in the last 24h. detected_at is when
-   * the delta was minted, so a rerun of an old session can't inflate
-   * the count. */
-  const dayAgo = Date.now() - 24 * 3600 * 1000;
-  const deltas24h = marketDeltas.filter(
-    (d) => new Date(d.detectedAt).getTime() >= dayAgo,
-  );
-  const high24h = deltas24h.filter((d) => d.materiality === "high").length;
-
-  /* Signal → news context: keyword-match each delta's ticker against
-   * recent pipeline events. Cheap title matching — the UI labels it
-   * "có thể liên quan", never a claim of causality. */
-  const relatedByDelta = new Map<string, { id: string; title: string }[]>();
-  for (const d of marketDeltas) {
-    if (!d.ticker) continue;
-    const hits = events
-      .filter((e) => matchSignalKeywords(d.ticker!, e.title))
-      .slice(0, 2)
-      .map((e) => ({ id: e.id, title: e.title }));
-    if (hits.length) relatedByDelta.set(d.id, hits);
-  }
+    : [[], null, [], []];
+  const feed = buildRadarFeed(deltas, events, watch, nowMs, 14);
+  const strip = pickStrip(board);
+  const suggested = suggestedEntities(events, watch.entities);
+  const personalized = !emptyWatch(watch);
 
   return (
     <main className="edition macro-page">
@@ -127,152 +116,112 @@ export default async function RadarPage() {
           <a className="wordmark" href="/">
             ThunderFeed
           </a>
-          <span className="edition-tag">RADAR TÍN HIỆU</span>
+          <span className="edition-tag">RADAR CÁ NHÂN</span>
           <SiteNav active="radar" />
         </div>
         <div className="masthead-right">
           <span className="edition-date">
-            {board.length} series · {groups.length} nhóm tài sản
+            {feed.length} thay đổi đáng chú ý
           </span>
         </div>
       </header>
 
-      <section className="macro-group">
-        <h2 className="macro-group-title">
-          24h qua
-          <span className="macro-units">
-            {deltas24h.length} tín hiệu mới
-            {high24h > 0 ? ` · ${high24h} mạnh` : ""} · {events.length} sự kiện
-            đang theo dõi · <a href="/edition">bản tin</a>
-          </span>
-        </h2>
-      </section>
+      <RadarWatch watch={watch} suggested={suggested} />
 
       <section className="macro-group">
         <h2 className="macro-group-title">
-          Tín hiệu gần đây
-          <span className="macro-units">{marketDeltas.length} delta</span>
+          Từ lần xem trước
+          <span className="macro-units">
+            {feed.length} thay đổi
+            {personalized ? " · xếp theo radar của bạn" : " · chưa cá nhân hóa"}
+          </span>
         </h2>
-        {marketDeltas.length === 0 ? (
+        {feed.length === 0 ? (
           <p className="macro-units" style={{ padding: "0.6rem 0" }}>
-            Chưa có tín hiệu nào — delta chỉ mint khi một phiên vượt ngưỡng
-            materiality của series (vàng ±0.8%, crypto ±3%, FX ±0.3%, premium
-            ±0.75pt).
+            Chưa có thay đổi nào đủ đáng chú ý — feed chỉ hiện thứ vượt ngưỡng
+            điểm (magnitude × abnormality × relevance × freshness × evidence).
           </p>
         ) : (
-          <table className="macro-table">
-            <tbody>
-              {marketDeltas.map((d) => {
-                const related = relatedByDelta.get(d.id) ?? [];
-                return (
-                  <tr key={d.id}>
-                    <td className="macro-name">
-                      <span className="macro-code">
-                        {KIND_VI[d.kind] ?? d.kind}
-                      </span>
-                      {d.ticker && <span className="macro-vi">{d.ticker}</span>}
-                      {related.map((r) => (
-                        <span className="macro-vi" key={r.id}>
-                          tin có thể liên quan:{" "}
-                          <a href={`/event/${r.id}`}>{r.title}</a>
-                        </span>
-                      ))}
-                    </td>
-                    <td className="macro-code">{d.summary}</td>
-                    <td className="macro-date">{d.sessionDate ?? "—"}</td>
-                    <td className="macro-units">{d.materiality}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          feed.map((i) => (
+            <article className="radar-item" key={`${i.kind}-${i.id}`}>
+              <div className="radar-item-head">
+                <span className="macro-code">{i.badge}</span>
+                <span className={`change-badge ${i.severity}`}>
+                  {i.severity === "high"
+                    ? "MẠNH"
+                    : i.severity === "medium"
+                      ? "VỪA"
+                      : "nhẹ"}
+                </span>
+                <span className="macro-date">
+                  {timeAgo(i.detectedAt, nowMs)}
+                </span>
+                {i.matched.length > 0 && (
+                  <span className="watch-matched">
+                    bạn theo dõi: {i.matched.join(" · ")}
+                  </span>
+                )}
+              </div>
+              <a className="radar-item-title" href={i.href}>
+                {i.title}
+              </a>
+              <div className="macro-units radar-item-ev">
+                {i.evidence.join(" · ")}
+                {i.related.length > 0 && " · tin có thể liên quan:"}
+                {i.related.map((r) => (
+                  <span key={r.id}>
+                    {" "}
+                    <a href={`/event/${r.id}`}>{r.title}</a>;
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))
         )}
       </section>
 
-      {premium && (
+      {(strip.length > 0 || premium) && (
         <section className="macro-group">
           <h2 className="macro-group-title">
-            Chênh lệch SJC − thế giới
+            Thị trường
             <span className="macro-units">
-              quy đổi VND/lượng · 1 lượng = 1.2057 oz
+              <a href="/instrument">bảng đầy đủ →</a>
             </span>
           </h2>
           <table className="macro-table">
             <tbody>
-              <tr>
-                <td className="macro-name">
-                  SJC bán ra
-                  <span className="macro-vi">{premium.sjcDate}</span>
-                </td>
-                <td className="num macro-value">{fmt(premium.sjcSell)} ₫</td>
-                <td className="macro-name" rowSpan={3}>
-                  Chênh lệch
-                  <span className="macro-vi">
+              {premium && (
+                <tr>
+                  <td className="macro-name">
+                    Premium SJC − TG
+                    <span className="macro-vi">chênh lệch VND/lượng</span>
+                  </td>
+                  <td className="num macro-value">
                     {premium.premiumPct >= 0 ? "+" : ""}
                     {premium.premiumPct.toFixed(2)}%
-                  </span>
-                </td>
-                <td className="num macro-value" rowSpan={3}>
-                  {fmt(premium.spreadVnd)} ₫
-                </td>
-              </tr>
-              <tr>
-                <td className="macro-name">
-                  Thế giới quy đổi
-                  <span className="macro-vi">
-                    XAU {fmt(premium.xauUsd)} USD/oz ({premium.xauDate}) ×
-                    USDVND {fmt(premium.usdVnd)} ({premium.fxDate})
-                  </span>
-                </td>
-                <td className="num macro-value">
-                  {fmt(Math.round(premium.worldVndLuong))} ₫
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      )}
-
-      {groups.map((g) => (
-        <section className="macro-group" key={g.key}>
-          <h2 className="macro-group-title">
-            {GROUP_VI[g.key] ?? g.key.toUpperCase()}
-            <span className="macro-units">{g.rows.length} series</span>
-          </h2>
-          <table className="macro-table">
-            <thead>
-              <tr>
-                <th>Tài sản</th>
-                <th>Mã</th>
-                <th className="num">Giá mới nhất</th>
-                <th className="num">± phiên</th>
-                <th>Phiên</th>
-                <th>Nguồn</th>
-              </tr>
-            </thead>
-            <tbody>
-              {g.rows.map((r) => (
+                  </td>
+                  <td className="num macro-units">
+                    {fmt(Math.round(premium.spreadVnd))} ₫
+                  </td>
+                </tr>
+              )}
+              {strip.map((r) => (
                 <tr key={r.seriesId}>
                   <td className="macro-name">
                     <a
                       href={`/instrument/${r.instrumentKey.split(":").join("/")}`}
                       className="macro-code"
                     >
-                      {r.name ?? r.instrumentKey}
+                      {STRIP_PICKS.find((p) => r.instrumentKey.includes(p.slug))
+                        ?.label ??
+                        r.name ??
+                        r.instrumentKey}
                     </a>
-                    {r.unit && <span className="macro-vi">{r.unit}</span>}
-                  </td>
-                  <td className="macro-code">
-                    {r.ticker ?? "—"}
-                    {r.venueMic && (
-                      <span className="macro-units">{r.venueMic}</span>
-                    )}
                   </td>
                   <td className="num macro-value">{fmt(r.close)}</td>
                   <td className="num">
                     <Pct v={r.dayChangePct} />
                   </td>
-                  <td className="macro-date">{r.sessionDate}</td>
                   <td className="macro-units">
                     {r.provider}
                     {r.priceBasis === "quoted" ? " · quoted" : ""}
@@ -282,60 +231,7 @@ export default async function RadarPage() {
             </tbody>
           </table>
         </section>
-      ))}
-
-      <section className="macro-group">
-        <h2 className="macro-group-title">
-          Hồ sơ tín hiệu
-          <span className="macro-units">
-            market_move · premium_shift · volume_spike → T+1/T+5/T+20 phiên
-          </span>
-        </h2>
-        {stats.length === 0 ? (
-          <p className="macro-units" style={{ padding: "0.6rem 0" }}>
-            Chưa có tín hiệu nào — mỗi delta tự động được chấm điểm khi đủ phiên
-            theo dõi.
-          </p>
-        ) : (
-          <table className="macro-table">
-            <thead>
-              <tr>
-                <th>Chu kỳ</th>
-                <th className="num">Đã chốt</th>
-                <th className="num">Đang chờ</th>
-                <th className="num">TB biên độ</th>
-                <th className="num">Tiếp diễn</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[1, 5, 20].map((h) => {
-                const r = resolved.find((s) => s.horizon === h);
-                const p = stats.find(
-                  (s) => s.horizon === h && s.status === "pending",
-                );
-                return (
-                  <tr key={h}>
-                    <td className="macro-code">T+{h}</td>
-                    <td className="num">{r?.count ?? 0}</td>
-                    <td className="num">{p?.count ?? 0}</td>
-                    <td className="num">
-                      {r?.avgMovePct != null ? <Pct v={r.avgMovePct} /> : "—"}
-                    </td>
-                    <td className="num">
-                      {r && r.count > 0
-                        ? `${Math.round((r.continued / r.count) * 100)}%`
-                        : "—"}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-        {pending > 0 && (
-          <p className="macro-units">{pending} outcome đang chờ đủ phiên.</p>
-        )}
-      </section>
+      )}
     </main>
   );
 }

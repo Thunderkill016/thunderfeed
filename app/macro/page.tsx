@@ -5,6 +5,7 @@ import {
   getLatestDataDeltas,
   getMacroPoints,
   getMacroSeriesList,
+  getSignalOutcomeStats,
 } from "../../lib/db/read";
 import { seriesMeta } from "../../lib/seriesLabels";
 import { deltaSummaryLabel } from "../../lib/format";
@@ -48,6 +49,18 @@ function delta(latest: number, prev: number, units: string | null) {
   return { label, up: d > 0 };
 }
 
+function Pct({ v }: { v: number | null }) {
+  if (v == null) return <span className="macro-date">—</span>;
+  const sign = v > 0 ? "+" : "";
+  const cls = v > 0 ? "up" : v < 0 ? "down" : "";
+  return (
+    <span className={`macro-delta ${cls}`}>
+      {sign}
+      {v.toFixed(2)}%
+    </span>
+  );
+}
+
 export default async function MacroPage() {
   if (!dbEnabled()) {
     return (
@@ -57,7 +70,14 @@ export default async function MacroPage() {
     );
   }
   const series = (await getMacroSeriesList()).filter((s) => s.points > 0);
-  const deltas = await getLatestDataDeltas(15);
+  const [deltas, stats] = await Promise.all([
+    getLatestDataDeltas(15),
+    getSignalOutcomeStats(),
+  ]);
+  const resolved = stats.filter((s) => s.status === "resolved");
+  const pending = stats
+    .filter((s) => s.status === "pending")
+    .reduce((a, s) => a + s.count, 0);
   const today = new Date().toISOString().slice(0, 10);
   const latestTwo = await Promise.all(
     series.map((s) =>
@@ -230,6 +250,59 @@ export default async function MacroPage() {
           </table>
         </section>
       )}
+
+      <section className="macro-group">
+        <h2 className="macro-group-title">
+          Hồ sơ tín hiệu
+          <span className="macro-units">
+            market_move · premium_shift · volume_spike → T+1/T+5/T+20 phiên
+          </span>
+        </h2>
+        {stats.length === 0 ? (
+          <p className="macro-units" style={{ padding: "0.6rem 0" }}>
+            Chưa có tín hiệu nào — mỗi delta tự động được chấm điểm khi đủ phiên
+            theo dõi.
+          </p>
+        ) : (
+          <table className="macro-table">
+            <thead>
+              <tr>
+                <th>Chu kỳ</th>
+                <th className="num">Đã chốt</th>
+                <th className="num">Đang chờ</th>
+                <th className="num">TB biên độ</th>
+                <th className="num">Tiếp diễn</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[1, 5, 20].map((h) => {
+                const r = resolved.find((s) => s.horizon === h);
+                const p = stats.find(
+                  (s) => s.horizon === h && s.status === "pending",
+                );
+                return (
+                  <tr key={h}>
+                    <td className="macro-code">T+{h}</td>
+                    <td className="num">{r?.count ?? 0}</td>
+                    <td className="num">{p?.count ?? 0}</td>
+                    <td className="num">
+                      {r?.avgMovePct != null ? <Pct v={r.avgMovePct} /> : "—"}
+                    </td>
+                    <td className="num">
+                      {r && r.count > 0
+                        ? `${Math.round((r.continued / r.count) * 100)}%`
+                        : "—"}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+        {pending > 0 && (
+          <p className="macro-units">{pending} outcome đang chờ đủ phiên.</p>
+        )}
+      </section>
     </main>
   );
 }
