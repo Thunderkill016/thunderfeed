@@ -384,8 +384,10 @@ let inflight: Promise<Edition> | null = null;
 
 function readFsSnapshot(): Edition | null {
   try {
-    if (!existsSync(SNAPSHOT_PATH)) return null;
-    return JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8")) as Edition;
+    if (!existsSync(/* turbopackIgnore: true */ SNAPSHOT_PATH)) return null;
+    return JSON.parse(
+      readFileSync(/* turbopackIgnore: true */ SNAPSHOT_PATH, "utf8"),
+    ) as Edition;
   } catch {
     return null;
   }

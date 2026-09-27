@@ -48,8 +48,10 @@ function cachePath(): string {
 
 function loadCache(): Map<string, CacheEntry> {
   try {
-    if (!existsSync(cachePath())) return new Map();
-    const raw = JSON.parse(readFileSync(cachePath(), "utf8")) as CacheFile;
+    if (!existsSync(/* turbopackIgnore: true */ cachePath())) return new Map();
+    const raw = JSON.parse(
+      readFileSync(/* turbopackIgnore: true */ cachePath(), "utf8"),
+    ) as CacheFile;
     const cutoff = Date.now() - CACHE_TTL_MS;
     const entries = Object.entries(raw.entries ?? {}).filter(
       ([, e]) => e.t > cutoff && Array.isArray(e.v) && e.v.length > 0,
@@ -121,7 +123,10 @@ async function embedOne(
 ): Promise<number[] | null> {
   const first = await embedOnce(apiKey, text);
   if (first.v) return first.v;
-  if (first.retryAfterMs !== undefined && first.retryAfterMs <= MAX_RETRY_WAIT_MS) {
+  if (
+    first.retryAfterMs !== undefined &&
+    first.retryAfterMs <= MAX_RETRY_WAIT_MS
+  ) {
     await sleep(first.retryAfterMs + 500);
     const second = await embedOnce(apiKey, text);
     return second.v;

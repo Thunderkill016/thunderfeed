@@ -76,7 +76,9 @@ function sameStory(
 
 function loadStore(): Store {
   try {
-    const raw = JSON.parse(readFileSync(STATE_PATH, "utf8")) as Store;
+    const raw = JSON.parse(
+      readFileSync(/* turbopackIgnore: true */ STATE_PATH, "utf8"),
+    ) as Store;
     return Array.isArray(raw?.clusters) ? raw : { clusters: [] };
   } catch {
     return { clusters: [] };
