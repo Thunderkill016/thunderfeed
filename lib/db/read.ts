@@ -1712,6 +1712,12 @@ export interface EventListItem {
   lastSeenAt: string;
   claimCount: number;
   sourceCount: number;
+  /** distinct PRIMARY sources attached — wire reprints don't count here */
+  primaryCount: number;
+  /** claims whose current version reached supported/confirmed */
+  supportedCount: number;
+  /** claims whose current version is disputed — an evidence penalty */
+  disputedCount: number;
   lastMaterialType?: string;
   lastMaterialAt?: string;
 }
@@ -1743,25 +1749,59 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
   if (events.length === 0) return [];
   const ids = events.map((e) => e.id);
 
-  const claimsQ = await pool.query<{ event_id: string; c: string }>(
-    `SELECT event_id, COUNT(*) AS c FROM claims
-     WHERE event_id = ANY($1) GROUP BY event_id`,
+  /* claim strength splits three ways: total volume (coverage-ish),
+   * supported/confirmed (evidence), disputed (penalty) — resolved via
+   * current_version so a retracted claim stops counting */
+  const claimsQ = await pool.query<{
+    event_id: string;
+    c: string;
+    supported: string;
+    disputed: string;
+  }>(
+    `SELECT c.event_id, COUNT(*) AS c,
+            COUNT(*) FILTER (WHERE cv.state IN ('supported','confirmed'))
+              AS supported,
+            COUNT(*) FILTER (WHERE cv.state = 'disputed') AS disputed
+       FROM claims c
+       JOIN claim_versions cv ON cv.id = c.current_version_id
+     WHERE c.event_id = ANY($1) GROUP BY c.event_id`,
     [ids],
   );
   const claimCount = new Map(
-    claimsQ.rows.map((r) => [r.event_id, Number(r.c)]),
+    claimsQ.rows.map((r) => [
+      r.event_id,
+      {
+        c: Number(r.c),
+        supported: Number(r.supported),
+        disputed: Number(r.disputed),
+      },
+    ]),
   );
 
-  const srcQ = await pool.query<{ event_id: string; c: string }>(
-    `SELECT ee.event_id, COUNT(DISTINCT ed.source_id) AS c
+  /* independent evidence ≠ outlet count: primary sources are the
+   * load-bearing ones, publisher reprints mostly repeat a wire */
+  const srcQ = await pool.query<{
+    event_id: string;
+    c: string;
+    prim: string;
+  }>(
+    `SELECT ee.event_id, COUNT(DISTINCT ed.source_id) AS c,
+            COUNT(DISTINCT ed.source_id) FILTER (WHERE s.kind = 'primary')
+              AS prim
      FROM event_evidence ee
      JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
      JOIN evidence_documents ed ON ed.id = ev.document_id
+     JOIN sources s ON s.id = ed.source_id
      WHERE ee.event_id = ANY($1)
      GROUP BY ee.event_id`,
     [ids],
   );
-  const sourceCount = new Map(srcQ.rows.map((r) => [r.event_id, Number(r.c)]));
+  const sourceCount = new Map(
+    srcQ.rows.map((r) => [
+      r.event_id,
+      { c: Number(r.c), primary: Number(r.prim) },
+    ]),
+  );
 
   const matQ = await pool.query<{
     event_id: string;
@@ -1786,8 +1826,11 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
       topic: e.topic,
       firstSeenAt: e.first_seen_at,
       lastSeenAt: e.last_seen_at,
-      claimCount: claimCount.get(e.id) ?? 0,
-      sourceCount: sourceCount.get(e.id) ?? 0,
+      claimCount: claimCount.get(e.id)?.c ?? 0,
+      supportedCount: claimCount.get(e.id)?.supported ?? 0,
+      disputedCount: claimCount.get(e.id)?.disputed ?? 0,
+      sourceCount: sourceCount.get(e.id)?.c ?? 0,
+      primaryCount: sourceCount.get(e.id)?.primary ?? 0,
       lastMaterialType: m?.type,
       lastMaterialAt: m?.detected_at,
     };

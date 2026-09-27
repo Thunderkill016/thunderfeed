@@ -8,12 +8,13 @@ import {
   getRecentEvents,
   type RadarSeriesRow,
 } from "../lib/db/read";
-import { buildRadarFeed } from "../lib/radar";
+import { buildRadarFeed, type RadarItem } from "../lib/radar";
 import { emptyWatch, watchFromCookie } from "../lib/relevance";
-import { extractEntities } from "../lib/entities";
+import { canonicalEntity, extractEntities } from "../lib/entities";
 import { timeAgo } from "../lib/model";
 import SiteNav from "../components/SiteNav";
 import RadarWatch from "../components/RadarWatch";
+import SeenMarker from "../components/SeenMarker";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "ThunderFeed — Radar cá nhân" };
@@ -74,6 +75,46 @@ function pickStrip(board: RadarSeriesRow[]): RadarSeriesRow[] {
 
 /** Frequency-ranked entity suggestions for the watch editor — the real
  *  entities currently moving through the feed, not a static taxonomy. */
+function FeedItem({ i, nowMs }: { i: RadarItem; nowMs: number }) {
+  return (
+    <article className="radar-item">
+      <div className="radar-item-head">
+        <span className="macro-code">{i.badge}</span>
+        <span className={`change-badge ${i.severity}`}>
+          {i.severity === "high"
+            ? "MẠNH"
+            : i.severity === "medium"
+              ? "VỪA"
+              : "nhẹ"}
+        </span>
+        <span className="macro-date">{timeAgo(i.detectedAt, nowMs)}</span>
+        {i.matched.length > 0 && (
+          <span className="watch-matched">
+            bạn theo dõi: {i.matched.join(" · ")}
+          </span>
+        )}
+      </div>
+      <a className="radar-item-title" href={i.href}>
+        {i.title}
+      </a>
+      <div className="macro-units radar-item-ev">
+        {i.evidence.join(" · ")}
+        {i.related.length > 0 && " · tin có thể liên quan:"}
+        {i.related.map((r) => (
+          <span key={r.id}>
+            {" "}
+            <a href={`/event/${r.id}`}>{r.title}</a>;
+          </span>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+/** Umbrella types a watch chip shouldn't offer — following "vietnam"
+ *  matches half the corpus, which is geo context, not a signal. */
+const UMBRELLA_TYPES = new Set(["country", "region", "place", "topic"]);
+
 function suggestedEntities(
   events: { title: string }[],
   watchEntities: string[],
@@ -84,7 +125,11 @@ function suggestedEntities(
     for (const slug of extractEntities(e.title))
       freq.set(slug, (freq.get(slug) ?? 0) + 1);
   return [...freq.entries()]
-    .filter(([s]) => !watchEntities.includes(s))
+    .filter(
+      ([s]) =>
+        !watchEntities.includes(s) &&
+        !UMBRELLA_TYPES.has(canonicalEntity(s)?.type ?? ""),
+    )
     .sort((a, b) => b[1] - a[1])
     .slice(0, cap)
     .map(([s]) => s);
@@ -93,6 +138,10 @@ function suggestedEntities(
 export default async function RadarPage() {
   const jar = await cookies();
   const watch = watchFromCookie(jar.get("tf_watch")?.value);
+  /* "từ lần xem trước" is literal: tf_seen is written client-side AFTER
+   * this render; until the first stamp lands, everything reads as new. */
+  const prevSeenRaw = Number(jar.get("tf_seen")?.value);
+  const prevSeenMs = Number.isFinite(prevSeenRaw) ? prevSeenRaw : null;
   const nowMs = Date.now();
   /* The homepage degrades to an empty radar rather than a 500 when the
    *  DB is unreachable — each lane fails independently. */
@@ -104,7 +153,9 @@ export default async function RadarPage() {
         getRecentEvents(250).catch(() => [] as never[]),
       ])
     : [[], null, [], []];
-  const feed = buildRadarFeed(deltas, events, watch, nowMs, 14);
+  const feed = buildRadarFeed(deltas, events, watch, nowMs, 18, prevSeenMs);
+  const newItems = feed.filter((i) => i.isNew);
+  const stillItems = feed.filter((i) => !i.isNew).slice(0, 4);
   const strip = pickStrip(board);
   const suggested = suggestedEntities(events, watch.entities);
   const personalized = !emptyWatch(watch);
@@ -127,58 +178,41 @@ export default async function RadarPage() {
       </header>
 
       <RadarWatch watch={watch} suggested={suggested} />
+      <SeenMarker at={nowMs} />
 
       <section className="macro-group">
         <h2 className="macro-group-title">
           Từ lần xem trước
           <span className="macro-units">
-            {feed.length} thay đổi
+            {newItems.length} thay đổi mới
             {personalized ? " · xếp theo radar của bạn" : " · chưa cá nhân hóa"}
           </span>
         </h2>
-        {feed.length === 0 ? (
+        {newItems.length === 0 ? (
           <p className="macro-units" style={{ padding: "0.6rem 0" }}>
-            Chưa có thay đổi nào đủ đáng chú ý — feed chỉ hiện thứ vượt ngưỡng
-            điểm (magnitude × abnormality × relevance × freshness × evidence).
+            Không có gì mới kể từ lần xem trước — feed chỉ hiện thứ vượt ngưỡng
+            điểm (impact × abnormality × relevance × freshness × evidence).
           </p>
         ) : (
-          feed.map((i) => (
-            <article className="radar-item" key={`${i.kind}-${i.id}`}>
-              <div className="radar-item-head">
-                <span className="macro-code">{i.badge}</span>
-                <span className={`change-badge ${i.severity}`}>
-                  {i.severity === "high"
-                    ? "MẠNH"
-                    : i.severity === "medium"
-                      ? "VỪA"
-                      : "nhẹ"}
-                </span>
-                <span className="macro-date">
-                  {timeAgo(i.detectedAt, nowMs)}
-                </span>
-                {i.matched.length > 0 && (
-                  <span className="watch-matched">
-                    bạn theo dõi: {i.matched.join(" · ")}
-                  </span>
-                )}
-              </div>
-              <a className="radar-item-title" href={i.href}>
-                {i.title}
-              </a>
-              <div className="macro-units radar-item-ev">
-                {i.evidence.join(" · ")}
-                {i.related.length > 0 && " · tin có thể liên quan:"}
-                {i.related.map((r) => (
-                  <span key={r.id}>
-                    {" "}
-                    <a href={`/event/${r.id}`}>{r.title}</a>;
-                  </span>
-                ))}
-              </div>
-            </article>
+          newItems.map((i) => (
+            <FeedItem key={`${i.kind}-${i.id}`} i={i} nowMs={nowMs} />
           ))
         )}
       </section>
+
+      {stillItems.length > 0 && (
+        <section className="macro-group">
+          <h2 className="macro-group-title">
+            Vẫn đáng chú ý
+            <span className="macro-units">
+              {stillItems.length} mục chưa hết relevance
+            </span>
+          </h2>
+          {stillItems.map((i) => (
+            <FeedItem key={`${i.kind}-${i.id}`} i={i} nowMs={nowMs} />
+          ))}
+        </section>
+      )}
 
       {(strip.length > 0 || premium) && (
         <section className="macro-group">

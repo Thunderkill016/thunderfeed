@@ -7,8 +7,10 @@ import { entityLabel } from "../lib/entities";
 import { saveWatch } from "./WatchBar";
 import type { WatchList } from "../lib/relevance";
 
-/** Preset asset watches — the feed matches these slugs against market
- *  series keywords, so "vang" hits every gold board and SJC-PREM. */
+/** Asset-family watch presets — these are INSTRUMENT watches, not
+ *  entities: `vang` fans out to every gold board + SJC-PREM at match
+ *  time, `ty_gia` to the FX stack. Kept out of `entities[]` so the
+ *  canonical ontology stays clean. */
 const ASSET_PRESETS: { slug: string; label: string }[] = [
   { slug: "vang", label: "Vàng" },
   { slug: "bitcoin", label: "Bitcoin" },
@@ -17,6 +19,12 @@ const ASSET_PRESETS: { slug: string; label: string }[] = [
   { slug: "ty_gia", label: "Tỷ giá" },
   { slug: "vnindex", label: "VN-Index" },
 ];
+
+const PRESET_LABEL = new Map(ASSET_PRESETS.map((p) => [p.slug, p.label]));
+
+export function instrumentLabel(slug: string): string {
+  return PRESET_LABEL.get(slug) ?? slug;
+}
 
 /** Homepage watch editor — the personal-relevance layer of the radar.
  *  Writes localStorage + the tf_watch cookie, then refreshes so the
@@ -30,9 +38,13 @@ export default function RadarWatch({
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
-  const active = watch.entities.length + watch.topics.length > 0;
+  const active =
+    watch.entities.length + watch.instruments.length + watch.topics.length > 0;
 
-  const toggle = (kind: "entities" | "topics", value: string) => {
+  const toggle = (
+    kind: "entities" | "instruments" | "topics",
+    value: string,
+  ) => {
     const cur = new Set(watch[kind] as string[]);
     if (cur.has(value)) cur.delete(value);
     else cur.add(value);
@@ -47,6 +59,11 @@ export default function RadarWatch({
         <h3 className="rail-title">Radar của tôi</h3>
         {active && !editing && (
           <div className="watch-chips suggest-inline">
+            {watch.instruments.map((e) => (
+              <span className="chip on" key={e}>
+                {instrumentLabel(e)}
+              </span>
+            ))}
             {watch.entities.map((e) => (
               <span className="chip on" key={e}>
                 {entityLabel(e)}
@@ -70,7 +87,7 @@ export default function RadarWatch({
             <button
               key={a.slug}
               className="chip"
-              onClick={() => toggle("entities", a.slug)}
+              onClick={() => toggle("instruments", a.slug)}
             >
               {a.label}
             </button>
@@ -86,8 +103,8 @@ export default function RadarWatch({
               {ASSET_PRESETS.map((a) => (
                 <button
                   key={a.slug}
-                  className={`chip ${watch.entities.includes(a.slug) ? "on" : ""}`}
-                  onClick={() => toggle("entities", a.slug)}
+                  className={`chip ${watch.instruments.includes(a.slug) ? "on" : ""}`}
+                  onClick={() => toggle("instruments", a.slug)}
                 >
                   {a.label}
                 </button>

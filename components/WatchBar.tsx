@@ -6,10 +6,8 @@ import { entityLabel } from "../lib/entities";
 import { changeLabel } from "./EventIntel";
 import type { ChangeView } from "../lib/db/read";
 
-export interface WatchList {
-  entities: string[];
-  topics: Topic[];
-}
+export type { WatchList } from "../lib/relevance";
+import type { WatchList } from "../lib/relevance";
 
 const WATCH_KEY = "thunderfeed:watch";
 const POLL_MS = 120_000;
@@ -19,10 +17,11 @@ export function loadWatch(): WatchList {
     const raw = JSON.parse(localStorage.getItem(WATCH_KEY) ?? "{}");
     return {
       entities: Array.isArray(raw.entities) ? raw.entities : [],
+      instruments: Array.isArray(raw.instruments) ? raw.instruments : [],
       topics: Array.isArray(raw.topics) ? raw.topics : [],
     };
   } catch {
-    return { entities: [], topics: [] };
+    return { entities: [], instruments: [], topics: [] };
   }
 }
 
@@ -34,13 +33,18 @@ export function saveWatch(w: WatchList) {
   document.cookie = `tf_watch=${encodeURIComponent(json)}; path=/; max-age=31536000; samesite=lax`;
 }
 
-/** URL `?e=a,b&t=x,y` overrides storage so a link is shareable. */
+/** URL `?e=a,b&i=x&t=y` overrides storage so a link is shareable. */
 export function watchFromUrl(search: string): WatchList | null {
   const p = new URLSearchParams(search);
   const e = p.get("e");
   const t = p.get("t");
-  if (!e && !t) return null;
+  const i = p.get("i");
+  if (!e && !t && !i) return null;
   const entities = (e ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const instruments = (i ?? "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
@@ -48,7 +52,7 @@ export function watchFromUrl(search: string): WatchList | null {
     .split(",")
     .map((s) => s.trim())
     .filter((s): s is Topic => topics.some((x) => x.id === s));
-  return { entities, topics: topicsList };
+  return { entities, instruments, topics: topicsList };
 }
 
 interface RankedItem {
@@ -83,7 +87,8 @@ export default function WatchBar({
   const [ranked, setRanked] = useState<RankedItem[]>([]);
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [available, setAvailable] = useState<string[]>([]);
-  const active = watch.entities.length + watch.topics.length > 0;
+  const active =
+    watch.entities.length + watch.instruments.length + watch.topics.length > 0;
 
   const query = useMemo(() => {
     const p = new URLSearchParams();

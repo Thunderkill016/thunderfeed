@@ -11,6 +11,11 @@ import { extractEntities } from "./entities";
 export interface WatchList {
   /** canonical entity slugs — e.g. "fed", "china", "openai" */
   entities: string[];
+  /** instrument watch targets — asset-family keys ("vang", "ty_gia") or
+   *  canonical instrument slugs ("bitcoin"). NOT entities: an asset has
+   *  series/listings, not a canonical entity row — conflating the two
+   *  ontologies breaks news↔market relevance. */
+  instruments: string[];
   topics: Topic[];
 }
 
@@ -29,23 +34,31 @@ export function parseWatch(searchParams: URLSearchParams): WatchList {
     // canonicalize free terms → ontology slugs ("fed" → "federal_reserve");
     // already-canonical slugs pass through unchanged
     .map((s) => extractEntities(s)[0] ?? s);
+  const instruments = (searchParams.get("i") ?? "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
   const topics = (searchParams.get("t") ?? "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean) as Topic[];
-  return { entities, topics };
+  return { entities, instruments, topics };
 }
 
 /** Cookie twin of parseWatch — the client mirrors localStorage into
  *  `tf_watch` so SSR can score relevance before hydration. Malformed
  *  input degrades to an empty watch, never an error. */
 export function watchFromCookie(raw: string | undefined): WatchList {
-  if (!raw) return { entities: [], topics: [] };
+  const empty = { entities: [], instruments: [], topics: [] };
+  if (!raw) return empty;
   try {
     const j = JSON.parse(decodeURIComponent(raw));
     return {
       entities: Array.isArray(j.entities)
         ? j.entities.filter((s: unknown) => typeof s === "string")
+        : [],
+      instruments: Array.isArray(j.instruments)
+        ? j.instruments.filter((s: unknown) => typeof s === "string")
         : [],
       topics: Array.isArray(j.topics)
         ? j.topics.filter((s: unknown): s is Topic =>
@@ -54,12 +67,16 @@ export function watchFromCookie(raw: string | undefined): WatchList {
         : [],
     };
   } catch {
-    return { entities: [], topics: [] };
+    return empty;
   }
 }
 
 export function emptyWatch(w: WatchList): boolean {
-  return w.entities.length === 0 && w.topics.length === 0;
+  return (
+    w.entities.length === 0 &&
+    (w.instruments?.length ?? 0) === 0 &&
+    w.topics.length === 0
+  );
 }
 
 /**

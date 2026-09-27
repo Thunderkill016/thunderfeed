@@ -1315,3 +1315,90 @@ export function matchSignalKeywords(ticker: string, title: string): boolean {
     return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(folded);
   });
 }
+
+/** instrument slug → the listing tickers whose keyword vocab it uses.
+ *  Instruments are canonical (one per asset); listings/tickers are
+ *  per-venue transport names. Watching "bitcoin" should hit BTCUSDT on
+ *  Binance and any future BTC listing identically. */
+export const INSTRUMENT_TICKERS: Record<string, string[]> = {
+  vang_sjc_9999: ["SJC9999"],
+  vang_doji: ["DOJI", "DOJI-GOLD"],
+  vang_pnj: ["PNJ", "PNJ-GOLD"],
+  vang_baotin: ["BTMC"],
+  xau_usd_spot: ["XAUUSD"],
+  sjc_world_premium: ["SJC-PREM"],
+  bitcoin: ["BTCUSDT"],
+  ethereum: ["ETHUSDT"],
+  solana: ["SOLUSDT"],
+  bnb: ["BNBUSDT"],
+  usd_vnd: ["USDVND"],
+  usdt_vnd: ["USDTVND"],
+  usdt_vnd_gap: ["USDT-GAP"],
+  vnindex: ["VNINDEX"],
+};
+
+/** Asset-family presets a user can watch — "vàng" means every gold board
+ *  plus the premium series, not one listing. */
+export const ASSET_FAMILIES: Record<string, string[]> = {
+  vang: [
+    "vang_sjc_9999",
+    "vang_doji",
+    "vang_pnj",
+    "vang_baotin",
+    "xau_usd_spot",
+    "sjc_world_premium",
+  ],
+  bitcoin: ["bitcoin"],
+  ethereum: ["ethereum"],
+  usdt: ["usdt_vnd", "usdt_vnd_gap"],
+  ty_gia: ["usd_vnd", "usdt_vnd", "usdt_vnd_gap"],
+  vnindex: ["vnindex"],
+};
+
+/** Single tokens that are too generic to be a watch signal — "usd" alone
+ *  hits every dollar figure in a headline, "world"/"spot"/"index" describe
+ *  the series, not the asset. Multi-word phrases stay precise. */
+const KEYWORD_STOP = new Set([
+  "usd",
+  "vnd",
+  "eur",
+  "jpy",
+  "spot",
+  "world",
+  "premium",
+  "gap",
+  "index",
+  "stock",
+  "common",
+  "9999",
+]);
+
+/** Folded keyword vocabulary for a watch target — family key ("vang"),
+ *  instrument slug ("bitcoin") or bare ticker all resolve to the same
+ *  word list. Stoplisted tokens are dropped so "20 tỷ USD" can't match a
+ *  ty_gia watch. */
+export function watchTargetKeywords(target: string): string[] {
+  const slugs = ASSET_FAMILIES[target] ?? [target];
+  const out = new Set<string>();
+  for (const slug of slugs) {
+    const tickers = INSTRUMENT_TICKERS[slug] ?? [];
+    for (const t of tickers)
+      for (const k of signalKeywordsFor(t))
+        if (!KEYWORD_STOP.has(k)) out.add(k);
+    const phrase = foldSearchText(slug.replace(/_/g, " "));
+    if (!phrase.split(" ").every((w) => KEYWORD_STOP.has(w))) out.add(phrase);
+    for (const tok of slug.split("_")) {
+      const f = foldSearchText(tok);
+      if (!KEYWORD_STOP.has(f)) out.add(f);
+    }
+  }
+  return [...out];
+}
+
+/** Does this watch target cover the given instrument slug? */
+export function watchTargetCovers(
+  target: string,
+  instrumentSlug: string,
+): boolean {
+  return (ASSET_FAMILIES[target] ?? [target]).includes(instrumentSlug);
+}

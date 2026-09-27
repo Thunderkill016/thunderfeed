@@ -56,12 +56,12 @@ test("scoreRelevance: entity match dominates topic match", () => {
   const c = cluster([
     art({ title: "Fed giữ nguyên lãi suất sau áp lực từ Trump" }),
   ]);
-  const w = { entities: ["federal_reserve"], topics: [] };
+  const w = { entities: ["federal_reserve"], instruments: [], topics: [] };
   const r = scoreRelevance(c, w);
   assert.equal(r.matchedEntities.length, 1);
   assert.ok(r.score > 0.5, `entity hit should score >0.5, got ${r.score}`);
 
-  const topicOnly = scoreRelevance(c, { entities: [], topics: ["world"] });
+  const topicOnly = scoreRelevance(c, { entities: [], instruments: [], topics: ["world"] });
   assert.ok(topicOnly.score < r.score, "topic alone scores lower");
   assert.equal(topicOnly.matchedEntities.length, 0);
 });
@@ -70,6 +70,7 @@ test("scoreRelevance: no match → zero", () => {
   const c = cluster([art({ title: "Thời tiết miền Bắc se lạnh" })]);
   const r = scoreRelevance(c, {
     entities: ["federal_reserve"],
+    instruments: [],
     topics: ["technology"],
   });
   assert.equal(r.score, 0);
@@ -120,6 +121,7 @@ test("rankEdition sorts by score and dedupes cluster ids", () => {
   } as unknown as Edition;
   const ranked = rankEdition(edition, {
     entities: ["federal_reserve"],
+    instruments: [],
     topics: [],
   });
   assert.equal(ranked.length, 1, "duplicate cluster id appears once");

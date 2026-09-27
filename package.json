@@ -26,7 +26,8 @@
     "audit:db-security": "tsx scripts/audit-db-security.mts",
     "db:migrate": "tsx scripts/apply-migrations.mts \"$DATABASE_URL\"",
     "db:status": "tsx scripts/apply-migrations.mts \"$DATABASE_URL\" --status",
-    "typecheck:scripts": "tsc --noEmit -p tsconfig.scripts.json"
+    "typecheck:scripts": "tsc --noEmit -p tsconfig.scripts.json",
+    "bench:radar": "tsx scripts/radar/bench.mts"
   },
   "dependencies": {
     "entities": "^8.1.0",
