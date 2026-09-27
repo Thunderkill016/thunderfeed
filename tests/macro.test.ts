@@ -47,7 +47,7 @@ function setupDb(): Pool {
     .replace(
       "'manual_verified', 'other'",
       "'manual_verified', 'alphavantage', 'tiingo', 'fred', " +
-        "'worldbank', 'other'",
+        "'worldbank', 'imf', 'other'",
     )
     .replace(
       "price_basis IN ('as_traded')",
@@ -396,5 +396,37 @@ test("stableVintage — unchanged values mint nothing, real change revises", asy
   assert.match(
     deltas.rows[0].summary as string,
     /VNM:NY\.GDP\.MKTP\.CD kỳ 2024-01-01/,
+  );
+});
+
+test("parseImfDataMapper — year map incl. forecast years", async () => {
+  const { parseImfDataMapper } = await import("../lib/macro");
+  const payload = {
+    values: {
+      NGDP_RPCH: {
+        VNM: { "2024": "7.09", "2025": "6.5", "2030": "6.5" },
+        THA: { "2024": "2.5" },
+      },
+    },
+  };
+  const r = parseImfDataMapper(payload, "NGDP_RPCH", "VNM", "2026-11-24");
+  if (r.kind !== "observations") throw new Error("expected observations");
+  assert.equal(r.observations.length, 3, "actual + forecast years");
+  assert.equal(r.observations[2].obsDate, "2030-01-01");
+  assert.equal(r.observations[0].vintageDate, "2026-11-24");
+  // uncovered country → empty, not error (IMF omits key entirely)
+  assert.equal(
+    parseImfDataMapper(payload, "NGDP_RPCH", "SGP", "2026-11-24").kind,
+    "empty",
+  );
+  // malformed → error
+  assert.equal(
+    parseImfDataMapper(
+      { values: { NGDP_RPCH: { VNM: [1, 2] } } },
+      "NGDP_RPCH",
+      "VNM",
+      "2026-11-24",
+    ).kind,
+    "error",
   );
 });

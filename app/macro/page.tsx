@@ -93,7 +93,7 @@ export default async function MacroPage() {
         </div>
         <div className="masthead-right">
           <span className="edition-date">
-            FRED · dữ liệu chính thức · revision-aware
+            FRED · World Bank · IMF · dữ liệu chính thức · revision-aware
           </span>
         </div>
       </header>

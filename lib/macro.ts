@@ -189,3 +189,44 @@ export function parseWorldBankObservations(
   if (out.length === 0) return { kind: "empty" };
   return { kind: "observations", observations: out };
 }
+
+/* ---- IMF DataMapper ----
+ * /external/datamapper/api/v1/{indicator}/{iso3} →
+ *   {values: {<code>: {<iso3>: {"2024": 6.1, ...}}}}
+ * Out-years are IMF forecasts; a WEO update re-values future obs_dates,
+ * which the append-only apply layer records as real revisions. No
+ * vintage dates in the payload — caller supplies fetch date + the
+ * apply layer's stableVintage mode suppresses unchanged churn. */
+export function parseImfDataMapper(
+  payload: unknown,
+  indicator: string,
+  iso3: string,
+  vintageDate: string,
+): FredObservationResult {
+  const p = payload as Record<string, unknown>;
+  const values = (p?.values as Record<string, unknown> | undefined)?.[
+    indicator
+  ] as Record<string, unknown> | undefined;
+  const series = values?.[iso3];
+  if (series === undefined || series === null) return { kind: "empty" }; // country not covered by this indicator
+  if (typeof series !== "object" || Array.isArray(series))
+    return {
+      kind: "error",
+      detail: `values.${indicator}.${iso3} not an object`,
+    };
+  const out: FredObservation[] = [];
+  for (const [year, raw] of Object.entries(series)) {
+    if (!/^\d{4}$/.test(year))
+      return { kind: "error", detail: `invalid year key: ${year}` };
+    if (raw === null || raw === undefined || raw === "") continue;
+    const value = normalizeDecimalString(raw);
+    if (value == null)
+      return {
+        kind: "error",
+        detail: `obs[${year}] invalid value: ${JSON.stringify(raw)}`,
+      };
+    out.push({ obsDate: `${year}-01-01`, vintageDate, value });
+  }
+  if (out.length === 0) return { kind: "empty" };
+  return { kind: "observations", observations: out };
+}

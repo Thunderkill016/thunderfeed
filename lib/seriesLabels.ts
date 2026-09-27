@@ -57,6 +57,19 @@ const WB_VI: Record<string, string> = {
   "BX.KLT.DINV.WD.GD.ZS": "FDI ròng vào (% GDP)",
   "SP.POP.TOTL": "Dân số",
 };
+
+/* IMF DataMapper codes — out-year values are WEO forecasts, so these
+ * labels mark the forecast nature explicitly. */
+const IMF_VI: Record<string, string> = {
+  NGDP_RPCH: "GDP tăng trưởng + dự báo IMF",
+  PCPIPCH: "Lạm phát + dự báo IMF",
+  LUR: "Thất nghiệp + dự báo IMF",
+  BCA_NGDPD: "Cán cân vãng lai (% GDP)",
+  GGXWDG_NGDP: "Nợ công (% GDP)",
+  NID_NGDP: "Đầu tư (% GDP)",
+  NGSD_NGDP: "Tiết kiệm quốc gia (% GDP)",
+  NGDPDPC: "GDP bình quân đầu người (US$)",
+};
 const WB_COUNTRY_VI: Record<string, string> = {
   VNM: "Việt Nam",
   THA: "Thái Lan",
@@ -71,18 +84,22 @@ const WB_COUNTRY_VI: Record<string, string> = {
   KOR: "Hàn Quốc",
   JPN: "Nhật Bản",
   SGP: "Singapore",
+  USA: "Mỹ",
 };
 
-/** series_code → display meta; World Bank `ISO3:IND` codes resolve by
- * pattern, FRED codes by the SERIES_VI map. */
+/** series_code → display meta; `ISO3:IND` codes (World Bank + IMF)
+ * resolve by pattern, FRED codes by the SERIES_VI map. */
 export function seriesMeta(code: string): { g: MacroGroup; vi: string } | null {
   const direct = SERIES_VI[code];
   if (direct) return direct;
   const i = code.indexOf(":");
   if (i < 0) return null;
   const cc = code.slice(0, i);
-  const vi = WB_VI[code.slice(i + 1)];
+  const vi = WB_VI[code.slice(i + 1)] ?? IMF_VI[code.slice(i + 1)];
   const cn = WB_COUNTRY_VI[cc];
   if (!vi || !cn) return null;
-  return { g: cc === "VNM" ? "vietnam" : "asia", vi: `${cn} — ${vi}` };
+  return {
+    g: cc === "VNM" ? "vietnam" : cc === "USA" ? "world" : "asia",
+    vi: `${cn} — ${vi}`,
+  };
 }
