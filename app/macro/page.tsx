@@ -179,7 +179,9 @@ export default async function MacroPage() {
                           ? "SỐ MỚI"
                           : d.kind === "ca_declared"
                             ? "CA MỚI"
-                            : "CA SỬA"}
+                            : d.kind === "market_move"
+                              ? "GIÁ ĐỘT BIẾN"
+                              : "CA SỬA"}
                     </span>
                   </td>
                   <td className="macro-name">

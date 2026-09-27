@@ -712,13 +712,18 @@ export async function getLatestDataDeltas(
     `SELECT d.id, d.kind, d.materiality, d.summary, d.detected_at,
             s.canonical_key AS series_key, s.series_code,
             e.canonical_key AS entity_key,
-            a.action_type, i.canonical_key AS instrument_key
+            a.action_type,
+            COALESCE(i.canonical_key, fi.canonical_key) AS instrument_key
        FROM data_deltas d
        LEFT JOIN macro_points p ON p.id = d.point_id
        LEFT JOIN macro_series s ON s.id = p.series_id
        LEFT JOIN entities e ON e.id = s.entity_id
        LEFT JOIN corporate_actions a ON a.id = d.action_id
        LEFT JOIN financial_instruments i ON i.id = a.instrument_id
+       LEFT JOIN market_points mp ON mp.id = d.market_point_id
+       LEFT JOIN market_series ms ON ms.id = mp.series_id
+       LEFT JOIN instrument_listings il ON il.id = ms.listing_id
+       LEFT JOIN financial_instruments fi ON fi.id = il.instrument_id
       ORDER BY d.detected_at DESC
       LIMIT $1`,
     [limit],
@@ -1935,9 +1940,7 @@ export async function searchEvents(
     ? `AND (${slugs
         .map(
           (_, i) =>
-            `' ' || e.entity_signature || ' ' LIKE '% ' || $${
-              i + 2
-            } || ' %'`,
+            `' ' || e.entity_signature || ' ' LIKE '% ' || $${i + 2} || ' %'`,
         )
         .join(" OR ")})`
     : "";
@@ -2548,9 +2551,7 @@ async function caViewsForActions(
     const id = String(action.id);
     // String-compare: pg-mem hands uuid columns back as objects whose
     // === is reference equality; SQL-side ANY() handled it before.
-    const actionVers = vers.rows.filter(
-      (v) => String(v.action_id) === id,
-    );
+    const actionVers = vers.rows.filter((v) => String(v.action_id) === id);
     const assertions = asr.rows
       .filter((a) => String(a.action_id) === id)
       .map(caAssertionView);

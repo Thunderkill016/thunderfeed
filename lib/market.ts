@@ -674,7 +674,20 @@ export function logReturn(
 // is preserved verbatim in reference_observations either way.
 
 /** HOSE operating MIC is XSTC; HNX/UPCOM (XHNX/XUPX) aren't imported yet. */
-export const VNDIRECT_VN_MICS = new Set(["XSTC"]);
+/** % change between two session closes — Number() is fine here (display +
+ *  materiality gate only; canonical values stay decimal text). Returns
+ *  null when either side is missing or prev is zero. */
+export function dailyMovePct(
+  prevClose: unknown,
+  close: unknown,
+): number | null {
+  const p = Number(prevClose);
+  const c = Number(close);
+  if (!Number.isFinite(p) || !Number.isFinite(c) || p === 0) return null;
+  return ((c - p) / Math.abs(p)) * 100;
+}
+
+export const VNDIRECT_VN_MICS = new Set(["XSTC", "HSTC", "XHNX"]);
 
 export function resolveVndirectSymbol(listing: {
   mic: string | null | undefined;

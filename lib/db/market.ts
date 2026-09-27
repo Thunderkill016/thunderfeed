@@ -14,7 +14,12 @@
  *   version's values in place.
  */
 import type { Pool } from "pg";
-import { marketPointChanged, validateBar, type DailyBar } from "../market";
+import {
+  dailyMovePct,
+  marketPointChanged,
+  validateBar,
+  type DailyBar,
+} from "../market";
 
 type Q = Pick<Pool, "query">;
 
@@ -147,7 +152,17 @@ export interface ApplyDailyResult {
   unchanged: number;
   /** bars rejected by validation — raw observation still kept upstream */
   invalid: { sessionDate: string; reason: string }[];
+  /** market_move deltas minted (material fresh-session moves only) */
+  deltas: number;
 }
+
+/** A daily close only becomes a `market_move` delta when the move is
+ *  material. VN bands are ±7% (HOSE) / ±10% (HNX) / ±15% (UPCoM); US has
+ *  none — 5% is the cross-market "big day" floor. */
+const MATERIAL_MOVE_PCT = 5;
+/** …and only for fresh sessions: history backfill must not mint a delta
+ *  for every big day it walks past. */
+const MOVE_DELTA_LOOKBACK_DAYS = 3;
 
 export async function applyDailyBars(
   db: Q,
@@ -161,7 +176,9 @@ export async function applyDailyBars(
     versionsInserted: 0,
     unchanged: 0,
     invalid: [],
+    deltas: 0,
   };
+  let ticker: string | null | undefined; // undefined = not looked up yet
   for (const bar of bars) {
     const v = validateBar(bar);
     if (!v.ok) {
@@ -241,6 +258,55 @@ export async function applyDailyBars(
       [nv.rows[0].id, pointId],
     );
     res.versionsInserted++;
+
+    // market_move delta — only on a fresh session's FIRST version
+    // (corrections of an already-known session are revisions, not moves),
+    // and only when the close moved materially vs the prior session.
+    const versionId = nv.rows[0].id as string;
+    if (no === 1) {
+      const fresh =
+        Date.parse(`${bar.sessionDate}T00:00:00Z`) >=
+        Date.now() - MOVE_DELTA_LOOKBACK_DAYS * 86400e3;
+      const prev = await db.query(
+        `SELECT mpv.close FROM market_points mp
+           JOIN market_point_versions mpv
+             ON mpv.id = mp.current_version_id
+          WHERE mp.series_id=$1 AND mp.session_date < $2
+          ORDER BY mp.session_date DESC LIMIT 1`,
+        [seriesId, bar.sessionDate],
+      );
+      const pct = dailyMovePct(prev.rows[0]?.close, bar.close);
+      if (pct != null && Math.abs(pct) >= MATERIAL_MOVE_PCT && fresh) {
+        if (ticker === undefined) {
+          const t = await db.query(
+            `SELECT lv.ticker, il.canonical_key FROM market_series ms
+               JOIN instrument_listings il ON il.id = ms.listing_id
+               LEFT JOIN listing_versions lv ON lv.id = il.current_version_id
+              WHERE ms.id=$1`,
+            [seriesId],
+          );
+          // fallback: listing:<slug>:<type>:<mic> → <slug>
+          ticker =
+            (t.rows[0]?.ticker as string | undefined) ??
+            String(t.rows[0]?.canonical_key ?? "").split(":")[1] ??
+            null;
+        }
+        const sign = pct > 0 ? "+" : "";
+        await db.query(
+          `INSERT INTO data_deltas
+             (kind, materiality, summary, market_point_id, market_version_id)
+           VALUES ('market_move',$1,$2,$3::uuid,$4::uuid)
+           ON CONFLICT (market_version_id) DO NOTHING`,
+          [
+            Math.abs(pct) >= 10 ? "high" : "medium",
+            `${ticker ?? "series"} ${sign}${pct.toFixed(1)}% phiên ${bar.sessionDate}`,
+            pointId,
+            versionId,
+          ],
+        );
+        res.deltas++;
+      }
+    }
   }
   return res;
 }

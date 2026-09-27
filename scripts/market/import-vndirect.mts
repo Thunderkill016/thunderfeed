@@ -7,13 +7,14 @@
  * Two jobs:
  *   1. seed the VN listing universe — entities, instruments, listings,
  *      listing_versions, local_security_code identifiers — asserted by
- *      ONE manual_verified observation (the static map below). HOSE only
- *      (XSTC); HNX/UPCOM land when a provider covers them.
+ *      ONE manual_verified observation (the static map below). Venues:
+ *      XSTC (HOSE), HSTC (HNX), XHNX (UPCoM) — asserted per entry and
+ *      corroborated against the provider's floor field.
  *   2. fetch dchart/history per ticker → vndirect reference_observation
  *      → as_traded market series. Equity prices arrive in thousand-VND;
  *      priceScale=3 converts to canonical VND, indices scale 0.
  *
- * Identity is canonical keys (listing:<slug>:<type>:xstc), never tickers —
+ * Identity is canonical keys (listing:<slug>:<type>:<mic>), never tickers —
  * same invariant as US coverage.
  */
 import { readFileSync } from "node:fs";
@@ -47,6 +48,8 @@ interface VnEntry {
   nameVi: string;
   nameEn: string;
   type: "common_stock" | "index";
+  /** ISO 10383 MIC — XSTC=HOSE, HSTC=HNX, XHNX=UPCoM */
+  mic: string;
   /** power-of-ten scale for provider prices → canonical VND (0 = points) */
   priceScale: number;
   aliases: string[];
@@ -60,6 +63,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Vinamilk",
     nameEn: "Vietnam Dairy Products",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Vinamilk", "VNM"],
   },
@@ -70,6 +74,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "FPT",
     nameEn: "FPT Corporation",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["FPT", "Tập đoàn FPT"],
   },
@@ -80,6 +85,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Hòa Phát",
     nameEn: "Hoa Phat Group",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Hòa Phát", "HPG", "Hoa Phat"],
   },
@@ -90,6 +96,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Vietcombank",
     nameEn: "Joint Stock Commercial Bank for Foreign Trade of Vietnam",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Vietcombank", "VCB"],
   },
@@ -100,6 +107,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Vingroup",
     nameEn: "Vingroup JSC",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Vingroup", "VIC", "Tập đoàn Vingroup"],
   },
@@ -110,6 +118,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Vinhomes",
     nameEn: "Vinhomes JSC",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Vinhomes", "VHM"],
   },
@@ -120,6 +129,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Masan",
     nameEn: "Masan Group",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Masan", "MSN", "Tập đoàn Masan"],
   },
@@ -130,6 +140,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Thế Giới Di Động",
     nameEn: "Mobile World Investment Corp",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Thế Giới Di Động", "MWG", "Mobile World"],
   },
@@ -140,6 +151,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Techcombank",
     nameEn: "Vietnam Technological and Commercial Joint Stock Bank",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Techcombank", "TCB"],
   },
@@ -150,6 +162,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "ACB",
     nameEn: "Asia Commercial Bank",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["ACB", "Ngân hàng Á Châu"],
   },
@@ -160,6 +173,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "VPBank",
     nameEn: "Vietnam Prosperity Joint Stock Commercial Bank",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["VPBank", "VPB"],
   },
@@ -170,6 +184,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "BIDV",
     nameEn: "Bank for Investment and Development of Vietnam",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["BIDV", "BID"],
   },
@@ -180,6 +195,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "VietinBank",
     nameEn: "Vietnam Joint Stock Commercial Bank for Industry and Trade",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["VietinBank", "CTG"],
   },
@@ -190,6 +206,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "PV Gas",
     nameEn: "PetroVietnam Gas JSC",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["PV Gas", "GAS", "Tổng Công ty Khí Việt Nam"],
   },
@@ -200,6 +217,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Vincom Retail",
     nameEn: "Vincom Retail JSC",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Vincom Retail", "VRE"],
   },
@@ -210,6 +228,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "SSI",
     nameEn: "SSI Securities Corporation",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["SSI", "Chứng khoán SSI"],
   },
@@ -220,6 +239,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "Sacombank",
     nameEn: "Saigon Thuong Tin Commercial Joint Stock Bank",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["Sacombank", "STB"],
   },
@@ -230,6 +250,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "HDBank",
     nameEn: "Ho Chi Minh City Development Joint Stock Commercial Bank",
     type: "common_stock",
+    mic: "XSTC",
     priceScale: 3,
     aliases: ["HDBank", "HDB"],
   },
@@ -241,6 +262,7 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "VN-Index",
     nameEn: "VN-Index",
     type: "index",
+    mic: "XSTC",
     priceScale: 0,
     aliases: ["VN-Index", "VNINDEX"],
   },
@@ -251,8 +273,199 @@ const VN_UNIVERSE: VnEntry[] = [
     nameVi: "VN30",
     nameEn: "VN30 Index",
     type: "index",
+    mic: "XSTC",
     priceScale: 0,
     aliases: ["VN30", "VN30-Index"],
+  },
+  // ── HNX (MIC HSTC) — floor field verified via provider ─────────────────
+  {
+    ticker: "PVS",
+    slug: "petrovietnam_technical_services",
+    instrumentSlug: "petrovietnam_technical_services",
+    nameVi: "Dịch vụ Kỹ thuật Dầu khí",
+    nameEn: "PetroVietnam Technical Services Corporation",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["PVS", "PTECH"],
+  },
+  {
+    ticker: "SHS",
+    slug: "saigon_hanoi_securities",
+    instrumentSlug: "saigon_hanoi_securities",
+    nameVi: "Chứng khoán Sài Gòn – Hà Nội",
+    nameEn: "Saigon - Hanoi Securities JSC",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["SHS", "Chứng khoán SHS"],
+  },
+  {
+    ticker: "CEO",
+    slug: "ceo_group",
+    instrumentSlug: "ceo_group",
+    nameVi: "Tập đoàn C.E.O",
+    nameEn: "C.E.O Group JSC",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["CEO", "C.E.O Group"],
+  },
+  {
+    ticker: "IDC",
+    slug: "idico",
+    instrumentSlug: "idico",
+    nameVi: "IDICO",
+    nameEn: "IDICO Corporation - JSC",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["IDC", "IDICO"],
+  },
+  {
+    ticker: "VCS",
+    slug: "vicostone",
+    instrumentSlug: "vicostone",
+    nameVi: "Vicostone",
+    nameEn: "Vicostone JSC",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["VCS", "Vicostone"],
+  },
+  {
+    ticker: "MBS",
+    slug: "mb_securities",
+    instrumentSlug: "mb_securities",
+    nameVi: "Chứng khoán MB",
+    nameEn: "MB Securities JSC",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["MBS", "Chứng khoán MBS"],
+  },
+  {
+    ticker: "NVB",
+    slug: "national_citizen_bank",
+    instrumentSlug: "national_citizen_bank",
+    nameVi: "Ngân hàng Quốc Dân",
+    nameEn: "National Citizen Commercial Joint Stock Bank",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["NVB", "Ngân hàng NCB"],
+  },
+  {
+    ticker: "THD",
+    slug: "thaiholdings",
+    instrumentSlug: "thaiholdings",
+    nameVi: "Thaiholdings",
+    nameEn: "Thaiholdings JSC",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["THD", "Thaiholdings"],
+  },
+  {
+    ticker: "BVS",
+    slug: "bao_viet_securities",
+    instrumentSlug: "bao_viet_securities",
+    nameVi: "Chứng khoán Bảo Việt",
+    nameEn: "Bao Viet Securities JSC",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["BVS", "Chứng khoán Bảo Việt"],
+  },
+  {
+    ticker: "NTP",
+    slug: "tien_phong_plastic",
+    instrumentSlug: "tien_phong_plastic",
+    nameVi: "Nhựa Tiền Phong",
+    nameEn: "Tien Phong Plastic JSC",
+    type: "common_stock",
+    mic: "HSTC",
+    priceScale: 3,
+    aliases: ["NTP", "Nhựa Tiền Phong"],
+  },
+  // ── UPCoM (MIC XHNX) ──────────────────────────────────────────────────
+  {
+    ticker: "QNS",
+    slug: "quang_ngai_sugar",
+    instrumentSlug: "quang_ngai_sugar",
+    nameVi: "Đường Quảng Ngãi",
+    nameEn: "Quang Ngai Sugar JSC",
+    type: "common_stock",
+    mic: "XHNX",
+    priceScale: 3,
+    aliases: ["QNS", "Đường Quảng Ngãi"],
+  },
+  {
+    ticker: "MSR",
+    slug: "masan_hightech_materials",
+    instrumentSlug: "masan_hightech_materials",
+    nameVi: "Masan High-Tech Materials",
+    nameEn: "Masan High-Tech Materials Corporation",
+    type: "common_stock",
+    mic: "XHNX",
+    priceScale: 3,
+    aliases: ["MSR", "Masan High-Tech"],
+  },
+  {
+    ticker: "VLB",
+    slug: "binh_dinh_materials",
+    instrumentSlug: "binh_dinh_materials",
+    nameVi: "Vật liệu Bình Định",
+    nameEn: "Binh Dinh Investment Construction Materials JSC",
+    type: "common_stock",
+    mic: "XHNX",
+    priceScale: 3,
+    aliases: ["VLB"],
+  },
+  {
+    ticker: "ABI",
+    slug: "apec_ban_dao",
+    instrumentSlug: "apec_ban_dao",
+    nameVi: "Tập đoàn ABI",
+    nameEn: "Apec Ban Dao Investment JSC",
+    type: "common_stock",
+    mic: "XHNX",
+    priceScale: 3,
+    aliases: ["ABI"],
+  },
+  // HNX/UPCoM indices — issuer is Hanoi Stock Exchange
+  {
+    ticker: "HNX",
+    slug: "ha_noi_stock_exchange",
+    instrumentSlug: "hnx_index",
+    nameVi: "HNX-Index",
+    nameEn: "HNX-Index",
+    type: "index",
+    mic: "HSTC",
+    priceScale: 0,
+    aliases: ["HNX-Index", "HNXINDEX"],
+  },
+  {
+    ticker: "HNX30",
+    slug: "ha_noi_stock_exchange",
+    instrumentSlug: "hnx30",
+    nameVi: "HNX30",
+    nameEn: "HNX30 Index",
+    type: "index",
+    mic: "HSTC",
+    priceScale: 0,
+    aliases: ["HNX30", "HNX30-Index"],
+  },
+  {
+    ticker: "UPCOM",
+    slug: "ha_noi_stock_exchange",
+    instrumentSlug: "upcom_index",
+    nameVi: "UPCoM-Index",
+    nameEn: "UPCoM Index",
+    type: "index",
+    mic: "XHNX",
+    priceScale: 0,
+    aliases: ["UPCoM", "UPCoM-Index", "UPINDEX"],
   },
 ];
 
@@ -264,7 +477,13 @@ const HOSE_ENTITY = {
   aliases: ["HOSE", "Sở Giao dịch Chứng khoán Thành phố Hồ Chí Minh"],
 };
 
-const MIC = "XSTC";
+const HNX_ENTITY = {
+  slug: "ha_noi_stock_exchange",
+  nameVi: "Sở Giao dịch Chứng khoán Hà Nội",
+  nameEn: "Hanoi Stock Exchange",
+  type: "organization" as const,
+  aliases: ["HNX", "UPCoM"],
+};
 
 const args = process.argv.slice(2);
 const opt = (name: string) => {
@@ -409,12 +628,12 @@ async function ensureListing(
     );
   }
 
-  const listingKey = `listing:${e.instrumentSlug}:${typeSlug}:${MIC.toLowerCase()}`;
+  const listingKey = `listing:${e.instrumentSlug}:${typeSlug}:${e.mic.toLowerCase()}`;
   const venue = await c.query(`SELECT id FROM trading_venues WHERE mic=$1`, [
-    MIC,
+    e.mic,
   ]);
   if (!venue.rows.length)
-    throw new Error(`venue ${MIC} missing — run import-mic first`);
+    throw new Error(`venue ${e.mic} missing — run import-mic first`);
   const venueId = venue.rows[0].id as string;
   const lins = await c.query(
     `INSERT INTO instrument_listings (canonical_key, instrument_id, venue_id)
@@ -506,19 +725,21 @@ const universeObsId = DRY_RUN
       recordKey: "v1",
       payload: {
         assertedAt: today,
-        mic: MIC,
+        mics: [...new Set(VN_UNIVERSE.map((e) => e.mic))],
         entries: VN_UNIVERSE.map((e) => ({
           ticker: e.ticker,
           instrumentSlug: e.instrumentSlug,
           type: e.type,
+          mic: e.mic,
           nameVi: e.nameVi,
           nameEn: e.nameEn,
         })),
         hose: HOSE_ENTITY,
+        hnx: HNX_ENTITY,
       },
     });
 
-if (!DRY_RUN)
+if (!DRY_RUN) {
   await ensureEntity(
     HOSE_ENTITY.slug,
     "organization",
@@ -526,6 +747,14 @@ if (!DRY_RUN)
     HOSE_ENTITY.nameEn,
     HOSE_ENTITY.aliases,
   );
+  await ensureEntity(
+    HNX_ENTITY.slug,
+    "organization",
+    HNX_ENTITY.nameVi,
+    HNX_ENTITY.nameEn,
+    HNX_ENTITY.aliases,
+  );
+}
 
 const listings: { listingId: string; listingKey: string; entry: VnEntry }[] =
   [];
@@ -537,7 +766,7 @@ for (const e of VN_UNIVERSE) {
   if (DRY_RUN) {
     listings.push({
       listingId: "dry",
-      listingKey: `listing:${e.instrumentSlug}:${e.type === "index" ? "index" : "common_stock"}:${MIC.toLowerCase()}`,
+      listingKey: `listing:${e.instrumentSlug}:${e.type === "index" ? "index" : "common_stock"}:${e.mic.toLowerCase()}`,
       entry: e,
     });
     continue;
@@ -565,7 +794,7 @@ console.log(
 // ── Phase 2: dchart bars ─────────────────────────────────────────────────
 const targets = LIMIT ? listings.slice(0, LIMIT) : listings;
 for (const { listingId, listingKey, entry } of targets) {
-  const sym = resolveVndirectSymbol({ mic: MIC, ticker: entry.ticker });
+  const sym = resolveVndirectSymbol({ mic: entry.mic, ticker: entry.ticker });
   if (sym.kind !== "symbol") {
     summary.errors.push(`${entry.ticker}: ${sym.reason}`);
     continue;

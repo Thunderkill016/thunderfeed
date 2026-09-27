@@ -79,6 +79,18 @@ function setupDb() {
     .replace(
       "price_basis IN ('as_traded')",
       "price_basis IN ('as_traded','provider_adjusted')",
+    )
+    // 0032 delta-feed CHECKs are PG-ONLY; pg-mem keeps the 0028 originals —
+    // relax them textually the same way as the provider/price-basis checks
+    .replace(
+      "'ca_declared', 'ca_updated'",
+      "'ca_declared', 'ca_updated', 'market_move'",
+    )
+    .replace(
+      "(point_id IS NULL) <> (action_id IS NULL)",
+      // 0032 adds a third subject column pg-mem can't see yet — relax to
+      // "not both", which still catches the both-set violation
+      "(point_id IS NULL) OR (action_id IS NULL)",
     );
   db.public.registerFunction({
     name: "uuid_v7",
@@ -1352,12 +1364,14 @@ test("shiftDecimal: exact powers of ten without floats", async () => {
   assert.equal(shiftDecimal("abc", 3), null);
 });
 
-test("resolveVndirectSymbol: XSTC only, never guessed", async () => {
+test("resolveVndirectSymbol: VN MICs only, never guessed", async () => {
   const { resolveVndirectSymbol } = await import("../lib/market");
-  assert.deepEqual(resolveVndirectSymbol({ mic: "XSTC", ticker: "VNM" }), {
-    kind: "symbol",
-    symbol: "VNM",
-  });
+  for (const mic of ["XSTC", "HSTC", "XHNX"]) {
+    assert.deepEqual(resolveVndirectSymbol({ mic, ticker: "VNM" }), {
+      kind: "symbol",
+      symbol: "VNM",
+    });
+  }
   assert.equal(
     resolveVndirectSymbol({ mic: "XNGS", ticker: "VNM" }).kind,
     "unresolved_provider_symbol",
@@ -1378,4 +1392,83 @@ test("migration 0031 adds vndirect to provider allowlist, no new tables", () => 
   assert.match(sql, /'vndirect'/);
   assert.match(sql, /'imf'/); // preserved, not replaced
   assert.equal(sql.match(/CREATE TABLE/g), null);
+});
+
+test("dailyMovePct: null-safe pct between session closes", async () => {
+  const { dailyMovePct } = await import("../lib/market");
+  assert.ok(Math.abs(dailyMovePct("100", "107")! - 7) < 1e-9);
+  assert.ok(Math.abs(dailyMovePct("32.3", "31.6")! + 2.167) < 0.001);
+  assert.equal(dailyMovePct("0", "5"), null);
+  assert.equal(dailyMovePct(null, "5"), null);
+  assert.equal(dailyMovePct("abc", "5"), null);
+});
+
+test("market_move delta: material fresh-session moves only", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(
+    pool,
+    `mv${randomUUID().slice(0, 8)}`,
+    "VNM",
+    "XSTC",
+  );
+  const { getOrCreateVndirectSeries } = await import("../lib/db/market");
+  const seriesId = await getOrCreateVndirectSeries(
+    pool,
+    fx.listingId,
+    fx.listingKey,
+  );
+  const obs = async () =>
+    (
+      await pool.query(
+        `INSERT INTO reference_observations
+           (provider, dataset, record_key, payload, content_hash)
+         VALUES ('tiingo','dchart_eod',$1,'{}',$1) RETURNING id`,
+        [`obs:${randomUUID()}`],
+      )
+    ).rows[0].id as string;
+  const bar = (d: string, c: string): DailyBar => ({
+    sessionDate: d,
+    open: c,
+    high: c,
+    low: c,
+    close: c,
+    volume: "1000",
+  });
+  const day = (back: number) =>
+    new Date(Date.now() - back * 86400e3).toISOString().slice(0, 10);
+
+  // base session — no prior close, no delta
+  await applyDailyBars(pool, seriesId, [bar(day(1), "100")], await obs());
+  // fresh +7% session → one delta
+  const r = await applyDailyBars(
+    pool,
+    seriesId,
+    [bar(day(0), "107")],
+    await obs(),
+  );
+  assert.equal(r.deltas, 1);
+  const dd = await pool.query(
+    `SELECT kind, materiality, summary FROM data_deltas
+      WHERE market_point_id IS NOT NULL`,
+  );
+  assert.equal(dd.rows.length, 1);
+  assert.equal(dd.rows[0].kind, "market_move");
+  assert.match(dd.rows[0].summary, /VNM \+7\.0% phiên/);
+
+  // sub-threshold move — nothing
+  const r2 = await applyDailyBars(
+    pool,
+    seriesId,
+    [bar(day(0), "107.5")], // correction, not a new session
+    await obs(),
+  );
+  assert.equal(r2.deltas, 0);
+  // stale backfill (+100% on an old date) — nothing
+  const r3 = await applyDailyBars(
+    pool,
+    seriesId,
+    [bar("2020-01-03", "50"), bar("2020-01-06", "150")],
+    await obs(),
+  );
+  assert.equal(r3.deltas, 0);
 });

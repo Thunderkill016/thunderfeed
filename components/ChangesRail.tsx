@@ -33,6 +33,7 @@ const DELTA_LABEL: Record<string, string> = {
   macro_revision: "SỬA SỐ",
   ca_declared: "CA MỚI",
   ca_updated: "CA SỬA",
+  market_move: "GIÁ ĐỘT BIẾN",
 };
 
 function deltaHref(d: FeedDelta): string | null {
