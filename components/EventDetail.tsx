@@ -291,6 +291,11 @@ export default function EventDetail({
         >
           Đọc bài chính tại {cluster.leadArticle.source} →
         </a>
+        {eventId && (
+          <a href={`/event/${eventId}`} className="primary-link">
+            Trang sự kiện canonical →
+          </a>
+        )}
       </div>
     </Modal>
   );
