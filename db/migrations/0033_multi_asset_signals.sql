@@ -88,7 +88,7 @@ ALTER TABLE signal_outcomes ENABLE ROW LEVEL SECURITY;
 REVOKE ALL PRIVILEGES ON TABLE signal_outcomes FROM anon, authenticated;
 
 CREATE OR REPLACE FUNCTION reject_resolved_outcome_mutation() RETURNS trigger
-LANGUAGE plpgsql AS $$
+LANGUAGE plpgsql SET search_path = pg_catalog AS $$
 BEGIN
   IF TG_OP = 'DELETE' THEN
     RAISE EXCEPTION 'signal_outcomes are append-only — no deletes';
