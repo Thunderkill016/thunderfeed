@@ -2287,3 +2287,33 @@ a.change-card .change-card-event {
   letter-spacing: 0.06em;
   color: var(--ink-soft);
 }
+
+/* watch surface */
+.watch-chips {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.watch-chip {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  background: var(--bg-elev);
+}
+.watch-chip:hover {
+  color: var(--ink);
+  border-color: var(--ink-soft);
+}
+.watch-chip.on {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.watch-chip.topic {
+  font-family: var(--sans);
+}
