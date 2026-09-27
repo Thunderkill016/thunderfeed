@@ -22,6 +22,8 @@ export const AV_PROVIDER = "alphavantage";
 export const AV_DAILY_DATASET = "time_series_daily";
 export const TIINGO_PROVIDER = "tiingo";
 export const TIINGO_EOD_DATASET = "eod_daily";
+export const VNDIRECT_PROVIDER = "vndirect";
+export const VNDIRECT_DCHART_DATASET = "dchart_eod";
 
 export interface SeriesSpec {
   listingId: string;
@@ -104,6 +106,20 @@ export function getOrCreateTiingoEodSeries(
     listingKey,
     provider: TIINGO_PROVIDER,
     dataset: TIINGO_EOD_DATASET,
+  });
+}
+
+/** VNDirect dchart EOD contract — VN listings, as_traded bars. */
+export function getOrCreateVndirectSeries(
+  db: Q,
+  listingId: string,
+  listingKey: string,
+): Promise<string> {
+  return getOrCreateMarketSeries(db, {
+    listingId,
+    listingKey,
+    provider: VNDIRECT_PROVIDER,
+    dataset: VNDIRECT_DCHART_DATASET,
   });
 }
 

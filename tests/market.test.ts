@@ -1288,3 +1288,94 @@ test("migration 0025 adds tiingo to provider allowlist, no new tables", () => {
   assert.equal(sql.match(/CREATE TABLE/g), null);
   assert.equal(sql.match(/ALTER TABLE instrument_|trading_venues/g), null);
 });
+
+test("parseVndirectHistory: valid series scales thousand-VND to VND", async () => {
+  const { parseVndirectHistory } = await import("../lib/market");
+  const r = parseVndirectHistory(
+    {
+      t: [1758844800, 1759104000],
+      o: [56.883, 56.513],
+      h: [57.16, 56.605],
+      l: [56.513, 55.68],
+      c: [56.513, 55.773],
+      v: [2489900, 5130400],
+      s: "ok",
+    },
+    { priceScale: 3 },
+  );
+  assert.equal(r.kind, "series");
+  if (r.kind !== "series") return;
+  // 56.513 (thousand) → "56513" — exact decimal shift, no IEEE-754
+  assert.equal(r.bars[0].close, "56513");
+  assert.equal(r.bars[0].open, "56883");
+  assert.equal(r.bars[1].close, "55773");
+  assert.equal(r.bars[0].sessionDate, "2025-09-26");
+  assert.equal(r.bars[0].volume, "2489900");
+});
+
+test("parseVndirectHistory: index points stay unscaled", async () => {
+  const { parseVndirectHistory } = await import("../lib/market");
+  const r = parseVndirectHistory(
+    {
+      t: [1758844800],
+      o: [1666.68],
+      h: [1671.43],
+      l: [1652.65],
+      c: [1660.7],
+      v: [899321657],
+      s: "ok",
+    },
+    { priceScale: 0 },
+  );
+  assert.equal(r.kind, "series");
+  if (r.kind !== "series") return;
+  assert.equal(r.bars[0].close, "1660.7");
+});
+
+test("parseVndirectHistory: non-ok status is provider_error, never empty series", async () => {
+  const { parseVndirectHistory } = await import("../lib/market");
+  const bad = parseVndirectHistory({ s: "error" });
+  assert.equal(bad.kind, "provider_error");
+  const nodata = parseVndirectHistory({ s: "no_data" });
+  assert.equal(nodata.kind, "provider_error");
+  if (nodata.kind === "provider_error")
+    assert.equal(nodata.errorClass, "empty");
+  const missing = parseVndirectHistory({ s: "ok", t: [] });
+  assert.equal(missing.kind, "provider_error");
+});
+
+test("shiftDecimal: exact powers of ten without floats", async () => {
+  const { shiftDecimal } = await import("../lib/market");
+  assert.equal(shiftDecimal(56.513, 3), "56513");
+  assert.equal(shiftDecimal("0.001", 3), "1");
+  assert.equal(shiftDecimal("-1.5", 2), "-150");
+  assert.equal(shiftDecimal("abc", 3), null);
+});
+
+test("resolveVndirectSymbol: XSTC only, never guessed", async () => {
+  const { resolveVndirectSymbol } = await import("../lib/market");
+  assert.deepEqual(resolveVndirectSymbol({ mic: "XSTC", ticker: "VNM" }), {
+    kind: "symbol",
+    symbol: "VNM",
+  });
+  assert.equal(
+    resolveVndirectSymbol({ mic: "XNGS", ticker: "VNM" }).kind,
+    "unresolved_provider_symbol",
+  );
+  assert.equal(
+    resolveVndirectSymbol({ mic: "XSTC", ticker: null }).kind,
+    "unresolved_provider_symbol",
+  );
+});
+
+test("migration 0031 adds vndirect to provider allowlist, no new tables", () => {
+  const sql = readFileSync(
+    fileURLToPath(
+      new URL("../db/migrations/0031_vndirect_provider.sql", import.meta.url),
+    ),
+    "utf8",
+  );
+  assert.match(sql, /'vndirect'/);
+  assert.match(sql, /'imf'/); // preserved, not replaced
+  assert.equal(sql.match(/CREATE TABLE/g), null);
+});

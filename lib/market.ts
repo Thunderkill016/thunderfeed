@@ -663,3 +663,140 @@ export function logReturn(
     return null;
   return Math.log(c / p);
 }
+
+// ── VNDirect dchart adapter (VN equities + HOSE indices) ─────────────────
+// Endpoint: GET https://dchart-api.vndirect.com.vn/dchart/history
+//   ?symbol=<TICKER>&resolution=D&from=<unix_s>&to=<unix_s>
+// No auth. Response: {t:[unix_s],o:[],h:[],l:[],c:[],v:[],s:"ok"}.
+// Units: equity prices arrive in THOUSAND VND (VNM 56.513 → 56,513₫);
+// index values are index points (VNINDEX ~1,660). The caller declares
+// priceScale per symbol — canonical storage is full VND; the raw payload
+// is preserved verbatim in reference_observations either way.
+
+/** HOSE operating MIC is XSTC; HNX/UPCOM (XHNX/XUPX) aren't imported yet. */
+export const VNDIRECT_VN_MICS = new Set(["XSTC"]);
+
+export function resolveVndirectSymbol(listing: {
+  mic: string | null | undefined;
+  ticker: string | null | undefined;
+}): AvSymbolResolution {
+  const t = listing.ticker?.trim();
+  if (!t) return { kind: "unresolved_provider_symbol", reason: "no_ticker" };
+  if (!listing.mic || !VNDIRECT_VN_MICS.has(listing.mic))
+    return {
+      kind: "unresolved_provider_symbol",
+      reason: `unsupported_venue:${listing.mic ?? "none"}`,
+    };
+  return { kind: "symbol", symbol: t };
+}
+
+/** Exact decimal ×10^n via point-shift — never Number(), so
+ *  56.513×10^3 is "56513", not 56512.999999999. Returns null on
+ *  input normalizeDecimalString already rejects. */
+export function shiftDecimal(v: unknown, places: number): string | null {
+  const s = normalizeDecimalString(v);
+  if (s == null || places === 0) return s;
+  const neg = s.startsWith("-");
+  const [intPart, fracPart = ""] = s.replace("-", "").split(".");
+  const digits = intPart + fracPart;
+  const pointAt = intPart.length + places;
+  let out: string;
+  if (pointAt >= digits.length) {
+    out = digits + "0".repeat(pointAt - digits.length);
+  } else if (pointAt <= 0) {
+    out = "0." + "0".repeat(-pointAt) + digits;
+  } else {
+    out = digits.slice(0, pointAt) + "." + digits.slice(pointAt);
+  }
+  // re-normalize: trims leading zeros the shift may have introduced
+  return normalizeDecimalString((neg ? "-" : "") + out);
+}
+
+export type VndirectErrorClass =
+  "invalid_symbol" | "empty" | "unexpected_schema" | "api_error";
+
+export type VndirectResult =
+  | { kind: "series"; bars: DailyBar[]; meta: { symbol?: string } }
+  | {
+      kind: "provider_error";
+      errorClass: VndirectErrorClass;
+      detail: string;
+    };
+
+/** Parse a VNDirect dchart/history payload. `s:"ok"` with empty arrays is
+ *  a genuine empty window; non-ok status is a provider refusal — never
+ *  mistaken for a successful series. priceScale is an integer power of
+ *  ten (3 for thousand-VND equities, 0 for index points). */
+export function parseVndirectHistory(
+  payload: unknown,
+  opts: { priceScale?: number } = {},
+): VndirectResult {
+  const scale = opts.priceScale ?? 0;
+  if (payload == null || typeof payload !== "object")
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: "payload is not an object",
+    };
+  const p = payload as Record<string, unknown>;
+  if (typeof p.s === "string" && p.s !== "ok")
+    return {
+      kind: "provider_error",
+      errorClass: p.s === "no_data" ? "empty" : "api_error",
+      detail: `provider status: ${p.s}`,
+    };
+  const t = p.t,
+    o = p.o,
+    h = p.h,
+    l = p.l,
+    c = p.c,
+    v = p.v;
+  for (const [name, arr] of Object.entries({ t, o, h, l, c, v })) {
+    if (!Array.isArray(arr))
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `missing or non-array '${name}' — keys: ${Object.keys(p).join(",")}`,
+      };
+  }
+  if (!(t as unknown[]).length)
+    return {
+      kind: "provider_error",
+      errorClass: "empty",
+      detail: "zero bars",
+    };
+  const bars: DailyBar[] = [];
+  for (let i = 0; i < (t as unknown[]).length; i++) {
+    const ts = (t as unknown[])[i];
+    if (typeof ts !== "number" || !Number.isFinite(ts))
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `t[${i}] not a number: ${JSON.stringify(ts)}`,
+      };
+    const open = shiftDecimal((o as unknown[])[i], scale);
+    const high = shiftDecimal((h as unknown[])[i], scale);
+    const low = shiftDecimal((l as unknown[])[i], scale);
+    const close = shiftDecimal((c as unknown[])[i], scale);
+    if (open == null || high == null || low == null || close == null)
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `bar[${i}] has non-decimal price`,
+      };
+    const vol = (v as unknown[])[i];
+    bars.push({
+      sessionDate: new Date(ts * 1000).toISOString().slice(0, 10),
+      open,
+      high,
+      low,
+      close,
+      volume:
+        vol == null || !Number.isFinite(Number(vol))
+          ? null
+          : String(Math.trunc(Number(vol))),
+    });
+  }
+  bars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
+  return { kind: "series", bars, meta: {} };
+}
