@@ -16,6 +16,7 @@
  * Pure functions; the page supplies rows and `nowMs`.
  */
 import { canonicalEntity, extractEntities } from "./entities";
+import { jaccard, titleShingles } from "./enrich";
 import {
   foldSearchText,
   matchSignalKeywords,
@@ -250,11 +251,38 @@ export function economicScope(topic: string): number {
   }
 }
 
-/** Evidence strength 0..1 — NOT coverage. Primary presence and claim
- *  support move it; disputes drag it; wire-reprint breadth barely does. */
+/** Prominent entity keys for an event — subject/actor rows from
+ *  event_entities (R6c). 'mention' rows (signature-only entities like the
+ *  UN in a pager story) never reach impact/geo/relevance/suppression.
+ *  Falls back to title extraction until the backfill has run. */
+export function prominentEntities(e: {
+  title: string;
+  entities?: { key: string; role: string; prominence: number }[];
+}): string[] {
+  const rows = e.entities ?? [];
+  /* unenriched rows carry the column defaults (mention, 0.5) — if every
+   * row is that exact default the backfill hasn't seen this event yet,
+   * so fall back to the title extractor rather than treating all
+   * signature entities as prominent */
+  const enriched = rows.some(
+    (en) => en.role !== "mention" || en.prominence !== 0.5,
+  );
+  if (enriched) {
+    /* subject/actor only — 'mention' rows are signature noise (the UN in
+     *  a pager story); an enriched event with zero non-mentions honestly
+     *  has no central entity */
+    return rows.filter((en) => en.role !== "mention").map((en) => en.key);
+  }
+  return extractEntities(e.title);
+}
+
+/** Evidence strength 0..1 — NOT coverage. Independent origins and claim
+ *  adjudication move it; wire-reprint breadth barely does. */
 export function evidenceStrength(e: {
   sourceCount: number;
+  independentSourceCount?: number;
   primaryCount: number;
+  primaryDocCount?: number;
   claimCount: number;
   supportedCount: number;
   disputedCount: number;
@@ -265,17 +293,18 @@ export function evidenceStrength(e: {
    *  Disputes stay a ratio: they measure relative conflict */
   const supportedN = Math.min(1, e.supportedCount / 5);
   const disputedRatio = e.disputedCount / claimN;
-  /* Reality check (prod corpus): supported/confirmed claims and primary
-   *  sources are near-zero today — the adjudication layer doesn't feed
-   *  them yet. sourceCount breadth and the dispute penalty are the only
-   *  live signals, so they carry the weight. */
+  /* independence: unclassified rows fall back to source breadth (lower
+   *  ceiling — raw counts overstate origins). 5 independent outlets is
+   *  saturated; a wire cluster counts once. */
+  const indep = e.independentSourceCount ?? Math.min(e.sourceCount, 5);
+  const primdocs = (e.primaryCount ?? 0) + (e.primaryDocCount ?? 0);
   const v =
     0.3 + // baseline: the resolver already clustered it into an event
-    0.35 * Math.min(1, e.sourceCount / 8) +
+    0.35 * Math.min(1, indep / 5) +
     /* claim depth = extraction substantiveness, not importance — it
      *  stays inside evidence where it belongs, never in impact */
     0.15 * Math.min(1, e.claimCount / 30) +
-    0.1 * Math.min(1, e.primaryCount) +
+    0.1 * Math.min(1, primdocs) +
     0.15 * supportedN -
     0.4 * disputedRatio;
   return Math.max(0, Math.min(1, v));
@@ -414,7 +443,7 @@ export function buildRadarFeed(
   }
 
   for (const e of events) {
-    const entities = extractEntities(e.title);
+    const entities = prominentEntities(e);
     const instr = instrumentMatches(e.title, null, watch);
     const rel = itemRelevance(entities, e.topic, instr, watch);
     const freshness = freshnessFactor(
@@ -449,11 +478,17 @@ export function buildRadarFeed(
         e.status === "emerging" || e.status === "active" ? "medium" : "low",
       detectedAt: e.lastSeenAt,
       href: `/event/${e.id}`,
-      // coverage is context metadata, not confidence
+      // coverage is context metadata, not confidence — independent
+      // origins are shown separately once clustering has classified them
       evidence: [
-        `${e.sourceCount} nguồn`,
+        e.independentSourceCount > 0 && e.independentSourceCount < e.sourceCount
+          ? `${e.sourceCount} nguồn · ${e.independentSourceCount} độc lập`
+          : `${e.sourceCount} nguồn`,
         `${e.claimCount} dữ kiện`,
-        ...(e.primaryCount > 0 ? [`${e.primaryCount} nguồn gốc`] : []),
+        ...(e.supportedCount > 0 ? [`${e.supportedCount} được xác nhận`] : []),
+        ...(e.primaryCount + (e.primaryDocCount ?? 0) > 0
+          ? [`${e.primaryCount + (e.primaryDocCount ?? 0)} nguồn gốc`]
+          : []),
         ...(e.disputedCount > 0 ? [`${e.disputedCount} tranh chấp`] : []),
       ],
       related: [],
@@ -468,19 +503,33 @@ export function buildRadarFeed(
   /* Same-story suppression: the resolver legitimately keeps sub-stories
    *  as separate events (summit arrival / truce / red lines), but the
    *  feed shouldn't spend 5 slots on one summit. A kept item shadows
-   *  later items sharing ≥2 of its entity keys. */
+   *  later items sharing ≥2 DISTINCTIVE entities — geo entities (country/
+   *  region/place) don't count: "vietnam+us" co-occurs across unrelated
+   *  stories, so sharing them is not sharing a story (E037 regression).
+   *  Events whose whole signature is countries fall back to headline
+   *  shingles — two sub-stories of one summit phrase nearly alike. */
+  const GEO_TYPES = new Set(["country", "region", "place"]);
+  const distinctive = (keys: string[] | undefined) =>
+    (keys ?? []).filter((k) => !GEO_TYPES.has(canonicalEntity(k)?.type ?? ""));
+  const titleSh = new Map<string, Set<string>>();
   const kept: RadarItem[] = [];
   for (const item of items.sort((a, b) => b.score - a.score)) {
     if (item.score < 8) break; // display floor — dead weight ends the scan
-    const keys = item.entityKeys;
-    const shadowed =
-      keys !== undefined &&
-      keys.length > 0 &&
-      kept.some(
-        (k) =>
-          k.entityKeys !== undefined &&
-          keys.filter((e) => k.entityKeys!.includes(e)).length >= 2,
-      );
+    const keys = distinctive(item.entityKeys);
+    const shadowed = kept.some((k) => {
+      const shared = keys.filter((e) => distinctive(k.entityKeys).includes(e));
+      if (shared.length >= 2) return true;
+      /* headline near-match catches pure-dyad pairs ("Mỹ-Trung đình
+       * chiến" vs "Mỹ-Trung gia hạn đình chiến") whose distinctive set
+       * is empty — same shingles = same story. Events only: deltas are
+       * synthetic strings, never editorial dupes */
+      if (k.kind !== "event" || item.kind !== "event") return false;
+      const a = titleSh.get(k.id) ?? titleShingles(k.title);
+      titleSh.set(k.id, a);
+      const b = titleSh.get(item.id) ?? titleShingles(item.title);
+      titleSh.set(item.id, b);
+      return a.size >= 4 && jaccard(a, b) >= 0.5;
+    });
     if (!shadowed) {
       kept.push(item);
       if (kept.length >= cap) break;

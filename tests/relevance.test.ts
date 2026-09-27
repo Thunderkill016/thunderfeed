@@ -61,7 +61,11 @@ test("scoreRelevance: entity match dominates topic match", () => {
   assert.equal(r.matchedEntities.length, 1);
   assert.ok(r.score > 0.5, `entity hit should score >0.5, got ${r.score}`);
 
-  const topicOnly = scoreRelevance(c, { entities: [], instruments: [], topics: ["world"] });
+  const topicOnly = scoreRelevance(c, {
+    entities: [],
+    instruments: [],
+    topics: ["world"],
+  });
   assert.ok(topicOnly.score < r.score, "topic alone scores lower");
   assert.equal(topicOnly.matchedEntities.length, 0);
 });

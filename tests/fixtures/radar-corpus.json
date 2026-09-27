@@ -450,14 +450,17 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T11:22:43.092Z",
-        "lastSeenAt": "2026-09-27T17:51:50.676Z",
+        "lastSeenAt": "2026-09-27T18:54:04.688Z",
         "claimCount": 5,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 13,
         "primaryCount": 0,
         "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T12:40:49.490Z"
+        "lastMaterialAt": "2026-09-27T12:40:49.490Z",
+        "independentSourceCount": 21,
+        "primaryDocCount": 5,
+        "entities": []
       }
     },
     {
@@ -471,14 +474,33 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T14:23:40.686Z",
-        "lastSeenAt": "2026-09-27T17:51:36.567Z",
+        "lastSeenAt": "2026-09-27T19:28:24.473Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 8,
+        "sourceCount": 9,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:51:36.567Z"
+        "lastMaterialAt": "2026-09-27T19:28:24.473Z",
+        "independentSourceCount": 9,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "lebanon",
+            "role": "mention",
+            "prominence": 0.261111
+          },
+          {
+            "key": "israel",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "palestine",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -492,14 +514,58 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T04:54:02.889Z",
-        "lastSeenAt": "2026-09-27T17:51:03.447Z",
+        "lastSeenAt": "2026-09-27T19:26:57.258Z",
         "claimCount": 30,
         "supportedCount": 0,
         "disputedCount": 2,
         "sourceCount": 37,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:51:03.447Z"
+        "lastMaterialAt": "2026-09-27T19:26:57.258Z",
+        "independentSourceCount": 236,
+        "primaryDocCount": 24,
+        "entities": [
+          {
+            "key": "phuquoc",
+            "role": "mention",
+            "prominence": 0.180418
+          },
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "canada",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.302091
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.267871
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.214639
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.165209
+          }
+        ]
       }
     },
     {
@@ -513,14 +579,43 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T08:24:40.571Z",
-        "lastSeenAt": "2026-09-27T17:50:37.672Z",
+        "lastSeenAt": "2026-09-27T19:24:36.415Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 1,
-        "sourceCount": 21,
+        "sourceCount": 24,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:50:37.672Z"
+        "lastMaterialAt": "2026-09-27T18:52:20.095Z",
+        "independentSourceCount": 32,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "southafrica",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "thailand",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "philippines",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "turkey",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.177027
+          }
+        ]
       }
     },
     {
@@ -534,14 +629,68 @@
         "status": "resolved",
         "topic": "business",
         "firstSeenAt": "2026-09-24T03:49:39.553Z",
-        "lastSeenAt": "2026-09-27T17:50:08.082Z",
+        "lastSeenAt": "2026-09-27T19:23:55.934Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 21,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:50:08.082Z"
+        "lastMaterialAt": "2026-09-27T19:23:55.934Z",
+        "independentSourceCount": 67,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "g20",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "northkorea",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "xijinping",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "putin",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.164706
+          },
+          {
+            "key": "trump",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.164706
+          }
+        ]
       }
     },
     {
@@ -555,14 +704,38 @@
         "status": "emerging",
         "topic": "sports",
         "firstSeenAt": "2026-09-27T12:38:12.371Z",
-        "lastSeenAt": "2026-09-27T17:49:35.291Z",
+        "lastSeenAt": "2026-09-27T19:23:17.915Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:49:35.291Z"
+        "lastMaterialAt": "2026-09-27T19:23:17.915Z",
+        "independentSourceCount": 48,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "philippines",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "asean",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "aseancup",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -576,14 +749,93 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-24T19:38:19.521Z",
-        "lastSeenAt": "2026-09-27T17:48:57.213Z",
-        "claimCount": 77,
+        "lastSeenAt": "2026-09-27T19:09:26.596Z",
+        "claimCount": 81,
         "supportedCount": 0,
         "disputedCount": 8,
-        "sourceCount": 46,
+        "sourceCount": 47,
         "primaryCount": 0,
         "lastMaterialType": "claim_corrected",
-        "lastMaterialAt": "2026-09-27T17:48:57.213Z"
+        "lastMaterialAt": "2026-09-27T19:09:26.596Z",
+        "independentSourceCount": 371,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "trump",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "ai",
+            "role": "mention",
+            "prominence": 0.155063
+          },
+          {
+            "key": "putin",
+            "role": "mention",
+            "prominence": 0.162658
+          },
+          {
+            "key": "ukraine",
+            "role": "mention",
+            "prominence": 0.167722
+          },
+          {
+            "key": "zelensky",
+            "role": "mention",
+            "prominence": 0.16519
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.177848
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.167722
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.152532
+          },
+          {
+            "key": "taiwan",
+            "role": "mention",
+            "prominence": 0.182911
+          },
+          {
+            "key": "xijinping",
+            "role": "mention",
+            "prominence": 0.271519
+          },
+          {
+            "key": "middleeast",
+            "role": "mention",
+            "prominence": 0.157595
+          },
+          {
+            "key": "qatar",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.329747
+          }
+        ]
       }
     },
     {
@@ -597,14 +849,28 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T06:11:09.292Z",
-        "lastSeenAt": "2026-09-27T17:48:45.276Z",
+        "lastSeenAt": "2026-09-27T19:27:57.521Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T06:11:09.292Z"
+        "lastMaterialAt": "2026-09-27T06:11:09.292Z",
+        "independentSourceCount": 10,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "chatgpt",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "openai",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -618,14 +884,38 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T02:17:04.650Z",
-        "lastSeenAt": "2026-09-27T17:48:28.733Z",
+        "lastSeenAt": "2026-09-27T19:20:39.456Z",
         "claimCount": 11,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 22,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:46:18.584Z"
+        "lastMaterialAt": "2026-09-27T19:18:20.999Z",
+        "independentSourceCount": 111,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "xijinping",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "us",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "trump",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -639,14 +929,88 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T17:58:18.031Z",
-        "lastSeenAt": "2026-09-27T17:48:12.925Z",
-        "claimCount": 9,
+        "lastSeenAt": "2026-09-27T19:27:37.283Z",
+        "claimCount": 12,
         "supportedCount": 0,
         "disputedCount": 2,
         "sourceCount": 31,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:41:21.043Z"
+        "lastMaterialAt": "2026-09-27T19:27:37.283Z",
+        "independentSourceCount": 59,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.195455
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.256061
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.256061
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.165152
+          },
+          {
+            "key": "miennam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "chatgpt",
+            "role": "mention",
+            "prominence": 0.195455
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.210606
+          },
+          {
+            "key": "anthropic",
+            "role": "mention",
+            "prominence": 0.286364
+          },
+          {
+            "key": "ai",
+            "role": "mention",
+            "prominence": 0.165152
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "australia",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "openai",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "spacex",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -660,14 +1024,28 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T17:48:02.165Z",
-        "lastSeenAt": "2026-09-27T17:48:02.165Z",
+        "lastSeenAt": "2026-09-27T18:47:14.655Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 8,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T17:48:02.165Z"
+        "lastMaterialAt": "2026-09-27T17:48:02.165Z",
+        "independentSourceCount": 17,
+        "primaryDocCount": 3,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.205556
+          }
+        ]
       }
     },
     {
@@ -681,14 +1059,138 @@
         "status": "emerging",
         "topic": "sports",
         "firstSeenAt": "2026-09-25T15:09:58.364Z",
-        "lastSeenAt": "2026-09-27T17:47:06.091Z",
+        "lastSeenAt": "2026-09-27T19:25:38.942Z",
         "claimCount": 32,
-        "supportedCount": 0,
+        "supportedCount": 1,
         "disputedCount": 3,
         "sourceCount": 37,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:47:06.091Z"
+        "lastMaterialAt": "2026-09-27T19:25:38.942Z",
+        "independentSourceCount": 322,
+        "primaryDocCount": 13,
+        "entities": [
+          {
+            "key": "laos",
+            "role": "mention",
+            "prominence": 0.170958
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.155988
+          },
+          {
+            "key": "germany",
+            "role": "mention",
+            "prominence": 0.152994
+          },
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "thailand",
+            "role": "mention",
+            "prominence": 0.344611
+          },
+          {
+            "key": "musk",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "starlink",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vinfast",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "tesla",
+            "role": "mention",
+            "prominence": 0.152994
+          },
+          {
+            "key": "pakistan",
+            "role": "mention",
+            "prominence": 0.176946
+          },
+          {
+            "key": "aseancup",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "bangladesh",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.155988
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.266766
+          },
+          {
+            "key": "japan",
+            "role": "mention",
+            "prominence": 0.176946
+          },
+          {
+            "key": "northkorea",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "malaysia",
+            "role": "mention",
+            "prominence": 0.170958
+          },
+          {
+            "key": "singapore",
+            "role": "mention",
+            "prominence": 0.167964
+          },
+          {
+            "key": "indonesia",
+            "role": "mention",
+            "prominence": 0.188922
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.167964
+          },
+          {
+            "key": "philippines",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "asean",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "kimsangsik",
+            "role": "mention",
+            "prominence": 0.20988
+          },
+          {
+            "key": "asiad",
+            "role": "mention",
+            "prominence": 0.263772
+          }
+        ]
       }
     },
     {
@@ -702,14 +1204,38 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T10:47:55.397Z",
-        "lastSeenAt": "2026-09-27T17:46:48.593Z",
+        "lastSeenAt": "2026-09-27T19:22:03.988Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 8,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:46:48.593Z"
+        "lastMaterialAt": "2026-09-27T17:46:48.593Z",
+        "independentSourceCount": 11,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "hungary",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "who",
+            "role": "mention",
+            "prominence": 0.240909
+          },
+          {
+            "key": "israel",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "ireland",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -723,14 +1249,73 @@
         "status": "emerging",
         "topic": "business",
         "firstSeenAt": "2026-09-25T05:23:57.206Z",
-        "lastSeenAt": "2026-09-27T17:45:35.337Z",
+        "lastSeenAt": "2026-09-27T19:21:09.286Z",
         "claimCount": 48,
         "supportedCount": 0,
         "disputedCount": 6,
         "sourceCount": 35,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:43:11.435Z"
+        "lastMaterialAt": "2026-09-27T19:21:09.286Z",
+        "independentSourceCount": 349,
+        "primaryDocCount": 49,
+        "entities": [
+          {
+            "key": "phuquoc",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.167157
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.162255
+          },
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "canada",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.248039
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.333824
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.169608
+          },
+          {
+            "key": "northkorea",
+            "role": "mention",
+            "prominence": 0.154902
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.157353
+          },
+          {
+            "key": "daklak",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -744,14 +1329,43 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T04:33:08.732Z",
-        "lastSeenAt": "2026-09-27T17:45:08.709Z",
+        "lastSeenAt": "2026-09-27T19:19:17.212Z",
         "claimCount": 8,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 15,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:45:08.709Z"
+        "lastMaterialAt": "2026-09-27T19:19:17.212Z",
+        "independentSourceCount": 32,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "india",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "asiad",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "myanmar",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -772,7 +1386,31 @@
         "sourceCount": 23,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:44:39.281Z"
+        "lastMaterialAt": "2026-09-27T17:44:39.281Z",
+        "independentSourceCount": 135,
+        "primaryDocCount": 27,
+        "entities": [
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.20298
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.236093
+          },
+          {
+            "key": "canada",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -786,14 +1424,38 @@
         "status": "resolved",
         "topic": "world",
         "firstSeenAt": "2026-09-24T03:29:50.424Z",
-        "lastSeenAt": "2026-09-27T17:44:05.557Z",
+        "lastSeenAt": "2026-09-27T19:16:33.200Z",
         "claimCount": 44,
         "supportedCount": 0,
         "disputedCount": 11,
         "sourceCount": 43,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:44:05.557Z"
+        "lastMaterialAt": "2026-09-27T19:16:33.200Z",
+        "independentSourceCount": 234,
+        "primaryDocCount": 3,
+        "entities": [
+          {
+            "key": "iran",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "trump",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.158097
+          }
+        ]
       }
     },
     {
@@ -807,14 +1469,43 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-25T05:05:13.545Z",
-        "lastSeenAt": "2026-09-27T17:42:18.237Z",
+        "lastSeenAt": "2026-09-27T18:44:58.002Z",
         "claimCount": 5,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 13,
         "primaryCount": 0,
-        "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T17:42:18.237Z"
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T18:44:58.002Z",
+        "independentSourceCount": 71,
+        "primaryDocCount": 9,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.204054
+          },
+          {
+            "key": "belgium",
+            "role": "mention",
+            "prominence": 0.163514
+          },
+          {
+            "key": "canada",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -828,14 +1519,28 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T13:12:12.109Z",
-        "lastSeenAt": "2026-09-27T17:41:52.922Z",
+        "lastSeenAt": "2026-09-27T19:17:26.486Z",
         "claimCount": 5,
         "supportedCount": 0,
         "disputedCount": 2,
         "sourceCount": 16,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:41:52.922Z"
+        "lastMaterialAt": "2026-09-27T19:17:26.486Z",
+        "independentSourceCount": 38,
+        "primaryDocCount": 4,
+        "entities": [
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.175
+          },
+          {
+            "key": "hanoi",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -849,14 +1554,78 @@
         "status": "resolved",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-24T19:29:18.463Z",
-        "lastSeenAt": "2026-09-27T17:40:31.913Z",
-        "claimCount": 4,
+        "lastSeenAt": "2026-09-27T18:42:38.898Z",
+        "claimCount": 6,
         "supportedCount": 0,
-        "disputedCount": 0,
+        "disputedCount": 1,
         "sourceCount": 27,
         "primaryCount": 0,
         "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T17:40:31.913Z"
+        "lastMaterialAt": "2026-09-27T18:42:38.898Z",
+        "independentSourceCount": 51,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "yemen",
+            "role": "mention",
+            "prominence": 0.323077
+          },
+          {
+            "key": "israel",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "saudi",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "redsea",
+            "role": "mention",
+            "prominence": 0.169231
+          },
+          {
+            "key": "federal_reserve",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "baltic",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "japan",
+            "role": "mention",
+            "prominence": 0.226923
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "southkorea",
+            "role": "mention",
+            "prominence": 0.207692
+          },
+          {
+            "key": "ukraine",
+            "role": "mention",
+            "prominence": 0.169231
+          },
+          {
+            "key": "northkorea",
+            "role": "mention",
+            "prominence": 0.207692
+          }
+        ]
       }
     },
     {
@@ -870,14 +1639,28 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T10:15:17.587Z",
-        "lastSeenAt": "2026-09-27T17:39:00.690Z",
+        "lastSeenAt": "2026-09-27T19:28:54.769Z",
         "claimCount": 19,
         "supportedCount": 0,
         "disputedCount": 4,
         "sourceCount": 23,
         "primaryCount": 0,
-        "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T17:39:00.690Z"
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T19:28:54.769Z",
+        "independentSourceCount": 66,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "russia",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "switzerland",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -891,14 +1674,168 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-24T03:29:49.600Z",
-        "lastSeenAt": "2026-09-27T17:36:44.785Z",
-        "claimCount": 209,
-        "supportedCount": 0,
+        "lastSeenAt": "2026-09-27T19:29:40.876Z",
+        "claimCount": 210,
+        "supportedCount": 6,
         "disputedCount": 25,
         "sourceCount": 58,
         "primaryCount": 0,
-        "lastMaterialType": "claim_corrected",
-        "lastMaterialAt": "2026-09-27T17:36:44.785Z"
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T19:29:40.876Z",
+        "independentSourceCount": 1050,
+        "primaryDocCount": 13,
+        "entities": [
+          {
+            "key": "japan",
+            "role": "mention",
+            "prominence": 0.163369
+          },
+          {
+            "key": "zelensky",
+            "role": "mention",
+            "prominence": 0.160695
+          },
+          {
+            "key": "ukraine",
+            "role": "mention",
+            "prominence": 0.185651
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.191889
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "uk",
+            "role": "mention",
+            "prominence": 0.150891
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "g20",
+            "role": "mention",
+            "prominence": 0.156239
+          },
+          {
+            "key": "trump",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "putin",
+            "role": "mention",
+            "prominence": 0.159804
+          },
+          {
+            "key": "taiwan",
+            "role": "mention",
+            "prominence": 0.172282
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.313102
+          },
+          {
+            "key": "drone",
+            "role": "mention",
+            "prominence": 0.163369
+          },
+          {
+            "key": "xijinping",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.215954
+          },
+          {
+            "key": "redsea",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "who",
+            "role": "mention",
+            "prominence": 0.160695
+          },
+          {
+            "key": "saudi",
+            "role": "mention",
+            "prominence": 0.161586
+          },
+          {
+            "key": "yemen",
+            "role": "mention",
+            "prominence": 0.155348
+          },
+          {
+            "key": "asean",
+            "role": "mention",
+            "prominence": 0.182977
+          },
+          {
+            "key": "aseancup",
+            "role": "mention",
+            "prominence": 0.179412
+          },
+          {
+            "key": "asiad",
+            "role": "mention",
+            "prominence": 0.156239
+          },
+          {
+            "key": "pakistan",
+            "role": "mention",
+            "prominence": 0.161586
+          },
+          {
+            "key": "philippines",
+            "role": "mention",
+            "prominence": 0.187433
+          },
+          {
+            "key": "thailand",
+            "role": "mention",
+            "prominence": 0.16426
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.152674
+          },
+          {
+            "key": "middleeast",
+            "role": "mention",
+            "prominence": 0.156239
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.158021
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.187433
+          },
+          {
+            "key": "netanyahu",
+            "role": "mention",
+            "prominence": 0.158021
+          }
+        ]
       }
     },
     {
@@ -912,14 +1849,38 @@
         "status": "resolved",
         "topic": "world",
         "firstSeenAt": "2026-09-24T13:45:51.355Z",
-        "lastSeenAt": "2026-09-27T17:34:32.252Z",
-        "claimCount": 10,
+        "lastSeenAt": "2026-09-27T18:36:59.204Z",
+        "claimCount": 12,
         "supportedCount": 0,
         "disputedCount": 1,
         "sourceCount": 31,
         "primaryCount": 0,
         "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T17:34:32.252Z"
+        "lastMaterialAt": "2026-09-27T18:36:59.204Z",
+        "independentSourceCount": 96,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "trump",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "iran",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "drone",
+            "role": "mention",
+            "prominence": 0.231633
+          }
+        ]
       }
     },
     {
@@ -940,7 +1901,36 @@
         "sourceCount": 21,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-26T05:34:04.375Z"
+        "lastMaterialAt": "2026-09-26T05:34:04.375Z",
+        "independentSourceCount": 60,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "germany",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "sudan",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "france",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "macron",
+            "role": "mention",
+            "prominence": 0.297541
+          },
+          {
+            "key": "ai",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -961,7 +1951,21 @@
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:15:24.944Z"
+        "lastMaterialAt": "2026-09-27T17:15:24.944Z",
+        "independentSourceCount": 10,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "france",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "ai",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -975,14 +1979,173 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-24T13:45:21.972Z",
-        "lastSeenAt": "2026-09-27T17:14:46.384Z",
-        "claimCount": 128,
+        "lastSeenAt": "2026-09-27T19:11:12.008Z",
+        "claimCount": 132,
         "supportedCount": 0,
         "disputedCount": 14,
         "sourceCount": 50,
         "primaryCount": 0,
-        "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:14:46.384Z"
+        "lastMaterialType": "new_claim",
+        "lastMaterialAt": "2026-09-27T19:11:12.008Z",
+        "independentSourceCount": 588,
+        "primaryDocCount": 6,
+        "entities": [
+          {
+            "key": "russia",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "ukraine",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "uae",
+            "role": "mention",
+            "prominence": 0.159646
+          },
+          {
+            "key": "middleeast",
+            "role": "mention",
+            "prominence": 0.158039
+          },
+          {
+            "key": "qatar",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "zelensky",
+            "role": "mention",
+            "prominence": 0.252894
+          },
+          {
+            "key": "baltic",
+            "role": "mention",
+            "prominence": 0.162862
+          },
+          {
+            "key": "redsea",
+            "role": "mention",
+            "prominence": 0.153215
+          },
+          {
+            "key": "saudi",
+            "role": "mention",
+            "prominence": 0.174116
+          },
+          {
+            "key": "yemen",
+            "role": "mention",
+            "prominence": 0.161254
+          },
+          {
+            "key": "hungary",
+            "role": "mention",
+            "prominence": 0.153215
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.172508
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.22074
+          },
+          {
+            "key": "macron",
+            "role": "mention",
+            "prominence": 0.166077
+          },
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.156431
+          },
+          {
+            "key": "nato",
+            "role": "mention",
+            "prominence": 0.178939
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.291479
+          },
+          {
+            "key": "poland",
+            "role": "mention",
+            "prominence": 0.159646
+          },
+          {
+            "key": "germany",
+            "role": "mention",
+            "prominence": 0.175723
+          },
+          {
+            "key": "bytedance",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "tiktok",
+            "role": "mention",
+            "prominence": 0.159646
+          },
+          {
+            "key": "ireland",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "eu",
+            "role": "mention",
+            "prominence": 0.207878
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.26254
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.175723
+          },
+          {
+            "key": "who",
+            "role": "mention",
+            "prominence": 0.151608
+          },
+          {
+            "key": "trump",
+            "role": "mention",
+            "prominence": 0.256109
+          },
+          {
+            "key": "g20",
+            "role": "mention",
+            "prominence": 0.175723
+          },
+          {
+            "key": "putin",
+            "role": "mention",
+            "prominence": 0.252894
+          },
+          {
+            "key": "drone",
+            "role": "mention",
+            "prominence": 0.251286
+          },
+          {
+            "key": "tesla",
+            "role": "mention",
+            "prominence": 0.153215
+          }
+        ]
       }
     },
     {
@@ -996,14 +2159,43 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-25T11:23:27.815Z",
-        "lastSeenAt": "2026-09-27T17:14:33.220Z",
+        "lastSeenAt": "2026-09-27T19:03:30.877Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 11,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:14:33.220Z"
+        "lastMaterialAt": "2026-09-27T19:03:30.877Z",
+        "independentSourceCount": 15,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "yemen",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "pakistan",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "saudi",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "turkey",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1017,14 +2209,33 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T09:22:21.535Z",
-        "lastSeenAt": "2026-09-27T17:14:16.785Z",
+        "lastSeenAt": "2026-09-27T19:03:07.266Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 3,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:14:16.785Z"
+        "lastMaterialAt": "2026-09-27T17:14:16.785Z",
+        "independentSourceCount": 10,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "northkorea",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "southkorea",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "ukraine",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1038,14 +2249,33 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-25T19:21:15.198Z",
-        "lastSeenAt": "2026-09-27T17:14:05.730Z",
+        "lastSeenAt": "2026-09-27T19:02:58.169Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 11,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-26T11:10:05.741Z"
+        "lastMaterialAt": "2026-09-26T11:10:05.741Z",
+        "independentSourceCount": 11,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "claude",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "anthropic",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1059,14 +2289,38 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T06:19:31.039Z",
-        "lastSeenAt": "2026-09-27T17:13:52.171Z",
+        "lastSeenAt": "2026-09-27T19:02:47.332Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 8,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:13:52.171Z"
+        "lastMaterialAt": "2026-09-27T19:02:47.332Z",
+        "independentSourceCount": 11,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.331818
+          },
+          {
+            "key": "angiang",
+            "role": "mention",
+            "prominence": 0.331818
+          },
+          {
+            "key": "phuquoc",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "russia",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1080,14 +2334,33 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T09:15:46.753Z",
-        "lastSeenAt": "2026-09-27T17:13:37.155Z",
+        "lastSeenAt": "2026-09-27T19:02:35.332Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 1,
         "sourceCount": 9,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T12:41:31.354Z"
+        "lastMaterialAt": "2026-09-27T12:41:31.354Z",
+        "independentSourceCount": 17,
+        "primaryDocCount": 3,
+        "entities": [
+          {
+            "key": "dongnai",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "hcmc",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "miennam",
+            "role": "mention",
+            "prominence": 0.326471
+          }
+        ]
       }
     },
     {
@@ -1101,14 +2374,28 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-25T11:26:10.943Z",
-        "lastSeenAt": "2026-09-27T17:13:26.826Z",
+        "lastSeenAt": "2026-09-27T19:31:44.775Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 9,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T15:01:01.836Z"
+        "lastMaterialAt": "2026-09-27T15:01:01.836Z",
+        "independentSourceCount": 14,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.316667
+          },
+          {
+            "key": "federal_reserve",
+            "role": "mention",
+            "prominence": 0.233333
+          }
+        ]
       }
     },
     {
@@ -1122,14 +2409,28 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-24T19:49:38.014Z",
-        "lastSeenAt": "2026-09-27T17:13:12.443Z",
+        "lastSeenAt": "2026-09-27T19:02:13.990Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 6,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T11:24:42.128Z"
+        "lastMaterialAt": "2026-09-27T11:24:42.128Z",
+        "independentSourceCount": 14,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "who",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -1143,14 +2444,28 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T03:58:12.695Z",
-        "lastSeenAt": "2026-09-27T17:12:48.238Z",
+        "lastSeenAt": "2026-09-27T19:01:36.834Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:12:48.238Z"
+        "lastMaterialAt": "2026-09-27T17:12:48.238Z",
+        "independentSourceCount": 10,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "who",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "spain",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1164,14 +2479,28 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T17:12:39.794Z",
-        "lastSeenAt": "2026-09-27T17:12:39.794Z",
+        "lastSeenAt": "2026-09-27T18:00:28.922Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 5,
         "primaryCount": 0,
-        "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T17:12:39.794Z"
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T18:00:28.922Z",
+        "independentSourceCount": 9,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "thailand",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "asiad",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1185,14 +2514,38 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T02:45:26.260Z",
-        "lastSeenAt": "2026-09-27T17:12:15.248Z",
+        "lastSeenAt": "2026-09-27T18:00:00.746Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 18,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:30:21.017Z"
+        "lastMaterialAt": "2026-09-27T14:30:21.017Z",
+        "independentSourceCount": 26,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "germany",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "putin",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "pipeline",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "russia",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1206,14 +2559,28 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T22:55:53.396Z",
-        "lastSeenAt": "2026-09-27T17:12:02.088Z",
+        "lastSeenAt": "2026-09-27T19:31:03.425Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 14,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T15:29:12.754Z"
+        "lastMaterialAt": "2026-09-27T15:29:12.754Z",
+        "independentSourceCount": 29,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "mienbac",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "miennam",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -1227,14 +2594,63 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-24T03:49:38.370Z",
-        "lastSeenAt": "2026-09-27T17:09:54.631Z",
+        "lastSeenAt": "2026-09-27T19:00:26.981Z",
         "claimCount": 31,
         "supportedCount": 0,
         "disputedCount": 2,
         "sourceCount": 54,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:09:54.631Z"
+        "lastMaterialAt": "2026-09-27T19:00:26.981Z",
+        "independentSourceCount": 435,
+        "primaryDocCount": 23,
+        "entities": [
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.319133
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.20074
+          },
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "us",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "trump",
+            "role": "mention",
+            "prominence": 0.253594
+          },
+          {
+            "key": "lam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "middleeast",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "trade_surplus",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -1255,7 +2671,21 @@
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:09:39.354Z"
+        "lastMaterialAt": "2026-09-27T17:09:39.354Z",
+        "independentSourceCount": 12,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "trump",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1276,7 +2706,31 @@
         "sourceCount": 13,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:09:10.564Z"
+        "lastMaterialAt": "2026-09-27T17:09:10.564Z",
+        "independentSourceCount": 37,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.204054
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "iran",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1297,7 +2751,21 @@
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T10:20:12.137Z"
+        "lastMaterialAt": "2026-09-27T10:20:12.137Z",
+        "independentSourceCount": 9,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "hcmc",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -1318,7 +2786,31 @@
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:08:37.438Z"
+        "lastMaterialAt": "2026-09-27T17:08:37.438Z",
+        "independentSourceCount": 15,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "russia",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "un",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "unga",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1332,14 +2824,33 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T08:20:48.036Z",
-        "lastSeenAt": "2026-09-27T17:08:26.844Z",
+        "lastSeenAt": "2026-09-27T17:57:23.700Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T08:20:48.036Z"
+        "lastMaterialAt": "2026-09-27T08:20:48.036Z",
+        "independentSourceCount": 9,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "un",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.261111
+          },
+          {
+            "key": "india",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1353,14 +2864,48 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T13:02:17.570Z",
-        "lastSeenAt": "2026-09-27T17:08:11.230Z",
+        "lastSeenAt": "2026-09-27T19:28:38.359Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 16,
+        "sourceCount": 17,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:08:11.230Z"
+        "lastMaterialAt": "2026-09-27T19:28:38.359Z",
+        "independentSourceCount": 44,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "zelensky",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "ukraine",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.218182
+          },
+          {
+            "key": "trump",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "xijinping",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -1374,14 +2919,38 @@
         "status": "emerging",
         "topic": "sports",
         "firstSeenAt": "2026-09-27T10:20:02.877Z",
-        "lastSeenAt": "2026-09-27T17:07:39.563Z",
+        "lastSeenAt": "2026-09-27T19:03:16.770Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T12:48:09.585Z"
+        "lastMaterialAt": "2026-09-27T12:48:09.585Z",
+        "independentSourceCount": 12,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "southkorea",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "china",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "japan",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "asiad",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1395,14 +2964,23 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T12:26:53.268Z",
-        "lastSeenAt": "2026-09-27T17:07:25.436Z",
+        "lastSeenAt": "2026-09-27T19:31:57.940Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 9,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-26T12:26:53.268Z"
+        "lastMaterialAt": "2026-09-26T12:26:53.268Z",
+        "independentSourceCount": 8,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -1416,14 +2994,28 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T12:38:36.296Z",
-        "lastSeenAt": "2026-09-27T17:07:00.872Z",
+        "lastSeenAt": "2026-09-27T19:22:43.932Z",
         "claimCount": 5,
-        "supportedCount": 0,
+        "supportedCount": 1,
         "disputedCount": 1,
         "sourceCount": 16,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:07:00.872Z"
+        "lastMaterialAt": "2026-09-27T19:22:43.932Z",
+        "independentSourceCount": 30,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "uk",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "us",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -1437,14 +3029,43 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T14:23:26.459Z",
-        "lastSeenAt": "2026-09-27T17:06:44.730Z",
+        "lastSeenAt": "2026-09-27T19:28:09.627Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:06:44.730Z"
+        "lastMaterialAt": "2026-09-27T19:28:09.627Z",
+        "independentSourceCount": 11,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.331818
+          },
+          {
+            "key": "redsea",
+            "role": "mention",
+            "prominence": 0.240909
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "yemen",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "middleeast",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1458,14 +3079,38 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-25T07:48:48.121Z",
-        "lastSeenAt": "2026-09-27T17:06:26.998Z",
+        "lastSeenAt": "2026-09-27T19:32:29.325Z",
         "claimCount": 2,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 23,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:06:26.998Z"
+        "lastMaterialAt": "2026-09-27T19:32:29.325Z",
+        "independentSourceCount": 44,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "oil",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "eu",
+            "role": "mention",
+            "prominence": 0.240909
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1479,14 +3124,28 @@
         "status": "emerging",
         "topic": "technology",
         "firstSeenAt": "2026-09-26T17:55:48.061Z",
-        "lastSeenAt": "2026-09-27T17:06:07.463Z",
+        "lastSeenAt": "2026-09-27T19:32:11.276Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 1,
         "sourceCount": 14,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:06:07.463Z"
+        "lastMaterialAt": "2026-09-27T19:32:11.276Z",
+        "independentSourceCount": 23,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.316667
+          },
+          {
+            "key": "who",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -1500,14 +3159,28 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T23:30:34.278Z",
-        "lastSeenAt": "2026-09-27T17:05:38.729Z",
+        "lastSeenAt": "2026-09-27T19:31:30.896Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:05:38.729Z"
+        "lastMaterialAt": "2026-09-27T19:31:30.896Z",
+        "independentSourceCount": 17,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "russia",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "putin",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -1528,7 +3201,31 @@
         "sourceCount": 6,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:03:35.796Z"
+        "lastMaterialAt": "2026-09-27T17:03:35.796Z",
+        "independentSourceCount": 16,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "drone",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "russia",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "ukraine",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "zelensky",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1542,14 +3239,48 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T11:40:43.484Z",
-        "lastSeenAt": "2026-09-27T17:03:15.378Z",
+        "lastSeenAt": "2026-09-27T19:26:38.173Z",
         "claimCount": 16,
-        "supportedCount": 0,
+        "supportedCount": 1,
         "disputedCount": 1,
-        "sourceCount": 23,
+        "sourceCount": 24,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:03:15.378Z"
+        "lastMaterialAt": "2026-09-27T19:26:38.173Z",
+        "independentSourceCount": 63,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "iran",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "saudi",
+            "role": "mention",
+            "prominence": 0.290625
+          },
+          {
+            "key": "yemen",
+            "role": "mention",
+            "prominence": 0.275
+          },
+          {
+            "key": "drone",
+            "role": "mention",
+            "prominence": 0.196875
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.165625
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1563,14 +3294,23 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T17:02:43.988Z",
-        "lastSeenAt": "2026-09-27T17:02:43.988Z",
+        "lastSeenAt": "2026-09-27T19:25:22.388Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T17:02:43.988Z"
+        "lastMaterialAt": "2026-09-27T17:02:43.988Z",
+        "independentSourceCount": 8,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -1584,14 +3324,63 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-25T15:10:56.546Z",
-        "lastSeenAt": "2026-09-27T17:00:29.962Z",
+        "lastSeenAt": "2026-09-27T19:32:55.061Z",
         "claimCount": 19,
         "supportedCount": 0,
         "disputedCount": 1,
         "sourceCount": 29,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:00:29.962Z"
+        "lastMaterialAt": "2026-09-27T19:32:55.061Z",
+        "independentSourceCount": 191,
+        "primaryDocCount": 17,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "northkorea",
+            "role": "mention",
+            "prominence": 0.159569
+          },
+          {
+            "key": "canada",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.274402
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.154785
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.293541
+          },
+          {
+            "key": "phuquoc",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.183493
+          }
+        ]
       }
     },
     {
@@ -1605,14 +3394,58 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-25T19:11:33.378Z",
-        "lastSeenAt": "2026-09-27T16:59:24.265Z",
-        "claimCount": 1,
+        "lastSeenAt": "2026-09-27T19:15:49.419Z",
+        "claimCount": 5,
         "supportedCount": 0,
-        "disputedCount": 0,
-        "sourceCount": 20,
+        "disputedCount": 1,
+        "sourceCount": 27,
         "primaryCount": 0,
-        "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T16:59:24.265Z"
+        "lastMaterialType": "claim_disputed",
+        "lastMaterialAt": "2026-09-27T19:15:49.419Z",
+        "independentSourceCount": 44,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "israel",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.195455
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.286364
+          },
+          {
+            "key": "un",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "netanyahu",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "trump",
+            "role": "mention",
+            "prominence": 0.195455
+          },
+          {
+            "key": "pm",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1633,7 +3466,31 @@
         "sourceCount": 15,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T16:58:35.898Z"
+        "lastMaterialAt": "2026-09-27T16:58:35.898Z",
+        "independentSourceCount": 38,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "palestine",
+            "role": "mention",
+            "prominence": 0.312791
+          },
+          {
+            "key": "israel",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "ireland",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "hungary",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -1647,14 +3504,53 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T03:20:30.122Z",
-        "lastSeenAt": "2026-09-27T16:53:48.824Z",
+        "lastSeenAt": "2026-09-27T19:20:09.899Z",
         "claimCount": 3,
         "supportedCount": 0,
         "disputedCount": 1,
         "sourceCount": 15,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T16:53:48.824Z"
+        "lastMaterialAt": "2026-09-27T16:53:48.824Z",
+        "independentSourceCount": 27,
+        "primaryDocCount": 3,
+        "entities": [
+          {
+            "key": "hanoi",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "bacninh",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "haiphong",
+            "role": "mention",
+            "prominence": 0.335185
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.187037
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.187037
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.261111
+          },
+          {
+            "key": "song_hong",
+            "role": "mention",
+            "prominence": 0.187037
+          }
+        ]
       }
     },
     {
@@ -1675,7 +3571,36 @@
         "sourceCount": 18,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T15:35:35.673Z"
+        "lastMaterialAt": "2026-09-27T15:35:35.673Z",
+        "independentSourceCount": 144,
+        "primaryDocCount": 4,
+        "entities": [
+          {
+            "key": "asiad",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "china",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "thailand",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "southkorea",
+            "role": "mention",
+            "prominence": 0.173669
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -1696,7 +3621,21 @@
         "sourceCount": 4,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T15:03:56.419Z"
+        "lastMaterialAt": "2026-09-27T15:03:56.419Z",
+        "independentSourceCount": 5,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "dongnai",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "bariavungtau",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -1717,7 +3656,21 @@
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T15:34:11.237Z"
+        "lastMaterialAt": "2026-09-27T15:34:11.237Z",
+        "independentSourceCount": 69,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "japan",
+            "role": "mention",
+            "prominence": 0.242784
+          },
+          {
+            "key": "asiad",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -1738,7 +3691,21 @@
         "sourceCount": 12,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T15:01:56.363Z"
+        "lastMaterialAt": "2026-09-27T15:01:56.363Z",
+        "independentSourceCount": 30,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "who",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "france",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1759,7 +3726,21 @@
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T15:01:46.545Z"
+        "lastMaterialAt": "2026-09-27T15:01:46.545Z",
+        "independentSourceCount": 8,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "australia",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "who",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1773,14 +3754,28 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T15:31:58.840Z",
-        "lastSeenAt": "2026-09-27T15:31:58.840Z",
+        "lastSeenAt": "2026-09-27T19:02:25.602Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 4,
         "primaryCount": 0,
-        "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T15:31:58.840Z"
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T19:02:25.602Z",
+        "independentSourceCount": 5,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "brazil",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1794,14 +3789,38 @@
         "status": "emerging",
         "topic": "science",
         "firstSeenAt": "2026-09-27T08:31:03.982Z",
-        "lastSeenAt": "2026-09-27T15:31:30.995Z",
+        "lastSeenAt": "2026-09-27T18:01:01.493Z",
         "claimCount": 2,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 6,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:28:22.684Z"
+        "lastMaterialAt": "2026-09-27T18:01:01.493Z",
+        "independentSourceCount": 7,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "bacninh",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "gialai",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "haiphong",
+            "role": "mention",
+            "prominence": 0.292857
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -1815,14 +3834,23 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T13:57:14.202Z",
-        "lastSeenAt": "2026-09-27T15:31:22.624Z",
+        "lastSeenAt": "2026-09-27T19:02:06.714Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 3,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T13:57:14.202Z"
+        "lastMaterialAt": "2026-09-27T13:57:14.202Z",
+        "independentSourceCount": 3,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1843,7 +3871,21 @@
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T12:43:43.019Z"
+        "lastMaterialAt": "2026-09-27T12:43:43.019Z",
+        "independentSourceCount": 5,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "danang",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "hue",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1864,7 +3906,21 @@
         "sourceCount": 6,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T15:25:22.577Z"
+        "lastMaterialAt": "2026-09-27T15:25:22.577Z",
+        "independentSourceCount": 10,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -1885,7 +3941,16 @@
         "sourceCount": 13,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T15:23:32.965Z"
+        "lastMaterialAt": "2026-09-27T15:23:32.965Z",
+        "independentSourceCount": 33,
+        "primaryDocCount": 4,
+        "entities": [
+          {
+            "key": "hanoi",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -1906,7 +3971,26 @@
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T15:21:24.455Z"
+        "lastMaterialAt": "2026-09-27T15:21:24.455Z",
+        "independentSourceCount": 16,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "asiad",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -1927,7 +4011,41 @@
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T15:20:15.439Z"
+        "lastMaterialAt": "2026-09-27T15:20:15.439Z",
+        "independentSourceCount": 14,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.221429
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.221429
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.292857
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.221429
+          },
+          {
+            "key": "hanoi",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1948,7 +4066,51 @@
         "sourceCount": 33,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T15:16:29.981Z"
+        "lastMaterialAt": "2026-09-27T15:16:29.981Z",
+        "independentSourceCount": 176,
+        "primaryDocCount": 16,
+        "entities": [
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.160417
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.207292
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.165625
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "canada",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "phuquoc",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "lam",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1969,7 +4131,16 @@
         "sourceCount": 22,
         "primaryCount": 0,
         "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T15:12:26.666Z"
+        "lastMaterialAt": "2026-09-27T15:12:26.666Z",
+        "independentSourceCount": 46,
+        "primaryDocCount": 5,
+        "entities": [
+          {
+            "key": "china",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -1990,7 +4161,10 @@
         "sourceCount": 6,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T11:49:29.597Z"
+        "lastMaterialAt": "2026-09-27T11:49:29.597Z",
+        "independentSourceCount": 9,
+        "primaryDocCount": 0,
+        "entities": []
       }
     },
     {
@@ -2011,7 +4185,21 @@
         "sourceCount": 16,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T00:54:27.399Z"
+        "lastMaterialAt": "2026-09-27T00:54:27.399Z",
+        "independentSourceCount": 32,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "miennam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "mienbac",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2025,14 +4213,28 @@
         "status": "emerging",
         "topic": "business",
         "firstSeenAt": "2026-09-27T03:54:01.603Z",
-        "lastSeenAt": "2026-09-27T14:58:22.781Z",
+        "lastSeenAt": "2026-09-27T19:29:09.840Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 12,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:58:22.781Z"
+        "lastMaterialAt": "2026-09-27T19:29:09.840Z",
+        "independentSourceCount": 39,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.208824
+          }
+        ]
       }
     },
     {
@@ -2053,7 +4255,66 @@
         "sourceCount": 15,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:00:51.518Z"
+        "lastMaterialAt": "2026-09-27T14:00:51.518Z",
+        "independentSourceCount": 36,
+        "primaryDocCount": 8,
+        "entities": [
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.177778
+          },
+          {
+            "key": "hatinh",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "pm",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "quangninh",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "caobang",
+            "role": "mention",
+            "prominence": 0.177778
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "dienbien",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "langson",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "laos",
+            "role": "mention",
+            "prominence": 0.177778
+          },
+          {
+            "key": "nghean",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "thailand",
+            "role": "mention",
+            "prominence": 0.205556
+          }
+        ]
       }
     },
     {
@@ -2067,14 +4328,33 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T12:40:48.067Z",
-        "lastSeenAt": "2026-09-27T14:57:22.186Z",
+        "lastSeenAt": "2026-09-27T19:32:43.099Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:26:20.788Z"
+        "lastMaterialAt": "2026-09-27T19:32:43.099Z",
+        "independentSourceCount": 9,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "northkorea",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "southkorea",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2088,14 +4368,48 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T03:27:42.745Z",
-        "lastSeenAt": "2026-09-27T14:56:03.421Z",
+        "lastSeenAt": "2026-09-27T17:52:27.140Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 11,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:56:03.421Z"
+        "lastMaterialAt": "2026-09-27T17:52:27.140Z",
+        "independentSourceCount": 31,
+        "primaryDocCount": 11,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "danang",
+            "role": "mention",
+            "prominence": 0.279032
+          },
+          {
+            "key": "norway",
+            "role": "mention",
+            "prominence": 0.279032
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "caobang",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "hue",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -2116,7 +4430,26 @@
         "sourceCount": 6,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T14:55:53.954Z"
+        "lastMaterialAt": "2026-09-27T14:55:53.954Z",
+        "independentSourceCount": 12,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "asiad",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "myanmar",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -2137,7 +4470,21 @@
         "sourceCount": 13,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:41:59.134Z"
+        "lastMaterialAt": "2026-09-27T14:41:59.134Z",
+        "independentSourceCount": 28,
+        "primaryDocCount": 6,
+        "entities": [
+          {
+            "key": "hcmc",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -2158,7 +4505,81 @@
         "sourceCount": 37,
         "primaryCount": 0,
         "lastMaterialType": "claim_corrected",
-        "lastMaterialAt": "2026-09-27T14:38:58.266Z"
+        "lastMaterialAt": "2026-09-27T14:38:58.266Z",
+        "independentSourceCount": 155,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "nato",
+            "role": "mention",
+            "prominence": 0.16875
+          },
+          {
+            "key": "redsea",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "baltic",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "russia",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "saudi",
+            "role": "mention",
+            "prominence": 0.20625
+          },
+          {
+            "key": "ukraine",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.19375
+          },
+          {
+            "key": "yemen",
+            "role": "mention",
+            "prominence": 0.16875
+          },
+          {
+            "key": "miennam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.21875
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.175
+          }
+        ]
       }
     },
     {
@@ -2179,7 +4600,61 @@
         "sourceCount": 34,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:31:33.160Z"
+        "lastMaterialAt": "2026-09-27T14:31:33.160Z",
+        "independentSourceCount": 101,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "israel",
+            "role": "mention",
+            "prominence": 0.298148
+          },
+          {
+            "key": "palestine",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "spain",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "ireland",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.214815
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.27963
+          },
+          {
+            "key": "un",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "netanyahu",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.196296
+          }
+        ]
       }
     },
     {
@@ -2200,7 +4675,66 @@
         "sourceCount": 33,
         "primaryCount": 1,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:31:00.511Z"
+        "lastMaterialAt": "2026-09-27T14:31:00.511Z",
+        "independentSourceCount": 259,
+        "primaryDocCount": 38,
+        "entities": [
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.200505
+          },
+          {
+            "key": "philippines",
+            "role": "mention",
+            "prominence": 0.163468
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.180303
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "asean",
+            "role": "mention",
+            "prominence": 0.213973
+          },
+          {
+            "key": "aseancup",
+            "role": "mention",
+            "prominence": 0.200505
+          },
+          {
+            "key": "trade_surplus",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -2221,7 +4755,61 @@
         "sourceCount": 43,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:30:42.845Z"
+        "lastMaterialAt": "2026-09-27T14:30:42.845Z",
+        "independentSourceCount": 242,
+        "primaryDocCount": 2,
+        "entities": [
+          {
+            "key": "xijinping",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "ai",
+            "role": "mention",
+            "prominence": 0.154049
+          },
+          {
+            "key": "taiwan",
+            "role": "mention",
+            "prominence": 0.182389
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.154049
+          },
+          {
+            "key": "india",
+            "role": "mention",
+            "prominence": 0.166194
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.230972
+          },
+          {
+            "key": "china",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.162146
+          },
+          {
+            "key": "trump",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2242,7 +4830,51 @@
         "sourceCount": 20,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:30:31.898Z"
+        "lastMaterialAt": "2026-09-27T14:30:31.898Z",
+        "independentSourceCount": 44,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "palestine",
+            "role": "mention",
+            "prominence": 0.263636
+          },
+          {
+            "key": "israel",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "uk",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.240909
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.240909
+          },
+          {
+            "key": "netanyahu",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "pm",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2263,7 +4895,41 @@
         "sourceCount": 12,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T06:29:08.662Z"
+        "lastMaterialAt": "2026-09-27T06:29:08.662Z",
+        "independentSourceCount": 28,
+        "primaryDocCount": 4,
+        "entities": [
+          {
+            "key": "danang",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.221429
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.328571
+          },
+          {
+            "key": "malaysia",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "laos",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "cambodia",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2284,7 +4950,10 @@
         "sourceCount": 4,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T12:43:23.877Z"
+        "lastMaterialAt": "2026-09-27T12:43:23.877Z",
+        "independentSourceCount": 4,
+        "primaryDocCount": 1,
+        "entities": []
       }
     },
     {
@@ -2305,7 +4974,26 @@
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T14:27:51.900Z"
+        "lastMaterialAt": "2026-09-27T14:27:51.900Z",
+        "independentSourceCount": 7,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "ireland",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.292857
+          },
+          {
+            "key": "uk",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2326,7 +5014,31 @@
         "sourceCount": 13,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:23:01.388Z"
+        "lastMaterialAt": "2026-09-27T14:23:01.388Z",
+        "independentSourceCount": 31,
+        "primaryDocCount": 6,
+        "entities": [
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.271212
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.301515
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -2347,7 +5059,36 @@
         "sourceCount": 13,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:19:02.140Z"
+        "lastMaterialAt": "2026-09-27T14:19:02.140Z",
+        "independentSourceCount": 33,
+        "primaryDocCount": 4,
+        "entities": [
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.326471
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.238235
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.35
+          }
+        ]
       }
     },
     {
@@ -2368,7 +5109,21 @@
         "sourceCount": 14,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:13:10.896Z"
+        "lastMaterialAt": "2026-09-27T14:13:10.896Z",
+        "independentSourceCount": 33,
+        "primaryDocCount": 4,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "hcmc",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2389,7 +5144,61 @@
         "sourceCount": 15,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:12:05.812Z"
+        "lastMaterialAt": "2026-09-27T14:12:05.812Z",
+        "independentSourceCount": 50,
+        "primaryDocCount": 3,
+        "entities": [
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.169608
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "kimsangsik",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "asean",
+            "role": "mention",
+            "prominence": 0.169608
+          },
+          {
+            "key": "aseancup",
+            "role": "mention",
+            "prominence": 0.169608
+          },
+          {
+            "key": "asiad",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "philippines",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2410,7 +5219,46 @@
         "sourceCount": 14,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T14:11:53.570Z"
+        "lastMaterialAt": "2026-09-27T14:11:53.570Z",
+        "independentSourceCount": 22,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.195455
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "russia",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.331818
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.195455
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.15
+          }
+        ]
       }
     },
     {
@@ -2424,14 +5272,78 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-25T14:43:15.266Z",
-        "lastSeenAt": "2026-09-27T14:08:46.396Z",
-        "claimCount": 9,
+        "lastSeenAt": "2026-09-27T19:13:07.419Z",
+        "claimCount": 12,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 23,
+        "sourceCount": 26,
         "primaryCount": 0,
-        "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:08:46.396Z"
+        "lastMaterialType": "new_claim",
+        "lastMaterialAt": "2026-09-27T19:13:07.419Z",
+        "independentSourceCount": 69,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "iran",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "drone",
+            "role": "mention",
+            "prominence": 0.206338
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.178169
+          },
+          {
+            "key": "saudi",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "yemen",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "oil",
+            "role": "mention",
+            "prominence": 0.178169
+          },
+          {
+            "key": "middleeast",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.178169
+          },
+          {
+            "key": "israel",
+            "role": "mention",
+            "prominence": 0.178169
+          },
+          {
+            "key": "colombia",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "trump",
+            "role": "mention",
+            "prominence": 0.164085
+          },
+          {
+            "key": "us",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2445,14 +5357,28 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T05:43:59.000Z",
-        "lastSeenAt": "2026-09-27T14:00:15.364Z",
+        "lastSeenAt": "2026-09-27T19:26:20.767Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 5,
+        "sourceCount": 9,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T04:48:17.107Z"
+        "lastMaterialAt": "2026-09-27T18:52:58.412Z",
+        "independentSourceCount": 13,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "israel",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2466,14 +5392,48 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T00:25:03.292Z",
-        "lastSeenAt": "2026-09-27T13:57:49.313Z",
+        "lastSeenAt": "2026-09-27T18:45:48.738Z",
         "claimCount": 7,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 14,
+        "sourceCount": 15,
         "primaryCount": 0,
-        "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T13:57:49.313Z"
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T18:45:48.738Z",
+        "independentSourceCount": 39,
+        "primaryDocCount": 7,
+        "entities": [
+          {
+            "key": "laocai",
+            "role": "mention",
+            "prominence": 0.175
+          },
+          {
+            "key": "laos",
+            "role": "mention",
+            "prominence": 0.175
+          },
+          {
+            "key": "song_hong",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.175
+          },
+          {
+            "key": "haiphong",
+            "role": "mention",
+            "prominence": 0.325
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.2
+          }
+        ]
       }
     },
     {
@@ -2494,7 +5454,21 @@
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T13:52:28.802Z"
+        "lastMaterialAt": "2026-09-27T13:52:28.802Z",
+        "independentSourceCount": 8,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "palestine",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "israel",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2508,14 +5482,33 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T10:09:40.913Z",
-        "lastSeenAt": "2026-09-27T13:52:13.511Z",
+        "lastSeenAt": "2026-09-27T18:49:11.851Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 7,
+        "sourceCount": 8,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T13:52:13.511Z"
+        "lastMaterialAt": "2026-09-27T18:49:11.851Z",
+        "independentSourceCount": 13,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "dienbien",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2536,7 +5529,26 @@
         "sourceCount": 9,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T10:43:36.832Z"
+        "lastMaterialAt": "2026-09-27T10:43:36.832Z",
+        "independentSourceCount": 9,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "drone",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "saudi",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "yemen",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2557,7 +5569,36 @@
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T13:24:55.461Z"
+        "lastMaterialAt": "2026-09-27T13:24:55.461Z",
+        "independentSourceCount": 6,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "laocai",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "laos",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "song_hong",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "haiphong",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2578,7 +5619,21 @@
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T13:24:23.046Z"
+        "lastMaterialAt": "2026-09-27T13:24:23.046Z",
+        "independentSourceCount": 6,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "uk",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2592,14 +5647,48 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T12:43:07.868Z",
-        "lastSeenAt": "2026-09-27T13:23:28.371Z",
+        "lastSeenAt": "2026-09-27T17:57:12.961Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 4,
+        "sourceCount": 6,
         "primaryCount": 0,
-        "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T12:43:07.868Z"
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T17:57:12.961Z",
+        "independentSourceCount": 7,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "putin",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "nato",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "drone",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "poland",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "ukraine",
+            "role": "mention",
+            "prominence": 0.292857
+          }
+        ]
       }
     },
     {
@@ -2620,7 +5709,21 @@
         "sourceCount": 5,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T12:47:16.799Z"
+        "lastMaterialAt": "2026-09-27T12:47:16.799Z",
+        "independentSourceCount": 8,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "norway",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2641,7 +5744,26 @@
         "sourceCount": 12,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T13:18:37.272Z"
+        "lastMaterialAt": "2026-09-27T13:18:37.272Z",
+        "independentSourceCount": 25,
+        "primaryDocCount": 3,
+        "entities": [
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.265385
+          },
+          {
+            "key": "japan",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2655,14 +5777,38 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T21:45:55.360Z",
-        "lastSeenAt": "2026-09-27T13:17:34.129Z",
+        "lastSeenAt": "2026-09-27T18:55:28.227Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T13:17:34.129Z"
+        "lastMaterialAt": "2026-09-27T18:55:28.227Z",
+        "independentSourceCount": 15,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "taiwan",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "trump",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "xijinping",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "us",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2683,7 +5829,81 @@
         "sourceCount": 58,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T12:55:51.140Z"
+        "lastMaterialAt": "2026-09-27T12:55:51.140Z",
+        "independentSourceCount": 744,
+        "primaryDocCount": 5,
+        "entities": [
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.345181
+          },
+          {
+            "key": "taiwan",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "india",
+            "role": "mention",
+            "prominence": 0.164458
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.196988
+          },
+          {
+            "key": "iran",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "ukraine",
+            "role": "mention",
+            "prominence": 0.175301
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.158434
+          },
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.158434
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "middleeast",
+            "role": "mention",
+            "prominence": 0.160843
+          },
+          {
+            "key": "putin",
+            "role": "mention",
+            "prominence": 0.181325
+          },
+          {
+            "key": "trump",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "xijinping",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "macron",
+            "role": "mention",
+            "prominence": 0.154819
+          }
+        ]
       }
     },
     {
@@ -2704,7 +5924,21 @@
         "sourceCount": 6,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T11:52:41.740Z"
+        "lastMaterialAt": "2026-09-27T11:52:41.740Z",
+        "independentSourceCount": 62,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "asiad",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "southkorea",
+            "role": "mention",
+            "prominence": 0.196512
+          }
+        ]
       }
     },
     {
@@ -2725,7 +5959,41 @@
         "sourceCount": 11,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T11:58:12.263Z"
+        "lastMaterialAt": "2026-09-27T11:58:12.263Z",
+        "independentSourceCount": 47,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "russia",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "ukraine",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.170833
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "zelensky",
+            "role": "mention",
+            "prominence": 0.3375
+          },
+          {
+            "key": "drone",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2746,7 +6014,21 @@
         "sourceCount": 4,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T11:57:04.890Z"
+        "lastMaterialAt": "2026-09-27T11:57:04.890Z",
+        "independentSourceCount": 3,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "hanoi",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2767,7 +6049,31 @@
         "sourceCount": 3,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T11:56:21.024Z"
+        "lastMaterialAt": "2026-09-27T11:56:21.024Z",
+        "independentSourceCount": 4,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "poland",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "ukraine",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "nato",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2788,7 +6094,31 @@
         "sourceCount": 14,
         "primaryCount": 0,
         "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T07:07:36.724Z"
+        "lastMaterialAt": "2026-09-27T07:07:36.724Z",
+        "independentSourceCount": 13,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "eu",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.221429
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "spain",
+            "role": "subject",
+            "prominence": 0.9
+          }
+        ]
       }
     },
     {
@@ -2809,7 +6139,21 @@
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T11:52:09.572Z"
+        "lastMaterialAt": "2026-09-27T11:52:09.572Z",
+        "independentSourceCount": 8,
+        "primaryDocCount": 3,
+        "entities": [
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.275
+          }
+        ]
       }
     },
     {
@@ -2830,7 +6174,46 @@
         "sourceCount": 12,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T11:50:39.272Z"
+        "lastMaterialAt": "2026-09-27T11:50:39.272Z",
+        "independentSourceCount": 25,
+        "primaryDocCount": 1,
+        "entities": [
+          {
+            "key": "asiad",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "germany",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "greece",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "laos",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "norway",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "portugal",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2851,7 +6234,21 @@
         "sourceCount": 11,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T11:44:47.096Z"
+        "lastMaterialAt": "2026-09-27T11:44:47.096Z",
+        "independentSourceCount": 16,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "us",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "uk",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2872,7 +6269,21 @@
         "sourceCount": 4,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T11:28:31.065Z"
+        "lastMaterialAt": "2026-09-27T11:28:31.065Z",
+        "independentSourceCount": 4,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "uk",
+            "role": "actor",
+            "prominence": 0.7
+          }
+        ]
       }
     },
     {
@@ -2893,7 +6304,46 @@
         "sourceCount": 21,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T11:22:04.777Z"
+        "lastMaterialAt": "2026-09-27T11:22:04.777Z",
+        "independentSourceCount": 33,
+        "primaryDocCount": 0,
+        "entities": [
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "ai",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.208824
+          },
+          {
+            "key": "iran",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "taiwan",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "trump",
+            "role": "actor",
+            "prominence": 0.7
+          },
+          {
+            "key": "xijinping",
+            "role": "mention",
+            "prominence": 0.179412
+          }
+        ]
       }
     },
     {
@@ -2914,7 +6364,10 @@
         "sourceCount": 3,
         "primaryCount": 0,
         "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T06:16:48.552Z"
+        "lastMaterialAt": "2026-09-27T06:16:48.552Z",
+        "independentSourceCount": 3,
+        "primaryDocCount": 1,
+        "entities": []
       }
     },
     {
@@ -2928,14 +6381,83 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-25T07:47:59.130Z",
-        "lastSeenAt": "2026-09-27T11:16:57.534Z",
+        "lastSeenAt": "2026-09-27T18:58:01.505Z",
         "claimCount": 7,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 22,
+        "sourceCount": 23,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T11:16:57.534Z"
+        "lastMaterialAt": "2026-09-27T18:58:01.505Z",
+        "independentSourceCount": 87,
+        "primaryDocCount": 4,
+        "entities": [
+          {
+            "key": "indonesia",
+            "role": "mention",
+            "prominence": 0.23046
+          },
+          {
+            "key": "bangladesh",
+            "role": "mention",
+            "prominence": 0.184483
+          },
+          {
+            "key": "australia",
+            "role": "mention",
+            "prominence": 0.161494
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.264943
+          },
+          {
+            "key": "laocai",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "laos",
+            "role": "mention",
+            "prominence": 0.161494
+          },
+          {
+            "key": "malaysia",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "philippines",
+            "role": "mention",
+            "prominence": 0.276437
+          },
+          {
+            "key": "quangtri",
+            "role": "mention",
+            "prominence": 0.172989
+          },
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "asean",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "aseancup",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "kimsangsik",
+            "role": "mention",
+            "prominence": 0.207471
+          }
+        ]
       }
     },
     {
@@ -2956,7 +6478,111 @@
         "sourceCount": 57,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T10:49:16.886Z"
+        "lastMaterialAt": "2026-09-27T10:49:16.886Z",
+        "independentSourceCount": 714,
+        "primaryDocCount": 14,
+        "entities": [
+          {
+            "key": "pm",
+            "role": "mention",
+            "prominence": 0.151319
+          },
+          {
+            "key": "who",
+            "role": "mention",
+            "prominence": 0.160554
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.165831
+          },
+          {
+            "key": "netanyahu",
+            "role": "mention",
+            "prominence": 0.153958
+          },
+          {
+            "key": "xijinping",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "aseancup",
+            "role": "mention",
+            "prominence": 0.252902
+          },
+          {
+            "key": "asiad",
+            "role": "mention",
+            "prominence": 0.165831
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "japan",
+            "role": "mention",
+            "prominence": 0.172427
+          },
+          {
+            "key": "indonesia",
+            "role": "mention",
+            "prominence": 0.172427
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.338654
+          },
+          {
+            "key": "philippines",
+            "role": "mention",
+            "prominence": 0.235752
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.279288
+          },
+          {
+            "key": "thailand",
+            "role": "mention",
+            "prominence": 0.192216
+          },
+          {
+            "key": "asean",
+            "role": "mention",
+            "prominence": 0.258179
+          },
+          {
+            "key": "trump",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.159235
+          },
+          {
+            "key": "cambodia",
+            "role": "mention",
+            "prominence": 0.151319
+          },
+          {
+            "key": "kimsangsik",
+            "role": "mention",
+            "prominence": 0.159235
+          }
+        ]
       }
     }
   ]

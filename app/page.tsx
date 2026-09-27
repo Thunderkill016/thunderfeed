@@ -153,9 +153,16 @@ export default async function RadarPage() {
         getRecentEvents(250).catch(() => [] as never[]),
       ])
     : [[], null, [], []];
-  const feed = buildRadarFeed(deltas, events, watch, nowMs, 18, prevSeenMs);
-  const newItems = feed.filter((i) => i.isNew);
-  const stillItems = feed.filter((i) => !i.isNew).slice(0, 4);
+  const feed = buildRadarFeed(deltas, events, watch, nowMs, 24, prevSeenMs);
+  /* two lanes, one promise: "từ lần xem trước" shows genuinely new items
+   * (cap 7 — more is a digest, not a radar); "vẫn đáng chú ý" resurfaces
+   * older items only while they're still material (score floor — age
+   * alone doesn't earn the slot). */
+  const STILL_MATERIAL_FLOOR = 45;
+  const newItems = feed.filter((i) => i.isNew).slice(0, 7);
+  const stillItems = feed
+    .filter((i) => !i.isNew && i.score >= STILL_MATERIAL_FLOOR)
+    .slice(0, 5);
   const strip = pickStrip(board);
   const suggested = suggestedEntities(events, watch.entities);
   const personalized = !emptyWatch(watch);

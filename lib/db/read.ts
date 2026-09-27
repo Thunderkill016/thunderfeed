@@ -1703,6 +1703,12 @@ export async function getInstrumentView(canonicalKey: string): Promise<{
   };
 }
 
+export interface EventEntityRef {
+  key: string;
+  role: "subject" | "actor" | "mention";
+  prominence: number;
+}
+
 export interface EventListItem {
   id: string;
   title: string;
@@ -1714,10 +1720,18 @@ export interface EventListItem {
   sourceCount: number;
   /** distinct PRIMARY sources attached — wire reprints don't count here */
   primaryCount: number;
+  /** distinct INDEPENDENCE groups — one wire reprinted by 15 outlets
+   *  counts once (R6); falls back to sourceCount when unclassified */
+  independentSourceCount: number;
+  /** docs carrying primary evidence themselves (official record /
+   *  government domain), regardless of the source's overall kind */
+  primaryDocCount: number;
   /** claims whose current version reached supported/confirmed */
   supportedCount: number;
   /** claims whose current version is disputed — an evidence penalty */
   disputedCount: number;
+  /** event_entities with role/prominence (R6c); empty before backfill */
+  entities: EventEntityRef[];
   lastMaterialType?: string;
   lastMaterialAt?: string;
 }
@@ -1778,16 +1792,37 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
     ]),
   );
 
-  /* independent evidence ≠ outlet count: primary sources are the
-   * load-bearing ones, publisher reprints mostly repeat a wire */
+  /* independent evidence ≠ outlet count: a wire reprinted by 15 outlets
+   * is ONE origin (independence_key collapses same-title clusters);
+   * unclassified docs keep their source as the group so coverage still
+   * counts. Primary docs are detected per-document, not per-source. */
   const srcQ = await pool.query<{
     event_id: string;
     c: string;
+    indep: string;
     prim: string;
+    primdoc: string;
   }>(
-    `SELECT ee.event_id, COUNT(DISTINCT ed.source_id) AS c,
+    `SELECT ee.event_id,
+            COUNT(DISTINCT ed.source_id) AS c,
+            /* independent origins = whichever bound is smaller: outlets
+             * cap independence (same wire on 15 outlets → 1 cluster → 1),
+             * clusters cap it the other way (one outlet can't be more
+             * independent than its distinct stories). Unclassified docs
+             * group per-source so coverage still counts once per outlet. */
+            LEAST(
+              COUNT(DISTINCT ed.source_id),
+              COUNT(DISTINCT COALESCE(ed.independence_key,
+                                      ed.source_id::text))
+            ) AS indep,
             COUNT(DISTINCT ed.source_id) FILTER (WHERE s.kind = 'primary')
-              AS prim
+              AS prim,
+            COUNT(DISTINCT ed.id) FILTER (
+              WHERE s.kind = 'primary'
+                 OR ed.document_type IN ('legal_document','press_release',
+                                         'transcript','dataset')
+                 OR ed.canonical_url ~* 'https?://[^/]*(gov\\.vn|sbv\\.gov|mof\\.gov|quochoi\\.vn|toaan\\.gov|congan\\.com\\.vn|nhandan\\.(vn|com)|chinhphu\\.vn)'
+            ) AS primdoc
      FROM event_evidence ee
      JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
      JOIN evidence_documents ed ON ed.id = ev.document_id
@@ -1799,9 +1834,36 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
   const sourceCount = new Map(
     srcQ.rows.map((r) => [
       r.event_id,
-      { c: Number(r.c), primary: Number(r.prim) },
+      {
+        c: Number(r.c),
+        indep: Number(r.indep),
+        primary: Number(r.prim),
+        primdoc: Number(r.primdoc),
+      },
     ]),
   );
+
+  /* R6c: entity roles — mention rows carry near-zero prominence and
+   * must not feed entityImportance/geo matching downstream */
+  const entQ = await pool.query<{
+    event_id: string;
+    entity_slug: string;
+    role: string;
+    prominence: number;
+  }>(
+    `SELECT event_id, entity_slug, role, prominence
+     FROM event_entities WHERE event_id = ANY($1)`,
+    [ids],
+  );
+  const entityRows = new Map<string, EventEntityRef[]>();
+  for (const r of entQ.rows) {
+    if (!entityRows.has(r.event_id)) entityRows.set(r.event_id, []);
+    entityRows.get(r.event_id)!.push({
+      key: r.entity_slug,
+      role: (r.role as EventEntityRef["role"]) ?? "mention",
+      prominence: Number(r.prominence),
+    });
+  }
 
   const matQ = await pool.query<{
     event_id: string;
@@ -1830,7 +1892,10 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
       supportedCount: claimCount.get(e.id)?.supported ?? 0,
       disputedCount: claimCount.get(e.id)?.disputed ?? 0,
       sourceCount: sourceCount.get(e.id)?.c ?? 0,
+      independentSourceCount: sourceCount.get(e.id)?.indep ?? 0,
       primaryCount: sourceCount.get(e.id)?.primary ?? 0,
+      primaryDocCount: sourceCount.get(e.id)?.primdoc ?? 0,
+      entities: entityRows.get(e.id) ?? [],
       lastMaterialType: m?.type,
       lastMaterialAt: m?.detected_at,
     };

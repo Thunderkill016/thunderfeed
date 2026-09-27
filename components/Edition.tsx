@@ -39,7 +39,11 @@ export default function Edition({ initial }: { initial: Edition }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [read, setRead] = useState<Set<string>>(new Set());
   const [dark, setDark] = useState(false);
-  const [watch, setWatch] = useState<WatchList>({ entities: [], instruments: [], topics: [] });
+  const [watch, setWatch] = useState<WatchList>({
+    entities: [],
+    instruments: [],
+    topics: [],
+  });
 
   useEffect(() => {
     setRead(loadRead());

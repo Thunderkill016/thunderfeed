@@ -15,7 +15,7 @@
  */
 import { readFileSync } from "node:fs";
 import { buildRadarFeed } from "../../lib/radar.ts";
-import { extractEntities } from "../../lib/entities.ts";
+import { canonicalEntity, extractEntities } from "../../lib/entities.ts";
 import type { WatchList } from "../../lib/relevance.ts";
 import type { DataDeltaView } from "../../lib/db/read.ts";
 import type { EventListItem } from "../../lib/db/read.ts";
@@ -83,6 +83,7 @@ interface Metrics {
   p10: number;
   recall: number;
   recallAll: number;
+  laneRecall: number;
   noiseAt10: number;
   dupRate: number;
   relHits: number;
@@ -97,13 +98,19 @@ function evaluate(persona: string, watch: WatchList): Metrics {
 
   const top5 = feed.slice(0, 5);
   const top10 = feed.slice(0, 10);
-  /* dup = identical title OR same-story (≥2 shared entity keys) */
+  /* dup = identical title OR same-story. "Same story" means ≥2 shared
+   * DISTINCTIVE entities — country/region/place slugs don't count (two
+   * unrelated stories can share vietnam+us; matching the suppression rule
+   * keeps the metric honest about what the product actually dedupes). */
+  const GEO_TYPES = new Set(["country", "region", "place"]);
+  const distinctive = (keys: string[]) =>
+    keys.filter((k) => !GEO_TYPES.has(canonicalEntity(k)?.type ?? ""));
   const titles = new Set<string>();
   const seenEnts: string[][] = [];
   let dups = 0;
   for (const i of feed) {
     const key = i.title.trim().toLowerCase();
-    const ents = i.entityKeys ?? [];
+    const ents = distinctive(i.entityKeys ?? []);
     if (
       titles.has(key) ||
       seenEnts.some((s) => ents.filter((e) => s.includes(e)).length >= 2)
@@ -142,7 +149,30 @@ function evaluate(persona: string, watch: WatchList): Metrics {
     );
   const recallAll =
     mustSeeItems.filter(coveredAll).length / Math.max(1, mustSeeItems.length);
+  /* two-lane coverage (R6d): the homepage isn't one top-N list — a new
+   * lane (isNew vs previousSeenAt, ≤7) plus a still-material lane
+   * (older, score≥45, ≤5). A must-see "covered" by either lane counts. */
+  const prevSeen = nowMs - 12 * 3_600_000;
+  const laneFeed = buildRadarFeed(deltas, events, watch, nowMs, 24, prevSeen);
+  const lanes = [
+    ...laneFeed.filter((i) => i.isNew).slice(0, 7),
+    ...laneFeed.filter((i) => !i.isNew && i.score >= 45).slice(0, 5),
+  ];
+  const laneEnts = lanes.map((i) => i.entityKeys ?? []);
+  const laneCovered = (it: CorpusItem) =>
+    lanes.some((f) => f.id === it.data.id) ||
+    laneEnts.some(
+      (fk) =>
+        it.kind === "event" &&
+        fk.length > 0 &&
+        ((it.data as { entityKeys?: string[] }).entityKeys ?? []).filter((e) =>
+          fk.includes(e),
+        ).length >= 2,
+    );
+  const laneRecall =
+    mustSeeItems.filter(laneCovered).length / Math.max(1, mustSeeItems.length);
   return {
+    laneRecall,
     p5: top5.filter((i) => GOOD.has(q(i.id))).length / Math.max(1, top5.length),
     p10:
       top10.filter((i) => GOOD.has(q(i.id))).length / Math.max(1, top10.length),
@@ -161,7 +191,7 @@ console.log(
   `corpus: ${corpus.items.length} items (${deltas.length} deltas, ${events.length} events)`,
 );
 console.log(
-  "persona | feed | P@5 | P@10 | recall@22 | recall@gate | noise@10 | dup | rel@10",
+  "persona | feed | P@5 | P@10 | recall@22 | recall@gate | recall@lanes | noise@10 | dup | rel@10",
 );
 const all: Record<string, Metrics> = {};
 for (const [k, p] of Object.entries(PERSONAS)) {
@@ -169,7 +199,7 @@ for (const [k, p] of Object.entries(PERSONAS)) {
   all[k] = m;
   console.log(
     `${k} ${p.label.padEnd(16)} | ${String(m.feedSize).padStart(4)} | ` +
-      `${m.p5.toFixed(2)} | ${m.p10.toFixed(2)} | ${m.recall.toFixed(2)} | ${m.recallAll.toFixed(2)} | ` +
+      `${m.p5.toFixed(2)} | ${m.p10.toFixed(2)} | ${m.recall.toFixed(2)} | ${m.recallAll.toFixed(2)} | ${m.laneRecall.toFixed(2)} | ` +
       `${m.noiseAt10.toFixed(2)} | ${m.dupRate.toFixed(2)} | ${m.relHits}`,
   );
 }

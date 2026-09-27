@@ -41,6 +41,18 @@ jobs:
           DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
           GEMINI_API_KEY: ${{ secrets.TF_GEMINI_API_KEY }}
         run: npm run build:edition
+      # R6: after each ingest pass, refresh evidence independence keys +
+      # entity prominence, then adjudicate reported claims on the radar
+      # window. Both are idempotent deterministic passes; they run after
+      # persist so today's writes land in the enrichment.
+      - name: Enrich evidence + entities
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/radar/enrich.mts --limit 200
+      - name: Adjudicate claims
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/radar/adjudicate.mts --events 40
       # Telegram alerts disabled — every-30-min pushes were spam. The
       # alerts:telegram script stays; re-enable by restoring this step
       # when delivery is redesigned as an interruption-budgeted digest.
