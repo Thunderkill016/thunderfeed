@@ -10,6 +10,7 @@ import {
   MATERIALITY_ORDER,
   type EventChangeGroup,
 } from "../lib/changes";
+import { seriesMeta } from "../lib/seriesLabels";
 
 interface FeedChange extends ChangeView {
   eventId: string;
@@ -139,8 +140,11 @@ export default function ChangesRail({
                 <span className={`change-badge ${mat}`}>
                   {DELTA_LABEL[item.d.kind] ?? "DATA"}
                 </span>
-                <span className="change-card-event">{item.d.summary}</span>
-                <span className="change-card-summary">dữ liệu canonical</span>
+                <span className="change-card-event">
+                  {(item.d.seriesCode && seriesMeta(item.d.seriesCode)?.vi) ??
+                    item.d.summary}
+                </span>
+                <span className="change-card-summary">{item.d.summary}</span>
               </a>
             );
           }
