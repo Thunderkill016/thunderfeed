@@ -2348,14 +2348,15 @@ export async function getDailyBarsForListing(
     order?: "asc" | "desc";
   } = {},
 ): Promise<{ series: MarketSeriesView; bars: MarketBar[] } | null> {
-  const provider = selector.provider ?? "alphavantage";
-  const dataset = selector.dataset ?? "time_series_daily";
-  const priceBasis = selector.priceBasis ?? "as_traded";
+  // no selector → any single series answers (a VNDirect-only listing has
+  // no alphavantage series to default to); ambiguity still requires the
+  // caller to narrow explicitly
+  const { provider, dataset, priceBasis } = selector;
   const series = (await getMarketSeriesForListing(listingId)).filter(
     (s) =>
-      s.provider === provider &&
-      s.dataset === dataset &&
-      s.priceBasis === priceBasis &&
+      (provider == null || s.provider === provider) &&
+      (dataset == null || s.dataset === dataset) &&
+      (priceBasis == null || s.priceBasis === priceBasis) &&
       s.interval === "1d" &&
       s.sessionType === "regular",
   );
