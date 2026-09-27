@@ -1,0 +1,26 @@
+name: market-refresh
+
+# Daily VN market data — after the 15:00 ICT close (08:00 UTC). Idempotent:
+# the importer dedupes at the version level, so a weekday run only writes
+# the genuinely new sessions (and any provider corrections).
+
+on:
+  schedule:
+    - cron: "0 8 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  vndirect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Import VNDirect EOD
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/market/import-vndirect.mts --start "$(date -u -d '-7 days' +%F)"
