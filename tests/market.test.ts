@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import {
   compareDailySeries,
   computePremiumBars,
+  computeRatioBars,
   goldPremiumPct,
   isBigintString,
   isCalendarDate,
@@ -21,10 +22,14 @@ import {
   normalizeDecimalString,
   parseAvDaily,
   parseBinanceKlines,
+  parseBinanceP2P,
   parseCsv,
   parseErApiRate,
+  parseFawazRates,
   parseGiavangHistory,
   parseTiingoEod,
+  parseVcbXml,
+  ratioGapPct,
   resolveAlphaVantageSymbol,
   resolveTiingoSymbol,
   simpleReturn,
@@ -84,7 +89,7 @@ function setupDb() {
     // textually instead
     .replace(
       "'manual_verified', 'other'",
-      "'manual_verified', 'alphavantage', 'tiingo', 'giavang', 'binance', 'er_api', 'derived', 'other'",
+      "'manual_verified', 'alphavantage', 'tiingo', 'giavang', 'binance', 'er_api', 'vietcombank', 'fawaz', 'derived', 'other'",
     )
     .replace(
       "price_basis IN ('as_traded')",
@@ -1928,4 +1933,149 @@ test("volume_spike: opt-in series fires on ≥mult×median, others quiet", async
     [s2],
   );
   assert.equal(Number(dq.rows[0].n), 0);
+});
+
+// ── FX providers without API keys ────────────────────────────────────────
+
+test("parseVcbXml: thousand-comma quotes → decimal bid/ask bar", () => {
+  const xml = `<?xml version="1.0"?><ExrateList>
+    <DateTime>9/27/2026 9:11:25 PM</DateTime>
+    <Exrate CurrencyCode="EUR" CurrencyName="EURO" Buy="28,831.13" Transfer="29,122.36" Sell="30,351.69" />
+    <Exrate CurrencyCode="USD" CurrencyName="US DOLLAR" Buy="25,810.00" Transfer="25,840.00" Sell="26,050.00" />
+    <Exrate CurrencyCode="DKK" CurrencyName="KRONER" Buy="-" Transfer="3,885.92" Sell="4,034.59" />
+  </ExrateList>`;
+  const r = parseVcbXml(xml, { currency: "USD" });
+  assert.ok(r.kind === "series");
+  const b = r.bars[0];
+  assert.equal(b.sessionDate, "2026-09-27"); // VN M/D/YYYY board date
+  assert.equal(b.open, "25810"); // commas stripped → canonical decimal
+  assert.equal(b.low, "25810");
+  assert.equal(b.high, "26050");
+  assert.equal(b.close, "26050");
+});
+
+test("parseVcbXml: '-' buy falls back to Transfer; all-missing is an error", () => {
+  const xml = `<ExrateList><DateTime>9/27/2026 9:11:25 PM</DateTime>
+    <Exrate CurrencyCode="DKK" CurrencyName="K" Buy="-" Transfer="3,885.92" Sell="4,034.59" />
+    <Exrate CurrencyCode="XYZ" CurrencyName="X" Buy="-" Transfer="-" Sell="-" />
+  </ExrateList>`;
+  const r = parseVcbXml(xml, { currency: "DKK" });
+  assert.ok(r.kind === "series");
+  assert.equal(r.bars[0].open, "3885.92"); // Transfer as bid
+  assert.equal(r.bars[0].close, "4034.59");
+  assert.equal(parseVcbXml(xml, { currency: "XYZ" }).kind, "provider_error");
+  assert.equal(
+    parseVcbXml(xml, { currency: "JPY" }).kind,
+    "provider_error", // absent row
+  );
+});
+
+test("parseBinanceP2P: median of returned ads, malformed sides rejected", () => {
+  const ads = (prices: number[]) => ({
+    code: "000000",
+    data: prices.map((p) => ({ adv: { price: String(p) } })),
+  });
+  // 5 ads → median = middle price, not the mean of extremes
+  const r = parseBinanceP2P(ads([25897, 25898, 25900, 26100, 26200]));
+  assert.equal(r.kind, "price");
+  assert.equal(r.price, 25900);
+  assert.equal(parseBinanceP2P({ data: [] }).kind, "provider_error");
+  assert.equal(
+    parseBinanceP2P({ code: "900001", data: ads([1]) }).kind,
+    "provider_error",
+  );
+  assert.equal(
+    parseBinanceP2P({ data: [{ adv: {} }, { adv: { price: "x" } }] }).kind,
+    "provider_error",
+  );
+});
+
+test("parseFawazRates: dated tag → one point bar; bad shape refused", () => {
+  const r = parseFawazRates({ date: "2024-03-06", usd: { vnd: 24803.93 } });
+  assert.ok(r.kind === "series");
+  assert.deepEqual(r.bars[0], {
+    sessionDate: "2024-03-06",
+    open: "24803.93",
+    high: "24803.93",
+    low: "24803.93",
+    close: "24803.93",
+    volume: null,
+  });
+  assert.equal(
+    parseFawazRates({ usd: { vnd: 1 } }).kind,
+    "provider_error", // no date
+  );
+  assert.equal(
+    parseFawazRates({ date: "2024-03-06", usd: {} }).kind,
+    "provider_error", // no vnd
+  );
+});
+
+test("ratioGapPct / computeRatioBars: par-100 index, invalid skipped", () => {
+  assert.equal(ratioGapPct(103, 100)! > 0, true);
+  assert.ok(Math.abs(ratioGapPct(103, 100)! - 3) < 1e-9);
+  assert.equal(ratioGapPct(0, 100), null);
+  assert.equal(ratioGapPct(103, 0), null);
+  const bars = computeRatioBars(
+    new Map([
+      ["2026-09-02", { num: 26000, den: 25800 }],
+      ["2026-09-01", { num: 0, den: 25800 }], // invalid leg skipped
+      ["2026-09-03", { num: 26000, den: 26500 }], // negative gap — index still positive
+    ]),
+  );
+  assert.deepEqual(
+    bars.map((b) => b.sessionDate),
+    ["2026-09-02", "2026-09-03"],
+  );
+  // 26000/25800 → index 100.7752; 26000/26500 → 98.1132 (a negative-gap day
+  // that a signed % value could never store under the OHLC CHECK)
+  assert.ok(Math.abs(Number(bars[0].close) - 100.7752) < 0.001);
+  assert.ok(Math.abs(Number(bars[1].close) - 98.1132) < 0.001);
+  assert.equal(bars[0].open, bars[0].close); // point value
+});
+
+test("premium_shift honors per-series pp thresholds", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "gapth", "GAP", "XASE");
+  const seriesId = await getOrCreateMarketSeries(pool, {
+    listingId: fx.listingId,
+    listingKey: fx.listingKey,
+    provider: "derived",
+    dataset: "gap_fixture",
+    priceBasis: "quoted",
+  });
+  // %-valued series — market_move must stay off or it claims the version
+  await pool.query(`UPDATE market_series SET metadata=$1 WHERE id=$2`, [
+    JSON.stringify({ unit: "pct", derived: true, moveDelta: false }),
+    seriesId,
+  ]);
+  const obs = async () =>
+    (
+      await pool.query(
+        `INSERT INTO reference_observations
+           (provider,dataset,record_key,payload,content_hash)
+         VALUES ('derived','gap_fixture',$1,'{}',$1) RETURNING id`,
+        [`obs:${randomUUID()}`],
+      )
+    ).rows[0].id as string;
+  const d = (back: number) =>
+    new Date(Date.now() - back * 86400e3).toISOString().slice(0, 10);
+  const pbar = (date: string, pct: string): DailyBar => ({
+    sessionDate: date,
+    open: pct,
+    high: pct,
+    low: pct,
+    close: pct,
+    volume: null,
+  });
+  await applyDailyBars(pool, seriesId, [pbar(d(1), "0.40")], await obs());
+  // +0.35pt — under the gold default 0.75 but over a tight 0.3 band
+  await applyDailyBars(pool, seriesId, [pbar(d(0), "0.75")], await obs());
+  let r = await detectPremiumShift(pool, seriesId);
+  assert.equal(r.shifted, false); // default band too wide
+  r = await detectPremiumShift(pool, seriesId, Date.now(), {
+    mediumPp: 0.3,
+    highPp: 0.75,
+  });
+  assert.equal(r.shifted, true); // tight band fires
 });

@@ -1033,6 +1033,139 @@ export function parseErApiRate(
   };
 }
 
+// ── FX providers without API keys ─────────────────────────────────────────
+
+/** Vietcombank's public pXML rate board — official bank quotes, not trades:
+ *  Buy = cash bid, Sell = ask, Transfer = wire mid-ish. Numbers carry VN
+ *  thousand-separator commas ("17,791.31") — strip before decimal
+ *  normalization. The board asks to be polled ≤ once/5min; the daily
+ *  importer respects that by construction. */
+export function parseVcbXml(
+  xml: string,
+  opts: { currency: string },
+): GiavangResult {
+  const cc = opts.currency.replace(/[^A-Z0-9]/gi, "");
+  const row = xml.match(
+    new RegExp(`<Exrate\\s[^>]*CurrencyCode="${cc}"[^>]*/>`),
+  );
+  if (!row)
+    return {
+      kind: "provider_error",
+      errorClass: "empty",
+      detail: `no Exrate row for ${opts.currency}`,
+    };
+  const attr = (name: string) => {
+    const m = row[0].match(new RegExp(`${name}="([^"]*)"`));
+    return m ? m[1].replace(/,/g, "") : null;
+  };
+  const buy = normalizeDecimalString(attr("Buy"));
+  const sell = normalizeDecimalString(attr("Sell"));
+  // '-' means "not quoted" — a single live side collapses to one quote
+  const bid = buy ?? normalizeDecimalString(attr("Transfer"));
+  const ask = sell ?? bid;
+  if (bid == null || ask == null)
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: `${opts.currency} buy/transfer/sell all unquoted`,
+    };
+  const d = xml.match(/<DateTime>([^<]+)<\/DateTime>/)?.[1]?.trim();
+  // VN board stamps "M/D/YYYY h:mm:ss AM" — the date part only
+  const dm = d?.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  const sessionDate = dm
+    ? `${dm[3]}-${dm[1].padStart(2, "0")}-${dm[2].padStart(2, "0")}`
+    : null;
+  if (!sessionDate || !isCalendarDate(sessionDate))
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: `bad DateTime: ${JSON.stringify(d)}`,
+    };
+  return {
+    kind: "series",
+    bars: [
+      {
+        sessionDate,
+        open: bid,
+        high: ask,
+        low: bid,
+        close: ask,
+        volume: null,
+      },
+    ],
+  };
+}
+
+/** Binance public C2C search — the de-facto free-market USDT/VND board.
+ *  tradeType=BUY ads are makers selling USDT (a taker's ask side);
+ *  tradeType=SELL ads are makers buying (a taker's bid side). One call per
+ *  side; the board price is the median of the returned ads — robust to a
+ *  single outlier advertiser. */
+export function parseBinanceP2P(payload: unknown): {
+  kind: "price" | "provider_error";
+  price?: number;
+  detail?: string;
+} {
+  if (payload == null || typeof payload !== "object")
+    return { kind: "provider_error", detail: "payload is not an object" };
+  const p = payload as { code?: unknown; data?: unknown };
+  if (p.code != null && p.code !== "000000")
+    return { kind: "provider_error", detail: `binance code ${p.code}` };
+  if (!Array.isArray(p.data) || !p.data.length)
+    return { kind: "provider_error", detail: "zero ads" };
+  const prices: number[] = [];
+  for (const ad of p.data) {
+    const price = Number((ad as { adv?: { price?: unknown } }).adv?.price);
+    if (Number.isFinite(price) && price > 0) prices.push(price);
+  }
+  const med = median(prices);
+  if (med == null)
+    return { kind: "provider_error", detail: "no parseable ad prices" };
+  return { kind: "price", price: med };
+}
+
+/** fawaz currency-api on jsDelivr — a dated community FX board with real
+ *  history (the dated tag IS the historical snapshot). vnd is a number in
+ *  the usd map; anything else is a schema break, not a zero rate. */
+export function parseFawazRates(
+  payload: unknown,
+): { kind: "series"; bars: DailyBar[] } | GiavangResult {
+  if (payload == null || typeof payload !== "object")
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: "payload is not an object",
+    };
+  const p = payload as { date?: unknown; usd?: Record<string, unknown> };
+  const sessionDate = typeof p.date === "string" ? p.date : null;
+  if (!sessionDate || !isCalendarDate(sessionDate))
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: `bad date: ${JSON.stringify(p.date)}`,
+    };
+  const rate = normalizeDecimalString(p.usd?.vnd);
+  if (rate == null)
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: `missing usd.vnd`,
+    };
+  return {
+    kind: "series",
+    bars: [
+      {
+        sessionDate,
+        open: rate,
+        high: rate,
+        low: rate,
+        close: rate,
+        volume: null,
+      },
+    ],
+  };
+}
+
 // ── Derived series: SJC-vs-world gold premium ────────────────────────────
 
 /** 1 lượng (VN tael) = 37.5 g; troy ounce = 31.1034768 g. The SJC retail
@@ -1075,6 +1208,48 @@ export function computePremiumBars(legs: Map<string, PremiumLegs>): DailyBar[] {
     const pct = goldPremiumPct(l);
     if (pct == null) continue;
     const v = pct.toFixed(4);
+    bars.push({
+      sessionDate,
+      open: v,
+      high: v,
+      low: v,
+      close: v,
+      volume: null,
+    });
+  }
+  bars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
+  return bars;
+}
+
+/** num/den − 1 in %, null when either side isn't a finite positive —
+ *  the generic shape behind premium-like derived series. */
+export function ratioGapPct(num: number, den: number): number | null {
+  if (!Number.isFinite(num) || !Number.isFinite(den) || num <= 0 || den <= 0)
+    return null;
+  return (num / den - 1) * 100;
+}
+
+/** Ratio as a par-100 index — 99.86 means 0.14% below parity. Positive
+ *  for all positive legs, which is what the OHLC-validity CHECK requires;
+ *  a signed % value could never be stored on a negative-gap day. */
+export function ratioIndex100(num: number, den: number): number | null {
+  if (!Number.isFinite(num) || !Number.isFinite(den) || num <= 0 || den <= 0)
+    return null;
+  return (num / den) * 100;
+}
+
+/** Point-value par-100 index bars for a ratio gap (e.g. free-market vs
+ *  official FX). Read close−100 for the signed % gap; absolute index
+ *  diffs equal absolute percentage-point diffs, so the premium_shift
+ *  detector works on them unchanged. */
+export function computeRatioBars(
+  legs: Map<string, { num: number; den: number }>,
+): DailyBar[] {
+  const bars: DailyBar[] = [];
+  for (const [sessionDate, l] of legs) {
+    const idx = ratioIndex100(l.num, l.den);
+    if (idx == null) continue;
+    const v = idx.toFixed(4);
     bars.push({
       sessionDate,
       open: v,

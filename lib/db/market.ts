@@ -544,6 +544,10 @@ export async function detectPremiumShift(
   db: Q,
   seriesId: string,
   now = Date.now(),
+  thresholds: { mediumPp: number; highPp: number } = {
+    mediumPp: PREMIUM_SHIFT_PP,
+    highPp: PREMIUM_SHIFT_HIGH_PP,
+  },
 ): Promise<{ shifted: boolean; deltaPp: number | null }> {
   const pts = await db.query(
     `SELECT mp.id AS point_id, mp.session_date, mpv.id AS version_id,
@@ -563,12 +567,12 @@ export async function detectPremiumShift(
     Number(cur.version_no) === 1 &&
     Date.parse(`${curDate}T00:00:00Z`) >=
       now - MOVE_DELTA_LOOKBACK_DAYS * 86400e3;
-  if (!fresh || Math.abs(deltaPp) < PREMIUM_SHIFT_PP)
+  if (!fresh || Math.abs(deltaPp) < thresholds.mediumPp)
     return { shifted: false, deltaPp };
   const sign = deltaPp > 0 ? "+" : "";
   const deltaId = await mintMarketDelta(db, {
     kind: "premium_shift",
-    materiality: Math.abs(deltaPp) >= PREMIUM_SHIFT_HIGH_PP ? "high" : "medium",
+    materiality: Math.abs(deltaPp) >= thresholds.highPp ? "high" : "medium",
     summary: `premium SJC ${sign}${deltaPp.toFixed(2)}pt → ${Number(cur.close).toFixed(2)}% phiên ${curDate}`,
     pointId: cur.point_id,
     versionId: cur.version_id,

@@ -25,7 +25,8 @@ const r = await c.query(
      JOIN financial_instruments fi ON fi.id=il.instrument_id
      JOIN instrument_versions iv ON iv.id=fi.current_version_id
      LEFT JOIN market_points mp ON mp.series_id=ms.id
-    WHERE ms.provider IN ('giavang','binance','er_api','derived')
+    WHERE ms.provider IN ('giavang','binance','er_api','vietcombank',
+                          'fawaz','derived')
     GROUP BY 1,2,3,4,ms.id ORDER BY 2,1`,
 );
 for (const x of r.rows)

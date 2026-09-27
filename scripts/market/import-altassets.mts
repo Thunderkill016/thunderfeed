@@ -25,9 +25,14 @@
 import { readFileSync } from "node:fs";
 import {
   computePremiumBars,
+  computeRatioBars,
+  isoDay,
   parseBinanceKlines,
+  parseBinanceP2P,
   parseErApiRate,
+  parseFawazRates,
   parseGiavangHistory,
+  parseVcbXml,
   type DailyBar,
   type PremiumLegs,
 } from "../../lib/market.ts";
@@ -48,7 +53,8 @@ try {
   /* env may already be populated */
 }
 
-type AltProvider = "giavang" | "binance" | "er_api" | "derived";
+type AltProvider =
+  "giavang" | "binance" | "er_api" | "vietcombank" | "fawaz" | "derived";
 
 interface AltEntry {
   /** provider transport symbol — giavang code / binance pair / '-' for FX */
@@ -224,6 +230,63 @@ const ALT_UNIVERSE: AltEntry[] = [
     materialMovePct: 0.5,
     highMovePct: 1,
   },
+  {
+    // fawaz's dated tags carry real history — this series backfills the
+    // official-mid leg the gold premium + FX gap are measured against
+    code: "-",
+    instrumentSlug: "usd_vnd",
+    type: "fx_pair",
+    assetClass: "fx",
+    venueMic: "FAWAZ",
+    ticker: "USDVND",
+    currency: "VND",
+    nameVi: "Tỷ giá USD/VND (tham chiếu)",
+    nameEn: "USD/VND mid (fawaz)",
+    issuerSlug: null,
+    provider: "fawaz",
+    dataset: "v1_daily",
+    priceBasis: "quoted",
+    materialMovePct: 0.5,
+    highMovePct: 1,
+  },
+  {
+    code: "USD",
+    instrumentSlug: "usd_vnd",
+    type: "fx_pair",
+    assetClass: "fx",
+    venueMic: "VCB",
+    ticker: "USDVND",
+    currency: "VND",
+    nameVi: "USD/VND Vietcombank",
+    nameEn: "USD/VND Vietcombank board",
+    issuerSlug: null,
+    provider: "vietcombank",
+    dataset: "tygia",
+    priceBasis: "quoted",
+    materialMovePct: 0.5,
+    highMovePct: 1,
+    seriesMeta: { quote: "bid_ask", unit: "VND" },
+  },
+  {
+    // Binance P2P — the de-facto free-market VND rate; USDT is the unit
+    // VN actually trades USD exposure in, so this is its own instrument
+    code: "USDT",
+    instrumentSlug: "usdt_vnd",
+    type: "fx_pair",
+    assetClass: "fx",
+    venueMic: "BINANCE_P2P",
+    ticker: "USDTVND",
+    currency: "VND",
+    nameVi: "USDT/VND chợ tự do (P2P)",
+    nameEn: "USDT/VND free market (Binance P2P)",
+    issuerSlug: null,
+    provider: "binance",
+    dataset: "p2p",
+    priceBasis: "quoted",
+    materialMovePct: 0.5,
+    highMovePct: 1,
+    seriesMeta: { quote: "bid_ask", unit: "VND" },
+  },
 ];
 
 /** pseudo-venues — NOT ISO MICs; name the actual price source. */
@@ -261,6 +324,27 @@ const VENUES: {
     city: "",
     country: "",
     kind: "reference_rate",
+  },
+  {
+    mic: "FAWAZ",
+    name: "fawaz currency-api (jsDelivr)",
+    city: "",
+    country: "",
+    kind: "reference_rate",
+  },
+  {
+    mic: "VCB",
+    name: "Vietcombank rate board",
+    city: "Hanoi",
+    country: "VN",
+    kind: "price_board",
+  },
+  {
+    mic: "BINANCE_P2P",
+    name: "Binance P2P VN board",
+    city: "",
+    country: "",
+    kind: "free_market",
   },
   {
     mic: "DERIVED",
@@ -515,10 +599,81 @@ async function fetchBars(
     url = `https://giavang.now/api/prices?type=${e.code}&days=30`;
     payload = await (await fetch(url)).json();
     parsed = parseGiavangHistory(payload, { code: e.code });
+  } else if (e.provider === "binance" && e.dataset === "p2p") {
+    // both ad sides → the free-market bid/ask pair for today
+    url = "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search";
+    const side = async (tradeType: "BUY" | "SELL") =>
+      (await (
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fiat: "VND",
+            page: 1,
+            rows: 10,
+            tradeType,
+            asset: "USDT",
+          }),
+        })
+      ).json()) as unknown;
+    const buyAds = await side("BUY"); // makers selling USDT → taker's ask
+    const sellAds = await side("SELL"); // makers buying → taker's bid
+    payload = { buy: buyAds, sell: sellAds };
+    const ask = parseBinanceP2P(buyAds);
+    const bid = parseBinanceP2P(sellAds);
+    if (ask.kind !== "price" || bid.kind !== "price")
+      throw new Error(`USDT P2P: ${ask.detail ?? bid.detail ?? "no quotes"}`);
+    const b = String(bid.price);
+    const a = String(ask.price);
+    parsed = {
+      kind: "series",
+      bars: [
+        {
+          sessionDate: today,
+          open: b,
+          high: a,
+          low: b,
+          close: a,
+          volume: null,
+        },
+      ],
+    };
   } else if (e.provider === "binance") {
     url = `https://api.binance.com/api/v3/klines?symbol=${e.code}&interval=1d&limit=120`;
     payload = await (await fetch(url)).json();
     parsed = parseBinanceKlines(payload);
+  } else if (e.provider === "vietcombank") {
+    url =
+      "https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx";
+    payload = { xml: await (await fetch(url)).text() };
+    parsed = parseVcbXml((payload as { xml: string }).xml, {
+      currency: e.code,
+    });
+  } else if (e.provider === "fawaz") {
+    // one dated tag per session — the tag IS the history snapshot
+    const days: Record<string, unknown> = {};
+    const bars: DailyBar[] = [];
+    for (let back = 30; back >= 0; back--) {
+      const d = isoDay(new Date(Date.now() - back * 86400e3));
+      const u = `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${d}/v1/currencies/usd.json`;
+      const day = (await (await fetch(u)).json()) as unknown;
+      const r = parseFawazRates(day);
+      if (r.kind === "series") {
+        days[d] = day;
+        bars.push(r.bars[0]);
+      }
+      // a missing/failed day just leaves a gap — never fabricate a rate
+    }
+    url =
+      "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@{date}/v1/currencies/usd.json";
+    payload = { dates: days };
+    parsed = bars.length
+      ? { kind: "series", bars }
+      : {
+          kind: "provider_error",
+          errorClass: "empty",
+          detail: "no dated snapshots returned VND",
+        };
   } else {
     url = `https://open.er-api.com/v6/latest/USD`;
     payload = await (await fetch(url)).json();
@@ -653,51 +808,67 @@ const PREMIUM_ENTRY: AltEntry = {
   },
 };
 
-/** per-date closes of the three premium legs, keyed by listing —
- *  dates missing a leg are simply absent (computePremiumBars skips). */
-async function fetchPremiumLegs(
+/** Per-date {open,close} of every series on a listing, keyed by date.
+ *  Multiple providers on one listing collapse into one map — callers that
+ *  need provider choice merge candidate listings in preference order. */
+async function fetchLegRows(
   db: NonNullable<typeof c>,
-): Promise<Map<string, PremiumLegs>> {
-  const LEG_LISTINGS = {
-    sjcSell: "listing:vang_sjc_9999:commodity:goldvn",
-    xauUsd: "listing:xau_usd_spot:commodity:xauotc",
-    usdVnd: "listing:usd_vnd:fx_pair:erfx",
-  } as const;
-  const legs = new Map<string, Partial<PremiumLegs>>();
-  for (const [leg, listingKey] of Object.entries(LEG_LISTINGS)) {
-    const { rows } = await db.query(
-      `SELECT mp.session_date, mv.close
-         FROM market_points mp
-         JOIN market_point_versions mv ON mv.id = mp.current_version_id
-         JOIN market_series ms ON ms.id = mp.series_id
-         JOIN instrument_listings il ON il.id = ms.listing_id
-        WHERE il.canonical_key = $1
-        ORDER BY mp.session_date`,
-      [listingKey],
-    );
-    for (const r of rows) {
-      const d =
-        r.session_date instanceof Date
-          ? r.session_date.toISOString().slice(0, 10)
-          : String(r.session_date).slice(0, 10);
-      const cur = legs.get(d) ?? {};
-      cur[leg as keyof PremiumLegs] = Number(r.close);
-      legs.set(d, cur);
-    }
+  listingKey: string,
+): Promise<Map<string, { open: number; close: number }>> {
+  const { rows } = await db.query(
+    `SELECT mp.session_date, mv.open, mv.close
+       FROM market_points mp
+       JOIN market_point_versions mv ON mv.id = mp.current_version_id
+       JOIN market_series ms ON ms.id = mp.series_id
+       JOIN instrument_listings il ON il.id = ms.listing_id
+      WHERE il.canonical_key = $1
+      ORDER BY mp.session_date`,
+    [listingKey],
+  );
+  const out = new Map<string, { open: number; close: number }>();
+  for (const r of rows) {
+    const d = isoDay(r.session_date);
+    if (!out.has(d))
+      out.set(d, { open: Number(r.open), close: Number(r.close) });
   }
-  const full = new Map<string, PremiumLegs>();
-  for (const [d, l] of legs)
-    if (l.sjcSell != null && l.xauUsd != null && l.usdVnd != null)
-      full.set(d, l as PremiumLegs);
-  return full;
+  return out;
 }
 
+/** First candidate wins per date — the preference order IS the leg's
+ *  provenance rule (e.g. fawaz depth over er_api recency). */
+function mergeLegs<T>(cands: Map<string, T>[]): Map<string, T> {
+  const out = new Map<string, T>();
+  for (const m of cands) for (const [d, v] of m) if (!out.has(d)) out.set(d, v);
+  return out;
+}
+
+/** Official-mid USD/VND: fawaz carries history, er_api is the fallback. */
+const FX_LEG_KEYS = [
+  "listing:usd_vnd:fx_pair:fawaz",
+  "listing:usd_vnd:fx_pair:erfx",
+] as const;
+
 if (!DRY_RUN && c) {
+  const [sjcMap, xauMap, p2pMap, ...fxCands] = await Promise.all([
+    fetchLegRows(c, "listing:vang_sjc_9999:commodity:goldvn"),
+    fetchLegRows(c, "listing:xau_usd_spot:commodity:xauotc"),
+    fetchLegRows(c, "listing:usdt_vnd:fx_pair:binance_p2p"),
+    ...FX_LEG_KEYS.map((k) => fetchLegRows(c, k)),
+  ]);
+  const fxMap = mergeLegs(fxCands);
+
+  // ── SJC-vs-world premium ───────────────────────────────────────────
   const { listingId, listingKey } = await ensureListing(
     PREMIUM_ENTRY,
     universeObsId,
   );
-  const legs = await fetchPremiumLegs(c);
+  const legs = new Map<string, PremiumLegs>();
+  for (const [d, s] of sjcMap) {
+    const x = xauMap.get(d);
+    const f = fxMap.get(d);
+    if (x && f)
+      legs.set(d, { sjcSell: s.close, xauUsd: x.close, usdVnd: f.close });
+  }
   const bars = computePremiumBars(legs);
   const obsId = await observe(c, {
     provider: "derived",
@@ -706,6 +877,7 @@ if (!DRY_RUN && c) {
     payload: {
       formula: "sjc_sell / (xau_usd × usd_vnd × 1.205653) − 1",
       legs: Object.fromEntries(legs),
+      fxLegPreference: [...FX_LEG_KEYS],
     },
   });
   const seriesId = await getOrCreateMarketSeries(c, {
@@ -724,6 +896,75 @@ if (!DRY_RUN && c) {
   console.log(
     `SJC-PREM: ${bars.length} bars +${pr.pointsInserted}pts` +
       (shift.shifted ? ` premium_shift ${shift.deltaPp!.toFixed(2)}pt` : ""),
+  );
+
+  // ── free-market gap: Binance P2P mid vs official mid ────────────────
+  // The classic VN "spread chợ tự do" — a %-valued derived series like
+  // the gold premium, tracked by the same premium_shift detector but at
+  // a tighter threshold (the gap lives in tenths of a percent).
+  const GAP_ENTRY: AltEntry = {
+    code: "-",
+    instrumentSlug: "usdt_vnd_gap",
+    type: "index",
+    assetClass: "fx",
+    venueMic: "DERIVED",
+    ticker: "USDT-GAP",
+    currency: null,
+    nameVi: "Chênh USDT tự do − tỷ giá chính thức",
+    nameEn: "Free-market vs official VND gap",
+    issuerSlug: null,
+    provider: "derived",
+    dataset: "usdt_vnd_gap_daily",
+    priceBasis: "quoted",
+    materialMovePct: 0,
+    highMovePct: 0,
+    seriesMeta: {
+      // par-100 index — the gap oscillates around zero, and a signed %
+      // can never be stored under the OHLC validity CHECK; close−100
+      // reads the signed % gap, index diffs equal pp diffs
+      unit: "index_par100",
+      derived: true,
+      moveDelta: false,
+      legs: ["usdt_vnd", "usd_vnd"],
+    },
+  };
+  const gapListing = await ensureListing(GAP_ENTRY, universeObsId);
+  const gapLegs = new Map<string, { num: number; den: number }>();
+  for (const [d, p] of p2pMap) {
+    const f = fxMap.get(d);
+    if (f) gapLegs.set(d, { num: (p.open + p.close) / 2, den: f.close });
+  }
+  const gapBars = computeRatioBars(gapLegs);
+  const gapObsId = await observe(c, {
+    provider: "derived",
+    dataset: GAP_ENTRY.dataset,
+    recordKey: `gap/${today}`,
+    payload: {
+      formula: "100 × usdt_vnd_mid / official_usdvnd  (par-100 index)",
+      legs: Object.fromEntries(gapLegs),
+      fxLegPreference: [...FX_LEG_KEYS],
+    },
+  });
+  const gapSeriesId = await getOrCreateMarketSeries(c, {
+    listingId: gapListing.listingId,
+    listingKey: gapListing.listingKey,
+    provider: GAP_ENTRY.provider,
+    dataset: GAP_ENTRY.dataset,
+    priceBasis: GAP_ENTRY.priceBasis,
+  });
+  await c.query(
+    `UPDATE market_series SET metadata = metadata || $2::jsonb WHERE id=$1`,
+    [gapSeriesId, JSON.stringify(GAP_ENTRY.seriesMeta)],
+  );
+  const gr = await applyDailyBars(c, gapSeriesId, gapBars, gapObsId);
+  // gap moves in tenths of a percent — tighter band than the gold premium
+  const gshift = await detectPremiumShift(c, gapSeriesId, Date.now(), {
+    mediumPp: 0.3,
+    highPp: 0.75,
+  });
+  console.log(
+    `USDT-GAP: ${gapBars.length} bars +${gr.pointsInserted}pts` +
+      (gshift.shifted ? ` premium_shift ${gshift.deltaPp!.toFixed(2)}pt` : ""),
   );
 } else {
   console.log("[dry] premium leg skipped — needs DB");
