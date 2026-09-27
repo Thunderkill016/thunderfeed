@@ -3,10 +3,16 @@
 export default function SiteNav({
   active,
 }: {
-  active?: "news" | "macro" | "markets" | "sources";
+  active?: "news" | "macro" | "markets" | "sources" | "ask";
 }) {
   return (
     <nav className="site-nav" aria-label="Sản phẩm">
+      <a
+        href="/ask"
+        className={active === "ask" ? "site-nav-item on" : "site-nav-item"}
+      >
+        Hỏi đáp
+      </a>
       <a
         href="/"
         className={active === "news" ? "site-nav-item on" : "site-nav-item"}
