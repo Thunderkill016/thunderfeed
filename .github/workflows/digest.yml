@@ -1,0 +1,31 @@
+name: digest
+
+# Morning digest — ONE Telegram message per VN day (07:00 ICT = 00:00
+# UTC). The 30-min alert cadence was spam; the digest is the redesigned
+# interruption budget: top edition events + last-24h data deltas +
+# watchlist hits in a single push. Dedup lives in delivery_state so a
+# rerun in the same VN day sends nothing.
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Send morning digest
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TF_TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TF_TELEGRAM_CHAT_ID }}
+          TELEGRAM_WATCH: ${{ secrets.TF_TELEGRAM_WATCH }}
+        run: npx tsx scripts/telegram-digest.mts

@@ -29,6 +29,36 @@ jobs:
       # non-blocking — transitives flap faster than upstream patches.
       - run: npm audit --audit-level=high || true
 
+  rls-smoke:
+    # Real-Postgres lockdown proof: apply every migration to a fresh
+    # service container, then an unprivileged role must read zero rows
+    # from every public table. Catches RLS/grant regressions that
+    # pg-mem tests structurally cannot.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: thunderfeed
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Apply migrations + probe RLS
+        run: >
+          npx tsx scripts/ci-rls-smoke.mts
+          "postgres://postgres:ci@localhost:5432/thunderfeed"
+
   db-security:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest

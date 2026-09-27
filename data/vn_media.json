@@ -374,5 +374,13 @@
     "description": "Tạp chí trí thức - tư tưởng độc lập trong nước, đăng ký dưới Trung tâm Khoa học và Công nghệ Tia Sáng.",
     "owner": "Trung tâm Khoa học và Công nghệ Tia Sáng",
     "typology": "Private Independent Media"
+  },
+  {
+    "country": "Vietnam",
+    "organization": "Báo Công Thương",
+    "domains": ["congthuong.vn"],
+    "description": "Cơ quan ngôn luận của Bộ Công Thương — chính sách công nghiệp, thương mại, xuất nhập khẩu.",
+    "owner": "Bộ Công Thương",
+    "typology": "State Funded Media"
   }
 ]

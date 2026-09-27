@@ -34,6 +34,10 @@ const PERSIST_LOCK_KEY = 727274;
    connection it needs to finish — a Node-level deadlock. try-lock + sleep
    keeps waiters connectionless; ~2.5 polls/sec is negligible load. */
 const PERSIST_LOCK_RETRY_MS = 400;
+/* Bounded wait: a persist run takes ~20min; a waiter queued past ~2 runs
+ * is wedged or overlapping cron — fail loudly instead of retrying
+ * forever (which previously could pin a runner for hours). */
+const PERSIST_LOCK_TIMEOUT_MS = 25 * 60 * 1000;
 
 /**
  * Take the edition-persist advisory lock without starving the pool.
@@ -42,6 +46,7 @@ const PERSIST_LOCK_RETRY_MS = 400;
  * working connection (Node-level deadlock). try-lock + sleep instead.
  */
 async function acquirePersistLock(pool: Pool): Promise<PoolClient> {
+  const deadline = Date.now() + PERSIST_LOCK_TIMEOUT_MS;
   for (;;) {
     const c = await pool.connect();
     const { rows } = await c.query<{ ok: boolean }>(
@@ -50,6 +55,11 @@ async function acquirePersistLock(pool: Pool): Promise<PoolClient> {
     );
     if (rows[0].ok) return c;
     c.release();
+    if (Date.now() > deadline)
+      throw new Error(
+        `persist advisory lock not acquired within ` +
+          `${PERSIST_LOCK_TIMEOUT_MS / 60000}min — holder wedged?`,
+      );
     await new Promise((r) => setTimeout(r, PERSIST_LOCK_RETRY_MS));
   }
 }

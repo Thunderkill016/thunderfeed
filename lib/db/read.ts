@@ -1923,6 +1923,24 @@ export async function searchEvents(
   const queryEntities = new Set(extractEntitiesNormalized(norm));
   const tokens = norm.split(" ").filter((t) => t.length >= 3);
 
+  // Bounded candidate set: entity-signature match is the dominant signal
+  // and runs in SQL (slugs are already normalized ASCII). A pure-token
+  // query (no entities) falls back to the SCAN_CAP most recent events —
+  // entity_signature/title stay denormalized in JS because PG lacks
+  // unaccent for diacritic-insensitive matching.
+  const SCAN_CAP = 500;
+  const slugs = [...queryEntities];
+  // OR'd LIKEs over unnest($1::text[]) — pg-mem doesn't bind array params
+  const slugClause = slugs.length
+    ? `AND (${slugs
+        .map(
+          (_, i) =>
+            `' ' || e.entity_signature || ' ' LIKE '% ' || $${
+              i + 2
+            } || ' %'`,
+        )
+        .join(" OR ")})`
+    : "";
   const r = await pool.query<{
     id: string;
     title: string;
@@ -1936,8 +1954,12 @@ export async function searchEvents(
             e.last_seen_at, e.entity_signature
      FROM events e
      JOIN event_versions v ON v.id = e.current_version_id
-     WHERE e.status <> 'resolved'
-        OR e.last_seen_at > now() - interval '14 days'`,
+     WHERE (e.status <> 'resolved'
+            OR e.last_seen_at > now() - interval '14 days')
+       ${slugClause}
+     ORDER BY e.last_seen_at DESC
+     LIMIT $1`,
+    [SCAN_CAP, ...slugs],
   );
 
   const scored = r.rows
@@ -2493,53 +2515,76 @@ function caAgreement(
     : { state: "agreement", providers, divergentFields: [] };
 }
 
-async function caViewsForAction(
-  action: Record<string, unknown>,
-): Promise<CorporateActionView> {
+/** Batched: 3 queries for ALL actions of one instrument — the per-action
+ *  variant would fan out N×3 roundtrips, which hurts over the pooler. */
+async function caViewsForActions(
+  actions: Record<string, unknown>[],
+): Promise<CorporateActionView[]> {
+  if (!actions.length) return [];
   const pool = getPool();
+  const ids = actions.map((a) => a.id);
+  // IN-list over ANY($1) — pg-mem doesn't bind array params into ANY()
+  const ph = ids.map((_, i) => `$${i + 1}`).join(",");
   const [vers, asr, der] = await Promise.all([
     pool.query(
-      `SELECT * FROM corporate_action_versions WHERE action_id=$1
-        ORDER BY version_no`,
-      [action.id],
+      `SELECT * FROM corporate_action_versions WHERE action_id IN (${ph})
+        ORDER BY action_id, version_no`,
+      ids,
     ),
     pool.query(
-      `SELECT * FROM corporate_action_assertions WHERE action_id=$1
-        ORDER BY provider, dataset, ex_date`,
-      [action.id],
+      `SELECT * FROM corporate_action_assertions WHERE action_id IN (${ph})
+        ORDER BY action_id, provider, dataset, ex_date`,
+      ids,
     ),
     pool.query(
       `SELECT d.*, a.provider, a.dataset
          FROM corporate_action_derivations d
          JOIN corporate_action_assertions a ON a.id = d.assertion_id
-        WHERE d.action_id=$1`,
-      [action.id],
+        WHERE d.action_id IN (${ph})`,
+      ids,
     ),
   ]);
-  const assertions = asr.rows.map(caAssertionView);
-  const curRow = action.current_version_id
-    ? vers.rows.find((v) => v.id === action.current_version_id)
-    : null;
-  return {
-    id: String(action.id),
-    canonicalKey: String(action.canonical_key),
-    instrumentId: String(action.instrument_id),
-    actionType: String(action.action_type),
-    status: String(action.status),
-    currentVersion: curRow ? caVersionView(curRow) : null,
-    assertions,
-    derivations: der.rows.map((d) => ({
-      id: String(d.id),
-      actionVersionId: String(d.action_version_id),
-      assertionId: String(d.assertion_id),
-      observationId: String(d.observation_id),
-      role: d.role as CaDerivationView["role"],
-      provider: String(d.provider),
-      dataset: String(d.dataset),
-    })),
-    agreement: caAgreement(assertions),
-  };
+  return actions.map((action) => {
+    const id = String(action.id);
+    // String-compare: pg-mem hands uuid columns back as objects whose
+    // === is reference equality; SQL-side ANY() handled it before.
+    const actionVers = vers.rows.filter(
+      (v) => String(v.action_id) === id,
+    );
+    const assertions = asr.rows
+      .filter((a) => String(a.action_id) === id)
+      .map(caAssertionView);
+    const curRow = action.current_version_id
+      ? actionVers.find(
+          (v) => String(v.id) === String(action.current_version_id),
+        )
+      : null;
+    return {
+      id,
+      canonicalKey: String(action.canonical_key),
+      instrumentId: String(action.instrument_id),
+      actionType: String(action.action_type),
+      status: String(action.status),
+      currentVersion: curRow ? caVersionView(curRow) : null,
+      assertions,
+      derivations: der.rows
+        .filter((d) => String(d.action_id) === id)
+        .map((d) => ({
+          id: String(d.id),
+          actionVersionId: String(d.action_version_id),
+          assertionId: String(d.assertion_id),
+          observationId: String(d.observation_id),
+          role: d.role as CaDerivationView["role"],
+          provider: String(d.provider),
+          dataset: String(d.dataset),
+        })),
+      agreement: caAgreement(assertions),
+    };
+  });
 }
+
+const caViewsForAction = (action: Record<string, unknown>) =>
+  caViewsForActions([action]).then((v) => v[0]);
 
 /** All canonical actions for an instrument — instrument ref is a uuid or
  *  its canonical_key ('instrument:apple:common_stock'). Never a ticker. */
@@ -2557,7 +2602,7 @@ export async function getCorporateActionsForInstrument(
       ORDER BY canonical_key`,
     [instrumentRef],
   );
-  return Promise.all(r.rows.map(caViewsForAction));
+  return caViewsForActions(r.rows);
 }
 
 /** Actions visible through a listing — resolves listing → instrument so a

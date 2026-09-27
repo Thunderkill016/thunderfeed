@@ -677,6 +677,24 @@ export const feeds: Feed[] = [
     language: "vi",
     region: "vietnam",
   },
+  {
+    // Báo Công Thương — ministry mouthpiece; trade/industry policy
+    // events show up here before the dailies rewrite them
+    id: "congthuong",
+    name: "Báo Công Thương",
+    topic: "business",
+    url: "https://congthuong.vn/rss/trang-chu.rss",
+    language: "vi",
+    region: "vietnam",
+  },
+  {
+    id: "congthuong-taichinh",
+    name: "Báo Công Thương",
+    topic: "business",
+    url: "https://congthuong.vn/rss/tai-chinh.rss",
+    language: "vi",
+    region: "vietnam",
+  },
 
   /* -------------------- Vietnam — công nghệ/khoa học -------------------- */
   vne("khoa-hoc-cong-nghe", "technology"),
