@@ -3172,6 +3172,44 @@ export interface SignalOutcomeStat {
 /** The public track record: how market_move signals actually resolved.
  *  `continued` compares the outcome's move sign to the signal's own
  *  direction (signal close vs the session before it). */
+export interface MarketDeltaRow {
+  id: string;
+  kind: string;
+  materiality: string;
+  summary: string;
+  detectedAt: string;
+  sessionDate: string | null;
+  ticker: string | null;
+}
+
+/** The signal feed — market-side deltas (price moves, premium shifts,
+ *  volume spikes) with the ticker they fired on, newest first. */
+export async function getMarketDeltas(limit = 15): Promise<MarketDeltaRow[]> {
+  const pool = getPool();
+  const { rows } = await pool.query(
+    `SELECT d.id, d.kind, d.materiality, d.summary, d.detected_at,
+            mp.session_date, lv.ticker
+       FROM data_deltas d
+       JOIN market_points mp ON mp.id = d.market_point_id
+       JOIN market_series ms ON ms.id = mp.series_id
+       JOIN instrument_listings il ON il.id = ms.listing_id
+       JOIN listing_versions lv ON lv.id = il.current_version_id
+      WHERE d.kind IN ('market_move','premium_shift','volume_spike')
+      ORDER BY d.detected_at DESC
+      LIMIT $1`,
+    [limit],
+  );
+  return rows.map((r) => ({
+    id: r.id,
+    kind: r.kind,
+    materiality: r.materiality,
+    summary: r.summary,
+    detectedAt: r.detected_at,
+    sessionDate: r.session_date == null ? null : isoDay(r.session_date),
+    ticker: r.ticker,
+  }));
+}
+
 export async function getSignalOutcomeStats(): Promise<SignalOutcomeStat[]> {
   const pool = getPool();
   const { rows } = await pool.query(

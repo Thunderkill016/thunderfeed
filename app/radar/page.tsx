@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { dbEnabled } from "../../lib/db/pool";
 import {
   getGoldPremium,
+  getMarketDeltas,
   getRadarBoard,
   getSignalOutcomeStats,
   type RadarSeriesRow,
@@ -22,6 +23,12 @@ const GROUP_ORDER = [
   "index",
   "fixed_income",
 ];
+const KIND_VI: Record<string, string> = {
+  market_move: "GIÁ ĐỘT BIẾN",
+  premium_shift: "CHÊNH DỊCH",
+  volume_spike: "VOL ĐỘT BIẾN",
+};
+
 const GROUP_VI: Record<string, string> = {
   commodity: "VÀNG & HÀNG HÓA",
   equity: "CỔ PHIẾU",
@@ -74,13 +81,14 @@ function groupRows(rows: RadarSeriesRow[]) {
 }
 
 export default async function RadarPage() {
-  const [board, premium, stats] = dbEnabled()
+  const [board, premium, stats, marketDeltas] = dbEnabled()
     ? await Promise.all([
         getRadarBoard(),
         getGoldPremium(),
         getSignalOutcomeStats(),
+        getMarketDeltas(15),
       ])
-    : [[], null, []];
+    : [[], null, [], []];
   const groups = groupRows(board);
   const resolved = stats.filter((s) => s.status === "resolved");
   const pending = stats
@@ -198,6 +206,38 @@ export default async function RadarPage() {
           </table>
         </section>
       ))}
+
+      <section className="macro-group">
+        <h2 className="macro-group-title">
+          Tín hiệu gần đây
+          <span className="macro-units">{marketDeltas.length} delta</span>
+        </h2>
+        {marketDeltas.length === 0 ? (
+          <p className="macro-units" style={{ padding: "0.6rem 0" }}>
+            Chưa có tín hiệu nào — delta chỉ mint khi một phiên vượt ngưỡng
+            materiality của series (vàng ±1.5%, crypto ±8%, FX ±0.5%, premium
+            ±0.75pt).
+          </p>
+        ) : (
+          <table className="macro-table">
+            <tbody>
+              {marketDeltas.map((d) => (
+                <tr key={d.id}>
+                  <td className="macro-name">
+                    <span className="macro-code">
+                      {KIND_VI[d.kind] ?? d.kind}
+                    </span>
+                    {d.ticker && <span className="macro-vi">{d.ticker}</span>}
+                  </td>
+                  <td className="macro-code">{d.summary}</td>
+                  <td className="macro-date">{d.sessionDate ?? "—"}</td>
+                  <td className="macro-units">{d.materiality}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
 
       <section className="macro-group">
         <h2 className="macro-group-title">

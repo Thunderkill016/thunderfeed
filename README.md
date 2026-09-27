@@ -1,11 +1,51 @@
-# ThunderFeed — Bản tin nhận định
+# ThunderFeed — Radar tín hiệu & bản tin nhận định
 
-Sản phẩm **tổng hợp + phân tích tin tức** cho độc giả Việt — không phải trang báo.
-Kết hợp format edition của Kagi News với độ sâu phân tích của Ground News.
+Hệ thống **event intelligence cho nhà đầu tư Việt** — phát hiện _cái gì vừa
+thay đổi_ trước khi nó lên báo, kèm bằng chứng truy về được. Không khuyến nghị
+mua/bán: tín hiệu là sự kiện có provenance, quyết định là của người đọc.
 
-Mỗi sự kiện là một cụm đa nguồn kèm: **nhận định**, phổ truyền thông 2 trục
-(trong nước ↔ quốc tế, nhà nước ↔ tư nhân), đối chiếu giật tít, điểm mù
-truyền thông (blindspot), và thông tin chủ sở hữu tòa soạn.
+Hai tầng sản phẩm:
+
+1. **Radar đa kênh** (`/radar`) — cổ phiếu VN (3 sàn), chỉ số, vàng VN
+   (SJC/DOJI/PNJ/BTMC) + vàng TG (XAUUSD), crypto majors, và 4 nguồn tỷ giá
+   USD/VND (reference, fawaz history, Vietcombank, P2P chợ tự do).
+2. **Bản tin nhận định** — sự kiện tin tức đa nguồn kèm phổ truyền thông,
+   đối chiếu giật tít, điểm mù, chủ sở hữu tòa soạn.
+
+## Tín hiệu (signals)
+
+Mỗi series có ngưỡng materiality riêng (metadata — vàng 1.5%, crypto 8%,
+FX 0.5%, cổ phiếu 5%). Vượt ngưỡng trên phiên _fresh_ → mint `data_deltas`:
+
+| Kind                               | Bắt gì                                                    |
+| ---------------------------------- | --------------------------------------------------------- |
+| `market_move`                      | Giá phiên đổi ≥ ngưỡng series                             |
+| `premium_shift`                    | Series %-valued dịch ≥ 0.75pt (SJC−TG, USDT−official gap) |
+| `volume_spike`                     | Volume ≥ N× median trailing (crypto 3×)                   |
+| `macro_release` / `macro_revision` | Số liệu vĩ mô mới/bị sửa (FRED, WB, IMF)                  |
+| `ca_declared` / `ca_updated`       | Corporate actions                                         |
+
+Mọi delta mint kèm `signal_outcomes` T+1/T+5/T+20 **phiên** trong cùng
+transaction → hồ sơ tín hiệu chấm điểm được, không marketing suông.
+Outcome settled thì bất biến (DB trigger), stale >60 ngày → `expired`.
+
+Derived series có provenance `derived` — SJC premium & USDT-gap tính từ
+legs, payload observation chứa formula + legs nguyên vẹn.
+
+## Kiến trúc dữ liệu
+
+```
+providers (giavang, binance, vndirect, fawaz, er_api, vietcombank,
+           alphavantage, tiingo, fred, worldbank, imf, derived)
+  → reference_observations   raw payload, append-only
+  → market_points + market_point_versions   normalized, versioned
+  → data_deltas              material changes only (fresh sessions)
+  → signal_outcomes          T+1/5/20 resolution, immutable once settled
+```
+
+Quy tắc: không backfill mint delta; một version ≤ một delta; decimal
+chuẩn xác không qua float; listing identity sống qua đổi ticker; provider
+khác nhau = series khác nhau, không ghi đè.
 
 ## Chạy local
 
