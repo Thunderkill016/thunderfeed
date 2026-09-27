@@ -1317,6 +1317,44 @@ async function entityInstruments(
   }));
 }
 
+/** Entity index — every canonical entity with its graph degree
+ *  (macro series + instruments), data-bearing entities first. */
+export interface EntityListRow {
+  id: string;
+  canonicalKey: string;
+  name: string;
+  type: string;
+  macroCount: number;
+  instrumentCount: number;
+}
+
+export async function getEntityList(): Promise<EntityListRow[]> {
+  const pool = getPool();
+  const { rows } = await pool.query(
+    `SELECT e.id, e.canonical_key, e.canonical_name, e.entity_type,
+            COALESCE(ms.n, 0) AS macro_n, COALESCE(fi.n, 0) AS instr_n
+       FROM entities e
+       LEFT JOIN (
+         SELECT entity_id, count(*) AS n FROM macro_series GROUP BY entity_id
+       ) ms ON ms.entity_id = e.id
+       LEFT JOIN (
+         SELECT issuer_entity_id, count(*) AS n
+           FROM financial_instruments GROUP BY issuer_entity_id
+       ) fi ON fi.issuer_entity_id = e.id
+      WHERE e.status = 'active'
+      ORDER BY (COALESCE(ms.n,0) + COALESCE(fi.n,0)) DESC,
+               e.entity_type, e.canonical_key`,
+  );
+  return rows.map((r) => ({
+    id: r.id,
+    canonicalKey: r.canonical_key,
+    name: r.canonical_name,
+    type: r.entity_type,
+    macroCount: Number(r.macro_n),
+    instrumentCount: Number(r.instr_n),
+  }));
+}
+
 /** All canonical instruments for the /instrument index — identity +
  *  issuer + latest market quote per instrument (no price advice). */
 export interface InstrumentListRow {
