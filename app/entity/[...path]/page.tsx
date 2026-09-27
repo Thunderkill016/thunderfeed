@@ -9,6 +9,7 @@ import {
   entityTypeLabel,
 } from "../../../lib/entities";
 import { timeAgo } from "../../../lib/model";
+import { seriesMeta } from "../../../lib/seriesLabels";
 
 export const revalidate = 60;
 export const maxDuration = 60;
@@ -160,7 +161,7 @@ export default async function EntityPage({
                   className="entity-chip org macro-chip"
                   title={`${s.seriesCode} · ${s.title ?? ""} · kỳ ${s.latestObsDate ?? "—"} · vintage ${s.latestVintage ?? "—"}`}
                 >
-                  {s.seriesCode}
+                  {seriesMeta(s.seriesCode)?.vi ?? s.seriesCode}
                   {s.latestValue != null && (
                     <b className="macro-chip-value">
                       {" "}

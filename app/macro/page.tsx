@@ -185,12 +185,19 @@ export default async function MacroPage() {
                   <td className="macro-name">
                     {d.seriesCode ? (
                       <a href={`/macro/${d.seriesCode}`} className="macro-code">
-                        {[
-                          seriesMeta(d.seriesCode)?.vi,
-                          deltaSummaryLabel(d.summary, d.seriesCode),
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
+                        {(() => {
+                          const label = deltaSummaryLabel(
+                            d.summary,
+                            d.seriesCode,
+                          );
+                          const vi = seriesMeta(d.seriesCode)?.vi;
+                          // IMF series labels already carry "+ dự báo IMF" —
+                          // drop it when the summary says "dự báo kỳ …" anyway
+                          const viShort = label.startsWith("dự báo")
+                            ? vi?.replace(" + dự báo IMF", "")
+                            : vi;
+                          return [viShort, label].filter(Boolean).join(" ");
+                        })()}
                       </a>
                     ) : d.instrumentKey ? (
                       <a

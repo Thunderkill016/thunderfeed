@@ -108,6 +108,15 @@ export default async function SearchPage({
             {total} kết quả cho “{query}”
           </p>
         )}
+        {!norm && (
+          <div className="entity-chips" style={{ margin: "10px 0 4px" }}>
+            {["iran hormuz", "vietnam", "GDP", "apple", "fed"].map((ex) => (
+              <a key={ex} className="entity-chip" href={`/search?q=${ex}`}>
+                {ex}
+              </a>
+            ))}
+          </div>
+        )}
       </section>
 
       {eventHits.length > 0 && (
