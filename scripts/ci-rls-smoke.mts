@@ -17,6 +17,19 @@ if (!url) throw new Error("usage: ci-rls-smoke <postgres_url>");
 const admin = new pg.Client({ connectionString: url });
 await admin.connect();
 
+// Supabase-managed roles referenced by migrations (REVOKE ... FROM anon)
+// don't exist on a vanilla Postgres service container — stub them so the
+// migration set applies unchanged.
+for (const role of ["anon", "authenticated", "service_role"]) {
+  await admin.query(
+    `DO $$ BEGIN
+       IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${role}') THEN
+         CREATE ROLE ${role} NOLOGIN;
+       END IF;
+     END $$`,
+  );
+}
+
 // ── apply every migration in order ───────────────────────────────────────
 const files = readdirSync("db/migrations")
   .filter((f) => f.endsWith(".sql"))
