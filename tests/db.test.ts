@@ -523,3 +523,24 @@ test("pgSsl: loopback plaintext, supabase pinned-CA verify, unknown remote rejec
   const other = pgSsl("postgres://x@db.example.com/postgres");
   assert.equal(other?.rejectUnauthorized, true);
 });
+
+test("provider outage: dead pool makes persistEdition throw, never fake-success", async () => {
+  // DATABASE_URL set so dbEnabled() is true; the injected pool refuses
+  // every connection — persist must propagate, not report {persisted:0}.
+  process.env.DATABASE_URL = "postgres://x@127.0.0.1:5432/db";
+  const deadPool = {
+    connect: () => Promise.reject(new Error("connection refused")),
+    query: () => Promise.reject(new Error("connection refused")),
+  };
+  injectPool(deadPool as unknown as Pool);
+  try {
+    const { persistEdition } = await import("../lib/db/persist");
+    await assert.rejects(
+      persistEdition([cluster([art({})])], new Map()),
+      /connection refused/,
+    );
+  } finally {
+    injectPool(null);
+    delete process.env.DATABASE_URL;
+  }
+});

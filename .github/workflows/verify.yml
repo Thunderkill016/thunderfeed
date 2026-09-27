@@ -70,6 +70,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run audit:db-security
+      - name: Live-DB security audit
         env:
           DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/audit-db-security.mts --db "$DATABASE_URL"

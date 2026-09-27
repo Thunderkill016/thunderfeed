@@ -23,6 +23,7 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import pg from "pg";
+import { pgSsl } from "../lib/db/supabaseCa";
 
 try {
   for (const line of readFileSync(".env.local", "utf8").split("\n")) {
@@ -52,7 +53,10 @@ const API_ROLES = ["anon", "authenticated"];
 /* privilege levels that must not be held at all */
 const FORBIDDEN = ["INSERT", "UPDATE", "DELETE", "TRUNCATE"];
 
-const client = new pg.Client({ connectionString: URL });
+const client = new pg.Client({
+  connectionString: URL,
+  ssl: pgSsl(URL),
+});
 await client.connect();
 
 const tables = (
