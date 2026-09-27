@@ -2198,3 +2198,25 @@ a.change-card {
 a.change-card .change-card-event {
   color: var(--dom);
 }
+
+/* cross-surface nav */
+.site-nav {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 14px;
+}
+.site-nav-item {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.site-nav-item:hover {
+  color: var(--ink);
+}
+.site-nav-item.on {
+  color: var(--ink);
+  background: var(--bg2, rgba(28, 25, 19, 0.07));
+  font-weight: 600;
+}

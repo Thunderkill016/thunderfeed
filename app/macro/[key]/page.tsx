@@ -7,6 +7,7 @@ import {
   getMacroSeries,
 } from "../../../lib/db/read";
 import { entityHref } from "../../../lib/entities";
+import SiteNav from "../../../components/SiteNav";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -93,6 +94,7 @@ export default async function MacroSeriesPage({
             ThunderFeed
           </a>
           <span className="edition-tag">VĨ MÔ</span>
+          <SiteNav active="macro" />
         </div>
         <div className="masthead-right">
           <a className="edition-date" href="/macro">

@@ -8,6 +8,7 @@ import {
   getMarketSeriesForListing,
 } from "../../../lib/db/read";
 import { entityHref } from "../../../lib/entities";
+import SiteNav from "../../../components/SiteNav";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -120,6 +121,7 @@ export default async function InstrumentPage({
             ThunderFeed
           </a>
           <span className="edition-tag">CHỨNG KHOÁN</span>
+          <SiteNav active="markets" />
         </div>
         <div className="masthead-right">
           <span className="edition-date">{ins.canonicalKey}</span>

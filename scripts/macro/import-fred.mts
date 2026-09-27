@@ -137,7 +137,9 @@ const UNIVERSE: { code: string; scope?: string[] }[] = [
   { code: "DEXJPUS" }, // JPY/USD
   { code: "DEXCHUS" }, // CNY/USD
   // non-US policy + inflation (IMF annual via FRED)
-  { code: "ECBDFR", scope: ["country:euro_area", "region:euro_area"] },
+  // ECBDFR is an ECB policy rate — the central bank entity is the right
+  // scope, not a euro_area region that doesn't exist in the graph
+  { code: "ECBDFR", scope: ["central_bank:ecb", "region:euro_area"] },
   { code: "FPCPITOTLZGCHN", scope: ["country:china"] },
   { code: "FPCPITOTLZGJPN", scope: ["country:japan"] },
   { code: "FPCPITOTLZGDEU", scope: ["country:germany"] },

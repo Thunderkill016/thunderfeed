@@ -6,6 +6,7 @@ import { normalizeText } from "../lib/model";
 import StatusBar from "./StatusBar";
 import HeroStory from "./HeroStory";
 import PillarSection from "./PillarSection";
+import SiteNav from "./SiteNav";
 import BlindspotStrip from "./BlindspotStrip";
 import WireRail from "./WireRail";
 import EventDetail from "./EventDetail";
@@ -210,6 +211,7 @@ export default function Edition({ initial }: { initial: Edition }) {
         <div className="masthead-left">
           <span className="wordmark">ThunderFeed</span>
           <span className="edition-tag">Bản tin nhận định</span>
+          <SiteNav active="news" />
         </div>
         <div className="masthead-right">
           <span className="edition-date">{dateStr}</span>

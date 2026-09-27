@@ -1317,6 +1317,66 @@ async function entityInstruments(
   }));
 }
 
+/** All canonical instruments for the /instrument index — identity +
+ *  issuer + latest market quote per instrument (no price advice). */
+export interface InstrumentListRow {
+  id: string;
+  canonicalKey: string;
+  type: string;
+  name: string | null;
+  currency: string | null;
+  issuerKey: string | null;
+  issuerName: string | null;
+  ticker: string | null;
+  venueMic: string | null;
+  close: string | null;
+  closeDate: string | null;
+}
+
+export async function getInstrumentList(): Promise<InstrumentListRow[]> {
+  const pool = getPool();
+  const { rows } = await pool.query(
+    `SELECT fi.id, fi.canonical_key, fi.instrument_type, fi.status,
+            iv.name, iv.currency,
+            e.canonical_key AS issuer_key, e.canonical_name AS issuer_name,
+            lv.ticker, v.mic AS venue_mic,
+            mp.close, mp.session_date AS close_date
+       FROM financial_instruments fi
+       LEFT JOIN instrument_versions iv ON iv.id = fi.current_version_id
+       LEFT JOIN entities e ON e.id = fi.issuer_entity_id
+       LEFT JOIN instrument_listings l ON l.instrument_id = fi.id
+       LEFT JOIN listing_versions lv ON lv.id = l.current_version_id
+       LEFT JOIN trading_venues v ON v.id = l.venue_id
+       LEFT JOIN (
+         SELECT DISTINCT ON (ms.listing_id)
+                ms.listing_id, mv.close, mp2.session_date
+           FROM market_points mp2
+           JOIN market_point_versions mv ON mv.id = mp2.current_version_id
+           JOIN market_series ms ON ms.id = mp2.series_id
+          WHERE ms.price_basis = 'as_traded'
+          ORDER BY ms.listing_id, mp2.session_date DESC
+       ) mp ON mp.listing_id = l.id
+      ORDER BY fi.canonical_key`,
+  );
+  return rows.map((r) => ({
+    id: r.id,
+    canonicalKey: r.canonical_key,
+    type: r.instrument_type,
+    name: r.name,
+    currency: r.currency,
+    issuerKey: r.issuer_key,
+    issuerName: r.issuer_name,
+    ticker: r.ticker,
+    venueMic: r.venue_mic,
+    close: r.close != null ? String(r.close) : null,
+    closeDate: r.close_date
+      ? r.close_date instanceof Date
+        ? `${r.close_date.getFullYear()}-${String(r.close_date.getMonth() + 1).padStart(2, "0")}-${String(r.close_date.getDate()).padStart(2, "0")}`
+        : String(r.close_date).slice(0, 10)
+      : null,
+  }));
+}
+
 /** Canonical instrument lookup — /api/instruments/<key>.
  *  Returns instrument + issuer + identifiers + listings + observation
  *  provenance chain. No prices, no recommendations. */

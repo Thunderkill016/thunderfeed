@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { dbEnabled } from "../../lib/db/pool";
+import SiteNav from "../../components/SiteNav";
 import {
   getLatestDataDeltas,
   getMacroPoints,
@@ -117,6 +118,7 @@ export default async function MacroPage() {
             ThunderFeed
           </a>
           <span className="edition-tag">KINH TẾ VĨ MÔ</span>
+          <SiteNav active="macro" />
         </div>
         <div className="masthead-right">
           <span className="edition-date">
