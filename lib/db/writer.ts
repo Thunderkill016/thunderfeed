@@ -1959,6 +1959,11 @@ export async function persistCluster(
     }
 
     await client.query("BEGIN");
+    // Supabase disk-quota guard can leave default_transaction_read_only=on
+    // (Sept-27 incident: resolver_decisions bloat → silent pipeline death).
+    // Force RW while it lingers; pg-mem can't parse SET TRANSACTION —
+    // that's fine, tests aren't in a read-only tx anyway.
+    await client.query("SET TRANSACTION READ WRITE").catch(() => {});
 
     // 1) every member article becomes an observed evidence version.
     // keyed by article (not source) — one source can carry several
@@ -2004,10 +2009,11 @@ export async function persistCluster(
     );
     const { eventId, created } = evRef;
 
-    // 2b) resolver telemetry — every evaluated pair is auditable.
-    // Batched unnest: per-row inserts were N × network RTT — over a
-    // remote pooler (runner→Supabase ~200ms) 1.5k evals ate minutes per
-    // cluster and blew the CI timeout.
+    // 2b) resolver telemetry — auditable pair-level decisions.
+    // Volume control: routine `split` evals below the near-miss band are
+    // dropped (99.5% of rows, ~650k/day blew the Supabase disk quota and
+    // forced the DB read-only). Kept: merges, ambiguous calls, and splits
+    // scoring ≥ NEAR_MISS — the cases a resolver audit actually inspects.
     if (resolverEvals.length) {
       const json = toJsonb;
       await client
@@ -2021,7 +2027,8 @@ export async function persistCluster(
            FROM unnest(
              $3::uuid[], $4::text[], $5::text[], $6::double precision[],
              $7::text[], $8::text[], $9::text[], $10::boolean[]
-           ) AS t(cand, decision, path, score, reasons, blocks, features, sem)`,
+           ) AS t(cand, decision, path, score, reasons, blocks, features, sem)
+           WHERE t.decision <> 'split' OR t.score >= 0.4`,
           [
             cluster.id,
             eventId,
@@ -2483,6 +2490,11 @@ export async function resolveStaleEvents(): Promise<number> {
     let resolved = 0;
     for (const row of stale.rows) {
       await client.query("BEGIN");
+      // Supabase disk-quota guard can leave default_transaction_read_only
+      // on (Sept-27 incident: resolver_decisions bloat → silent pipeline
+      // death). Force RW while it lingers; pg-mem can't parse SET
+      // TRANSACTION — fine, tests aren't in a read-only tx anyway.
+      await client.query("SET TRANSACTION READ WRITE").catch(() => {});
       const verId = await newEventVersion(client, row.id, "event_resolved", {
         status: "resolved",
       });

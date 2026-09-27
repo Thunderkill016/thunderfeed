@@ -148,3 +148,44 @@ export function parseFredObservations(payload: unknown): FredObservationResult {
   if (out.length === 0) return { kind: "empty" };
   return { kind: "observations", observations: out };
 }
+
+/* ---- World Bank ----
+ * WB returns [meta, data[]] with annual rows; value may be null (unknown).
+ * WB exposes no vintage dates — the caller supplies vintageDate (fetch
+ * date) and the apply layer's stableVintage mode suppresses churn when
+ * values are unchanged. */
+
+export function parseWorldBankObservations(
+  payload: unknown,
+  vintageDate: string,
+): FredObservationResult {
+  const arr = Array.isArray(payload) ? payload[1] : undefined;
+  if (!Array.isArray(arr))
+    return {
+      kind: "error",
+      detail: `missing data[]: keys=${Object.keys(payload ?? {})}`,
+    };
+  if (arr.length === 0) return { kind: "empty" };
+  const out: FredObservation[] = [];
+  for (let i = 0; i < arr.length; i++) {
+    const r = arr[i] as Record<string, unknown>;
+    const year = String(r.date ?? "");
+    if (!/^\d{4}$/.test(year))
+      return {
+        kind: "error",
+        detail: `obs[${i}] invalid year: ${JSON.stringify(r.date)}`,
+      };
+    const raw = r.value;
+    if (raw === null || raw === undefined || raw === "") continue;
+    const value = normalizeDecimalString(raw);
+    if (value == null)
+      return {
+        kind: "error",
+        detail: `obs[${i}] invalid value: ${JSON.stringify(raw)}`,
+      };
+    // Annual series: obsDate = Jan 1 of the reported year
+    out.push({ obsDate: `${year}-01-01`, vintageDate, value });
+  }
+  if (out.length === 0) return { kind: "empty" };
+  return { kind: "observations", observations: out };
+}

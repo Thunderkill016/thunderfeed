@@ -66,9 +66,16 @@ export default async function MacroSeriesPage({
   params: Promise<{ key: string }>;
   searchParams: Promise<{ asOf?: string }>;
 }) {
-  const { key } = await params;
+  const { key: rawKey } = await params;
   const { asOf } = await searchParams;
-  if (!dbEnabled() || !/^[A-Za-z0-9_:]{1,80}$/.test(key)) notFound();
+  // params arrive raw — ':' may be %3A-encoded depending on client
+  let key = rawKey;
+  try {
+    key = decodeURIComponent(rawKey);
+  } catch {
+    /* malformed escape — regex rejects it below */
+  }
+  if (!dbEnabled() || !/^[A-Za-z0-9_:.\-]{1,80}$/.test(key)) notFound();
   const series = await getMacroSeries(key);
   if (!series) notFound();
 

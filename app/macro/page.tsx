@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 /* Series → (group, vi label). Display config only — canonical identity is
  * the FRED code; a wrong label never corrupts the data layer. */
 const GROUPS = {
+  vietnam: "Việt Nam",
   growth: "Tăng trưởng & hoạt động",
   inflation: "Lạm phát",
   labour: "Lao động",
@@ -27,9 +28,51 @@ const GROUPS = {
   money: "Tiền & bảng cân đối Fed",
   markets: "Thị trường & rủi ro",
   fx: "Tỷ giá",
+  asia: "Châu Á",
   world: "Thế giới",
 } as const;
 type GroupKey = keyof typeof GROUPS;
+
+/* World Bank series codes are `${iso3}:${indicator}` — display metadata
+ * lives here (importer persists WB's own title as `title`). */
+const WB_VI: Record<string, string> = {
+  "NY.GDP.MKTP.CD": "GDP (US$ hiện tại)",
+  "NY.GDP.MKTP.KD.ZG": "GDP tăng trưởng (%/năm)",
+  "FP.CPI.TOTL.ZG": "Lạm phát CPI (%)",
+  "SL.UEM.TOTL.ZS": "Thất nghiệp (%)",
+  "NE.EXP.GNFS.ZS": "Xuất khẩu (% GDP)",
+  "BX.KLT.DINV.WD.GD.ZS": "FDI ròng vào (% GDP)",
+  "SP.POP.TOTL": "Dân số",
+};
+const WB_COUNTRY_VI: Record<string, string> = {
+  VNM: "Việt Nam",
+  THA: "Thái Lan",
+  IDN: "Indonesia",
+  MYS: "Malaysia",
+  PHL: "Philippines",
+  KHM: "Campuchia",
+  LAO: "Lào",
+  MMR: "Myanmar",
+  IND: "Ấn Độ",
+  CHN: "Trung Quốc",
+  KOR: "Hàn Quốc",
+  JPN: "Nhật Bản",
+  SGP: "Singapore",
+};
+
+/** series_code → display meta; World Bank `ISO3:IND` codes resolve by
+ * pattern, FRED codes by the SERIES_VI map. */
+function seriesMeta(code: string): { g: GroupKey; vi: string } | null {
+  const direct = SERIES_VI[code];
+  if (direct) return direct;
+  const i = code.indexOf(":");
+  if (i < 0) return null;
+  const cc = code.slice(0, i);
+  const vi = WB_VI[code.slice(i + 1)];
+  const cn = WB_COUNTRY_VI[cc];
+  if (!vi || !cn) return null;
+  return { g: cc === "VNM" ? "vietnam" : "asia", vi: `${cn} — ${vi}` };
+}
 
 const SERIES_VI: Record<string, { g: GroupKey; vi: string }> = {
   GDPC1: { g: "growth", vi: "GDP thực (quý)" },
@@ -105,9 +148,10 @@ export default async function MacroPage() {
     return { s, cur, prev, d };
   });
   const byGroup = new Map<GroupKey, typeof rows>();
+  for (const g of Object.keys(GROUPS) as GroupKey[]) byGroup.set(g, []);
   for (const r of rows) {
-    const g = SERIES_VI[r.s.seriesCode]?.g ?? "world";
-    byGroup.set(g, [...(byGroup.get(g) ?? []), r]);
+    const g = seriesMeta(r.s.seriesCode)?.g ?? "world";
+    byGroup.get(g)!.push(r);
   }
 
   return (
@@ -127,47 +171,53 @@ export default async function MacroPage() {
         </div>
       </header>
 
-      {[...byGroup.entries()].map(([g, rs]) => (
-        <section key={g} className="macro-group">
-          <h2 className="macro-group-title">{GROUPS[g]}</h2>
-          <table className="macro-table">
-            <thead>
-              <tr>
-                <th>Chỉ số</th>
-                <th className="num">Giá trị</th>
-                <th className="num">Δ kỳ trước</th>
-                <th>Kỳ</th>
-                <th>Vintage</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rs.map(({ s, cur, d }) => (
-                <tr key={s.id}>
-                  <td className="macro-name">
-                    <a href={`/macro/${s.seriesCode}`} className="macro-code">
-                      {s.seriesCode}
-                    </a>
-                    <span className="macro-vi">
-                      {SERIES_VI[s.seriesCode]?.vi ?? s.title ?? s.seriesCode}
-                    </span>
-                    {s.units && <span className="macro-units">{s.units}</span>}
-                  </td>
-                  <td className="num macro-value">
-                    {cur ? Number(cur.value).toLocaleString("en-US") : "—"}
-                  </td>
-                  <td
-                    className={`num macro-delta ${d ? (d.up ? "up" : "down") : ""}`}
-                  >
-                    {d ? d.label : "—"}
-                  </td>
-                  <td className="macro-date">{cur?.obsDate ?? "—"}</td>
-                  <td className="macro-date">{cur?.vintageDate ?? "—"}</td>
+      {[...byGroup.entries()].map(([g, rs]) =>
+        rs.length === 0 ? null : (
+          <section key={g} className="macro-group">
+            <h2 className="macro-group-title">{GROUPS[g]}</h2>
+            <table className="macro-table">
+              <thead>
+                <tr>
+                  <th>Chỉ số</th>
+                  <th className="num">Giá trị</th>
+                  <th className="num">Δ kỳ trước</th>
+                  <th>Kỳ</th>
+                  <th>Vintage</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      ))}
+              </thead>
+              <tbody>
+                {rs.map(({ s, cur, d }) => (
+                  <tr key={s.id}>
+                    <td className="macro-name">
+                      <a href={`/macro/${s.seriesCode}`} className="macro-code">
+                        {s.seriesCode}
+                      </a>
+                      <span className="macro-vi">
+                        {seriesMeta(s.seriesCode)?.vi ??
+                          s.title ??
+                          s.seriesCode}
+                      </span>
+                      {s.units && (
+                        <span className="macro-units">{s.units}</span>
+                      )}
+                    </td>
+                    <td className="num macro-value">
+                      {cur ? Number(cur.value).toLocaleString("en-US") : "—"}
+                    </td>
+                    <td
+                      className={`num macro-delta ${d ? (d.up ? "up" : "down") : ""}`}
+                    >
+                      {d ? d.label : "—"}
+                    </td>
+                    <td className="macro-date">{cur?.obsDate ?? "—"}</td>
+                    <td className="macro-date">{cur?.vintageDate ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        ),
+      )}
 
       {deltas.length > 0 && (
         <section className="macro-group">

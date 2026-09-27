@@ -1,0 +1,652 @@
+{
+  "generatedAt": "2026-09-27T05:42:12.633Z",
+  "runs": [
+    {
+      "series": "VNM:NY.GDP.MKTP.CD",
+      "obs": 41,
+      "points": 41,
+      "versions": 41,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:NY.GDP.MKTP.KD.ZG",
+      "obs": 41,
+      "points": 41,
+      "versions": 41,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:FP.CPI.TOTL.ZG",
+      "obs": 30,
+      "points": 30,
+      "versions": 30,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:NE.EXP.GNFS.ZS",
+      "obs": 40,
+      "points": 40,
+      "versions": 40,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 40,
+      "points": 40,
+      "versions": 40,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:NY.GDP.MKTP.CD",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:FP.CPI.TOTL.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:NE.EXP.GNFS.ZS",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 56,
+      "points": 56,
+      "versions": 56,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:NY.GDP.MKTP.CD",
+      "obs": 59,
+      "points": 59,
+      "versions": 59,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:FP.CPI.TOTL.ZG",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:NE.EXP.GNFS.ZS",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 56,
+      "points": 56,
+      "versions": 56,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:NY.GDP.MKTP.CD",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:FP.CPI.TOTL.ZG",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:NE.EXP.GNFS.ZS",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 55,
+      "points": 55,
+      "versions": 55,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:NY.GDP.MKTP.CD",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:FP.CPI.TOTL.ZG",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:NE.EXP.GNFS.ZS",
+      "obs": 45,
+      "points": 45,
+      "versions": 45,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 56,
+      "points": 56,
+      "versions": 56,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "KHM:NY.GDP.MKTP.CD",
+      "obs": 51,
+      "points": 51,
+      "versions": 51,
+      "unchanged": 0
+    },
+    {
+      "series": "KHM:NY.GDP.MKTP.KD.ZG",
+      "obs": 50,
+      "points": 50,
+      "versions": 50,
+      "unchanged": 0
+    },
+    {
+      "series": "KHM:FP.CPI.TOTL.ZG",
+      "obs": 31,
+      "points": 31,
+      "versions": 31,
+      "unchanged": 0
+    },
+    {
+      "series": "KHM:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "KHM:NE.EXP.GNFS.ZS",
+      "obs": 33,
+      "points": 33,
+      "versions": 33,
+      "unchanged": 0
+    },
+    {
+      "series": "KHM:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 36,
+      "points": 36,
+      "versions": 36,
+      "unchanged": 0
+    },
+    {
+      "series": "KHM:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "LAO:NY.GDP.MKTP.CD",
+      "obs": 42,
+      "points": 42,
+      "versions": 42,
+      "unchanged": 0
+    },
+    {
+      "series": "LAO:NY.GDP.MKTP.KD.ZG",
+      "obs": 41,
+      "points": 41,
+      "versions": 41,
+      "unchanged": 0
+    },
+    {
+      "series": "LAO:FP.CPI.TOTL.ZG",
+      "obs": 37,
+      "points": 37,
+      "versions": 37,
+      "unchanged": 0
+    },
+    {
+      "series": "LAO:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "LAO:NE.EXP.GNFS.ZS",
+      "obs": 33,
+      "points": 33,
+      "versions": 33,
+      "unchanged": 0
+    },
+    {
+      "series": "LAO:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 41,
+      "points": 41,
+      "versions": 41,
+      "unchanged": 0
+    },
+    {
+      "series": "LAO:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "MMR:NY.GDP.MKTP.CD",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "MMR:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "MMR:FP.CPI.TOTL.ZG",
+      "obs": 60,
+      "points": 60,
+      "versions": 60,
+      "unchanged": 0
+    },
+    {
+      "series": "MMR:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "MMR:NE.EXP.GNFS.ZS",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "MMR:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 54,
+      "points": 54,
+      "versions": 54,
+      "unchanged": 0
+    },
+    {
+      "series": "MMR:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:NY.GDP.MKTP.CD",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:FP.CPI.TOTL.ZG",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:NE.EXP.GNFS.ZS",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 56,
+      "points": 56,
+      "versions": 56,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:NY.GDP.MKTP.CD",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:FP.CPI.TOTL.ZG",
+      "obs": 39,
+      "points": 39,
+      "versions": 39,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:NE.EXP.GNFS.ZS",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 47,
+      "points": 47,
+      "versions": 47,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:NY.GDP.MKTP.CD",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:FP.CPI.TOTL.ZG",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:NE.EXP.GNFS.ZS",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 56,
+      "points": 56,
+      "versions": 56,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:NY.GDP.MKTP.CD",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:FP.CPI.TOTL.ZG",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:NE.EXP.GNFS.ZS",
+      "obs": 55,
+      "points": 55,
+      "versions": 55,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 56,
+      "points": 56,
+      "versions": 56,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:NY.GDP.MKTP.CD",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:NY.GDP.MKTP.KD.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:FP.CPI.TOTL.ZG",
+      "obs": 65,
+      "points": 65,
+      "versions": 65,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:SL.UEM.TOTL.ZS",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:NE.EXP.GNFS.ZS",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:BX.KLT.DINV.WD.GD.ZS",
+      "obs": 56,
+      "points": 56,
+      "versions": 56,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:SP.POP.TOTL",
+      "obs": 66,
+      "points": 66,
+      "versions": 66,
+      "unchanged": 0
+    }
+  ],
+  "metrics": {
+    "provider": "worldbank",
+    "requested": 91,
+    "successful": 91,
+    "providerErrors": 0,
+    "totalPoints": 4938,
+    "totalVersions": 4938,
+    "totalUnchanged": 0,
+    "errors": []
+  }
+}

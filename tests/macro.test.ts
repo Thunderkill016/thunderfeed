@@ -13,6 +13,7 @@ import {
   classifyFredResponse,
   parseFredObservations,
   parseFredSeriesMeta,
+  parseWorldBankObservations,
 } from "../lib/macro";
 import {
   applyMacroObservations,
@@ -45,7 +46,8 @@ function setupDb(): Pool {
     // pg-mem can't run the ALTERs — patch the literals (0023-0027 pattern)
     .replace(
       "'manual_verified', 'other'",
-      "'manual_verified', 'alphavantage', 'tiingo', 'fred', 'other'",
+      "'manual_verified', 'alphavantage', 'tiingo', 'fred', " +
+        "'worldbank', 'other'",
     )
     .replace(
       "price_basis IN ('as_traded')",
@@ -304,4 +306,95 @@ test("macro migration text — append-only + RLS + provider allowlist", () => {
   assert.ok(sql.includes("UNIQUE (id, point_id)"), "composite FK target");
   assert.ok(sql.includes("REFERENCES macro_point_versions (id, point_id)"));
   assert.ok(sql.includes("'fred'"), "provider allowlist");
+});
+
+test("parseWorldBankObservations — WB shape, null skipped, year→Jan1", () => {
+  const payload = [
+    { page: 1, pages: 1, total: 3 },
+    [
+      {
+        indicator: { id: "NY.GDP.MKTP.CD", value: "GDP (current US$)" },
+        country: { id: "VN", value: "Vietnam" },
+        countryiso3code: "VNM",
+        date: "2024",
+        value: 465814000000,
+      },
+      {
+        indicator: { id: "NY.GDP.MKTP.CD", value: "GDP (current US$)" },
+        country: { id: "VN", value: "Vietnam" },
+        countryiso3code: "VNM",
+        date: "2023",
+        value: 425670000000,
+      },
+      {
+        indicator: { id: "NY.GDP.MKTP.CD", value: "GDP (current US$)" },
+        country: { id: "VN", value: "Vietnam" },
+        countryiso3code: "VNM",
+        date: "2022",
+        value: null,
+      },
+    ],
+  ];
+  const r = parseWorldBankObservations(payload, "2026-11-24");
+  assert.equal(r.kind, "observations");
+  if (r.kind !== "observations") return;
+  assert.equal(r.observations.length, 2, "null value skipped");
+  assert.equal(r.observations[0].obsDate, "2024-01-01");
+  assert.equal(r.observations[0].vintageDate, "2026-11-24");
+  assert.equal(r.observations[0].value, "465814000000");
+  // malformed payload → error, not crash
+  assert.equal(parseWorldBankObservations({}, "2026-11-24").kind, "error");
+  assert.equal(
+    parseWorldBankObservations([{}, []], "2026-11-24").kind,
+    "empty",
+  );
+});
+
+test("stableVintage — unchanged values mint nothing, real change revises", async () => {
+  const pool = setupDb();
+  const obs = await pool.query(
+    `INSERT INTO reference_observations (provider,dataset,record_key,payload,content_hash)
+     VALUES ('worldbank','series_observations',$1,'{}',$2) RETURNING id`,
+    ["worldbank:VNM:NY.GDP.MKTP.CD", randomUUID()],
+  );
+  const obsId = obs.rows[0].id as string;
+  const seriesId = await getOrCreateMacroSeries(pool, {
+    provider: "worldbank",
+    seriesCode: "VNM:NY.GDP.MKTP.CD",
+  });
+  const v1 = [
+    { obsDate: "2023-01-01", vintageDate: "2026-11-24", value: "425670000000" },
+    { obsDate: "2024-01-01", vintageDate: "2026-11-24", value: "465814000000" },
+  ];
+  const r1 = await applyMacroObservations(pool, seriesId, v1, obsId, {
+    stableVintage: true,
+  });
+  assert.equal(r1.versionsInserted, 2);
+
+  // rerun next fetch-day: identical values, new synthetic vintage → +0
+  // (without stableVintage this would mint 2 churn versions)
+  const v2 = v1.map((o) => ({ ...o, vintageDate: "2026-12-01" }));
+  const r2 = await applyMacroObservations(pool, seriesId, v2, obsId, {
+    stableVintage: true,
+  });
+  assert.equal(r2.versionsInserted, 0);
+  assert.equal(r2.unchanged, 2);
+
+  // WB revises 2024 → new version + macro_revision delta (value moved)
+  const v3 = [
+    { obsDate: "2024-01-01", vintageDate: "2027-03-01", value: "470100000000" },
+  ];
+  const r3 = await applyMacroObservations(pool, seriesId, v3, obsId, {
+    stableVintage: true,
+  });
+  assert.equal(r3.versionsInserted, 1);
+  const deltas = await pool.query(
+    `SELECT kind, materiality, summary FROM data_deltas`,
+  );
+  assert.equal(deltas.rows.length, 1);
+  assert.equal(deltas.rows[0].kind, "macro_revision");
+  assert.match(
+    deltas.rows[0].summary as string,
+    /VNM:NY\.GDP\.MKTP\.CD kỳ 2024-01-01/,
+  );
 });

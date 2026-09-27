@@ -78,6 +78,12 @@ export async function applyMacroObservations(
   seriesId: string,
   obs: FredObservation[],
   observationId: string,
+  opts?: {
+    /** Provider has no real vintages (World Bank): the caller stamps
+     * vintageDate=fetch-day, so an unchanged value must NOT mint a
+     * version — only a genuine value change earns a revision. */
+    stableVintage?: boolean;
+  },
 ): Promise<ApplyMacroResult> {
   const res: ApplyMacroResult = {
     seriesId,
@@ -162,9 +168,16 @@ export async function applyMacroObservations(
       continue;
     }
     seen.add(key);
+    const alreadyStaged = stagedCount.get(pid) ?? 0;
+    if (opts?.stableVintage) {
+      const effVal = alreadyStaged ? lastStagedVal.get(pid) : curVal.get(pid);
+      if (effVal != null && decimalKey(effVal) === decimalKey(o.value)) {
+        res.unchanged++;
+        continue;
+      }
+    }
     const no = (maxNo.get(pid) ?? 0) + 1;
     maxNo.set(pid, no);
-    const alreadyStaged = stagedCount.get(pid) ?? 0;
     stagedCount.set(pid, alreadyStaged + 1);
     // superseded version: pre-batch current for the first staged row,
     // the previous staged row otherwise (chain pointer stays pre-batch)

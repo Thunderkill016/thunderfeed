@@ -25,8 +25,14 @@ export async function GET(
       headers: { "Cache-Control": "no-store" },
     });
   }
-  const canonicalKey = key.join(":");
-  if (!/^macro_series:[a-z0-9_:]{1,120}$/i.test(canonicalKey))
+  // segments may arrive percent-encoded — decode before validating
+  let canonicalKey = key.join(":");
+  try {
+    canonicalKey = decodeURIComponent(canonicalKey);
+  } catch {
+    /* malformed escape — regex rejects it below */
+  }
+  if (!/^macro_series:[a-z0-9_:.\-]{1,120}$/i.test(canonicalKey))
     return NextResponse.json(null, { status: 404 });
   const history = url.searchParams.get("history");
   const view = history

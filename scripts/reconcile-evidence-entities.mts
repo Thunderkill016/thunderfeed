@@ -236,7 +236,7 @@ for (const v of affected) {
     }
 
     if (!APPLY) continue;
-    await client.query("BEGIN");
+    await client.query("BEGIN; SET TRANSACTION READ WRITE");
     try {
       await applyEvidencePlan(qc, v.id, plan);
       await client.query("COMMIT");

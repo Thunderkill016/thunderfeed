@@ -112,7 +112,7 @@ const PROBE_SQL: [string, string][] = [
 ];
 for (const role of API_ROLES) {
   for (const [op, sql] of PROBE_SQL) {
-    await client.query("BEGIN");
+    await client.query("BEGIN; SET TRANSACTION READ WRITE");
     await client.query(`SET LOCAL ROLE ${role}`);
     let denied = false;
     try {

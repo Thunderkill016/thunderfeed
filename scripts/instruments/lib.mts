@@ -6,7 +6,20 @@ import pg from "pg";
 
 export function connectDb(url = process.env.DATABASE_URL): pg.Client {
   if (!url) throw new Error("DATABASE_URL required");
-  return new pg.Client({ connectionString: url });
+  const c = new pg.Client({ connectionString: url });
+  const orig = c.connect.bind(c);
+  (c as { connect: () => Promise<pg.Client> }).connect = async () => {
+    await orig();
+    // Supabase flips default_transaction_read_only=on when disk quota is
+    // exceeded (observed 2026-09-27: resolver_decisions bloat → DB
+    // read-only → pipeline silently dead). The flag can linger after disk
+    // drops; run writers read-write explicitly. No-op when flag is off.
+    await c
+      .query("SET SESSION default_transaction_read_only=off")
+      .catch(() => {});
+    return c;
+  };
+  return c;
 }
 
 /** Stable sha256 over a JSON value (key order canonicalized). */
