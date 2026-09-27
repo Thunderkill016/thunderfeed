@@ -2010,10 +2010,14 @@ export async function persistCluster(
     const { eventId, created } = evRef;
 
     // 2b) resolver telemetry — auditable pair-level decisions.
-    // Volume control: routine `split` evals below the near-miss band are
-    // dropped (99.5% of rows, ~650k/day blew the Supabase disk quota and
-    // forced the DB read-only). Kept: merges, ambiguous calls, and splits
-    // scoring ≥ NEAR_MISS — the cases a resolver audit actually inspects.
+    // Volume control: routine `split` evals are dropped (99.5% of rows,
+    // ~650k/day blew the Supabase disk quota and forced the DB read-only).
+    // A split's score is max(sigSim, entitySim, claimOverlap, semantic) —
+    // routine same-country entity overlap lands ≥0.5 without real merge
+    // signal, and `entity_blocked` splits are deliberate refusals. Kept:
+    // merges, ambiguous calls, splits ≥0.9 (contradictory near-merges),
+    // splits ≥0.7 not entity-blocked. Features stripped on splits — the
+    // heavy jsonb — merges/ambiguous keep the full audit trail.
     if (resolverEvals.length) {
       const json = toJsonb;
       await client
@@ -2023,12 +2027,17 @@ export async function persistCluster(
               decision, path, score, reasons, hard_blocks, features,
               semantic_available)
            SELECT $1, t.cand, $2, t.decision, t.path, t.score,
-                  t.reasons::jsonb, t.blocks::jsonb, t.features::jsonb, t.sem
+                  t.reasons::jsonb, t.blocks::jsonb,
+                  CASE WHEN t.decision = 'split' THEN '{}'::jsonb
+                       ELSE t.features::jsonb END,
+                  t.sem
            FROM unnest(
              $3::uuid[], $4::text[], $5::text[], $6::double precision[],
              $7::text[], $8::text[], $9::text[], $10::boolean[]
            ) AS t(cand, decision, path, score, reasons, blocks, features, sem)
-           WHERE t.decision <> 'split' OR t.score >= 0.4`,
+           WHERE t.decision <> 'split'
+              OR t.score >= 0.9
+              OR (t.score >= 0.7 AND t.path <> 'entity_blocked')`,
           [
             cluster.id,
             eventId,
