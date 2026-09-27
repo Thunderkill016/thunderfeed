@@ -144,7 +144,11 @@ export default function ChangesRail({
                   {(item.d.seriesCode && seriesMeta(item.d.seriesCode)?.vi) ??
                     item.d.summary}
                 </span>
-                <span className="change-card-summary">{item.d.summary}</span>
+                <span className="change-card-summary">
+                  {item.d.seriesCode
+                    ? item.d.summary.replace(item.d.seriesCode, "").trim()
+                    : item.d.summary}
+                </span>
               </a>
             );
           }

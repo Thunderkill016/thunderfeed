@@ -55,11 +55,16 @@ export default async function MacroPage() {
       </main>
     );
   }
-  const series = await getMacroSeriesList();
+  const series = (await getMacroSeriesList()).filter((s) => s.points > 0);
   const deltas = await getLatestDataDeltas(15);
+  const today = new Date().toISOString().slice(0, 10);
   const latestTwo = await Promise.all(
     series.map((s) =>
-      getMacroPoints(s.canonicalKey, { limit: 2, order: "desc" }),
+      getMacroPoints(s.canonicalKey, {
+        limit: 2,
+        order: "desc",
+        to: today,
+      }),
     ),
   );
   const rows = series.map((s, i) => {
@@ -137,7 +142,19 @@ export default async function MacroPage() {
                       {d ? d.label : "—"}
                     </td>
                     <td className="macro-date">{cur?.obsDate ?? "—"}</td>
-                    <td className="macro-date">{cur?.vintageDate ?? "—"}</td>
+                    <td className="macro-date">
+                      {cur?.vintageDate ?? "—"}
+                      {s.horizonObsDate && (
+                        <span
+                          className="macro-forecast"
+                          title="Kỳ xa nhất là dự báo của provider (IMF WEO), không phải số thực"
+                        >
+                          {" "}
+                          → dự báo {s.horizonObsDate.slice(0, 4)}:{" "}
+                          {Number(s.horizonValue).toLocaleString("en-US")}
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -2003,10 +2003,14 @@ const RELIABILITY_MIN_DOCS = 5;
 /**
  * Per-source reliability from observed behavior only — no external ratings.
  *   originality   = lineage 'original' roots / documents
- *   unknownShare  = unresolved provenance / documents        (penalty)
- *   confirmRate   = claims now 'confirmed' / assertions
+ *   stableRate    = claims not currently disputed/corrected / assertions
+ *   confirmRate   = claims now 'confirmed' / assertions — requires a
+ *                   PRIMARY voter, so it's a bonus term, not the baseline
  *   correctedRate = claims now corrected|retracted / assertions (penalty)
- *   score = 0.5·originality + 0.5·confirmRate − 0.5·correctedRate − 0.25·unknownShare
+ *   unknownShare  = unresolved provenance / documents — absence of evidence
+ *                   (mild penalty: originality already misses those docs)
+ *   score = 0.5·originality + 0.3·stableRate + 0.2·confirmRate
+ *           − 0.25·correctedRate − 0.1·unknownShare
  * Sources under RELIABILITY_MIN_DOCS get tier 'insufficient' — a score on
  * thin evidence would be noise presented as signal.
  */
@@ -2081,14 +2085,18 @@ export async function getSourceReliability(): Promise<SourceReliability[]> {
       const unknownShare = docs ? unknown / docs : 0;
       const confirmRate = asserted ? confirmed / asserted : 0;
       const correctedRate = asserted ? corrected / asserted : 0;
+      const stableRate = asserted
+        ? (asserted - disputed - corrected) / asserted
+        : 0;
       const score = Math.max(
         0,
         Math.min(
           1,
           0.5 * originality +
-            0.5 * confirmRate -
-            0.5 * correctedRate -
-            0.25 * unknownShare,
+            0.3 * stableRate +
+            0.2 * confirmRate -
+            0.25 * correctedRate -
+            0.1 * unknownShare,
         ),
       );
       const tier: SourceReliability["tier"] =
@@ -2605,6 +2613,9 @@ export interface MacroSeriesView {
   latestObsDate: string | null;
   latestValue: string | null;
   latestVintage: string | null;
+  /** forecast horizon when obs extend beyond today (IMF WEO out-years) */
+  horizonObsDate: string | null;
+  horizonValue: string | null;
 }
 
 export async function getMacroSeriesList(): Promise<MacroSeriesView[]> {
@@ -2616,16 +2627,26 @@ export async function getMacroSeriesList(): Promise<MacroSeriesView[]> {
             COALESCE(c.points, 0) AS points,
             lp.obs_date AS latest_obs,
             lv.value AS latest_val,
-            lv.vintage_date AS latest_vint
+            lv.vintage_date AS latest_vint,
+            fp.obs_date AS horizon_obs,
+            fv.value AS horizon_val
        FROM macro_series s
        LEFT JOIN entities e ON e.id = s.entity_id
        LEFT JOIN (
-         SELECT series_id, count(*) AS points, max(obs_date) AS latest_obs
+         SELECT series_id, count(*) AS points,
+                -- headline value is the latest ACTUAL; forecast-period
+                -- rows (IMF WEO out-years) land on horizon fields instead
+                max(obs_date) FILTER (WHERE obs_date <= CURRENT_DATE)
+                  AS latest_obs,
+                max(obs_date) AS horizon_obs
            FROM macro_points GROUP BY series_id
        ) c ON c.series_id = s.id
        LEFT JOIN macro_points lp
          ON lp.series_id = s.id AND lp.obs_date = c.latest_obs
        LEFT JOIN macro_point_versions lv ON lv.id = lp.current_version_id
+       LEFT JOIN macro_points fp
+         ON fp.series_id = s.id AND fp.obs_date = c.horizon_obs
+       LEFT JOIN macro_point_versions fv ON fv.id = fp.current_version_id
       WHERE s.status='active'
       ORDER BY s.canonical_key`,
   );
@@ -2644,6 +2665,14 @@ export async function getMacroSeriesList(): Promise<MacroSeriesView[]> {
     latestObsDate: row.latest_obs ? isoDay(row.latest_obs) : null,
     latestValue: row.latest_val,
     latestVintage: row.latest_vint ? isoDay(row.latest_vint) : null,
+    horizonObsDate:
+      row.horizon_obs && row.horizon_obs > row.latest_obs
+        ? isoDay(row.horizon_obs)
+        : null,
+    horizonValue:
+      row.horizon_obs && row.horizon_obs > row.latest_obs
+        ? row.horizon_val
+        : null,
   }));
 }
 
@@ -2759,6 +2788,7 @@ export async function getMacroPointHistory(
 export interface MacroSeriesDetail {
   id: string;
   canonicalKey: string;
+  provider: string;
   seriesCode: string;
   title: string | null;
   frequency: string | null;
@@ -2775,7 +2805,8 @@ export async function getMacroSeries(
 ): Promise<MacroSeriesDetail | null> {
   const pool = getPool();
   const r = await pool.query(
-    `SELECT s.id, s.canonical_key, s.series_code, s.title, s.frequency,
+    `SELECT s.id, s.canonical_key, s.provider, s.series_code, s.title,
+            s.frequency,
             s.units, s.seasonal_adjustment, s.entity_id,
             s.metadata->>'notes' AS notes,
             e.canonical_key AS entity_key
@@ -2789,6 +2820,7 @@ export async function getMacroSeries(
   return {
     id: row.id,
     canonicalKey: row.canonical_key,
+    provider: row.provider,
     seriesCode: row.series_code,
     title: row.title,
     frequency: row.frequency,
@@ -2810,15 +2842,22 @@ export async function getEntityMacroSeries(
     `SELECT s.id, s.canonical_key, s.provider, s.series_code, s.title,
             s.frequency, s.units, s.seasonal_adjustment, s.entity_id,
             c.points, lp.obs_date AS latest_obs,
-            lv.value AS latest_val, lv.vintage_date AS latest_vint
+            lv.value AS latest_val, lv.vintage_date AS latest_vint,
+            fp.obs_date AS horizon_obs, fv.value AS horizon_val
        FROM macro_series s
        LEFT JOIN (
-         SELECT series_id, count(*) AS points, max(obs_date) AS latest_obs
+         SELECT series_id, count(*) AS points,
+                max(obs_date) FILTER (WHERE obs_date <= CURRENT_DATE)
+                  AS latest_obs,
+                max(obs_date) AS horizon_obs
            FROM macro_points GROUP BY series_id
        ) c ON c.series_id = s.id
        LEFT JOIN macro_points lp
          ON lp.series_id = s.id AND lp.obs_date = c.latest_obs
        LEFT JOIN macro_point_versions lv ON lv.id = lp.current_version_id
+       LEFT JOIN macro_points fp
+         ON fp.series_id = s.id AND fp.obs_date = c.horizon_obs
+       LEFT JOIN macro_point_versions fv ON fv.id = fp.current_version_id
       WHERE s.status='active' AND s.entity_id=$1
       ORDER BY s.canonical_key`,
     [entityId],
@@ -2838,6 +2877,14 @@ export async function getEntityMacroSeries(
     latestObsDate: row.latest_obs ? isoDay(row.latest_obs) : null,
     latestValue: row.latest_val,
     latestVintage: row.latest_vint ? isoDay(row.latest_vint) : null,
+    horizonObsDate:
+      row.horizon_obs && row.horizon_obs > row.latest_obs
+        ? isoDay(row.horizon_obs)
+        : null,
+    horizonValue:
+      row.horizon_obs && row.horizon_obs > row.latest_obs
+        ? row.horizon_val
+        : null,
   }));
 }
 

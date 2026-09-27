@@ -7,6 +7,7 @@ import {
   getMacroSeries,
 } from "../../../lib/db/read";
 import { entityHref } from "../../../lib/entities";
+import { seriesMeta } from "../../../lib/seriesLabels";
 import SiteNav from "../../../components/SiteNav";
 
 export const dynamic = "force-dynamic";
@@ -21,12 +22,15 @@ export async function generateMetadata({
   return { title: `ThunderFeed — ${key}` };
 }
 
-/** Latest-vintage series as an SVG line — zero chart deps. */
+/** Latest-vintage series as an SVG line — zero chart deps. Forecast
+ *  periods (obs_date beyond today, e.g. IMF WEO out-years) render as a
+ *  dashed tail so the chart never presents a projection as history. */
 function Sparkline({ points }: { points: { v: number; d: string }[] }) {
   const W = 720;
   const H = 220;
   const PAD = 8;
   if (points.length < 2) return null;
+  const today = new Date().toISOString().slice(0, 10);
   const vs = points.map((p) => p.v);
   const min = Math.min(...vs);
   const max = Math.max(...vs);
@@ -36,6 +40,9 @@ function Sparkline({ points }: { points: { v: number; d: string }[] }) {
     const y = H - PAD - ((p.v - min) / span) * (H - PAD * 2);
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   });
+  const cut = points.findIndex((p) => p.d > today);
+  const actual = cut < 0 ? xy : xy.slice(0, cut + 1);
+  const forecast = cut < 0 ? [] : xy.slice(cut);
   return (
     <figure className="macro-chart">
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="series chart">
@@ -46,12 +53,20 @@ function Sparkline({ points }: { points: { v: number; d: string }[] }) {
           y2={H - PAD}
           className="macro-chart-axis"
         />
-        <polyline points={xy.join(" ")} className="macro-chart-line" />
+        <polyline points={actual.join(" ")} className="macro-chart-line" />
+        {forecast.length > 1 && (
+          <polyline
+            points={forecast.join(" ")}
+            className="macro-chart-line forecast"
+            strokeDasharray="6 4"
+          />
+        )}
       </svg>
       <figcaption>
         <span>{points[0].d}</span>
         <span>
           {min.toLocaleString("en-US")} — {max.toLocaleString("en-US")}
+          {forecast.length > 1 && " · nét đứt = dự báo"}
         </span>
         <span>{points[points.length - 1].d}</span>
       </figcaption>
@@ -91,7 +106,16 @@ export default async function MacroSeriesPage({
   const chart = points
     .map((p) => ({ v: Number(p.value), d: p.obsDate }))
     .filter((p) => Number.isFinite(p.v));
-  const cur = points[points.length - 1];
+  const today = new Date().toISOString().slice(0, 10);
+  const curIdx = points.reduce(
+    (acc, p, i) => (p.obsDate <= today ? i : acc),
+    -1,
+  );
+  const cur = curIdx >= 0 ? points[curIdx] : null;
+  const horizon =
+    curIdx >= 0 && curIdx < points.length - 1
+      ? points[points.length - 1]
+      : null;
 
   return (
     <main className="edition macro-page">
@@ -113,7 +137,9 @@ export default async function MacroSeriesPage({
       <section className="macro-detail">
         <h1 className="macro-detail-title">
           <span className="macro-code">{series.seriesCode}</span>
-          {series.title ?? series.seriesCode}
+          {seriesMeta(series.seriesCode)?.vi ??
+            series.title ??
+            series.seriesCode}
         </h1>
         <p className="macro-detail-meta">
           {[series.units, series.frequency, series.seasonalAdjustment]
@@ -138,6 +164,14 @@ export default async function MacroSeriesPage({
               {" "}
               kỳ {cur.obsDate} · vintage {cur.vintageDate}
             </span>
+          </p>
+        )}
+        {horizon && (
+          <p className="macro-asof-note">
+            Dự báo {series.provider === "imf" ? "IMF WEO" : "provider"}: kỳ{" "}
+            {horizon.obsDate} ={" "}
+            <b>{Number(horizon.value).toLocaleString("en-US")}</b> — số liệu quá{" "}
+            {cur?.obsDate.slice(0, 4)} là projection, không phải actual.
           </p>
         )}
         <Sparkline points={chart} />

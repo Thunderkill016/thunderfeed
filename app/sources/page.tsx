@@ -45,8 +45,10 @@ export default async function SourcesPage() {
       <section className="macro-group">
         <p className="macro-detail-meta" style={{ margin: "8px 0 16px" }}>
           Điểm nguồn tính từ lineage thực: bài <b>original</b> = tự điều tra,
-          <b> derived</b> = dịch/viết lại wire. Claim outcomes đếm theo trạng
-          thái cuối của claim, không phải lúc khẳng định.
+          <b> derived</b> = dịch/viết lại wire. Claims “đứng vững” = không bị
+          tranh chấp hay sửa lại tới hiện tại; “xác nhận” đếm claim được nguồn
+          <b>chính thức</b> củng cố — hiếm, nên chỉ là điểm cộng, không phải
+          điểm nền.
         </p>
         <table className="macro-table">
           <thead>
@@ -57,6 +59,7 @@ export default async function SourcesPage() {
               <th className="num">Tự có</th>
               <th className="num">Derived</th>
               <th className="num">Claims</th>
+              <th className="num">Ổn định</th>
               <th className="num">Xác nhận</th>
               <th className="num">Tranh chấp</th>
               <th className="num">Điểm</th>
@@ -72,6 +75,15 @@ export default async function SourcesPage() {
                 <td className="num">{s.originals}</td>
                 <td className="num">{s.derived}</td>
                 <td className="num">{s.claimsAsserted}</td>
+                <td className="num">
+                  {s.claimsAsserted
+                    ? `${Math.round(
+                        ((s.claimsAsserted - s.disputed - s.corrected) /
+                          s.claimsAsserted) *
+                          100,
+                      )}%`
+                    : "—"}
+                </td>
                 <td className="num">{s.confirmed}</td>
                 <td className="num">{s.disputed + s.corrected}</td>
                 <td className="num macro-value">{s.score.toFixed(2)}</td>

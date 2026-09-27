@@ -54,6 +54,22 @@ export default async function AskPage({
           Câu trả lời chỉ được sinh từ bằng chứng chuẩn hoá — mỗi con số phải
           truy được về claim trong graph. Không có bằng chứng → không trả lời.
         </p>
+        <div className="entity-chips" style={{ margin: "10px 0 14px" }}>
+          {[
+            "Fed đang giữ lãi suất bao nhiêu?",
+            "Việt Nam có động thái gì về xuất khẩu tuần này?",
+            "Iran và Mỹ đàm phán tới đâu?",
+            "CPI Mỹ mới nhất là bao nhiêu?",
+          ].map((ex) => (
+            <a
+              key={ex}
+              className="entity-chip"
+              href={`/ask?q=${encodeURIComponent(ex)}`}
+            >
+              {ex}
+            </a>
+          ))}
+        </div>
         <form action="/ask" method="get" className="ask-form">
           <input
             type="text"
