@@ -639,6 +639,18 @@ export function isCalendarDate(s: unknown): s is string {
   );
 }
 
+/** DATE column → 'YYYY-MM-DD'. pg driver returns Date parsed as LOCAL
+ *  midnight — toISOString() would shift the day in UTC+N timezones, so the
+ *  local getters are used deliberately: the date is a label, not an
+ *  instant. pg-mem may hand back the same shape or a bare string. */
+export function isoDay(v: unknown): string {
+  if (v instanceof Date) {
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${v.getFullYear()}-${p(v.getMonth() + 1)}-${p(v.getDate())}`;
+  }
+  return String(v).slice(0, 10);
+}
+
 // ── return helpers (Phase 21 — pure, not persisted) ──────────────────────
 
 /** Simple return: close/prev − 1. null when inputs unusable. */
@@ -685,6 +697,16 @@ export function dailyMovePct(
   const c = Number(close);
   if (!Number.isFinite(p) || !Number.isFinite(c) || p === 0) return null;
   return ((c - p) / Math.abs(p)) * 100;
+}
+
+/** Median of a finite sample — null on empty input. A median baseline is
+ *  robust to a single outlier session, which is the whole point of the
+ *  volume_spike comparator. */
+export function median(values: number[]): number | null {
+  if (!values.length) return null;
+  const s = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
 
 export const VNDIRECT_VN_MICS = new Set(["XSTC", "HSTC", "XHNX"]);
@@ -1009,4 +1031,59 @@ export function parseErApiRate(
       },
     ],
   };
+}
+
+// ── Derived series: SJC-vs-world gold premium ────────────────────────────
+
+/** 1 lượng (VN tael) = 37.5 g; troy ounce = 31.1034768 g. The SJC retail
+ *  board quotes VND/lượng while the world spot quotes USD/troy oz, so
+ *  comparing them needs both the weight and FX conversions — the premium
+ *  is computed, never fetched. */
+export const LUONG_PER_TROY_OZ = 37.5 / 31.1034768;
+
+export interface PremiumLegs {
+  /** SJC board ask — what a VN buyer pays, VND/lượng */
+  sjcSell: number;
+  /** world spot, USD/troy oz */
+  xauUsd: number;
+  /** USD/VND reference rate */
+  usdVnd: number;
+}
+
+/** SJC premium over world, in %: sjc / (xau × fx × lượng-per-oz) − 1.
+ *  A leg of 0/NaN yields null — never fabricate a premium. */
+export function goldPremiumPct(legs: PremiumLegs): number | null {
+  const world = legs.xauUsd * legs.usdVnd * LUONG_PER_TROY_OZ;
+  // a 0 quote is "no quote" (giavang publishes sell=0 on single-price
+  // rows), not a price — refuse rather than emit a −100% premium
+  if (
+    !Number.isFinite(world) ||
+    world <= 0 ||
+    !Number.isFinite(legs.sjcSell) ||
+    legs.sjcSell <= 0
+  )
+    return null;
+  return (legs.sjcSell / world - 1) * 100;
+}
+
+/** Per-date premium bars from aligned legs. Dates missing any leg are
+ *  skipped (no interpolation); the bar is a point value so open=high=
+ *  low=close, matching the single-quote convention. */
+export function computePremiumBars(legs: Map<string, PremiumLegs>): DailyBar[] {
+  const bars: DailyBar[] = [];
+  for (const [sessionDate, l] of legs) {
+    const pct = goldPremiumPct(l);
+    if (pct == null) continue;
+    const v = pct.toFixed(4);
+    bars.push({
+      sessionDate,
+      open: v,
+      high: v,
+      low: v,
+      close: v,
+      volume: null,
+    });
+  }
+  bars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
+  return bars;
 }

@@ -25,7 +25,7 @@ const r = await c.query(
      JOIN financial_instruments fi ON fi.id=il.instrument_id
      JOIN instrument_versions iv ON iv.id=fi.current_version_id
      LEFT JOIN market_points mp ON mp.series_id=ms.id
-    WHERE ms.provider IN ('giavang','binance','er_api')
+    WHERE ms.provider IN ('giavang','binance','er_api','derived')
     GROUP BY 1,2,3,4,ms.id ORDER BY 2,1`,
 );
 for (const x of r.rows)
@@ -39,9 +39,9 @@ for (const x of r.rows)
     `close:${x.last_close}`,
   );
 const d = await c.query(
-  `SELECT count(*) n FROM data_deltas WHERE kind='market_move'`,
+  `SELECT kind, count(*) n FROM data_deltas GROUP BY 1 ORDER BY 1`,
 );
-console.log("market_move deltas:", d.rows[0].n);
+console.log("deltas:", JSON.stringify(d.rows));
 const s = await c.query(
   `SELECT status, count(*) n FROM signal_outcomes GROUP BY 1`,
 );

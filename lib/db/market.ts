@@ -16,7 +16,9 @@
 import type { Pool } from "pg";
 import {
   dailyMovePct,
+  isoDay,
   marketPointChanged,
+  median,
   validateBar,
   type DailyBar,
 } from "../market";
@@ -173,6 +175,58 @@ const MOVE_DELTA_LOOKBACK_DAYS = 3;
  *  against in signal_outcomes — the public track record. */
 export const SIGNAL_HORIZONS = [1, 5, 20] as const;
 
+/** Mint one data_deltas row on a market point + its full outcome
+ *  scorecard in the same transaction — the delta is a falsifiable claim,
+ *  so no signal ever escapes T+1/T+5/T+20 tracking. Shared by
+ *  applyDailyBars' built-in detectors and asset-specific importers
+ *  (premium_shift, …) that mint deltas on their own logic. Returns the
+ *  delta id, or null when the version already carries a delta
+ *  (ON CONFLICT — reruns stay idempotent). */
+export async function mintMarketDelta(
+  db: Q,
+  spec: {
+    kind: string;
+    materiality: string;
+    summary: string;
+    pointId: string;
+    versionId: string;
+  },
+): Promise<string | null> {
+  // one delta per version — uq_data_deltas_market_version backs this, but
+  // the explicit pre-check also makes reruns idempotent where ON CONFLICT
+  // inference isn't available (pg-mem doesn't see the ALTER-added UNIQUE)
+  const dup = await db.query(
+    `SELECT 1 FROM data_deltas WHERE market_version_id=$1`,
+    [spec.versionId],
+  );
+  if (dup.rows.length) return null;
+  const delta = await db.query(
+    `INSERT INTO data_deltas
+       (kind, materiality, summary, market_point_id, market_version_id)
+     VALUES ($1,$2,$3,$4::uuid,$5::uuid)
+     ON CONFLICT (market_version_id) DO NOTHING
+     RETURNING id`,
+    [spec.kind, spec.materiality, spec.summary, spec.pointId, spec.versionId],
+  );
+  if (!delta.rows.length) return null;
+  const deltaId = delta.rows[0].id as string;
+  for (const h of SIGNAL_HORIZONS) {
+    await db.query(
+      `INSERT INTO signal_outcomes (delta_id, horizon_sessions)
+       VALUES ($1,$2)
+       ON CONFLICT (delta_id, horizon_sessions) DO NOTHING`,
+      [deltaId, h],
+    );
+  }
+  return deltaId;
+}
+
+/** volume_spike: volume ≥ mult × median of the prior `lookback` sessions'
+ *  volumes — only when the series opts in via metadata (a crypto 3× day
+ *  is signal; an index or a quote board has no meaningful volume). */
+const VOLUME_SPIKE_DEFAULT_MULT = 3;
+const VOLUME_SPIKE_DEFAULT_LOOKBACK = 20;
+
 export async function applyDailyBars(
   db: Q,
   seriesId: string,
@@ -282,9 +336,10 @@ export async function applyDailyBars(
     );
     res.versionsInserted++;
 
-    // market_move delta — only on a fresh session's FIRST version
-    // (corrections of an already-known session are revisions, not moves),
-    // and only when the close moved materially vs the prior session.
+    // deltas — only on a fresh session's FIRST version (corrections of
+    // an already-known session are revisions, not moves). market_move
+    // can be switched off per series via metadata.moveDelta=false —
+    // e.g. %-valued derived series whose own detector replaces it.
     const versionId = nv.rows[0].id as string;
     if (no === 1) {
       const fresh =
@@ -299,7 +354,12 @@ export async function applyDailyBars(
         [seriesId, bar.sessionDate],
       );
       const pct = dailyMovePct(prev.rows[0]?.close, bar.close);
-      if (pct != null && Math.abs(pct) >= materialMovePct && fresh) {
+      if (
+        pct != null &&
+        Math.abs(pct) >= materialMovePct &&
+        fresh &&
+        sMeta.moveDelta !== false
+      ) {
         if (ticker === undefined) {
           const t = await db.query(
             `SELECT lv.ticker, il.canonical_key FROM market_series ms
@@ -315,33 +375,67 @@ export async function applyDailyBars(
             null;
         }
         const sign = pct > 0 ? "+" : "";
-        const delta = await db.query(
-          `INSERT INTO data_deltas
-             (kind, materiality, summary, market_point_id, market_version_id)
-           VALUES ('market_move',$1,$2,$3::uuid,$4::uuid)
-           ON CONFLICT (market_version_id) DO NOTHING
-           RETURNING id`,
-          [
-            Math.abs(pct) >= highMovePct ? "high" : "medium",
-            `${ticker ?? "series"} ${sign}${pct.toFixed(1)}% phiên ${bar.sessionDate}`,
+        const deltaId = await mintMarketDelta(db, {
+          kind: "market_move",
+          materiality: Math.abs(pct) >= highMovePct ? "high" : "medium",
+          summary: `${ticker ?? "series"} ${sign}${pct.toFixed(1)}% phiên ${bar.sessionDate}`,
+          pointId,
+          versionId,
+        });
+        if (deltaId) res.deltas++;
+      }
+
+      // volume_spike — opt-in per series; compares the fresh session's
+      // volume to the median of its trailing lookback sessions.
+      const volMult =
+        typeof sMeta.volumeSpikeMult === "number" && sMeta.volumeSpikeMult > 1
+          ? sMeta.volumeSpikeMult
+          : null;
+      const vol = bar.volume == null ? null : Number(bar.volume);
+      if (volMult && vol != null && Number.isFinite(vol) && fresh) {
+        const lookback =
+          typeof sMeta.volumeSpikeLookback === "number" &&
+          sMeta.volumeSpikeLookback >= 5
+            ? Math.floor(sMeta.volumeSpikeLookback)
+            : VOLUME_SPIKE_DEFAULT_LOOKBACK;
+        const base = await db.query(
+          `SELECT mv.volume
+             FROM (
+               SELECT mp.current_version_id FROM market_points mp
+                WHERE mp.series_id=$1 AND mp.session_date < $2
+                ORDER BY mp.session_date DESC LIMIT $3
+             ) p
+             JOIN market_point_versions mv ON mv.id = p.current_version_id
+            WHERE mv.volume IS NOT NULL AND mv.volume > 0`,
+          [seriesId, bar.sessionDate, lookback],
+        );
+        // median in JS — percentile_cont isn't portable to pg-mem and a
+        // ≤lookback-sized sample is trivial to sort
+        const med = median(base.rows.map((r) => Number(r.volume)));
+        if (med != null && med > 0 && vol >= volMult * med) {
+          if (ticker === undefined) {
+            const t = await db.query(
+              `SELECT lv.ticker, il.canonical_key FROM market_series ms
+                 JOIN instrument_listings il ON il.id = ms.listing_id
+                 LEFT JOIN listing_versions lv ON lv.id = il.current_version_id
+                WHERE ms.id=$1`,
+              [seriesId],
+            );
+            ticker =
+              (t.rows[0]?.ticker as string | undefined) ??
+              String(t.rows[0]?.canonical_key ?? "").split(":")[1] ??
+              null;
+          }
+          const ratio = vol / med;
+          const deltaId = await mintMarketDelta(db, {
+            kind: "volume_spike",
+            materiality: ratio >= volMult * 2 ? "high" : "medium",
+            summary: `${ticker ?? "series"} vol ×${ratio.toFixed(1)} baseline phiên ${bar.sessionDate}`,
             pointId,
             versionId,
-          ],
-        );
-        // the delta is a falsifiable claim — mint its scorecard rows in
-        // the same transaction so no signal ever escapes outcome tracking
-        if (delta.rows.length) {
-          const deltaId = delta.rows[0].id as string;
-          for (const h of SIGNAL_HORIZONS) {
-            await db.query(
-              `INSERT INTO signal_outcomes (delta_id, horizon_sessions)
-               VALUES ($1,$2)
-               ON CONFLICT (delta_id, horizon_sessions) DO NOTHING`,
-              [deltaId, h],
-            );
-          }
+          });
+          if (deltaId) res.deltas++;
         }
-        res.deltas++;
       }
     }
   }
@@ -429,4 +523,55 @@ export async function resolveSignalOutcomes(
     res.resolved++;
   }
   return res;
+}
+
+// ── premium_shift detector ─────────────────────────────────────────────────
+// The SJC-vs-world premium is itself a %-valued series, so "it moved 5%" is
+// the wrong lens — the signal is an absolute-percentage-point shift.
+// PREMIUM_SHIFT_PP is the material floor: at a ~7-10% premium regime, ±0.75pt
+// is a day a gold trader notices (SJC premium history swings in whole points,
+// not decimals).
+
+export const PREMIUM_SHIFT_PP = 0.75;
+export const PREMIUM_SHIFT_HIGH_PP = 1.5;
+
+/** Compare the two latest sessions of a %-valued series; mint a
+ *  premium_shift delta when the latest session moved ≥ PREMIUM_SHIFT_PP
+ *  vs the previous one. Same freshness discipline as market_move: first
+ *  version of a recent session only — revisions and backfills don't
+ *  re-fire the signal. */
+export async function detectPremiumShift(
+  db: Q,
+  seriesId: string,
+  now = Date.now(),
+): Promise<{ shifted: boolean; deltaPp: number | null }> {
+  const pts = await db.query(
+    `SELECT mp.id AS point_id, mp.session_date, mpv.id AS version_id,
+            mpv.version_no, mpv.close
+       FROM market_points mp
+       JOIN market_point_versions mpv ON mpv.id = mp.current_version_id
+      WHERE mp.series_id=$1
+      ORDER BY mp.session_date DESC LIMIT 2`,
+    [seriesId],
+  );
+  if (pts.rows.length < 2) return { shifted: false, deltaPp: null };
+  const [cur, prev] = pts.rows;
+  const deltaPp = Number(cur.close) - Number(prev.close);
+  if (!Number.isFinite(deltaPp)) return { shifted: false, deltaPp: null };
+  const curDate = isoDay(cur.session_date); // DB hands back a Date, not "YYYY-MM-DD"
+  const fresh =
+    Number(cur.version_no) === 1 &&
+    Date.parse(`${curDate}T00:00:00Z`) >=
+      now - MOVE_DELTA_LOOKBACK_DAYS * 86400e3;
+  if (!fresh || Math.abs(deltaPp) < PREMIUM_SHIFT_PP)
+    return { shifted: false, deltaPp };
+  const sign = deltaPp > 0 ? "+" : "";
+  const deltaId = await mintMarketDelta(db, {
+    kind: "premium_shift",
+    materiality: Math.abs(deltaPp) >= PREMIUM_SHIFT_HIGH_PP ? "high" : "medium",
+    summary: `premium SJC ${sign}${deltaPp.toFixed(2)}pt → ${Number(cur.close).toFixed(2)}% phiên ${curDate}`,
+    pointId: cur.point_id,
+    versionId: cur.version_id,
+  });
+  return { shifted: deltaId != null, deltaPp };
 }

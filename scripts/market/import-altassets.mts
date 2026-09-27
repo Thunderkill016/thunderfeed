@@ -24,13 +24,16 @@
  */
 import { readFileSync } from "node:fs";
 import {
+  computePremiumBars,
   parseBinanceKlines,
   parseErApiRate,
   parseGiavangHistory,
   type DailyBar,
+  type PremiumLegs,
 } from "../../lib/market.ts";
 import {
   applyDailyBars,
+  detectPremiumShift,
   getOrCreateMarketSeries,
 } from "../../lib/db/market.ts";
 import { recordDerivation } from "../../lib/db/instruments.ts";
@@ -45,17 +48,17 @@ try {
   /* env may already be populated */
 }
 
-type AltProvider = "giavang" | "binance" | "er_api";
+type AltProvider = "giavang" | "binance" | "er_api" | "derived";
 
 interface AltEntry {
   /** provider transport symbol — giavang code / binance pair / '-' for FX */
   code: string;
   instrumentSlug: string;
-  type: "commodity" | "crypto" | "fx_pair";
+  type: "commodity" | "crypto" | "fx_pair" | "index";
   assetClass: "commodity" | "crypto" | "fx";
   venueMic: string;
   ticker: string;
-  currency: "VND" | "USD";
+  currency: "VND" | "USD" | null;
   nameVi: string;
   nameEn: string;
   /** issuer entity slug — null for spot assets with no issuer */
@@ -199,6 +202,9 @@ const ALT_UNIVERSE: AltEntry[] = [
     priceBasis: "as_traded" as const,
     materialMovePct: 8,
     highMovePct: 15,
+    // volume_spike detector — a crypto session ≥3× its 20-day median
+    // volume is signal (equities/indexes/quote boards don't opt in)
+    seriesMeta: { volumeSpikeMult: 3, volumeSpikeLookback: 20 },
   })),
   // ── FX reference — USD/VND mid-market ──────────────────────────────────
   {
@@ -255,6 +261,13 @@ const VENUES: {
     city: "",
     country: "",
     kind: "reference_rate",
+  },
+  {
+    mic: "DERIVED",
+    name: "computed from other series",
+    city: "",
+    country: "",
+    kind: "derived",
   },
 ];
 
@@ -608,6 +621,112 @@ for (const { listingId, listingKey, entry } of LIMIT
   } catch (e) {
     summary.errors.push(`${entry.code}: ${(e as Error).message}`);
   }
+}
+
+// ── derived: SJC-vs-world premium ────────────────────────────────────────
+// Runs after the base legs so today's premium reads fresh SJC/XAU/FX.
+// The premium is a %-valued series of its own — its delta is
+// premium_shift (absolute pp moves), so metadata.moveDelta=false keeps
+// the relative market_move detector off.
+
+const PREMIUM_ENTRY: AltEntry = {
+  code: "-",
+  instrumentSlug: "sjc_world_premium",
+  type: "index",
+  assetClass: "commodity",
+  venueMic: "DERIVED",
+  ticker: "SJC-PREM",
+  currency: null,
+  nameVi: "Chênh lệch SJC − thế giới",
+  nameEn: "SJC vs world premium",
+  issuerSlug: null,
+  provider: "derived",
+  dataset: "sjc_premium_daily",
+  priceBasis: "quoted",
+  materialMovePct: 0, // unused — moveDelta off
+  highMovePct: 0,
+  seriesMeta: {
+    unit: "pct",
+    derived: true,
+    moveDelta: false,
+    legs: ["vang_sjc_9999", "xau_usd_spot", "usd_vnd"],
+  },
+};
+
+/** per-date closes of the three premium legs, keyed by listing —
+ *  dates missing a leg are simply absent (computePremiumBars skips). */
+async function fetchPremiumLegs(
+  db: NonNullable<typeof c>,
+): Promise<Map<string, PremiumLegs>> {
+  const LEG_LISTINGS = {
+    sjcSell: "listing:vang_sjc_9999:commodity:goldvn",
+    xauUsd: "listing:xau_usd_spot:commodity:xauotc",
+    usdVnd: "listing:usd_vnd:fx_pair:erfx",
+  } as const;
+  const legs = new Map<string, Partial<PremiumLegs>>();
+  for (const [leg, listingKey] of Object.entries(LEG_LISTINGS)) {
+    const { rows } = await db.query(
+      `SELECT mp.session_date, mv.close
+         FROM market_points mp
+         JOIN market_point_versions mv ON mv.id = mp.current_version_id
+         JOIN market_series ms ON ms.id = mp.series_id
+         JOIN instrument_listings il ON il.id = ms.listing_id
+        WHERE il.canonical_key = $1
+        ORDER BY mp.session_date`,
+      [listingKey],
+    );
+    for (const r of rows) {
+      const d =
+        r.session_date instanceof Date
+          ? r.session_date.toISOString().slice(0, 10)
+          : String(r.session_date).slice(0, 10);
+      const cur = legs.get(d) ?? {};
+      cur[leg as keyof PremiumLegs] = Number(r.close);
+      legs.set(d, cur);
+    }
+  }
+  const full = new Map<string, PremiumLegs>();
+  for (const [d, l] of legs)
+    if (l.sjcSell != null && l.xauUsd != null && l.usdVnd != null)
+      full.set(d, l as PremiumLegs);
+  return full;
+}
+
+if (!DRY_RUN && c) {
+  const { listingId, listingKey } = await ensureListing(
+    PREMIUM_ENTRY,
+    universeObsId,
+  );
+  const legs = await fetchPremiumLegs(c);
+  const bars = computePremiumBars(legs);
+  const obsId = await observe(c, {
+    provider: "derived",
+    dataset: PREMIUM_ENTRY.dataset,
+    recordKey: `premium/${today}`,
+    payload: {
+      formula: "sjc_sell / (xau_usd × usd_vnd × 1.205653) − 1",
+      legs: Object.fromEntries(legs),
+    },
+  });
+  const seriesId = await getOrCreateMarketSeries(c, {
+    listingId,
+    listingKey,
+    provider: PREMIUM_ENTRY.provider,
+    dataset: PREMIUM_ENTRY.dataset,
+    priceBasis: PREMIUM_ENTRY.priceBasis,
+  });
+  await c.query(
+    `UPDATE market_series SET metadata = metadata || $2::jsonb WHERE id=$1`,
+    [seriesId, JSON.stringify(PREMIUM_ENTRY.seriesMeta)],
+  );
+  const pr = await applyDailyBars(c, seriesId, bars, obsId);
+  const shift = await detectPremiumShift(c, seriesId);
+  console.log(
+    `SJC-PREM: ${bars.length} bars +${pr.pointsInserted}pts` +
+      (shift.shifted ? ` premium_shift ${shift.deltaPp!.toFixed(2)}pt` : ""),
+  );
+} else {
+  console.log("[dry] premium leg skipped — needs DB");
 }
 
 console.log(

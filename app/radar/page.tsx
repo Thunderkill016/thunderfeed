@@ -202,12 +202,14 @@ export default async function RadarPage() {
       <section className="macro-group">
         <h2 className="macro-group-title">
           Hồ sơ tín hiệu
-          <span className="macro-units">market_move → T+1/T+5/T+20 phiên</span>
+          <span className="macro-units">
+            market_move · premium_shift · volume_spike → T+1/T+5/T+20 phiên
+          </span>
         </h2>
         {stats.length === 0 ? (
           <p className="macro-units" style={{ padding: "0.6rem 0" }}>
-            Chưa có tín hiệu nào — mỗi market_move delta tự động được chấm điểm
-            khi đủ phiên theo dõi.
+            Chưa có tín hiệu nào — mỗi delta tự động được chấm điểm khi đủ phiên
+            theo dõi.
           </p>
         ) : (
           <table className="macro-table">

@@ -15,7 +15,7 @@ import {
   type EntityKind,
 } from "../entities";
 import { normalizeText } from "../model";
-import { normalizeDecimalString } from "../market";
+import { LUONG_PER_TROY_OZ, isoDay, normalizeDecimalString } from "../market";
 import { caDivergentFields } from "../corporate-actions";
 
 export interface EvidenceView {
@@ -2160,13 +2160,7 @@ export async function getSourceReliability(): Promise<SourceReliability[]> {
  *  midnight — toISOString() would shift the day in UTC+N timezones, so the
  *  local getters are used deliberately: the date is a label, not an
  *  instant. pg-mem may hand back the same shape or a bare string. */
-export function isoDay(v: unknown): string {
-  if (v instanceof Date) {
-    const p = (n: number) => String(n).padStart(2, "0");
-    return `${v.getFullYear()}-${p(v.getMonth() + 1)}-${p(v.getDate())}`;
-  }
-  return String(v).slice(0, 10);
-}
+export { isoDay };
 
 export interface MarketSeriesView {
   id: string;
@@ -3102,8 +3096,9 @@ export async function getRadarBoard(): Promise<RadarSeriesRow[]> {
   });
 }
 
-/** 1 lượng (VN tael) = 37.5 g; troy ounce = 31.1034768 g. */
-export const LUONG_PER_TROY_OZ = 37.5 / 31.1034768;
+/** 1 lượng (VN tael) = 37.5 g; troy ounce = 31.1034768 g — canonical
+ *  constant lives in lib/market.ts with the premium machinery. */
+export { LUONG_PER_TROY_OZ };
 
 export interface GoldPremium {
   /** SJC board ask — what a VN buyer actually pays, VND/lượng */

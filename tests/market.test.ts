@@ -12,6 +12,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   compareDailySeries,
+  computePremiumBars,
+  goldPremiumPct,
   isBigintString,
   isCalendarDate,
   logReturn,
@@ -28,9 +30,11 @@ import {
   simpleReturn,
   validateBar,
   type DailyBar,
+  type PremiumLegs,
 } from "../lib/market";
 import {
   applyDailyBars,
+  detectPremiumShift,
   getOrCreateMarketSeries,
   getOrCreateSeries,
   getOrCreateTiingoEodSeries,
@@ -80,7 +84,7 @@ function setupDb() {
     // textually instead
     .replace(
       "'manual_verified', 'other'",
-      "'manual_verified', 'alphavantage', 'tiingo', 'giavang', 'binance', 'er_api', 'other'",
+      "'manual_verified', 'alphavantage', 'tiingo', 'giavang', 'binance', 'er_api', 'derived', 'other'",
     )
     .replace(
       "price_basis IN ('as_traded')",
@@ -99,7 +103,7 @@ function setupDb() {
     // relax them textually the same way as the provider/price-basis checks
     .replace(
       "'ca_declared', 'ca_updated'",
-      "'ca_declared', 'ca_updated', 'market_move'",
+      "'ca_declared', 'ca_updated', 'market_move', 'premium_shift', 'volume_spike'",
     )
     .replace(
       "(point_id IS NULL) <> (action_id IS NULL)",
@@ -1727,4 +1731,201 @@ test("signal outcomes resolve at T+N sessions and expire stale pendings", async 
   );
   const r2 = await resolveSignalOutcomes(pool);
   assert.equal(r2.expired, 1);
+});
+
+test("goldPremiumPct: SJC sell vs world quy đổi — exact legs only", () => {
+  // real 2026-09-27 legs: world = 4286.2 × 25952.1 × 1.2057 ≈ 134.1M/lượng
+  const pct = goldPremiumPct({
+    sjcSell: 144400000,
+    xauUsd: 4286.2,
+    usdVnd: 25952.106627,
+  });
+  assert.ok(pct != null && Math.abs(pct - 7.673) < 0.01);
+  // a zero/NaN leg yields null — never a fabricated premium
+  assert.equal(
+    goldPremiumPct({ sjcSell: 0, xauUsd: 4286, usdVnd: 25952 }),
+    null,
+  );
+  assert.equal(
+    goldPremiumPct({ sjcSell: 144e6, xauUsd: 0, usdVnd: 25952 }),
+    null,
+  );
+  assert.equal(
+    goldPremiumPct({ sjcSell: 144e6, xauUsd: 4286, usdVnd: NaN }),
+    null,
+  );
+});
+
+test("computePremiumBars: invalid legs skipped, point-value bars sorted", () => {
+  const legs = new Map<string, PremiumLegs>([
+    ["2026-09-27", { sjcSell: 144400000, xauUsd: 4286.2, usdVnd: 25952 }],
+    ["2026-09-26", { sjcSell: 144300000, xauUsd: 4290, usdVnd: 25900 }],
+    // a leg that can't compute is dropped, not propagated as 0
+    ["2026-09-28", { sjcSell: 0, xauUsd: 4290, usdVnd: 25900 }],
+  ]);
+  const bars = computePremiumBars(legs);
+  assert.equal(bars.length, 2);
+  assert.equal(bars[0].sessionDate, "2026-09-26");
+  assert.equal(bars[1].sessionDate, "2026-09-27");
+  // point value: all four fields equal, no volume
+  assert.equal(bars[0].open, bars[0].close);
+  assert.equal(bars[0].high, bars[0].close);
+  assert.equal(bars[0].low, bars[0].close);
+  assert.equal(bars[0].volume, null);
+});
+
+test("premium_shift: ≥0.75pt mints once; small moves and reruns don't", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "premium", "PREM");
+  const seriesId = await getOrCreateMarketSeries(pool, {
+    listingId: fx.listingId,
+    listingKey: fx.listingKey,
+    provider: "derived",
+    dataset: "sjc_premium_daily",
+    priceBasis: "quoted",
+  });
+  // %-valued derived series — relative market_move is the wrong lens,
+  // premium_shift (absolute pt) replaces it
+  await pool.query(`UPDATE market_series SET metadata=$1 WHERE id=$2`, [
+    JSON.stringify({ unit: "pct", derived: true, moveDelta: false }),
+    seriesId,
+  ]);
+  const obs = async () =>
+    (
+      await pool.query(
+        `INSERT INTO reference_observations
+           (provider,dataset,record_key,payload,content_hash)
+         VALUES ('derived','sjc_premium_daily',$1,'{}',$1) RETURNING id`,
+        [`obs:${randomUUID()}`],
+      )
+    ).rows[0].id as string;
+  const bar = (d: string, v: string): DailyBar => ({
+    sessionDate: d,
+    open: v,
+    high: v,
+    low: v,
+    close: v,
+    volume: null,
+  });
+  const day = (back: number) =>
+    new Date(Date.now() - back * 86400e3).toISOString().slice(0, 10);
+
+  // 7.00 → 7.40: +0.40pt < 0.75pt floor — no signal
+  await applyDailyBars(
+    pool,
+    seriesId,
+    [bar(day(2), "7.00"), bar(day(1), "7.40")],
+    await obs(),
+  );
+  let r = await detectPremiumShift(pool, seriesId);
+  assert.equal(r.shifted, false);
+
+  // 7.40 → 8.30: +0.90pt — material shift
+  await applyDailyBars(pool, seriesId, [bar(day(0), "8.30")], await obs());
+  r = await detectPremiumShift(pool, seriesId);
+  assert.equal(r.shifted, true);
+  assert.ok(r.deltaPp != null && Math.abs(r.deltaPp - 0.9) < 0.001);
+  const d = await pool.query(
+    `SELECT kind, materiality, summary FROM data_deltas ORDER BY detected_at`,
+  );
+  // exactly one delta: premium_shift only — moveDelta:false suppressed
+  // the +12% relative move from firing market_move too
+  assert.equal(d.rows.length, 1);
+  assert.equal(d.rows[0].kind, "premium_shift");
+  assert.equal(d.rows[0].materiality, "medium"); // 0.90 < 1.5pt high band
+  assert.match(d.rows[0].summary, /premium SJC \+0\.90pt → 8\.30%/);
+  // full scorecard minted with the delta
+  const so = await pool.query(
+    `SELECT horizon_sessions, status FROM signal_outcomes
+      ORDER BY horizon_sessions`,
+  );
+  assert.deepEqual(
+    so.rows.map((x) => [x.horizon_sessions, x.status]),
+    [
+      [1, "pending"],
+      [5, "pending"],
+      [20, "pending"],
+    ],
+  );
+
+  // rerun on the same version — idempotent, no duplicate delta
+  r = await detectPremiumShift(pool, seriesId);
+  assert.equal(r.shifted, false);
+  const d2 = await pool.query(`SELECT count(*) n FROM data_deltas`);
+  assert.equal(Number(d2.rows[0].n), 1);
+});
+
+test("volume_spike: opt-in series fires on ≥mult×median, others quiet", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "volspike", "SPK");
+  const seriesId = await getOrCreateVndirectSeries(
+    pool,
+    fx.listingId,
+    fx.listingKey,
+  );
+  await pool.query(`UPDATE market_series SET metadata=$1 WHERE id=$2`, [
+    JSON.stringify({
+      moveDelta: false,
+      volumeSpikeMult: 3,
+      volumeSpikeLookback: 5,
+    }),
+    seriesId,
+  ]);
+  const obs = async () =>
+    (
+      await pool.query(
+        `INSERT INTO reference_observations
+           (provider,dataset,record_key,payload,content_hash)
+         VALUES ('tiingo','fixture',$1,'{}',$1) RETURNING id`,
+        [`obs:${randomUUID()}`],
+      )
+    ).rows[0].id as string;
+  const bar = (d: string, vol: string): DailyBar => ({
+    sessionDate: d,
+    open: "10",
+    high: "10",
+    low: "10",
+    close: "10",
+    volume: vol,
+  });
+  const day = (back: number) =>
+    new Date(Date.now() - back * 86400e3).toISOString().slice(0, 10);
+  // 6 baseline sessions at vol=100 → median 100
+  for (let i = 6; i >= 1; i--)
+    await applyDailyBars(pool, seriesId, [bar(day(i), "100")], await obs());
+
+  // 2.5× median → under the 3× policy, nothing
+  await applyDailyBars(pool, seriesId, [bar(day(0), "250")], await obs());
+  let d = await pool.query(`SELECT kind FROM data_deltas`);
+  assert.equal(d.rows.length, 0);
+
+  // 3.5× median → spike
+  const d1 = (back: number) =>
+    new Date(Date.now() - back * 86400e3 + 86400e3).toISOString().slice(0, 10);
+  await applyDailyBars(pool, seriesId, [bar(d1(0), "350")], await obs());
+  d = await pool.query(
+    `SELECT kind, materiality, summary FROM data_deltas ORDER BY detected_at`,
+  );
+  assert.equal(d.rows.length, 1);
+  assert.equal(d.rows[0].kind, "volume_spike");
+  assert.equal(d.rows[0].materiality, "medium"); // 3.5 < 2×mult high band
+  assert.match(d.rows[0].summary, /vol ×3\.5/);
+
+  // a series that never opted in stays silent on the same pattern
+  const fx2 = await fixtureListing(pool, "quietvol", "QT", "XNYS");
+  const s2 = await getOrCreateVndirectSeries(
+    pool,
+    fx2.listingId,
+    fx2.listingKey,
+  );
+  for (let i = 6; i >= 1; i--)
+    await applyDailyBars(pool, s2, [bar(day(i), "100")], await obs());
+  await applyDailyBars(pool, s2, [bar(d1(0), "900")], await obs());
+  const dq = await pool.query(
+    `SELECT count(*) n FROM data_deltas d
+       JOIN market_points mp ON mp.id = d.market_point_id
+      WHERE mp.series_id=$1`,
+    [s2],
+  );
+  assert.equal(Number(dq.rows[0].n), 0);
 });
