@@ -20,7 +20,9 @@ import {
 } from "../lib/db/macro";
 import { injectPool } from "../lib/db/pool";
 import {
+  getEntityList,
   getEntityMacroSeries,
+  getInstrumentList,
   getMacroPointHistory,
   getMacroPoints,
   getMacroSeriesList,
@@ -245,6 +247,19 @@ test("macro apply — vintage-aware append-only revisions", async () => {
   assert.equal(String(scoped[0].latestValue), "323.123"); // latest obs_date's current value
   const none = await getEntityMacroSeries(randomUUID());
   assert.equal(none.length, 0);
+
+  // index reads: entity list ranks data-bearing entities first
+  const entList = await getEntityList();
+  const us = entList.find((e) => e.canonicalKey === "country:us");
+  assert.ok(us, "seeded entity must appear");
+  assert.equal(us!.macroCount, 1, "CPIAUCSL is linked to country:us");
+  assert.equal(
+    entList[0].canonicalKey,
+    "country:us",
+    "data-bearing entity sorts first",
+  );
+  const instrList = await getInstrumentList();
+  assert.ok(Array.isArray(instrList));
 
   // vintage roll with identical value → version row still written, but
   // NO delta — provenance churn is not a fact-change

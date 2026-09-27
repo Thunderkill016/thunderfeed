@@ -2220,3 +2220,18 @@ a.change-card .change-card-event {
   background: var(--bg2, rgba(28, 25, 19, 0.07));
   font-weight: 600;
 }
+
+/* source reliability tiers reuse the badge shape */
+.change-badge.strong {
+  color: var(--priv);
+  border-color: var(--priv);
+}
+.change-badge.moderate {
+  color: var(--ink-soft);
+}
+.change-badge.weak {
+  color: var(--accent);
+}
+.change-badge.insufficient {
+  opacity: 0.55;
+}
