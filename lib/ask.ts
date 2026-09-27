@@ -168,6 +168,12 @@ function extractiveAnswer(views: EventView[]): string {
   const top = views[0];
   const confirmed = top.claims.filter((c) => c.state === "confirmed");
   const disputed = top.claims.filter((c) => c.state === "disputed");
+  /* free-text predicates carry no VI label — for text-valued claims the
+   * value IS the claim sentence; snake_case keys are never shown */
+  const claimLabel = (c: (typeof top.claims)[number]): string =>
+    typeof c.value === "string"
+      ? c.value
+      : `${PRED_LABEL_VI[c.predicate] ?? c.predicate.replace(/_/g, " ")} = ${fmtValue(c.value, c.unit)}`;
   const parts: string[] = [];
   parts.push(
     `Sự kiện liên quan nhất: "${top.title}" (${STATE_LABEL[top.status] ?? top.status}, độ tin cậy ${top.confidence.state}).`,
@@ -176,17 +182,14 @@ function extractiveAnswer(views: EventView[]): string {
     parts.push(
       `Dữ kiện đã xác nhận: ${confirmed
         .slice(0, 3)
-        .map(
-          (c) =>
-            `${PRED_LABEL_VI[c.predicate] ?? c.predicate} = ${fmtValue(c.value, c.unit)}`,
-        )
+        .map(claimLabel)
         .join("; ")}.`,
     );
   if (disputed.length)
     parts.push(
       `Đang tranh chấp: ${disputed
         .slice(0, 2)
-        .map((c) => PRED_LABEL_VI[c.predicate] ?? c.predicate)
+        .map(claimLabel)
         .join("; ")} — các nguồn đưa giá trị khác nhau.`,
     );
   if (views.length > 1)

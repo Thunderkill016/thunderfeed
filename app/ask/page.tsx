@@ -97,14 +97,17 @@ export default async function AskPage({
               <table className="macro-table">
                 <thead>
                   <tr>
+                    <th></th>
                     <th>Sự kiện liên quan</th>
                     <th>Trạng thái</th>
                     <th>Độ tin cậy</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {result.events.map((e) => (
+                  {/* answers cite "sự kiện 1, 2…" by this row order */}
+                  {result.events.map((e, i) => (
                     <tr key={e.id}>
+                      <td className="macro-date">{i + 1}</td>
                       <td className="macro-name">
                         <a className="macro-code" href={`/event/${e.id}`}>
                           {e.title}
