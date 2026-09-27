@@ -37,10 +37,12 @@ export interface SeriesSpec {
   dataset: string;
   /** V1 dims — the DB CHECKs enforce the lawful set; 'provider_adjusted'
    *  arrived with 0026 and means provider-supplied adjusted bars, never
-   *  locally computed. */
+   *  locally computed. 'quoted' (0033) marks non-trade quote boards —
+   *  gold bid/ask, FX reference rates — where open=low=bid and
+   *  high=close=ask per the series' metadata quote convention. */
   interval?: "1d";
   sessionType?: "regular";
-  priceBasis?: "as_traded" | "provider_adjusted";
+  priceBasis?: "as_traded" | "provider_adjusted" | "quoted";
 }
 
 /** get-or-create the canonical series for
@@ -158,11 +160,18 @@ export interface ApplyDailyResult {
 
 /** A daily close only becomes a `market_move` delta when the move is
  *  material. VN bands are ±7% (HOSE) / ±10% (HNX) / ±15% (UPCoM); US has
- *  none — 5% is the cross-market "big day" floor. */
+ *  none — 5% is the cross-market "big day" floor. Alt assets carry their
+ *  own regimes (gold ~1.5%, crypto ~8%, FX ~0.5%), declared per series in
+ *  market_series.metadata.materialMovePct — the writer sets it at series
+ *  creation so the threshold is stored policy, not a call-site opinion. */
 const MATERIAL_MOVE_PCT = 5;
+const HIGH_MOVE_PCT = 10;
 /** …and only for fresh sessions: history backfill must not mint a delta
  *  for every big day it walks past. */
 const MOVE_DELTA_LOOKBACK_DAYS = 3;
+/** Horizons (in sessions of the same series) every market_move is scored
+ *  against in signal_outcomes — the public track record. */
+export const SIGNAL_HORIZONS = [1, 5, 20] as const;
 
 export async function applyDailyBars(
   db: Q,
@@ -170,6 +179,20 @@ export async function applyDailyBars(
   bars: DailyBar[],
   observationId: string,
 ): Promise<ApplyDailyResult> {
+  // series-level policy — declared once at series creation
+  const meta = await db.query(
+    `SELECT metadata FROM market_series WHERE id=$1`,
+    [seriesId],
+  );
+  const sMeta = (meta.rows[0]?.metadata ?? {}) as Record<string, unknown>;
+  const materialMovePct =
+    typeof sMeta.materialMovePct === "number" && sMeta.materialMovePct > 0
+      ? sMeta.materialMovePct
+      : MATERIAL_MOVE_PCT;
+  const highMovePct =
+    typeof sMeta.highMovePct === "number" && sMeta.highMovePct > materialMovePct
+      ? sMeta.highMovePct
+      : Math.max(HIGH_MOVE_PCT, materialMovePct * 2);
   const res: ApplyDailyResult = {
     seriesId,
     pointsInserted: 0,
@@ -276,7 +299,7 @@ export async function applyDailyBars(
         [seriesId, bar.sessionDate],
       );
       const pct = dailyMovePct(prev.rows[0]?.close, bar.close);
-      if (pct != null && Math.abs(pct) >= MATERIAL_MOVE_PCT && fresh) {
+      if (pct != null && Math.abs(pct) >= materialMovePct && fresh) {
         if (ticker === undefined) {
           const t = await db.query(
             `SELECT lv.ticker, il.canonical_key FROM market_series ms
@@ -292,21 +315,118 @@ export async function applyDailyBars(
             null;
         }
         const sign = pct > 0 ? "+" : "";
-        await db.query(
+        const delta = await db.query(
           `INSERT INTO data_deltas
              (kind, materiality, summary, market_point_id, market_version_id)
            VALUES ('market_move',$1,$2,$3::uuid,$4::uuid)
-           ON CONFLICT (market_version_id) DO NOTHING`,
+           ON CONFLICT (market_version_id) DO NOTHING
+           RETURNING id`,
           [
-            Math.abs(pct) >= 10 ? "high" : "medium",
+            Math.abs(pct) >= highMovePct ? "high" : "medium",
             `${ticker ?? "series"} ${sign}${pct.toFixed(1)}% phiên ${bar.sessionDate}`,
             pointId,
             versionId,
           ],
         );
+        // the delta is a falsifiable claim — mint its scorecard rows in
+        // the same transaction so no signal ever escapes outcome tracking
+        if (delta.rows.length) {
+          const deltaId = delta.rows[0].id as string;
+          for (const h of SIGNAL_HORIZONS) {
+            await db.query(
+              `INSERT INTO signal_outcomes (delta_id, horizon_sessions)
+               VALUES ($1,$2)
+               ON CONFLICT (delta_id, horizon_sessions) DO NOTHING`,
+              [deltaId, h],
+            );
+          }
+        }
         res.deltas++;
       }
     }
+  }
+  return res;
+}
+
+// ── signal_outcomes ───────────────────────────────────────────────────────
+
+export interface ResolveOutcomesResult {
+  resolved: number;
+  expired: number;
+  stillPending: number;
+  errors: string[];
+}
+
+/** 60 calendar days with no horizon session means the series stopped
+ *  publishing — the outcome can never resolve. */
+const OUTCOME_EXPIRE_DAYS = 60;
+
+/** Resolve pending signal_outcomes against later sessions of the same
+ *  series. Horizons count trading sessions (the series' own session_date
+ *  sequence), never calendar days. A stale pending is marked 'expired',
+ *  never dropped silently — the record keeps the miss auditable. */
+export async function resolveSignalOutcomes(
+  db: Q,
+  now = Date.now(),
+): Promise<ResolveOutcomesResult> {
+  const res: ResolveOutcomesResult = {
+    resolved: 0,
+    expired: 0,
+    stillPending: 0,
+    errors: [],
+  };
+  const pending = await db.query(
+    `SELECT so.id AS outcome_id, so.horizon_sessions, so.created_at,
+            mp.series_id, mp.session_date AS signal_date,
+            sig.close AS signal_close
+       FROM signal_outcomes so
+       JOIN data_deltas d ON d.id = so.delta_id
+       JOIN market_points mp ON mp.id = d.market_point_id
+       JOIN market_point_versions sig ON sig.id = d.market_version_id
+      WHERE so.status = 'pending'
+      ORDER BY mp.session_date`,
+  );
+  for (const row of pending.rows) {
+    const horizon = await db.query(
+      `SELECT mp.id AS point_id, mp.session_date, mpv.id AS version_id,
+              mpv.close
+         FROM market_points mp
+         JOIN market_point_versions mpv ON mpv.id = mp.current_version_id
+        WHERE mp.series_id = $1 AND mp.session_date > $2
+        ORDER BY mp.session_date
+        OFFSET $3 LIMIT 1`,
+      [row.series_id, row.signal_date, row.horizon_sessions - 1],
+    );
+    if (!horizon.rows.length) {
+      const ageDays = (now - Date.parse(row.created_at)) / 86400e3;
+      if (ageDays > OUTCOME_EXPIRE_DAYS) {
+        await db.query(
+          `UPDATE signal_outcomes
+              SET status='expired', resolved_at=now()
+            WHERE id=$1`,
+          [row.outcome_id],
+        );
+        res.expired++;
+      } else res.stillPending++;
+      continue;
+    }
+    const h = horizon.rows[0];
+    const sig = Number(row.signal_close);
+    const out = Number(h.close);
+    if (!Number.isFinite(sig) || !Number.isFinite(out) || sig === 0) {
+      res.errors.push(`${row.outcome_id}: non-numeric close`);
+      continue;
+    }
+    const movePct = ((out - sig) / Math.abs(sig)) * 100;
+    await db.query(
+      `UPDATE signal_outcomes
+          SET status='resolved', outcome_point_id=$2,
+              outcome_version_id=$3, outcome_close=$4, move_pct=$5,
+              resolved_at=now()
+        WHERE id=$1`,
+      [row.outcome_id, h.point_id, h.version_id, h.close, movePct],
+    );
+    res.resolved++;
   }
   return res;
 }

@@ -18,7 +18,10 @@ import {
   marketPointChanged,
   normalizeDecimalString,
   parseAvDaily,
+  parseBinanceKlines,
   parseCsv,
+  parseErApiRate,
+  parseGiavangHistory,
   parseTiingoEod,
   resolveAlphaVantageSymbol,
   resolveTiingoSymbol,
@@ -28,8 +31,11 @@ import {
 } from "../lib/market";
 import {
   applyDailyBars,
+  getOrCreateMarketSeries,
   getOrCreateSeries,
   getOrCreateTiingoEodSeries,
+  getOrCreateVndirectSeries,
+  resolveSignalOutcomes,
 } from "../lib/db/market";
 import { injectPool } from "../lib/db/pool";
 import {
@@ -74,11 +80,20 @@ function setupDb() {
     // textually instead
     .replace(
       "'manual_verified', 'other'",
-      "'manual_verified', 'alphavantage', 'tiingo', 'other'",
+      "'manual_verified', 'alphavantage', 'tiingo', 'giavang', 'binance', 'er_api', 'other'",
     )
     .replace(
       "price_basis IN ('as_traded')",
-      "price_basis IN ('as_traded','provider_adjusted')",
+      "price_basis IN ('as_traded','provider_adjusted','quoted')",
+    )
+    // 0033 widens these CHECKs PG-ONLY — same textual relax for pg-mem
+    .replace(
+      "'bond','note','etf','fund','index','future','option','other'",
+      "'bond','note','etf','fund','index','future','option','commodity','crypto','fx_pair','other'",
+    )
+    .replace(
+      "'equity','fixed_income','fund','index','commodity','derivative','other'",
+      "'equity','fixed_income','fund','index','commodity','derivative','crypto','fx','other'",
     )
     // 0032 delta-feed CHECKs are PG-ONLY; pg-mem keeps the 0028 originals —
     // relax them textually the same way as the provider/price-basis checks
@@ -1471,4 +1486,245 @@ test("market_move delta: material fresh-session moves only", async () => {
     await obs(),
   );
   assert.equal(r3.deltas, 0);
+});
+
+// ── Alt-asset parsers (0033) ─────────────────────────────────────────────
+
+test("giavang: bid/ask collapses to quoted convention, sell=0 → single quote", () => {
+  const r = parseGiavangHistory(
+    {
+      success: true,
+      history: [
+        {
+          date: "2026-09-26",
+          prices: { SJL1L10: { buy: 141400000, sell: 144400000 } },
+        },
+        {
+          date: "2026-09-25",
+          prices: { SJL1L10: { buy: 141000000, sell: 144000000 } },
+        },
+      ],
+    },
+    { code: "SJL1L10" },
+  );
+  assert.equal(r.kind, "series");
+  if (r.kind !== "series") return;
+  assert.equal(r.bars.length, 2);
+  // open=low=buy, high=close=sell — sorted ascending by date
+  assert.deepEqual(
+    {
+      o: r.bars[0].open,
+      l: r.bars[0].low,
+      h: r.bars[0].high,
+      c: r.bars[0].close,
+    },
+    { o: "141000000", l: "141000000", h: "144000000", c: "144000000" },
+  );
+  // day missing our code is skipped, not an error
+  const r2 = parseGiavangHistory(
+    {
+      success: true,
+      history: [{ date: "2026-09-26", prices: { OTHER: { buy: 1, sell: 2 } } }],
+    },
+    { code: "SJL1L10" },
+  );
+  assert.equal(r2.kind, "provider_error");
+  if (r2.kind === "provider_error") assert.equal(r2.errorClass, "empty");
+  // sell=0 collapses to the single quote (world spot)
+  const r3 = parseGiavangHistory(
+    {
+      success: true,
+      history: [
+        { date: "2026-09-26", prices: { XAUUSD: { buy: 4286.2, sell: 0 } } },
+      ],
+    },
+    { code: "XAUUSD" },
+  );
+  assert.equal(r3.kind, "series");
+  if (r3.kind === "series") assert.equal(r3.bars[0].close, "4286.2");
+  // success:false is a provider refusal
+  const r4 = parseGiavangHistory(
+    { success: false, error: "rate_limited" },
+    { code: "X" },
+  );
+  assert.equal(r4.kind, "provider_error");
+  if (r4.kind === "provider_error") assert.equal(r4.errorClass, "api_error");
+});
+
+test("binance klines → OHLCV bars; malformed rows refuse", () => {
+  const r = parseBinanceKlines([
+    [
+      1790467200000,
+      "84433.11",
+      "85117.64",
+      "84257.07",
+      "84893.89",
+      "5437.78",
+      1790553599999,
+    ],
+    [
+      1790380800000,
+      "84100.00",
+      "84473.58",
+      "83798.00",
+      "84433.10",
+      "8058.06",
+      1790467199999,
+    ],
+  ]);
+  assert.equal(r.kind, "series");
+  if (r.kind !== "series") return;
+  assert.equal(r.bars.length, 2);
+  assert.equal(r.bars[0].sessionDate, "2026-09-26");
+  assert.equal(r.bars[0].close, "84433.1"); // decimals canonicalize (trailing zeros trimmed)
+  assert.equal(r.bars[1].sessionDate, "2026-09-27");
+  assert.equal(r.bars[1].volume, "5437");
+  // malformed row → refuse whole payload
+  const bad = parseBinanceKlines([[1790467200000, "x", "1", "1", "1", "1"]]);
+  assert.equal(bad.kind, "provider_error");
+  // empty array → genuine empty window
+  const empty = parseBinanceKlines([]);
+  assert.equal(empty.kind, "provider_error");
+  if (empty.kind === "provider_error") assert.equal(empty.errorClass, "empty");
+});
+
+test("er-api: single point rate → all bar fields equal", () => {
+  const r = parseErApiRate(
+    {
+      result: "success",
+      time_last_update_utc: "Sun, 27 Sep 2026 00:00:01 +0000",
+      rates: { VND: 25952.106627 },
+    },
+    { quote: "VND" },
+  );
+  assert.equal(r.kind, "series");
+  if (r.kind !== "series") return;
+  assert.equal(r.bars.length, 1);
+  assert.equal(r.bars[0].open, "25952.106627");
+  assert.equal(r.bars[0].close, r.bars[0].open);
+  const bad = parseErApiRate({ result: "error" }, { quote: "VND" });
+  assert.equal(bad.kind, "provider_error");
+});
+
+// ── signal_outcomes + per-series thresholds (0033) ───────────────────────
+
+test("series metadata threshold: gold regime mints delta at 1.5%", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "goldboard", "SJC9999", "GOLDVN");
+  const seriesId = await getOrCreateMarketSeries(pool, {
+    listingId: fx.listingId,
+    listingKey: fx.listingKey,
+    provider: "giavang",
+    dataset: "gold_board_daily",
+    priceBasis: "quoted",
+  });
+  await pool.query(`UPDATE market_series SET metadata=$1 WHERE id=$2`, [
+    JSON.stringify({ materialMovePct: 1.5, highMovePct: 3 }),
+    seriesId,
+  ]);
+  const obs = async () =>
+    (
+      await pool.query(
+        `INSERT INTO reference_observations
+           (provider, dataset, record_key, payload, content_hash)
+         VALUES ('giavang','gold_board_daily',$1,'{}',$1) RETURNING id`,
+        [`obs:${randomUUID()}`],
+      )
+    ).rows[0].id as string;
+  const bar = (d: string, buy: string, sell: string): DailyBar => ({
+    sessionDate: d,
+    open: buy,
+    high: sell,
+    low: buy,
+    close: sell,
+    volume: null,
+  });
+  const day = (back: number) =>
+    new Date(Date.now() - back * 86400e3).toISOString().slice(0, 10);
+
+  await applyDailyBars(
+    pool,
+    seriesId,
+    [bar(day(1), "100", "102")],
+    await obs(),
+  );
+  // +1.96% sell-side move — under the 5% equity default, over gold's 1.5%
+  const r = await applyDailyBars(
+    pool,
+    seriesId,
+    [bar(day(0), "102", "104")],
+    await obs(),
+  );
+  assert.equal(r.deltas, 1);
+  const dd = await pool.query(
+    `SELECT summary FROM data_deltas WHERE kind='market_move'`,
+  );
+  assert.match(dd.rows[0].summary, /SJC9999 \+2\.0% phiên/);
+  // the delta mints its own scorecard: 3 pending outcome rows
+  const so = await pool.query(
+    `SELECT horizon_sessions, status FROM signal_outcomes
+      WHERE delta_id = (SELECT id FROM data_deltas WHERE kind='market_move' LIMIT 1)
+      ORDER BY horizon_sessions`,
+  );
+  assert.deepEqual(
+    so.rows.map((x) => [x.horizon_sessions, x.status]),
+    [
+      [1, "pending"],
+      [5, "pending"],
+      [20, "pending"],
+    ],
+  );
+});
+
+test("signal outcomes resolve at T+N sessions and expire stale pendings", async () => {
+  const pool = setupDb();
+  const fx = await fixtureListing(pool, "scorecard", "ABC", "XNGS");
+  const seriesId = await getOrCreateVndirectSeries(
+    pool,
+    fx.listingId,
+    fx.listingKey,
+  );
+  const obs = async () =>
+    (
+      await pool.query(
+        `INSERT INTO reference_observations
+           (provider, dataset, record_key, payload, content_hash)
+         VALUES ('tiingo','fixture',$1,'{}',$1) RETURNING id`,
+        [`obs:${randomUUID()}`],
+      )
+    ).rows[0].id as string;
+  const bar = (d: string, c: string): DailyBar => ({
+    sessionDate: d,
+    open: c,
+    high: c,
+    low: c,
+    close: c,
+    volume: null,
+  });
+  const day = (back: number) =>
+    new Date(Date.now() - back * 86400e3).toISOString().slice(0, 10);
+
+  // signal session: +10% fresh move
+  await applyDailyBars(pool, seriesId, [bar(day(2), "100")], await obs());
+  await applyDailyBars(pool, seriesId, [bar(day(1), "110")], await obs());
+  // T+1 session lands at 115 (+4.5% from signal close)
+  await applyDailyBars(pool, seriesId, [bar(day(0), "115")], await obs());
+  const r = await resolveSignalOutcomes(pool);
+  assert.equal(r.resolved, 1);
+  const so = await pool.query(
+    `SELECT horizon_sessions, status, move_pct FROM signal_outcomes
+      ORDER BY horizon_sessions`,
+  );
+  assert.equal(so.rows[0].status, "resolved");
+  assert.ok(Math.abs(Number(so.rows[0].move_pct) - 4.5455) < 0.01);
+  assert.equal(so.rows[1].status, "pending");
+  assert.equal(so.rows[2].status, "pending");
+
+  // expire check: a pending older than 60 days with no horizon session
+  await pool.query(
+    `UPDATE signal_outcomes SET created_at = now() - interval '61 days'
+      WHERE status='pending' AND horizon_sessions=5`,
+  );
+  const r2 = await resolveSignalOutcomes(pool);
+  assert.equal(r2.expired, 1);
 });

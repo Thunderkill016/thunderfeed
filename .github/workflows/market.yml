@@ -1,12 +1,16 @@
 name: market-refresh
 
-# Daily VN market data — after the 15:00 ICT close (08:00 UTC). Idempotent:
-# the importer dedupes at the version level, so a weekday run only writes
-# the genuinely new sessions (and any provider corrections).
+# Daily market data — after the 15:00 ICT close (08:00 UTC). Idempotent:
+# importers dedupe at the version level, so a run only writes genuinely
+# new sessions (and any provider corrections). vndirect also runs on
+# weekends — a no-op while VN exchanges are closed — because crypto and
+# gold boards publish daily and the workflow has one schedule.
+# Both jobs end with the signal-outcome resolver so every market_move
+# delta gets scored at T+1/T+5/T+20 sessions of its own series.
 
 on:
   schedule:
-    - cron: "0 8 * * 1-5"
+    - cron: "0 8 * * *"
   workflow_dispatch:
 
 jobs:
@@ -24,3 +28,26 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
         run: npx tsx scripts/market/import-vndirect.mts --start "$(date -u -d '-7 days' +%F)"
+      - name: Resolve signal outcomes
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/market/resolve-outcomes.mts
+
+  altassets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Import gold + crypto + FX
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/market/import-altassets.mts
+      - name: Resolve signal outcomes
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/market/resolve-outcomes.mts

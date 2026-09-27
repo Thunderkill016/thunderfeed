@@ -1396,7 +1396,7 @@ export async function getInstrumentList(): Promise<InstrumentListRow[]> {
            FROM market_points mp2
            JOIN market_point_versions mv ON mv.id = mp2.current_version_id
            JOIN market_series ms ON ms.id = mp2.series_id
-          WHERE ms.price_basis = 'as_traded'
+          WHERE ms.price_basis IN ('as_traded','provider_adjusted','quoted')
           ORDER BY ms.listing_id, mp2.session_date DESC
        ) mp ON mp.listing_id = l.id
       ORDER BY fi.canonical_key`,
@@ -3000,4 +3000,214 @@ export async function getMacroRevisions(
       latestVintage: vs[vs.length - 1]?.vintage ?? null,
     };
   });
+}
+
+// ── radar ───────────────────────────────────────────────────────────────────
+// Multi-asset board reads — the signal surface across every market_series
+// (equities, gold boards, crypto, FX). Prices come from the same append-only
+// point/version graph; quoted boards (bid/ask, reference rates) render their
+// close field, which per the 'quoted' convention is the ask/mid.
+
+export interface RadarSeriesRow {
+  seriesId: string;
+  listingKey: string;
+  instrumentKey: string;
+  name: string | null;
+  assetClass: string | null;
+  instrumentType: string;
+  ticker: string | null;
+  venueMic: string | null;
+  currency: string | null;
+  provider: string;
+  priceBasis: string;
+  unit: string | null;
+  sessionDate: string;
+  close: string;
+  prevClose: string | null;
+  dayChangePct: number | null;
+}
+
+/** Latest + previous close per listing — one row per listing, from
+ *  whichever of its series published most recently (a listing may carry
+ *  parallel provider feeds; the board shows the freshest, provenance
+ *  column says who). */
+export async function getRadarBoard(): Promise<RadarSeriesRow[]> {
+  const pool = getPool();
+  const { rows } = await pool.query(
+    `WITH latest AS (
+       SELECT DISTINCT ON (mp.series_id)
+              mp.series_id, mp.session_date, mv.close
+         FROM market_points mp
+         JOIN market_point_versions mv ON mv.id = mp.current_version_id
+        ORDER BY mp.series_id, mp.session_date DESC
+     ), prev AS (
+       SELECT DISTINCT ON (mp.series_id)
+              mp.series_id, mv.close AS prev_close
+         FROM market_points mp
+         JOIN market_point_versions mv ON mv.id = mp.current_version_id
+         JOIN latest l ON l.series_id = mp.series_id
+        WHERE mp.session_date < l.session_date
+        ORDER BY mp.series_id, mp.session_date DESC
+     ), chosen AS (
+       SELECT DISTINCT ON (ms.listing_id)
+              ms.id AS series_id, l.session_date, l.close, p.prev_close
+         FROM market_series ms
+         JOIN latest l ON l.series_id = ms.id
+         LEFT JOIN prev p ON p.series_id = ms.id
+        ORDER BY ms.listing_id, l.session_date DESC, ms.provider
+     )
+     SELECT c.series_id, il.canonical_key AS listing_key,
+            fi.canonical_key AS instrument_key, iv.name, iv.asset_class,
+            fi.instrument_type, lv.ticker, tv.mic AS venue_mic, iv.currency,
+            ms.provider, ms.price_basis::text AS price_basis,
+            ms.metadata->>'unit' AS unit,
+            c.session_date, c.close, c.prev_close
+       FROM chosen c
+       JOIN market_series ms ON ms.id = c.series_id
+       JOIN instrument_listings il ON il.id = ms.listing_id
+       LEFT JOIN listing_versions lv ON lv.id = il.current_version_id
+       LEFT JOIN trading_venues tv ON tv.id = il.venue_id
+       JOIN financial_instruments fi ON fi.id = il.instrument_id
+       LEFT JOIN instrument_versions iv ON iv.id = fi.current_version_id
+      ORDER BY fi.canonical_key`,
+  );
+  return rows.map((r) => {
+    const close = Number(r.close);
+    const prev = r.prev_close == null ? null : Number(r.prev_close);
+    const dayChangePct =
+      prev != null &&
+      Number.isFinite(prev) &&
+      prev !== 0 &&
+      Number.isFinite(close)
+        ? ((close - prev) / Math.abs(prev)) * 100
+        : null;
+    return {
+      seriesId: r.series_id,
+      listingKey: r.listing_key,
+      instrumentKey: r.instrument_key,
+      name: r.name,
+      assetClass: r.asset_class,
+      instrumentType: r.instrument_type,
+      ticker: r.ticker,
+      venueMic: r.venue_mic,
+      currency: r.currency,
+      provider: r.provider,
+      priceBasis: r.price_basis,
+      unit: r.unit,
+      sessionDate: isoDay(r.session_date),
+      close: String(r.close),
+      prevClose: r.prev_close == null ? null : String(r.prev_close),
+      dayChangePct,
+    };
+  });
+}
+
+/** 1 lượng (VN tael) = 37.5 g; troy ounce = 31.1034768 g. */
+export const LUONG_PER_TROY_OZ = 37.5 / 31.1034768;
+
+export interface GoldPremium {
+  /** SJC board ask — what a VN buyer actually pays, VND/lượng */
+  sjcSell: number;
+  sjcBuy: number | null;
+  sjcDate: string;
+  /** World spot, USD/troy oz */
+  xauUsd: number;
+  xauDate: string;
+  usdVnd: number;
+  fxDate: string;
+  /** world price restated in VND/lượng at the reference FX rate */
+  worldVndLuong: number;
+  spreadVnd: number;
+  premiumPct: number;
+}
+
+/** SJC-vs-world premium — the VN gold signal nothing else publishes.
+ *  Returns null when any leg is missing rather than fabricating it. */
+export async function getGoldPremium(): Promise<GoldPremium | null> {
+  const pool = getPool();
+  async function latestClose(provider: string, dataset: string) {
+    const { rows } = await pool.query(
+      `SELECT mv.open, mv.close, mp.session_date
+         FROM market_series ms
+         JOIN market_points mp ON mp.series_id = ms.id
+         JOIN market_point_versions mv ON mv.id = mp.current_version_id
+        WHERE ms.provider = $1 AND ms.dataset = $2
+        ORDER BY mp.session_date DESC LIMIT 1`,
+      [provider, dataset],
+    );
+    if (!rows.length) return null;
+    return {
+      open: rows[0].open == null ? null : Number(rows[0].open),
+      close: Number(rows[0].close),
+      date: isoDay(rows[0].session_date),
+    };
+  }
+  const [sjc, xau, fx] = await Promise.all([
+    latestClose("giavang", "gold_board_daily"),
+    latestClose("giavang", "gold_spot_daily"),
+    latestClose("er_api", "reference_rate_daily"),
+  ]);
+  if (!sjc || !xau || !fx) return null;
+  if (![sjc.close, xau.close, fx.close].every(Number.isFinite)) return null;
+  const worldVndLuong = xau.close * fx.close * LUONG_PER_TROY_OZ;
+  return {
+    sjcSell: sjc.close,
+    sjcBuy: sjc.open,
+    sjcDate: sjc.date,
+    xauUsd: xau.close,
+    xauDate: xau.date,
+    usdVnd: fx.close,
+    fxDate: fx.date,
+    worldVndLuong,
+    spreadVnd: sjc.close - worldVndLuong,
+    premiumPct: (sjc.close / worldVndLuong - 1) * 100,
+  };
+}
+
+export interface SignalOutcomeStat {
+  horizon: number;
+  status: string;
+  count: number;
+  /** avg signed move of resolved outcomes, % */
+  avgMovePct: number | null;
+  /** resolved outcomes that kept moving the way the signal moved */
+  continued: number;
+}
+
+/** The public track record: how market_move signals actually resolved.
+ *  `continued` compares the outcome's move sign to the signal's own
+ *  direction (signal close vs the session before it). */
+export async function getSignalOutcomeStats(): Promise<SignalOutcomeStat[]> {
+  const pool = getPool();
+  const { rows } = await pool.query(
+    `WITH sig AS (
+       SELECT so.id, so.horizon_sessions, so.status, so.move_pct,
+              mv.close AS sig_close,
+              (SELECT mv2.close FROM market_points mp2
+                 JOIN market_point_versions mv2
+                   ON mv2.id = mp2.current_version_id
+                WHERE mp2.series_id = mp.series_id
+                  AND mp2.session_date < mp.session_date
+                ORDER BY mp2.session_date DESC LIMIT 1) AS prev_close
+         FROM signal_outcomes so
+         JOIN data_deltas d ON d.id = so.delta_id
+         JOIN market_points mp ON mp.id = d.market_point_id
+         JOIN market_point_versions mv ON mv.id = d.market_version_id
+     )
+     SELECT horizon_sessions, status, count(*)::int AS n,
+            avg(move_pct) AS avg_move,
+            count(*) FILTER (
+              WHERE sign(move_pct::float8) = sign(sig_close - prev_close)
+            )::int AS continued
+       FROM sig
+      GROUP BY horizon_sessions, status
+      ORDER BY horizon_sessions, status`,
+  );
+  return rows.map((r) => ({
+    horizon: r.horizon_sessions,
+    status: r.status,
+    count: r.n,
+    avgMovePct: r.avg_move == null ? null : Number(r.avg_move),
+    continued: r.continued,
+  }));
 }

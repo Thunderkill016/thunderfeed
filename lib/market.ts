@@ -813,3 +813,200 @@ export function parseVndirectHistory(
   bars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
   return { kind: "series", bars, meta: {} };
 }
+
+// ── Alt-asset providers ──────────────────────────────────────────────────
+
+export type GiavangErrorClass = "empty" | "unexpected_schema" | "api_error";
+
+export type GiavangResult =
+  | { kind: "series"; bars: DailyBar[] }
+  | { kind: "provider_error"; errorClass: GiavangErrorClass; detail: string };
+
+/** giavang.now /api/prices?type=<code>&days=N → daily quote bars.
+ *  Gold boards quote a bid/ask pair, not trades — the 'quoted' convention
+ *  keeps both: open=low=buy, high=close=sell. When the board only gives a
+ *  single price (world spot sell=0) all four collapse to that quote.
+ *  success:false is a provider refusal; a missing price map is an empty
+ *  window, not a schema break. */
+export function parseGiavangHistory(
+  payload: unknown,
+  opts: { code: string },
+): GiavangResult {
+  if (payload == null || typeof payload !== "object")
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: "payload is not an object",
+    };
+  const p = payload as Record<string, unknown>;
+  if (p.success === false)
+    return {
+      kind: "provider_error",
+      errorClass: "api_error",
+      detail: `provider error: ${String(p.error ?? p.message ?? "unknown")}`,
+    };
+  if (!Array.isArray(p.history))
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: `missing 'history' array — keys: ${Object.keys(p).join(",")}`,
+    };
+  const bars: DailyBar[] = [];
+  for (const [i, day] of (p.history as unknown[]).entries()) {
+    const d = day as Record<string, unknown>;
+    const prices = d?.prices as Record<string, unknown> | undefined;
+    const quote = prices?.[opts.code] as Record<string, unknown> | undefined;
+    if (typeof d?.date !== "string" || !isCalendarDate(d.date))
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `history[${i}] bad date: ${JSON.stringify(d?.date)}`,
+      };
+    if (quote == null) continue; // day has other products — not ours
+    const buy = normalizeDecimalString(quote.buy);
+    const sell = normalizeDecimalString(quote.sell);
+    if (buy == null)
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `history[${i}] non-decimal buy: ${JSON.stringify(quote.buy)}`,
+      };
+    // sell=0 means "no ask quoted" (world spot) — collapse to buy
+    const ask = sell == null || compareDecimals(sell, "0") <= 0 ? buy : sell;
+    bars.push({
+      sessionDate: d.date,
+      open: buy,
+      high: ask,
+      low: buy,
+      close: ask,
+      volume: null,
+    });
+  }
+  if (!bars.length)
+    return {
+      kind: "provider_error",
+      errorClass: "empty",
+      detail: `no days contain '${opts.code}'`,
+    };
+  bars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
+  return { kind: "series", bars };
+}
+
+export type BinanceErrorClass = "empty" | "unexpected_schema";
+
+export type BinanceResult =
+  | { kind: "series"; bars: DailyBar[] }
+  | { kind: "provider_error"; errorClass: BinanceErrorClass; detail: string };
+
+/** Binance GET /api/v3/klines — real traded OHLCV, 'as_traded'.
+ *  Row: [openTime, open, high, low, close, volume, closeTime, ...].
+ *  openTime is UTC-midnight ms for 1d klines; sessionDate derives from it.
+ *  A live (still-open) candle is rejected upstream by the caller passing
+ *  an `end` bound — here we only validate shape. */
+export function parseBinanceKlines(payload: unknown): BinanceResult {
+  if (!Array.isArray(payload))
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: "payload is not an array",
+    };
+  if (!payload.length)
+    return {
+      kind: "provider_error",
+      errorClass: "empty",
+      detail: "zero klines",
+    };
+  const bars: DailyBar[] = [];
+  for (const [i, row] of payload.entries()) {
+    if (!Array.isArray(row) || row.length < 6)
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `klines[${i}] malformed: ${JSON.stringify(row).slice(0, 120)}`,
+      };
+    const openTime = row[0];
+    if (typeof openTime !== "number" || !Number.isFinite(openTime))
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `klines[${i}] bad openTime: ${JSON.stringify(openTime)}`,
+      };
+    const open = normalizeDecimalString(row[1]);
+    const high = normalizeDecimalString(row[2]);
+    const low = normalizeDecimalString(row[3]);
+    const close = normalizeDecimalString(row[4]);
+    if (open == null || high == null || low == null || close == null)
+      return {
+        kind: "provider_error",
+        errorClass: "unexpected_schema",
+        detail: `klines[${i}] non-decimal OHLC`,
+      };
+    const vol = Number(row[5]);
+    bars.push({
+      sessionDate: new Date(openTime).toISOString().slice(0, 10),
+      open,
+      high,
+      low,
+      close,
+      volume: Number.isFinite(vol) ? String(Math.trunc(vol)) : null,
+    });
+  }
+  bars.sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
+  return { kind: "series", bars };
+}
+
+/** open.er-api.com/v6/latest/<base> — single reference rate per day.
+ *  A reference rate is a point estimate, not a traded range: all four bar
+ *  fields carry the same value. result:'error' is a provider refusal. */
+export function parseErApiRate(
+  payload: unknown,
+  opts: { quote: string },
+): GiavangResult {
+  if (payload == null || typeof payload !== "object")
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: "payload is not an object",
+    };
+  const p = payload as Record<string, unknown>;
+  if (p.result !== "success")
+    return {
+      kind: "provider_error",
+      errorClass: "api_error",
+      detail: `provider result: ${String(p.result ?? "missing")}`,
+    };
+  const rates = p.rates as Record<string, unknown> | undefined;
+  const rate = normalizeDecimalString(rates?.[opts.quote]);
+  const dateRaw = p.time_last_update_utc ?? p.time_last_update_unix;
+  if (rate == null || dateRaw == null)
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: `missing rates.${opts.quote} or timestamp`,
+    };
+  // er-api stamps "Mon, 28 Sep 2026 00:00:01 +0000" (RFC) or a unix number
+  const sessionDate = isCalendarDate(String(dateRaw).slice(0, 10))
+    ? String(dateRaw).slice(0, 10)
+    : new Date(typeof dateRaw === "number" ? dateRaw * 1000 : String(dateRaw))
+        .toISOString()
+        .slice(0, 10);
+  if (!isCalendarDate(sessionDate))
+    return {
+      kind: "provider_error",
+      errorClass: "unexpected_schema",
+      detail: `unparseable rate date: ${JSON.stringify(dateRaw)}`,
+    };
+  return {
+    kind: "series",
+    bars: [
+      {
+        sessionDate,
+        open: rate,
+        high: rate,
+        low: rate,
+        close: rate,
+        volume: null,
+      },
+    ],
+  };
+}
