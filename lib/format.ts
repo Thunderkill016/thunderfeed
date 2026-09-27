@@ -95,6 +95,20 @@ export const fmtClaimValue = (v: unknown, unit?: string | null): string => {
   return JSON.stringify(v);
 };
 
+/** Display label for a data-delta summary — strips the raw series code and
+ *  marks future observation periods as forecasts so "kỳ 2031-01 = 5.4"
+ *  doesn't read like a current print. */
+export function deltaSummaryLabel(
+  summary: string,
+  seriesCode?: string | null,
+): string {
+  const text = seriesCode ? summary.replace(seriesCode, "").trim() : summary;
+  const year = Number(text.match(/kỳ (\d{4})/)?.[1] ?? 0);
+  return year > new Date().getFullYear()
+    ? text.replace("kỳ", "dự báo kỳ")
+    : text;
+}
+
 interface ClaimLike {
   predicate: string;
   label: string;

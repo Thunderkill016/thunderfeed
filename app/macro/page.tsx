@@ -7,6 +7,7 @@ import {
   getMacroSeriesList,
 } from "../../lib/db/read";
 import { seriesMeta } from "../../lib/seriesLabels";
+import { deltaSummaryLabel } from "../../lib/format";
 
 /* force-dynamic: the board is a live read of the DB — a build-time
  * prerender would freeze whatever state happened to exist (or crash the
@@ -184,17 +185,22 @@ export default async function MacroPage() {
                   <td className="macro-name">
                     {d.seriesCode ? (
                       <a href={`/macro/${d.seriesCode}`} className="macro-code">
-                        {d.summary}
+                        {[
+                          seriesMeta(d.seriesCode)?.vi,
+                          deltaSummaryLabel(d.summary, d.seriesCode),
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                       </a>
                     ) : d.instrumentKey ? (
                       <a
                         href={`/instrument/${d.instrumentKey.split(":").join("/")}`}
                         className="macro-code"
                       >
-                        {d.summary}
+                        {deltaSummaryLabel(d.summary)}
                       </a>
                     ) : (
-                      d.summary
+                      deltaSummaryLabel(d.summary)
                     )}
                   </td>
                   <td className="macro-date">

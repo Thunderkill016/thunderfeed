@@ -1,0 +1,631 @@
+{
+  "generatedAt": "2026-09-27T07:03:46.252Z",
+  "runs": [
+    {
+      "series": "VNM:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:LUR",
+      "obs": 42,
+      "points": 42,
+      "versions": 42,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:GGXWDG_NGDP",
+      "obs": 32,
+      "points": 32,
+      "versions": 32,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "VNM:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:LUR",
+      "obs": 42,
+      "points": 42,
+      "versions": 42,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:GGXWDG_NGDP",
+      "obs": 36,
+      "points": 36,
+      "versions": 36,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "THA:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:LUR",
+      "obs": 48,
+      "points": 48,
+      "versions": 48,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:GGXWDG_NGDP",
+      "obs": 32,
+      "points": 32,
+      "versions": 32,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "IDN:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:LUR",
+      "obs": 47,
+      "points": 47,
+      "versions": 47,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:GGXWDG_NGDP",
+      "obs": 42,
+      "points": 42,
+      "versions": 42,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "MYS:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:LUR",
+      "obs": 47,
+      "points": 47,
+      "versions": 47,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:GGXWDG_NGDP",
+      "obs": 39,
+      "points": 39,
+      "versions": 39,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "PHL:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:LUR",
+      "obs": 14,
+      "points": 14,
+      "versions": 14,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:GGXWDG_NGDP",
+      "obs": 41,
+      "points": 41,
+      "versions": 41,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "IND:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:PCPIPCH",
+      "obs": 51,
+      "points": 51,
+      "versions": 51,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:LUR",
+      "obs": 15,
+      "points": 15,
+      "versions": 15,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:BCA_NGDPD",
+      "obs": 35,
+      "points": 35,
+      "versions": 35,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:GGXWDG_NGDP",
+      "obs": 37,
+      "points": 37,
+      "versions": 37,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "CHN:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:LUR",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:GGXWDG_NGDP",
+      "obs": 42,
+      "points": 42,
+      "versions": 42,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "KOR:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:LUR",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:GGXWDG_NGDP",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "JPN:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:LUR",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:GGXWDG_NGDP",
+      "obs": 42,
+      "points": 42,
+      "versions": 42,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "SGP:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "USA:NGDP_RPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "USA:PCPIPCH",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "USA:LUR",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "USA:BCA_NGDPD",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    },
+    {
+      "series": "USA:GGXWDG_NGDP",
+      "obs": 31,
+      "points": 31,
+      "versions": 31,
+      "unchanged": 0
+    },
+    {
+      "series": "USA:NID_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "USA:NGSD_NGDP",
+      "obs": 0,
+      "points": 0,
+      "versions": 0,
+      "unchanged": 0
+    },
+    {
+      "series": "USA:NGDPDPC",
+      "obs": 52,
+      "points": 52,
+      "versions": 52,
+      "unchanged": 0
+    }
+  ],
+  "metrics": {
+    "provider": "imf",
+    "requested": 88,
+    "successful": 88,
+    "providerErrors": 0,
+    "totalPoints": 3159,
+    "totalVersions": 3159,
+    "totalUnchanged": 0,
+    "errors": []
+  }
+}

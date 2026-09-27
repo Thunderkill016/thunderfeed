@@ -90,9 +90,17 @@ export default function EventIntel({ view }: { view: EventView }) {
           {view.claims.map((c) => (
             <li key={c.id}>
               <div className="claim-row">
-                <span className="claim-pred">
-                  {PRED_LABEL_VI[c.predicate] ?? c.predicate}
-                </span>
+                {/* Free-text predicates (LLM fact claims) carry no VI label —
+                    for text-valued claims the value IS the claim, so the raw
+                    snake_case key would just be noise. Numeric claims still
+                    need a head, humanized when unmapped. */}
+                {(PRED_LABEL_VI[c.predicate] ??
+                  (typeof c.value !== "string" ? c.predicate : null)) && (
+                  <span className="claim-pred">
+                    {PRED_LABEL_VI[c.predicate] ??
+                      c.predicate.replace(/_/g, " ")}
+                  </span>
+                )}
                 <strong className="claim-val">
                   {fmtValue(c.value, c.unit)}
                 </strong>
@@ -241,6 +249,7 @@ function VersionRow({
       </span>
       <span className="change-time">
         {new Date(version.effectiveAt).toLocaleString("vi-VN", {
+          timeZone: "Asia/Ho_Chi_Minh",
           day: "2-digit",
           month: "2-digit",
           hour: "2-digit",

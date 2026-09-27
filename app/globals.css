@@ -1372,6 +1372,29 @@ button {
   .masthead {
     padding: 12px 16px;
   }
+  /* nav can't shrink to fit — drop it to its own row and let it scroll */
+  .masthead-left {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .site-nav {
+    display: flex;
+    flex-basis: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 2px 0;
+  }
+  .site-nav::-webkit-scrollbar {
+    display: none;
+  }
+  /* data tables can't compress their columns — let the group scroll */
+  .macro-group {
+    overflow-x: auto;
+  }
+  .macro-table {
+    min-width: 560px;
+  }
   .wordmark {
     font-size: 21px;
   }

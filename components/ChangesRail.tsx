@@ -11,6 +11,7 @@ import {
   type EventChangeGroup,
 } from "../lib/changes";
 import { seriesMeta } from "../lib/seriesLabels";
+import { deltaSummaryLabel } from "../lib/format";
 
 interface FeedChange extends ChangeView {
   eventId: string;
@@ -131,6 +132,10 @@ export default function ChangesRail({
           const mat = materialityName(item.rank);
           if (item.t === "delta") {
             const href = deltaHref(item.d);
+            const summaryText = deltaSummaryLabel(
+              item.d.summary,
+              item.d.seriesCode,
+            );
             return (
               <a
                 key={item.d.id}
@@ -144,11 +149,7 @@ export default function ChangesRail({
                   {(item.d.seriesCode && seriesMeta(item.d.seriesCode)?.vi) ??
                     item.d.summary}
                 </span>
-                <span className="change-card-summary">
-                  {item.d.seriesCode
-                    ? item.d.summary.replace(item.d.seriesCode, "").trim()
-                    : item.d.summary}
-                </span>
+                <span className="change-card-summary">{summaryText}</span>
               </a>
             );
           }
