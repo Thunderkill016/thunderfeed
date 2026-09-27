@@ -85,7 +85,7 @@ if (leaked.length) {
   );
   process.exit(1);
 }
-await admin.query(`DROP ROLE smoke_anon`);
+// no role cleanup — the CI service container is discarded after the job
 await admin.end();
 console.log(
   `smoke OK — ${tables.length} tables, zero readable by unprivileged role`,
