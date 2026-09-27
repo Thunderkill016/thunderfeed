@@ -6,7 +6,14 @@ import {
   titleKey,
   titleShingles,
 } from "../lib/enrich";
-import { decideAdjudication } from "../lib/db/adjudicate";
+import {
+  computeClaimState,
+  latestVotes,
+  positionsFromVotes,
+  posKey,
+  rankWinner,
+  type Vote,
+} from "../lib/db/positions";
 import { prominentEntities } from "../lib/radar";
 
 test("titleKey: outlet suffixes stripped, diacritics folded", () => {
@@ -94,55 +101,133 @@ test("prominentEntities: missing entities field falls back to title", () => {
   assert.ok(keys.includes("federal_reserve"));
 });
 
-const base = {
-  state: "reported",
-  independentSupports: 0,
-  independentContradicts: 0,
-  hasCorrects: false,
-  observedAtMs: Date.now(),
-  nowMs: Date.now(),
-};
+/* ---- shared claim-truth engine (ingest + batch adjudication) ---- */
 
-test("decideAdjudication: rule table", () => {
-  // ≥2 independent supports → supported
-  assert.equal(
-    decideAdjudication({ ...base, independentSupports: 2 })?.to,
-    "supported",
+const vote = (v: Partial<Vote>): Vote => ({
+  voter: "src:a",
+  pos: posKey(5, "%"),
+  valueJson: "5",
+  unit: "%",
+  versionNo: 1,
+  state: "reported",
+  primary: false,
+  at: 1000,
+  ...v,
+});
+
+function build(votes: Vote[]) {
+  // one version per distinct position the votes stand on
+  const versions = [...new Map(votes.map((v) => [v.pos, v])).values()].map(
+    (v, i) => ({
+      id: `v${i + 1}`,
+      version_no: i + 1,
+      pos: v.pos,
+      valueJson: v.valueJson,
+    }),
   );
-  // wire copies collapse — 5 docs but 1 origin stays reported
-  assert.equal(decideAdjudication({ ...base, independentSupports: 1 }), null);
-  // contradiction without support → disputed
+  return positionsFromVotes(latestVotes(votes), versions);
+}
+
+test("claim truth: ≥2 independent origins on one position → supported", () => {
+  const votes = [
+    vote({ voter: "src:a", at: 1000 }),
+    vote({ voter: "src:b", at: 2000 }),
+  ];
+  const positions = [...build(votes).values()];
+  assert.equal(computeClaimState({ positions }), "supported");
+});
+
+test("claim truth: wire reprints collapse — 3 docs, 1 origin → reported", () => {
+  // adjudicator resolves all three docs to the same lineage-root source
+  const votes = [
+    vote({ voter: "src:wire", at: 1000 }),
+    vote({ voter: "src:wire", at: 2000 }),
+    vote({ voter: "src:wire", at: 3000 }),
+  ];
+  const positions = [...build(votes).values()];
+  assert.equal(computeClaimState({ positions }), "reported");
+});
+
+test("claim truth: two live positions → disputed; source moves retract support", () => {
+  // src:a asserted 5% then revised to 6% — its old position must empty
+  const p5 = posKey(5, "%");
+  const p6 = posKey(6, "%");
+  const votes: Vote[] = [
+    vote({ voter: "src:a", pos: p5, valueJson: "5", at: 1000 }),
+    vote({ voter: "src:a", pos: p6, valueJson: "6", at: 3000 }), // revision
+    vote({ voter: "src:b", pos: p5, valueJson: "5", at: 2000 }),
+  ];
+  const versions = [
+    { id: "v1", version_no: 1, pos: p5, valueJson: "5" },
+    { id: "v2", version_no: 2, pos: p6, valueJson: "6" },
+  ];
+  const positions = [
+    ...positionsFromVotes(latestVotes(votes), versions).values(),
+  ];
+  const live = positions.filter((p) => p.origins.size > 0);
+  assert.equal(live.length, 2); // a→6, b→5
+  assert.equal(computeClaimState({ positions }), "disputed");
+});
+
+test("claim truth: primary origin wins → confirmed", () => {
+  const votes = [
+    vote({ voter: "src:a", at: 1000 }),
+    vote({ voter: "src:fed", at: 2000, primary: true }),
+  ];
+  const positions = [...build(votes).values()];
+  assert.equal(computeClaimState({ positions }), "confirmed");
+});
+
+test("claim truth: stale assertion never moves the live vote", () => {
+  // evidence arriving late with an OLDER timestamp must not re-position
+  const p5 = posKey(5, "%");
+  const p6 = posKey(6, "%");
+  const votes: Vote[] = [
+    vote({ voter: "src:a", pos: p6, valueJson: "6", at: 3000 }),
+    vote({ voter: "src:a", pos: p5, valueJson: "5", at: 1000 }), // stale
+  ];
+  const latest = latestVotes(votes);
+  assert.equal(latest.get("src:a")!.pos, p6);
+});
+
+test("claim truth: single terminal position keeps corrected/retracted", () => {
+  const votes = [vote({ voter: "src:a" })];
+  const positions = [...build(votes).values()];
   assert.equal(
-    decideAdjudication({ ...base, independentContradicts: 1 })?.to,
-    "disputed",
+    computeClaimState({ positions, winnerVersionState: "corrected" }),
+    "corrected",
   );
-  // support AND contradiction → unresolved
   assert.equal(
-    decideAdjudication({
-      ...base,
-      independentSupports: 1,
-      independentContradicts: 1,
-    })?.to,
-    "unresolved",
+    computeClaimState({ positions, winnerVersionState: "retracted" }),
+    "retracted",
   );
-  // aged single-source → unresolved
-  const old = Date.now() - 6 * 86_400_000;
-  assert.equal(
-    decideAdjudication({
-      ...base,
-      independentSupports: 1,
-      observedAtMs: old,
-    })?.to,
-    "unresolved",
-  );
-  // terminal states never touched
-  assert.equal(
-    decideAdjudication({ ...base, state: "disputed", independentSupports: 5 }),
-    null,
-  );
-  // corrects stance → left to the version chain
-  assert.equal(
-    decideAdjudication({ ...base, hasCorrects: true, independentSupports: 3 }),
-    null,
-  );
+});
+
+test("claim truth: no age rule — old single-origin stays reported", () => {
+  // the R6 'aged 5 days → unresolved' rule is gone: age is metadata
+  const votes = [vote({ voter: "src:a", at: Date.now() - 30 * 86_400_000 })];
+  const positions = [...build(votes).values()];
+  assert.equal(computeClaimState({ positions }), "reported");
+});
+
+test("rankWinner: deterministic, primary beats crowd", () => {
+  const votes = [
+    vote({ voter: "src:a", pos: posKey(5, "%"), valueJson: "5" }),
+    vote({ voter: "src:b", pos: posKey(5, "%"), valueJson: "5" }),
+    vote({
+      voter: "src:fed",
+      pos: posKey(6, "%"),
+      valueJson: "6",
+      primary: true,
+    }),
+  ];
+  const versions = [
+    { id: "v1", version_no: 1, pos: posKey(5, "%"), valueJson: "5" },
+    { id: "v2", version_no: 2, pos: posKey(6, "%"), valueJson: "6" },
+  ];
+  const positions = [
+    ...positionsFromVotes(latestVotes(votes), versions).values(),
+  ];
+  const w = rankWinner(positions)!;
+  assert.equal(w.valueJson, "6"); // authority wins even at 1 origin vs 2
 });

@@ -111,17 +111,21 @@ export function clusterByTitles(docs: TitledDoc[]): Map<string, string> {
 
 export type EntityRole = "subject" | "actor" | "mention";
 
-export interface EntityProminence {
-  role: EntityRole;
-  prominence: number;
-}
-
 /** Slug present in ≥40% of an event's evidence headlines is an actor the
  *  coverage keeps returning to; present in the current event title it is
  *  the subject; signature-only (never in any headline) is a mention. */
 const ACTOR_DOC_SHARE = 0.4;
 const MENTION_DOC_SHARE = 0.1;
 const CLAIM_SUBJECT_BOOST = 0.15;
+
+export interface EntityProminence {
+  role: "subject" | "actor" | "mention";
+  prominence: number;
+  /** provenance — why this score stands (persisted as
+   *  event_entities.prominence_evidence so a derived assessment is never
+   *  an unexplained scalar) */
+  evidence: { inTitle: boolean; docShare: number; claimSubject: boolean };
+}
 
 export function prominenceFor(opts: {
   slug: string;
@@ -140,26 +144,38 @@ export function prominenceFor(opts: {
   }
   const share = docTitles.length ? docHits / docTitles.length : 0;
   const key = canonicalKeyForSlug(slug);
-  const claimBoost =
-    key && claimSubjectKeys?.has(key) ? CLAIM_SUBJECT_BOOST : 0;
+  const claimSubject = !!(key && claimSubjectKeys?.has(key));
+  const claimBoost = claimSubject ? CLAIM_SUBJECT_BOOST : 0;
+  const evidence = {
+    inTitle,
+    docShare: Math.round(share * 1000) / 1000,
+    claimSubject,
+  };
 
   if (inTitle) {
     return {
       role: "subject",
       prominence: Math.min(1, 0.9 + claimBoost),
+      evidence,
     };
   }
   if (share >= ACTOR_DOC_SHARE) {
     return {
       role: "actor",
       prominence: Math.min(1, 0.7 + claimBoost),
+      evidence,
     };
   }
   if (docHits > 0) {
     return {
       role: "mention",
       prominence: Math.min(0.35, 0.15 + share + claimBoost),
+      evidence,
     };
   }
-  return { role: "mention", prominence: Math.min(0.3, 0.15 + claimBoost) };
+  return {
+    role: "mention",
+    prominence: Math.min(0.3, 0.15 + claimBoost),
+    evidence,
+  };
 }

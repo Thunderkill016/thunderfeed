@@ -1,7 +1,13 @@
 /* Radar Quality Lab — score buildRadarFeed() rankings against the labeled
  * corpus in tests/fixtures/radar-corpus.json.
  *
- *   npx tsx scripts/radar/bench.mts
+ *   npx tsx scripts/radar/bench.mts [--corpus path]
+ *
+ *   default corpus: tests/fixtures/radar-corpus.json (DEV — its labels
+ *   have shaped past tuning). HOLDOUT files come from
+ *   scripts/radar/holdout-dump.mts with q='unlabeled': they rank like
+ *   any item but are excluded from P@K/noise denominators, and the top
+ *   unlabeled items print for blind human review.
  *
  * Metrics per persona:
  *   P@5, P@10      — fraction of top-k that is useful|must_see
@@ -23,16 +29,20 @@ import type { EventListItem } from "../../lib/db/read.ts";
 interface CorpusItem {
   ref: string;
   kind: "delta" | "event";
-  q: "must_see" | "useful" | "background" | "noise";
+  q: "must_see" | "useful" | "background" | "noise" | "unlabeled";
   relevantTo: string[];
   data: Record<string, unknown>;
 }
-const corpus = JSON.parse(
-  readFileSync(
-    new URL("../../tests/fixtures/radar-corpus.json", import.meta.url),
-    "utf8",
-  ),
-) as { dumpedAt: string; items: CorpusItem[] };
+const corpusIdx = process.argv.indexOf("--corpus");
+const corpusPath =
+  corpusIdx >= 0
+    ? process.argv[corpusIdx + 1]
+    : new URL("../../tests/fixtures/radar-corpus.json", import.meta.url)
+        .pathname;
+const corpus = JSON.parse(readFileSync(corpusPath, "utf8")) as {
+  dumpedAt: string;
+  items: CorpusItem[];
+};
 
 const PERSONAS: Record<string, { label: string; watch: WatchList }> = {
   A: {
@@ -171,16 +181,24 @@ function evaluate(persona: string, watch: WatchList): Metrics {
     );
   const laneRecall =
     mustSeeItems.filter(laneCovered).length / Math.max(1, mustSeeItems.length);
+  /* unlabeled (holdout) items still occupy feed slots but can't be
+   * scored — denominators count labeled items only, so a holdout file
+   * never fabricates precision */
+  const labeled5 = top5.filter((i) => q(i.id) !== "unlabeled");
+  const labeled10 = top10.filter((i) => q(i.id) !== "unlabeled");
   return {
     laneRecall,
-    p5: top5.filter((i) => GOOD.has(q(i.id))).length / Math.max(1, top5.length),
+    p5:
+      labeled5.filter((i) => GOOD.has(q(i.id))).length /
+      Math.max(1, labeled5.length),
     p10:
-      top10.filter((i) => GOOD.has(q(i.id))).length / Math.max(1, top10.length),
+      labeled10.filter((i) => GOOD.has(q(i.id))).length /
+      Math.max(1, labeled10.length),
     recall: recallCapped,
     recallAll,
     noiseAt10:
-      top10.filter((i) => q(i.id) === "noise").length /
-      Math.max(1, top10.length),
+      labeled10.filter((i) => q(i.id) === "noise").length /
+      Math.max(1, labeled10.length),
     dupRate: feed.length ? dups / feed.length : 0,
     relHits: top10.filter((i) => rel(i.id)).length,
     feedSize: feed.length,
@@ -214,6 +232,23 @@ for (const [k, p] of Object.entries(PERSONAS)) {
     console.log(
       `${String(n + 1).padStart(2)}. [${String(i.score).padStart(5)}] ` +
         `${(c?.q ?? "?").padEnd(10)} ${i.badge.padEnd(12)} ${i.title.slice(0, 80)}`,
+    );
+  });
+}
+
+/* blind review: unlabeled holdout items the radar promotes — label them
+ * by judgment, THEN rerun metrics. Never tune against hidden labels. */
+for (const [k, p] of Object.entries(PERSONAS)) {
+  const feed = buildRadarFeed(deltas, events, p.watch, nowMs, 22, null);
+  const blind = feed
+    .filter((i) => byId.get(i.id)?.q === "unlabeled")
+    .slice(0, 10);
+  if (!blind.length) continue;
+  console.log(`\n=== persona ${k}: unlabeled top-10 (review blind) ===`);
+  blind.forEach((i) => {
+    const c = byId.get(i.id);
+    console.log(
+      `  ${c?.ref ?? i.id.slice(0, 8)} [${String(i.score).padStart(5)}] ${i.title.slice(0, 78)}`,
     );
   });
 }

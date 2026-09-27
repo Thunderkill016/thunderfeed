@@ -304,7 +304,10 @@
         "ticker": "BTCUSDT"
       },
       "q": "must_see",
-      "relevantTo": ["A", "C"]
+      "relevantTo": [
+        "A",
+        "C"
+      ]
     },
     {
       "ref": "S02",
@@ -323,7 +326,9 @@
         "ticker": "ETHUSDT"
       },
       "q": "must_see",
-      "relevantTo": ["C"]
+      "relevantTo": [
+        "C"
+      ]
     },
     {
       "ref": "S03",
@@ -342,7 +347,10 @@
         "ticker": "SJC-PREM"
       },
       "q": "must_see",
-      "relevantTo": ["A", "B"]
+      "relevantTo": [
+        "A",
+        "B"
+      ]
     },
     {
       "ref": "S04",
@@ -361,7 +369,9 @@
         "ticker": "USDT-GAP"
       },
       "q": "must_see",
-      "relevantTo": ["B"]
+      "relevantTo": [
+        "B"
+      ]
     },
     {
       "ref": "S05",
@@ -380,7 +390,10 @@
         "ticker": "USDVND"
       },
       "q": "must_see",
-      "relevantTo": ["A", "B"]
+      "relevantTo": [
+        "A",
+        "B"
+      ]
     },
     {
       "ref": "S06",
@@ -399,7 +412,9 @@
         "ticker": "VNM"
       },
       "q": "must_see",
-      "relevantTo": ["A"]
+      "relevantTo": [
+        "A"
+      ]
     },
     {
       "ref": "S07",
@@ -418,7 +433,9 @@
         "ticker": "VNINDEX"
       },
       "q": "must_see",
-      "relevantTo": ["A"]
+      "relevantTo": [
+        "A"
+      ]
     },
     {
       "ref": "S08",
@@ -437,7 +454,9 @@
         "ticker": "SOLUSDT"
       },
       "q": "useful",
-      "relevantTo": ["C"]
+      "relevantTo": [
+        "C"
+      ]
     },
     {
       "ref": "E000",
@@ -450,7 +469,7 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T11:22:43.092Z",
-        "lastSeenAt": "2026-09-27T18:54:04.688Z",
+        "lastSeenAt": "2026-09-27T20:12:48.759Z",
         "claimCount": 5,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -460,14 +479,20 @@
         "lastMaterialAt": "2026-09-27T12:40:49.490Z",
         "independentSourceCount": 21,
         "primaryDocCount": 5,
-        "entities": []
+        "entities": [],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 13,
+        "derivedDocuments": 6
       }
     },
     {
       "ref": "E001",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e340-0ced-76ed-a1bb-e6493b576f90",
         "title": "Bộ trưởng Israel kêu gọi sáp nhập một phần Gaza, tấn công Bờ Tây",
@@ -500,43 +525,39 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 7,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 2,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E002",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0dc10-2dd3-7268-9926-68bc0251d560",
         "title": "Cơ trưởng kể về chuyến bay đặc biệt đưa chiếc A330 từ Mỹ về Việt Nam",
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T04:54:02.889Z",
-        "lastSeenAt": "2026-09-27T19:26:57.258Z",
+        "lastSeenAt": "2026-09-27T20:12:13.744Z",
         "claimCount": 30,
         "supportedCount": 0,
         "disputedCount": 2,
         "sourceCount": 37,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:26:57.258Z",
+        "lastMaterialAt": "2026-09-27T20:12:13.744Z",
         "independentSourceCount": 236,
         "primaryDocCount": 24,
         "entities": [
           {
-            "key": "phuquoc",
-            "role": "mention",
-            "prominence": 0.180418
-          },
-          {
             "key": "vietnam",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
-            "key": "us",
             "role": "subject",
             "prominence": 0.9
           },
@@ -544,6 +565,16 @@
             "key": "canada",
             "role": "actor",
             "prominence": 0.7
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "phuquoc",
+            "role": "mention",
+            "prominence": 0.180418
           },
           {
             "key": "lam",
@@ -565,7 +596,11 @@
             "role": "mention",
             "prominence": 0.165209
           }
-        ]
+        ],
+        "independentOrigins": 31,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 109,
+        "derivedDocuments": 60
       }
     },
     {
@@ -579,14 +614,14 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T08:24:40.571Z",
-        "lastSeenAt": "2026-09-27T19:24:36.415Z",
+        "lastSeenAt": "2026-09-27T20:16:36.321Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 1,
         "sourceCount": 24,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T18:52:20.095Z",
+        "lastMaterialAt": "2026-09-27T20:11:13.746Z",
         "independentSourceCount": 32,
         "primaryDocCount": 1,
         "entities": [
@@ -615,28 +650,34 @@
             "role": "mention",
             "prominence": 0.177027
           }
-        ]
+        ],
+        "independentOrigins": 6,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 18,
+        "derivedDocuments": 10
       }
     },
     {
       "ref": "E004",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d188-8261-7022-9b2f-3ebdc95ceb55",
         "title": "Những CEO nào có thể tham gia quốc yến Mỹ - Trung?",
         "status": "resolved",
         "topic": "business",
         "firstSeenAt": "2026-09-24T03:49:39.553Z",
-        "lastSeenAt": "2026-09-27T19:23:55.934Z",
+        "lastSeenAt": "2026-09-27T20:10:40.781Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 21,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:23:55.934Z",
+        "lastMaterialAt": "2026-09-27T20:10:40.781Z",
         "independentSourceCount": 67,
         "primaryDocCount": 0,
         "entities": [
@@ -654,6 +695,16 @@
             "key": "us",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.164706
           },
           {
             "key": "xijinping",
@@ -676,21 +727,15 @@
             "prominence": 0.35
           },
           {
-            "key": "china",
-            "role": "mention",
-            "prominence": 0.35
-          },
-          {
             "key": "france",
             "role": "mention",
             "prominence": 0.15
-          },
-          {
-            "key": "iran",
-            "role": "mention",
-            "prominence": 0.164706
           }
-        ]
+        ],
+        "independentOrigins": 15,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 17,
+        "derivedDocuments": 5
       }
     },
     {
@@ -704,14 +749,14 @@
         "status": "emerging",
         "topic": "sports",
         "firstSeenAt": "2026-09-27T12:38:12.371Z",
-        "lastSeenAt": "2026-09-27T19:23:17.915Z",
+        "lastSeenAt": "2026-09-27T20:10:09.420Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:23:17.915Z",
+        "lastMaterialAt": "2026-09-27T20:10:09.420Z",
         "independentSourceCount": 48,
         "primaryDocCount": 2,
         "entities": [
@@ -735,7 +780,11 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 8,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 22,
+        "derivedDocuments": 5
       }
     },
     {
@@ -749,14 +798,14 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-24T19:38:19.521Z",
-        "lastSeenAt": "2026-09-27T19:09:26.596Z",
-        "claimCount": 81,
+        "lastSeenAt": "2026-09-27T19:55:16.607Z",
+        "claimCount": 82,
         "supportedCount": 0,
-        "disputedCount": 8,
-        "sourceCount": 47,
+        "disputedCount": 9,
+        "sourceCount": 48,
         "primaryCount": 0,
         "lastMaterialType": "claim_corrected",
-        "lastMaterialAt": "2026-09-27T19:09:26.596Z",
+        "lastMaterialAt": "2026-09-27T19:55:16.607Z",
         "independentSourceCount": 371,
         "primaryDocCount": 2,
         "entities": [
@@ -778,52 +827,27 @@
           {
             "key": "ai",
             "role": "mention",
-            "prominence": 0.155063
-          },
-          {
-            "key": "putin",
-            "role": "mention",
-            "prominence": 0.162658
-          },
-          {
-            "key": "ukraine",
-            "role": "mention",
-            "prominence": 0.167722
-          },
-          {
-            "key": "zelensky",
-            "role": "mention",
-            "prominence": 0.16519
-          },
-          {
-            "key": "russia",
-            "role": "mention",
-            "prominence": 0.177848
+            "prominence": 0.154878
           },
           {
             "key": "un",
             "role": "mention",
-            "prominence": 0.167722
+            "prominence": 0.169512
           },
           {
             "key": "unga",
             "role": "mention",
-            "prominence": 0.152532
+            "prominence": 0.152439
           },
           {
             "key": "taiwan",
             "role": "mention",
-            "prominence": 0.182911
-          },
-          {
-            "key": "xijinping",
-            "role": "mention",
-            "prominence": 0.271519
+            "prominence": 0.181707
           },
           {
             "key": "middleeast",
             "role": "mention",
-            "prominence": 0.157595
+            "prominence": 0.157317
           },
           {
             "key": "qatar",
@@ -831,25 +855,56 @@
             "prominence": 0.15
           },
           {
+            "key": "putin",
+            "role": "mention",
+            "prominence": 0.162195
+          },
+          {
+            "key": "ukraine",
+            "role": "mention",
+            "prominence": 0.167073
+          },
+          {
+            "key": "zelensky",
+            "role": "mention",
+            "prominence": 0.164634
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.176829
+          },
+          {
+            "key": "xijinping",
+            "role": "mention",
+            "prominence": 0.267073
+          },
+          {
             "key": "iran",
             "role": "mention",
-            "prominence": 0.329747
+            "prominence": 0.332927
           }
-        ]
+        ],
+        "independentOrigins": 41,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 165,
+        "derivedDocuments": 32
       }
     },
     {
       "ref": "E007",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e17d-2151-7613-8f6b-b5016eb769f2",
         "title": "OpenAI thừa nhận sai sót nghiêm trọng của tác nhân AI",
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T06:11:09.292Z",
-        "lastSeenAt": "2026-09-27T19:27:57.521Z",
+        "lastSeenAt": "2026-09-27T20:13:27.560Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -861,16 +916,20 @@
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "chatgpt",
-            "role": "actor",
-            "prominence": 0.7
-          },
-          {
             "key": "openai",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "chatgpt",
+            "role": "actor",
+            "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 4,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 6,
+        "derivedDocuments": 0
       }
     },
     {
@@ -884,14 +943,14 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T02:17:04.650Z",
-        "lastSeenAt": "2026-09-27T19:20:39.456Z",
+        "lastSeenAt": "2026-09-27T20:11:37.761Z",
         "claimCount": 11,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 22,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:18:20.999Z",
+        "lastMaterialAt": "2026-09-27T20:11:37.761Z",
         "independentSourceCount": 111,
         "primaryDocCount": 0,
         "entities": [
@@ -915,7 +974,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 18,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 25,
+        "derivedDocuments": 7
       }
     },
     {
@@ -929,7 +992,7 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T17:58:18.031Z",
-        "lastSeenAt": "2026-09-27T19:27:37.283Z",
+        "lastSeenAt": "2026-09-27T20:08:08.124Z",
         "claimCount": 12,
         "supportedCount": 0,
         "disputedCount": 2,
@@ -944,6 +1007,36 @@
             "key": "canada",
             "role": "mention",
             "prominence": 0.195455
+          },
+          {
+            "key": "miennam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "chatgpt",
+            "role": "mention",
+            "prominence": 0.195455
+          },
+          {
+            "key": "us",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "australia",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "spacex",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "openai",
+            "role": "subject",
+            "prominence": 0.9
           },
           {
             "key": "lam",
@@ -966,14 +1059,9 @@
             "prominence": 0.165152
           },
           {
-            "key": "miennam",
+            "key": "anthropic",
             "role": "mention",
-            "prominence": 0.15
-          },
-          {
-            "key": "chatgpt",
-            "role": "mention",
-            "prominence": 0.195455
+            "prominence": 0.286364
           },
           {
             "key": "vietnam",
@@ -981,43 +1069,24 @@
             "prominence": 0.210606
           },
           {
-            "key": "anthropic",
-            "role": "mention",
-            "prominence": 0.286364
-          },
-          {
             "key": "ai",
             "role": "mention",
             "prominence": 0.165152
-          },
-          {
-            "key": "us",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
-            "key": "australia",
-            "role": "mention",
-            "prominence": 0.35
-          },
-          {
-            "key": "openai",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
-            "key": "spacex",
-            "role": "mention",
-            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 19,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 21,
+        "derivedDocuments": 4
       }
     },
     {
       "ref": "E010",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e3fb-252f-772d-bc5f-c96740641b27",
         "title": "TKV hợp tác với Caterpillar, nâng cao năng lực phục vụ thị trường Việt Nam",
@@ -1045,7 +1114,11 @@
             "role": "mention",
             "prominence": 0.205556
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 11,
+        "derivedDocuments": 2
       }
     },
     {
@@ -1059,14 +1132,14 @@
         "status": "emerging",
         "topic": "sports",
         "firstSeenAt": "2026-09-25T15:09:58.364Z",
-        "lastSeenAt": "2026-09-27T19:25:38.942Z",
+        "lastSeenAt": "2026-09-27T20:07:29.032Z",
         "claimCount": 32,
         "supportedCount": 1,
         "disputedCount": 3,
         "sourceCount": 37,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:25:38.942Z",
+        "lastMaterialAt": "2026-09-27T20:07:29.032Z",
         "independentSourceCount": 322,
         "primaryDocCount": 13,
         "entities": [
@@ -1076,44 +1149,19 @@
             "prominence": 0.170958
           },
           {
-            "key": "france",
-            "role": "mention",
-            "prominence": 0.155988
-          },
-          {
-            "key": "germany",
-            "role": "mention",
-            "prominence": 0.152994
-          },
-          {
-            "key": "vietnam",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "thailand",
             "role": "mention",
             "prominence": 0.344611
           },
           {
-            "key": "musk",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
-            "key": "starlink",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
-            "key": "vinfast",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
             "key": "tesla",
             "role": "mention",
             "prominence": 0.152994
+          },
+          {
+            "key": "musk",
+            "role": "mention",
+            "prominence": 0.15
           },
           {
             "key": "pakistan",
@@ -1131,19 +1179,39 @@
             "prominence": 0.15
           },
           {
-            "key": "hcmc",
+            "key": "japan",
+            "role": "mention",
+            "prominence": 0.176946
+          },
+          {
+            "key": "asiad",
+            "role": "mention",
+            "prominence": 0.263772
+          },
+          {
+            "key": "vietnam",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "france",
             "role": "mention",
             "prominence": 0.155988
           },
           {
-            "key": "china",
+            "key": "germany",
             "role": "mention",
-            "prominence": 0.266766
+            "prominence": 0.152994
           },
           {
-            "key": "japan",
+            "key": "starlink",
             "role": "mention",
-            "prominence": 0.176946
+            "prominence": 0.15
+          },
+          {
+            "key": "vinfast",
+            "role": "mention",
+            "prominence": 0.15
           },
           {
             "key": "northkorea",
@@ -1156,6 +1224,21 @@
             "prominence": 0.170958
           },
           {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.167964
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.155988
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.266766
+          },
+          {
             "key": "singapore",
             "role": "mention",
             "prominence": 0.167964
@@ -1164,11 +1247,6 @@
             "key": "indonesia",
             "role": "mention",
             "prominence": 0.188922
-          },
-          {
-            "key": "us",
-            "role": "mention",
-            "prominence": 0.167964
           },
           {
             "key": "philippines",
@@ -1184,13 +1262,12 @@
             "key": "kimsangsik",
             "role": "mention",
             "prominence": 0.20988
-          },
-          {
-            "key": "asiad",
-            "role": "mention",
-            "prominence": 0.263772
           }
-        ]
+        ],
+        "independentOrigins": 31,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 187,
+        "derivedDocuments": 19
       }
     },
     {
@@ -1235,28 +1312,34 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 8,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 0,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E013",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d705-3297-788d-8cef-837eac649a7a",
         "title": "Thương mại Việt Nam - Canada: Đo tiềm năng bằng những đơn hàng thật",
         "status": "emerging",
         "topic": "business",
         "firstSeenAt": "2026-09-25T05:23:57.206Z",
-        "lastSeenAt": "2026-09-27T19:21:09.286Z",
+        "lastSeenAt": "2026-09-27T20:19:39.923Z",
         "claimCount": 48,
         "supportedCount": 0,
         "disputedCount": 6,
         "sourceCount": 35,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:21:09.286Z",
+        "lastMaterialAt": "2026-09-27T20:19:39.923Z",
         "independentSourceCount": 349,
         "primaryDocCount": 49,
         "entities": [
@@ -1264,16 +1347,6 @@
             "key": "phuquoc",
             "role": "mention",
             "prominence": 0.15
-          },
-          {
-            "key": "un",
-            "role": "mention",
-            "prominence": 0.167157
-          },
-          {
-            "key": "hanoi",
-            "role": "mention",
-            "prominence": 0.162255
           },
           {
             "key": "vietnam",
@@ -1314,41 +1387,57 @@
             "key": "daklak",
             "role": "mention",
             "prominence": 0.15
+          },
+          {
+            "key": "un",
+            "role": "mention",
+            "prominence": 0.167157
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.162255
           }
-        ]
+        ],
+        "independentOrigins": 28,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 179,
+        "derivedDocuments": 100
       }
     },
     {
       "ref": "E014",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0dbfd-0aa0-75af-9359-b8fa163eccf2",
         "title": "Agentic AI bắt đầu đi vào vận hành thực tế ở Việt Nam",
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T04:33:08.732Z",
-        "lastSeenAt": "2026-09-27T19:19:17.212Z",
+        "lastSeenAt": "2026-09-27T20:06:24.065Z",
         "claimCount": 8,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 15,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:19:17.212Z",
+        "lastMaterialAt": "2026-09-27T20:06:24.065Z",
         "independentSourceCount": 32,
         "primaryDocCount": 1,
         "entities": [
           {
-            "key": "india",
-            "role": "mention",
-            "prominence": 0.35
-          },
-          {
             "key": "vietnam",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "india",
+            "role": "mention",
+            "prominence": 0.35
           },
           {
             "key": "asiad",
@@ -1365,14 +1454,20 @@
             "role": "mention",
             "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 7,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 24,
+        "derivedDocuments": 1
       }
     },
     {
       "ref": "E015",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d942-d946-786f-a1dd-0c746380307c",
         "title": "Kiên định mục tiêu phấn đấu tăng trưởng hai con số",
@@ -1410,28 +1505,34 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 16,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 72,
+        "derivedDocuments": 50
       }
     },
     {
       "ref": "E016",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d176-5d58-771d-811d-3201b483f2d9",
         "title": "Iran nói Mỹ còn 5 ngày để mở cửa Hormuz, phủ nhận việc đàm phán ở New York",
         "status": "resolved",
         "topic": "world",
         "firstSeenAt": "2026-09-24T03:29:50.424Z",
-        "lastSeenAt": "2026-09-27T19:16:33.200Z",
+        "lastSeenAt": "2026-09-27T20:04:56.712Z",
         "claimCount": 44,
         "supportedCount": 0,
         "disputedCount": 11,
         "sourceCount": 43,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:16:33.200Z",
+        "lastMaterialAt": "2026-09-27T20:04:56.712Z",
         "independentSourceCount": 234,
         "primaryDocCount": 3,
         "entities": [
@@ -1455,7 +1556,11 @@
             "role": "mention",
             "prominence": 0.158097
           }
-        ]
+        ],
+        "independentOrigins": 31,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 98,
+        "derivedDocuments": 16
       }
     },
     {
@@ -1469,14 +1574,14 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-25T05:05:13.545Z",
-        "lastSeenAt": "2026-09-27T18:44:58.002Z",
+        "lastSeenAt": "2026-09-27T20:04:00.742Z",
         "claimCount": 5,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 13,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T18:44:58.002Z",
+        "lastMaterialAt": "2026-09-27T20:04:00.742Z",
         "independentSourceCount": 71,
         "primaryDocCount": 9,
         "entities": [
@@ -1505,7 +1610,11 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 10,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 27,
+        "derivedDocuments": 22
       }
     },
     {
@@ -1519,14 +1628,14 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T13:12:12.109Z",
-        "lastSeenAt": "2026-09-27T19:17:26.486Z",
-        "claimCount": 5,
+        "lastSeenAt": "2026-09-27T20:01:28.166Z",
+        "claimCount": 6,
         "supportedCount": 0,
-        "disputedCount": 2,
+        "disputedCount": 3,
         "sourceCount": 16,
         "primaryCount": 0,
-        "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:17:26.486Z",
+        "lastMaterialType": "claim_corrected",
+        "lastMaterialAt": "2026-09-27T20:01:28.166Z",
         "independentSourceCount": 38,
         "primaryDocCount": 4,
         "entities": [
@@ -1540,7 +1649,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 6,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 24,
+        "derivedDocuments": 6
       }
     },
     {
@@ -1554,26 +1667,31 @@
         "status": "resolved",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-24T19:29:18.463Z",
-        "lastSeenAt": "2026-09-27T18:42:38.898Z",
+        "lastSeenAt": "2026-09-27T19:59:57.921Z",
         "claimCount": 6,
         "supportedCount": 0,
         "disputedCount": 1,
-        "sourceCount": 27,
+        "sourceCount": 28,
         "primaryCount": 0,
-        "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T18:42:38.898Z",
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T19:59:57.921Z",
         "independentSourceCount": 51,
         "primaryDocCount": 2,
         "entities": [
           {
-            "key": "yemen",
+            "key": "northkorea",
             "role": "mention",
-            "prominence": 0.323077
+            "prominence": 0.205556
           },
           {
             "key": "israel",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "yemen",
+            "role": "mention",
+            "prominence": 0.316667
           },
           {
             "key": "saudi",
@@ -1588,7 +1706,7 @@
           {
             "key": "redsea",
             "role": "mention",
-            "prominence": 0.169231
+            "prominence": 0.168519
           },
           {
             "key": "federal_reserve",
@@ -1603,7 +1721,7 @@
           {
             "key": "japan",
             "role": "mention",
-            "prominence": 0.226923
+            "prominence": 0.224074
           },
           {
             "key": "russia",
@@ -1613,19 +1731,18 @@
           {
             "key": "southkorea",
             "role": "mention",
-            "prominence": 0.207692
+            "prominence": 0.205556
           },
           {
             "key": "ukraine",
             "role": "mention",
-            "prominence": 0.169231
-          },
-          {
-            "key": "northkorea",
-            "role": "mention",
-            "prominence": 0.207692
+            "prominence": 0.168519
           }
-        ]
+        ],
+        "independentOrigins": 20,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 21,
+        "derivedDocuments": 1
       }
     },
     {
@@ -1639,81 +1756,77 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T10:15:17.587Z",
-        "lastSeenAt": "2026-09-27T19:28:54.769Z",
+        "lastSeenAt": "2026-09-27T20:14:15.307Z",
         "claimCount": 19,
         "supportedCount": 0,
         "disputedCount": 4,
         "sourceCount": 23,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:28:54.769Z",
+        "lastMaterialAt": "2026-09-27T20:14:15.307Z",
         "independentSourceCount": 66,
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "russia",
-            "role": "actor",
-            "prominence": 0.7
-          },
-          {
             "key": "switzerland",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "russia",
+            "role": "actor",
+            "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 20,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 19,
+        "derivedDocuments": 5
       }
     },
     {
       "ref": "E021",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d176-5a20-722f-a77b-4850e91ead78",
         "title": "Ông Trump đón ông Tập tại sân bay, Mỹ - Trung gia hạn đình chiến thương mại",
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-24T03:29:49.600Z",
-        "lastSeenAt": "2026-09-27T19:29:40.876Z",
+        "lastSeenAt": "2026-09-27T20:18:13.335Z",
         "claimCount": 210,
         "supportedCount": 6,
         "disputedCount": 25,
         "sourceCount": 58,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:29:40.876Z",
+        "lastMaterialAt": "2026-09-27T20:18:13.335Z",
         "independentSourceCount": 1050,
         "primaryDocCount": 13,
         "entities": [
           {
             "key": "japan",
             "role": "mention",
-            "prominence": 0.163369
-          },
-          {
-            "key": "zelensky",
-            "role": "mention",
-            "prominence": 0.160695
+            "prominence": 0.163333
           },
           {
             "key": "ukraine",
             "role": "mention",
-            "prominence": 0.185651
+            "prominence": 0.185556
           },
           {
             "key": "un",
             "role": "mention",
-            "prominence": 0.191889
-          },
-          {
-            "key": "china",
-            "role": "mention",
-            "prominence": 0.35
+            "prominence": 0.191778
           },
           {
             "key": "uk",
             "role": "mention",
-            "prominence": 0.150891
+            "prominence": 0.150889
           },
           {
             "key": "us",
@@ -1723,7 +1836,7 @@
           {
             "key": "g20",
             "role": "mention",
-            "prominence": 0.156239
+            "prominence": 0.156222
           },
           {
             "key": "trump",
@@ -1731,24 +1844,39 @@
             "prominence": 0.9
           },
           {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.158
+          },
+          {
+            "key": "zelensky",
+            "role": "mention",
+            "prominence": 0.160667
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
             "key": "putin",
             "role": "mention",
-            "prominence": 0.159804
+            "prominence": 0.159778
           },
           {
             "key": "taiwan",
             "role": "mention",
-            "prominence": 0.172282
+            "prominence": 0.172222
           },
           {
             "key": "iran",
             "role": "mention",
-            "prominence": 0.313102
+            "prominence": 0.312667
           },
           {
             "key": "drone",
             "role": "mention",
-            "prominence": 0.163369
+            "prominence": 0.163333
           },
           {
             "key": "xijinping",
@@ -1756,9 +1884,19 @@
             "prominence": 0.9
           },
           {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.188222
+          },
+          {
+            "key": "netanyahu",
+            "role": "mention",
+            "prominence": 0.158
+          },
+          {
             "key": "vietnam",
             "role": "mention",
-            "prominence": 0.215954
+            "prominence": 0.215778
           },
           {
             "key": "redsea",
@@ -1768,74 +1906,63 @@
           {
             "key": "who",
             "role": "mention",
-            "prominence": 0.160695
+            "prominence": 0.160667
           },
           {
             "key": "saudi",
             "role": "mention",
-            "prominence": 0.161586
+            "prominence": 0.161556
           },
           {
             "key": "yemen",
             "role": "mention",
-            "prominence": 0.155348
+            "prominence": 0.155333
           },
           {
             "key": "asean",
             "role": "mention",
-            "prominence": 0.182977
+            "prominence": 0.182889
           },
           {
             "key": "aseancup",
             "role": "mention",
-            "prominence": 0.179412
+            "prominence": 0.179333
           },
           {
             "key": "asiad",
             "role": "mention",
-            "prominence": 0.156239
+            "prominence": 0.156222
           },
           {
             "key": "pakistan",
             "role": "mention",
-            "prominence": 0.161586
+            "prominence": 0.161556
           },
           {
             "key": "philippines",
             "role": "mention",
-            "prominence": 0.187433
+            "prominence": 0.187333
           },
           {
             "key": "thailand",
             "role": "mention",
-            "prominence": 0.16426
+            "prominence": 0.164222
           },
           {
             "key": "pm",
             "role": "mention",
-            "prominence": 0.152674
+            "prominence": 0.152667
           },
           {
             "key": "middleeast",
             "role": "mention",
-            "prominence": 0.156239
-          },
-          {
-            "key": "france",
-            "role": "mention",
-            "prominence": 0.158021
-          },
-          {
-            "key": "russia",
-            "role": "mention",
-            "prominence": 0.187433
-          },
-          {
-            "key": "netanyahu",
-            "role": "mention",
-            "prominence": 0.158021
+            "prominence": 0.156222
           }
-        ]
+        ],
+        "independentOrigins": 56,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 421,
+        "derivedDocuments": 67
       }
     },
     {
@@ -1861,16 +1988,6 @@
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "trump",
-            "role": "mention",
-            "prominence": 0.35
-          },
-          {
-            "key": "iran",
-            "role": "actor",
-            "prominence": 0.7
-          },
-          {
             "key": "us",
             "role": "subject",
             "prominence": 0.9
@@ -1879,8 +1996,22 @@
             "key": "drone",
             "role": "mention",
             "prominence": 0.231633
+          },
+          {
+            "key": "trump",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "iran",
+            "role": "actor",
+            "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 20,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 44,
+        "derivedDocuments": 6
       }
     },
     {
@@ -1894,7 +2025,7 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-25T10:46:43.307Z",
-        "lastSeenAt": "2026-09-27T17:15:37.808Z",
+        "lastSeenAt": "2026-09-27T20:22:58.648Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -1906,6 +2037,11 @@
         "primaryDocCount": 0,
         "entities": [
           {
+            "key": "france",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
             "key": "germany",
             "role": "mention",
             "prominence": 0.15
@@ -1916,21 +2052,20 @@
             "prominence": 0.15
           },
           {
-            "key": "france",
-            "role": "subject",
-            "prominence": 0.9
+            "key": "ai",
+            "role": "mention",
+            "prominence": 0.15
           },
           {
             "key": "macron",
             "role": "mention",
             "prominence": 0.297541
-          },
-          {
-            "key": "ai",
-            "role": "mention",
-            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 12,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 35,
+        "derivedDocuments": 2
       }
     },
     {
@@ -1944,14 +2079,14 @@
         "status": "emerging",
         "topic": "business",
         "firstSeenAt": "2026-09-26T12:19:41.859Z",
-        "lastSeenAt": "2026-09-27T17:15:24.944Z",
+        "lastSeenAt": "2026-09-27T20:22:48.109Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:15:24.944Z",
+        "lastMaterialAt": "2026-09-27T20:22:48.109Z",
         "independentSourceCount": 10,
         "primaryDocCount": 0,
         "entities": [
@@ -1965,28 +2100,34 @@
             "role": "mention",
             "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 5,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 5,
+        "derivedDocuments": 1
       }
     },
     {
       "ref": "E025",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
         "title": "Bầu trời Kiev sáng rực trong đòn tập kích tên lửa đạn đạo của Nga",
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-24T13:45:21.972Z",
-        "lastSeenAt": "2026-09-27T19:11:12.008Z",
-        "claimCount": 132,
+        "lastSeenAt": "2026-09-27T20:22:12.614Z",
+        "claimCount": 135,
         "supportedCount": 0,
         "disputedCount": 14,
         "sourceCount": 50,
         "primaryCount": 0,
-        "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T19:11:12.008Z",
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T20:22:12.614Z",
         "independentSourceCount": 588,
         "primaryDocCount": 6,
         "entities": [
@@ -1996,24 +2137,9 @@
             "prominence": 0.9
           },
           {
-            "key": "ukraine",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "uae",
             "role": "mention",
             "prominence": 0.159646
-          },
-          {
-            "key": "middleeast",
-            "role": "mention",
-            "prominence": 0.158039
-          },
-          {
-            "key": "qatar",
-            "role": "mention",
-            "prominence": 0.15
           },
           {
             "key": "zelensky",
@@ -2026,29 +2152,9 @@
             "prominence": 0.162862
           },
           {
-            "key": "redsea",
-            "role": "mention",
-            "prominence": 0.153215
-          },
-          {
-            "key": "saudi",
-            "role": "mention",
-            "prominence": 0.174116
-          },
-          {
             "key": "yemen",
             "role": "mention",
             "prominence": 0.161254
-          },
-          {
-            "key": "hungary",
-            "role": "mention",
-            "prominence": 0.153215
-          },
-          {
-            "key": "france",
-            "role": "mention",
-            "prominence": 0.172508
           },
           {
             "key": "iran",
@@ -2066,11 +2172,6 @@
             "prominence": 0.156431
           },
           {
-            "key": "nato",
-            "role": "mention",
-            "prominence": 0.178939
-          },
-          {
             "key": "us",
             "role": "mention",
             "prominence": 0.291479
@@ -2086,14 +2187,14 @@
             "prominence": 0.175723
           },
           {
-            "key": "bytedance",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
             "key": "tiktok",
             "role": "mention",
             "prominence": 0.159646
+          },
+          {
+            "key": "bytedance",
+            "role": "mention",
+            "prominence": 0.15
           },
           {
             "key": "ireland",
@@ -2101,14 +2202,64 @@
             "prominence": 0.15
           },
           {
-            "key": "eu",
-            "role": "mention",
-            "prominence": 0.207878
-          },
-          {
             "key": "un",
             "role": "mention",
             "prominence": 0.26254
+          },
+          {
+            "key": "g20",
+            "role": "mention",
+            "prominence": 0.175723
+          },
+          {
+            "key": "drone",
+            "role": "mention",
+            "prominence": 0.251286
+          },
+          {
+            "key": "ukraine",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "middleeast",
+            "role": "mention",
+            "prominence": 0.158039
+          },
+          {
+            "key": "qatar",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "redsea",
+            "role": "mention",
+            "prominence": 0.153215
+          },
+          {
+            "key": "saudi",
+            "role": "mention",
+            "prominence": 0.174116
+          },
+          {
+            "key": "hungary",
+            "role": "mention",
+            "prominence": 0.153215
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.172508
+          },
+          {
+            "key": "nato",
+            "role": "mention",
+            "prominence": 0.178939
+          },
+          {
+            "key": "eu",
+            "role": "mention",
+            "prominence": 0.207878
           },
           {
             "key": "unga",
@@ -2126,26 +2277,20 @@
             "prominence": 0.256109
           },
           {
-            "key": "g20",
-            "role": "mention",
-            "prominence": 0.175723
-          },
-          {
             "key": "putin",
             "role": "mention",
             "prominence": 0.252894
-          },
-          {
-            "key": "drone",
-            "role": "mention",
-            "prominence": 0.251286
           },
           {
             "key": "tesla",
             "role": "mention",
             "prominence": 0.153215
           }
-        ]
+        ],
+        "independentOrigins": 44,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 201,
+        "derivedDocuments": 32
       }
     },
     {
@@ -2159,17 +2304,22 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-25T11:23:27.815Z",
-        "lastSeenAt": "2026-09-27T19:03:30.877Z",
+        "lastSeenAt": "2026-09-27T20:22:01.322Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 11,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:03:30.877Z",
+        "lastMaterialAt": "2026-09-27T20:22:01.322Z",
         "independentSourceCount": 15,
         "primaryDocCount": 0,
         "entities": [
+          {
+            "key": "pakistan",
+            "role": "subject",
+            "prominence": 0.9
+          },
           {
             "key": "yemen",
             "role": "actor",
@@ -2181,11 +2331,6 @@
             "prominence": 0.15
           },
           {
-            "key": "pakistan",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "saudi",
             "role": "subject",
             "prominence": 0.9
@@ -2195,7 +2340,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 9,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 1,
+        "derivedDocuments": 1
       }
     },
     {
@@ -2209,24 +2358,24 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T09:22:21.535Z",
-        "lastSeenAt": "2026-09-27T19:03:07.266Z",
+        "lastSeenAt": "2026-09-27T20:21:36.382Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 3,
+        "sourceCount": 4,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:14:16.785Z",
+        "lastMaterialAt": "2026-09-27T19:37:29.617Z",
         "independentSourceCount": 10,
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "northkorea",
+            "key": "southkorea",
             "role": "subject",
             "prominence": 0.9
           },
           {
-            "key": "southkorea",
+            "key": "northkorea",
             "role": "subject",
             "prominence": 0.9
           },
@@ -2235,7 +2384,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 4,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 5,
+        "derivedDocuments": 3
       }
     },
     {
@@ -2249,7 +2402,7 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-25T19:21:15.198Z",
-        "lastSeenAt": "2026-09-27T19:02:58.169Z",
+        "lastSeenAt": "2026-09-27T20:21:27.098Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -2275,7 +2428,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 7,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 3,
+        "derivedDocuments": 3
       }
     },
     {
@@ -2289,24 +2446,19 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T06:19:31.039Z",
-        "lastSeenAt": "2026-09-27T19:02:47.332Z",
+        "lastSeenAt": "2026-09-27T20:21:15.711Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 8,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:02:47.332Z",
+        "lastMaterialAt": "2026-09-27T20:21:15.711Z",
         "independentSourceCount": 11,
         "primaryDocCount": 1,
         "entities": [
           {
             "key": "vietnam",
-            "role": "mention",
-            "prominence": 0.331818
-          },
-          {
-            "key": "angiang",
             "role": "mention",
             "prominence": 0.331818
           },
@@ -2319,22 +2471,33 @@
             "key": "russia",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "angiang",
+            "role": "mention",
+            "prominence": 0.331818
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 9,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E030",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0dcff-cd20-7fda-b508-f9eaf827f956",
         "title": "[Ảnh] Cầu nối Đồng Nai với Thành phố Hồ Chí Minh trước ngày thông xe",
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T09:15:46.753Z",
-        "lastSeenAt": "2026-09-27T19:02:35.332Z",
+        "lastSeenAt": "2026-09-27T20:21:03.059Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 1,
@@ -2360,14 +2523,21 @@
             "role": "mention",
             "prominence": 0.326471
           }
-        ]
+        ],
+        "independentOrigins": 5,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 10,
+        "derivedDocuments": 1
       }
     },
     {
       "ref": "E031",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A", "B"],
+      "relevantTo": [
+        "A",
+        "B"
+      ],
       "data": {
         "id": "01a0d850-d474-7064-a2d4-96e5fa81ddf5",
         "title": "Nhân viên SJC lấy 30 lượng vàng để tráo vàng giá thấp",
@@ -2388,28 +2558,34 @@
           {
             "key": "us",
             "role": "mention",
-            "prominence": 0.316667
+            "prominence": 0.292857
           },
           {
             "key": "federal_reserve",
             "role": "mention",
-            "prominence": 0.233333
+            "prominence": 0.292857
           }
-        ]
+        ],
+        "independentOrigins": 4,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 9,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E032",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d4f7-645f-746f-8d41-f904606ef9af",
         "title": "Việt Nam Police Propose Internet Cutoffs for Unpaid Fines",
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-24T19:49:38.014Z",
-        "lastSeenAt": "2026-09-27T19:02:13.990Z",
+        "lastSeenAt": "2026-09-27T20:20:40.246Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -2430,7 +2606,11 @@
             "role": "mention",
             "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 6,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 1,
+        "derivedDocuments": 6
       }
     },
     {
@@ -2465,7 +2645,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 5,
+        "derivedDocuments": 4
       }
     },
     {
@@ -2500,14 +2684,20 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 7,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E035",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e0c0-ca89-701e-a86e-68dd330a5f90",
         "title": "Nga và Đức có thể cùng mở lại đường ống Nord Stream?",
@@ -2545,7 +2735,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 12,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 9,
+        "derivedDocuments": 3
       }
     },
     {
@@ -2559,7 +2753,7 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T22:55:53.396Z",
-        "lastSeenAt": "2026-09-27T19:31:03.425Z",
+        "lastSeenAt": "2026-09-27T20:16:00.731Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -2580,28 +2774,34 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 6,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 20,
+        "derivedDocuments": 2
       }
     },
     {
       "ref": "E037",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d188-7dc2-7886-866d-ef42359284ff",
         "title": "Ông Tô Lâm: Việt Nam không chấp nhận 'trung chuyển' hàng xuất khẩu",
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-24T03:49:38.370Z",
-        "lastSeenAt": "2026-09-27T19:00:26.981Z",
+        "lastSeenAt": "2026-09-27T19:35:19.102Z",
         "claimCount": 31,
         "supportedCount": 0,
         "disputedCount": 2,
         "sourceCount": 54,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:00:26.981Z",
+        "lastMaterialAt": "2026-09-27T19:35:19.102Z",
         "independentSourceCount": 435,
         "primaryDocCount": 23,
         "entities": [
@@ -2614,6 +2814,16 @@
             "key": "iran",
             "role": "mention",
             "prominence": 0.20074
+          },
+          {
+            "key": "middleeast",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "trade_surplus",
+            "role": "mention",
+            "prominence": 0.15
           },
           {
             "key": "vietnam",
@@ -2636,21 +2846,15 @@
             "prominence": 0.9
           },
           {
-            "key": "middleeast",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
             "key": "canada",
             "role": "mention",
             "prominence": 0.35
-          },
-          {
-            "key": "trade_surplus",
-            "role": "mention",
-            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 49,
+        "primaryOrigins": 1,
+        "unresolvedOrigins": 167,
+        "derivedDocuments": 87
       }
     },
     {
@@ -2676,16 +2880,20 @@
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "trump",
-            "role": "actor",
-            "prominence": 0.7
-          },
-          {
             "key": "us",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "trump",
+            "role": "actor",
+            "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 4,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 3,
+        "derivedDocuments": 0
       }
     },
     {
@@ -2699,17 +2907,22 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T05:36:02.801Z",
-        "lastSeenAt": "2026-09-27T17:09:10.564Z",
+        "lastSeenAt": "2026-09-27T19:39:37.131Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 13,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T17:09:10.564Z",
+        "lastMaterialAt": "2026-09-27T19:39:37.131Z",
         "independentSourceCount": 37,
         "primaryDocCount": 0,
         "entities": [
+          {
+            "key": "iran",
+            "role": "subject",
+            "prominence": 0.9
+          },
           {
             "key": "un",
             "role": "mention",
@@ -2724,20 +2937,21 @@
             "key": "us",
             "role": "subject",
             "prominence": 0.9
-          },
-          {
-            "key": "iran",
-            "role": "subject",
-            "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 10,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 7,
+        "derivedDocuments": 1
       }
     },
     {
       "ref": "E040",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e052-8261-7a56-9cc4-03c01eef922c",
         "title": "Xuất khẩu sang thị trường FTA không thể chỉ dựa vào ưu đãi thuế quan",
@@ -2765,7 +2979,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 4,
+        "derivedDocuments": 0
       }
     },
     {
@@ -2791,16 +3009,6 @@
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "us",
-            "role": "mention",
-            "prominence": 0.35
-          },
-          {
-            "key": "russia",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "un",
             "role": "subject",
             "prominence": 0.9
@@ -2809,8 +3017,22 @@
             "key": "unga",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "russia",
+            "role": "subject",
+            "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 6,
+        "derivedDocuments": 0
       }
     },
     {
@@ -2850,7 +3072,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 5,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 0,
+        "derivedDocuments": 0
       }
     },
     {
@@ -2864,22 +3090,17 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T13:02:17.570Z",
-        "lastSeenAt": "2026-09-27T19:28:38.359Z",
+        "lastSeenAt": "2026-09-27T20:14:01.218Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 17,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:28:38.359Z",
+        "lastMaterialAt": "2026-09-27T20:14:01.218Z",
         "independentSourceCount": 44,
         "primaryDocCount": 0,
         "entities": [
-          {
-            "key": "us",
-            "role": "mention",
-            "prominence": 0.35
-          },
           {
             "key": "zelensky",
             "role": "mention",
@@ -2889,6 +3110,11 @@
             "key": "ukraine",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.35
           },
           {
             "key": "china",
@@ -2905,7 +3131,11 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 13,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 15,
+        "derivedDocuments": 5
       }
     },
     {
@@ -2919,7 +3149,7 @@
         "status": "emerging",
         "topic": "sports",
         "firstSeenAt": "2026-09-27T10:20:02.877Z",
-        "lastSeenAt": "2026-09-27T19:03:16.770Z",
+        "lastSeenAt": "2026-09-27T20:21:46.185Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -2936,6 +3166,11 @@
             "prominence": 0.15
           },
           {
+            "key": "asiad",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
             "key": "china",
             "role": "actor",
             "prominence": 0.7
@@ -2944,13 +3179,12 @@
             "key": "japan",
             "role": "mention",
             "prominence": 0.35
-          },
-          {
-            "key": "asiad",
-            "role": "subject",
-            "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 6,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 4,
+        "derivedDocuments": 2
       }
     },
     {
@@ -2964,7 +3198,7 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-26T12:26:53.268Z",
-        "lastSeenAt": "2026-09-27T19:31:57.940Z",
+        "lastSeenAt": "2026-09-27T20:16:48.712Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -2980,7 +3214,11 @@
             "role": "mention",
             "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 1,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 4,
+        "derivedDocuments": 5
       }
     },
     {
@@ -3015,7 +3253,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 12,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 10,
+        "derivedDocuments": 2
       }
     },
     {
@@ -3029,17 +3271,27 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T14:23:26.459Z",
-        "lastSeenAt": "2026-09-27T19:28:09.627Z",
+        "lastSeenAt": "2026-09-27T20:13:37.335Z",
         "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:28:09.627Z",
+        "lastMaterialAt": "2026-09-27T20:13:37.335Z",
         "independentSourceCount": 11,
         "primaryDocCount": 0,
         "entities": [
+          {
+            "key": "yemen",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "middleeast",
+            "role": "subject",
+            "prominence": 0.9
+          },
           {
             "key": "iran",
             "role": "mention",
@@ -3054,25 +3306,22 @@
             "key": "un",
             "role": "mention",
             "prominence": 0.35
-          },
-          {
-            "key": "yemen",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
-            "key": "middleeast",
-            "role": "subject",
-            "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 5,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 2,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E048",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A", "B"],
+      "relevantTo": [
+        "A",
+        "B"
+      ],
       "data": {
         "id": "01a0d789-cf7b-7121-adac-2a88a65aec1b",
         "title": "Mỹ cân nhắc phương án tạm cấm xuất khẩu dầu diesel, châu Âu lo ngại",
@@ -3110,7 +3359,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 17,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 17,
+        "derivedDocuments": 1
       }
     },
     {
@@ -3145,7 +3398,11 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 8,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 13,
+        "derivedDocuments": 0
       }
     },
     {
@@ -3159,14 +3416,14 @@
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T23:30:34.278Z",
-        "lastSeenAt": "2026-09-27T19:31:30.896Z",
+        "lastSeenAt": "2026-09-27T20:16:24.768Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:31:30.896Z",
+        "lastMaterialAt": "2026-09-27T20:16:24.768Z",
         "independentSourceCount": 17,
         "primaryDocCount": 0,
         "entities": [
@@ -3180,7 +3437,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 6,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 8,
+        "derivedDocuments": 1
       }
     },
     {
@@ -3206,11 +3467,6 @@
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "drone",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "russia",
             "role": "actor",
             "prominence": 0.7
@@ -3224,29 +3480,40 @@
             "key": "zelensky",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "drone",
+            "role": "subject",
+            "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 5,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 9,
+        "derivedDocuments": 1
       }
     },
     {
       "ref": "E052",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
         "title": "Iran không còn tin tưởng vào đàm phán với Mỹ",
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-27T11:40:43.484Z",
-        "lastSeenAt": "2026-09-27T19:26:38.173Z",
+        "lastSeenAt": "2026-09-27T20:11:57.949Z",
         "claimCount": 16,
         "supportedCount": 1,
         "disputedCount": 1,
         "sourceCount": 24,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:26:38.173Z",
+        "lastMaterialAt": "2026-09-27T20:11:57.949Z",
         "independentSourceCount": 63,
         "primaryDocCount": 0,
         "entities": [
@@ -3254,16 +3521,6 @@
             "key": "iran",
             "role": "subject",
             "prominence": 0.9
-          },
-          {
-            "key": "saudi",
-            "role": "mention",
-            "prominence": 0.290625
-          },
-          {
-            "key": "yemen",
-            "role": "mention",
-            "prominence": 0.275
           },
           {
             "key": "drone",
@@ -3276,18 +3533,34 @@
             "prominence": 0.165625
           },
           {
+            "key": "saudi",
+            "role": "mention",
+            "prominence": 0.290625
+          },
+          {
+            "key": "yemen",
+            "role": "mention",
+            "prominence": 0.275
+          },
+          {
             "key": "us",
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 19,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 24,
+        "derivedDocuments": 5
       }
     },
     {
       "ref": "E053",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e3d1-ab79-7427-9105-be6dd615fb45",
         "title": "Chính phủ ‘đặt khung’ 3 tiêu chí xác định trường nghề đặc thù để sắp xếp",
@@ -3310,28 +3583,34 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 1,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 4,
+        "derivedDocuments": 2
       }
     },
     {
       "ref": "E054",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d91e-9a8b-7bb0-9d65-c8ff71b0a33a",
         "title": "Việt Nam đề nghị tăng cường hợp tác công nghệ mới với Canada",
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-25T15:10:56.546Z",
-        "lastSeenAt": "2026-09-27T19:32:55.061Z",
+        "lastSeenAt": "2026-09-27T20:17:33.091Z",
         "claimCount": 19,
         "supportedCount": 0,
         "disputedCount": 1,
         "sourceCount": 29,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:32:55.061Z",
+        "lastMaterialAt": "2026-09-27T20:17:33.091Z",
         "independentSourceCount": 191,
         "primaryDocCount": 17,
         "entities": [
@@ -3344,11 +3623,6 @@
             "key": "northkorea",
             "role": "mention",
             "prominence": 0.159569
-          },
-          {
-            "key": "canada",
-            "role": "subject",
-            "prominence": 0.9
           },
           {
             "key": "lam",
@@ -3379,8 +3653,17 @@
             "key": "un",
             "role": "mention",
             "prominence": 0.183493
+          },
+          {
+            "key": "canada",
+            "role": "subject",
+            "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 21,
+        "primaryOrigins": 1,
+        "unresolvedOrigins": 94,
+        "derivedDocuments": 50
       }
     },
     {
@@ -3394,36 +3677,46 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-25T19:11:33.378Z",
-        "lastSeenAt": "2026-09-27T19:15:49.419Z",
-        "claimCount": 5,
+        "lastSeenAt": "2026-09-27T20:13:13.442Z",
+        "claimCount": 8,
         "supportedCount": 0,
         "disputedCount": 1,
-        "sourceCount": 27,
+        "sourceCount": 28,
         "primaryCount": 0,
-        "lastMaterialType": "claim_disputed",
-        "lastMaterialAt": "2026-09-27T19:15:49.419Z",
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T20:13:13.442Z",
         "independentSourceCount": 44,
         "primaryDocCount": 1,
         "entities": [
+          {
+            "key": "canada",
+            "role": "mention",
+            "prominence": 0.211224
+          },
+          {
+            "key": "lam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "russia",
+            "role": "mention",
+            "prominence": 0.211224
+          },
           {
             "key": "israel",
             "role": "subject",
             "prominence": 0.9
           },
           {
-            "key": "iran",
-            "role": "mention",
-            "prominence": 0.195455
+            "key": "un",
+            "role": "subject",
+            "prominence": 0.9
           },
           {
             "key": "unga",
             "role": "mention",
-            "prominence": 0.286364
-          },
-          {
-            "key": "un",
-            "role": "subject",
-            "prominence": 0.9
+            "prominence": 0.272449
           },
           {
             "key": "netanyahu",
@@ -3438,14 +3731,28 @@
           {
             "key": "trump",
             "role": "mention",
-            "prominence": 0.195455
+            "prominence": 0.190816
           },
           {
             "key": "pm",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.231633
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.190816
           }
-        ]
+        ],
+        "independentOrigins": 20,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 16,
+        "derivedDocuments": 2
       }
     },
     {
@@ -3476,6 +3783,11 @@
             "prominence": 0.312791
           },
           {
+            "key": "hungary",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
             "key": "israel",
             "role": "subject",
             "prominence": 0.9
@@ -3484,20 +3796,21 @@
             "key": "ireland",
             "role": "subject",
             "prominence": 0.9
-          },
-          {
-            "key": "hungary",
-            "role": "mention",
-            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 14,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 8,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E057",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0dbba-88e2-7b20-a33e-589e44459c67",
         "title": "Hà Nội: Bí thư, chủ tịch xã phải kiểm điểm công việc để biết ưu tiên việc gì trước, việc gì sau",
@@ -3550,7 +3863,11 @@
             "role": "mention",
             "prominence": 0.187037
           }
-        ]
+        ],
+        "independentOrigins": 10,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 14,
+        "derivedDocuments": 2
       }
     },
     {
@@ -3576,11 +3893,6 @@
         "primaryDocCount": 4,
         "entities": [
           {
-            "key": "asiad",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "china",
             "role": "subject",
             "prominence": 0.9
@@ -3596,18 +3908,29 @@
             "prominence": 0.173669
           },
           {
+            "key": "asiad",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
             "key": "vietnam",
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 14,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 107,
+        "derivedDocuments": 29
       }
     },
     {
       "ref": "E059",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e364-e96f-7934-857d-6fa963aa25f3",
         "title": "Ngập khu dân cư cạnh cao tốc: Chủ tịch Đồng Nai yêu cầu đánh giá lại hệ thống thoát nước",
@@ -3635,7 +3958,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 1,
+        "derivedDocuments": 0
       }
     },
     {
@@ -3670,7 +3997,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 4,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 59,
+        "derivedDocuments": 34
       }
     },
     {
@@ -3705,7 +4036,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 23,
+        "derivedDocuments": 2
       }
     },
     {
@@ -3731,51 +4066,61 @@
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "australia",
-            "role": "actor",
-            "prominence": 0.7
-          },
-          {
             "key": "who",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "australia",
+            "role": "actor",
+            "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 1,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 6,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E063",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e37e-9526-7b1e-b866-8918735042b4",
         "title": "Xuất khẩu vượt Brazil, thị trường cà phê hòa tan Việt đang “nóng” đến đâu?",
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T15:31:58.840Z",
-        "lastSeenAt": "2026-09-27T19:02:25.602Z",
+        "lastSeenAt": "2026-09-27T20:20:52.614Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 4,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:02:25.602Z",
+        "lastMaterialAt": "2026-09-27T20:20:52.614Z",
         "independentSourceCount": 5,
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "vietnam",
-            "role": "actor",
-            "prominence": 0.7
-          },
-          {
             "key": "brazil",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 2,
+        "derivedDocuments": 0
       }
     },
     {
@@ -3820,7 +4165,11 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 5,
+        "derivedDocuments": 0
       }
     },
     {
@@ -3834,7 +4183,7 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T13:57:14.202Z",
-        "lastSeenAt": "2026-09-27T19:02:06.714Z",
+        "lastSeenAt": "2026-09-27T20:20:32.637Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -3850,7 +4199,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 1,
+        "derivedDocuments": 0
       }
     },
     {
@@ -3885,7 +4238,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 2,
+        "derivedDocuments": 0
       }
     },
     {
@@ -3920,7 +4277,11 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 1,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 8,
+        "derivedDocuments": 1
       }
     },
     {
@@ -3950,7 +4311,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 8,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 18,
+        "derivedDocuments": 4
       }
     },
     {
@@ -3990,7 +4355,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 12,
+        "derivedDocuments": 1
       }
     },
     {
@@ -4004,31 +4373,31 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T15:20:15.439Z",
-        "lastSeenAt": "2026-09-27T15:20:15.439Z",
-        "claimCount": 0,
+        "lastSeenAt": "2026-09-27T20:09:37.459Z",
+        "claimCount": 1,
         "supportedCount": 0,
         "disputedCount": 0,
-        "sourceCount": 7,
+        "sourceCount": 10,
         "primaryCount": 0,
-        "lastMaterialType": "event_created",
-        "lastMaterialAt": "2026-09-27T15:20:15.439Z",
+        "lastMaterialType": "new_claim",
+        "lastMaterialAt": "2026-09-27T20:09:37.459Z",
         "independentSourceCount": 14,
         "primaryDocCount": 2,
         "entities": [
           {
             "key": "canada",
             "role": "mention",
-            "prominence": 0.221429
+            "prominence": 0.184483
           },
           {
             "key": "hcmc",
             "role": "mention",
-            "prominence": 0.221429
+            "prominence": 0.184483
           },
           {
             "key": "lam",
             "role": "mention",
-            "prominence": 0.292857
+            "prominence": 0.253448
           },
           {
             "key": "un",
@@ -4038,21 +4407,27 @@
           {
             "key": "vietnam",
             "role": "mention",
-            "prominence": 0.221429
+            "prominence": 0.35
           },
           {
             "key": "hanoi",
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 6,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 17,
+        "derivedDocuments": 2
       }
     },
     {
       "ref": "E071",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d176-5a45-7db6-bd9d-a116caf76918",
         "title": "Ông Tô Lâm tiếp ông Hùng Cao tại New York: Có gì đáng chú ý?",
@@ -4070,11 +4445,6 @@
         "independentSourceCount": 176,
         "primaryDocCount": 16,
         "entities": [
-          {
-            "key": "france",
-            "role": "mention",
-            "prominence": 0.160417
-          },
           {
             "key": "un",
             "role": "mention",
@@ -4109,15 +4479,26 @@
             "key": "lam",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.160417
           }
-        ]
+        ],
+        "independentOrigins": 26,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 76,
+        "derivedDocuments": 49
       }
     },
     {
       "ref": "E072",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e1fa-84a5-74b2-a23c-34a1ccda7b30",
         "title": "Robot trở thành lực lượng sản xuất mới tại Trung Quốc",
@@ -4140,7 +4521,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 11,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 24,
+        "derivedDocuments": 7
       }
     },
     {
@@ -4164,7 +4549,11 @@
         "lastMaterialAt": "2026-09-27T11:49:29.597Z",
         "independentSourceCount": 9,
         "primaryDocCount": 0,
-        "entities": []
+        "entities": [],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 5,
+        "derivedDocuments": 0
       }
     },
     {
@@ -4199,14 +4588,20 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 8,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 21,
+        "derivedDocuments": 4
       }
     },
     {
       "ref": "E075",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e0ff-95d0-7e74-b40d-42ca0cce498d",
         "title": "VietCredit, Điện Máy Xanh cùng NAPAS hợp tác ra mắt Thẻ tín dụng số TINCard 3 trong 1",
@@ -4232,16 +4627,22 @@
           {
             "key": "france",
             "role": "mention",
-            "prominence": 0.208824
+            "prominence": 0.2
           }
-        ]
+        ],
+        "independentOrigins": 10,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 17,
+        "derivedDocuments": 5
       }
     },
     {
       "ref": "E076",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0dd8e-7b72-7acd-8210-d6ba02b82621",
         "title": "Phó Thủ tướng Thường trực Chính phủ Phạm Gia Túc tiếp xúc cử tri tại Hà Tĩnh",
@@ -4275,26 +4676,6 @@
             "prominence": 0.9
           },
           {
-            "key": "quangninh",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
-            "key": "caobang",
-            "role": "mention",
-            "prominence": 0.177778
-          },
-          {
-            "key": "china",
-            "role": "mention",
-            "prominence": 0.35
-          },
-          {
-            "key": "dienbien",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
             "key": "langson",
             "role": "mention",
             "prominence": 0.15
@@ -4313,8 +4694,32 @@
             "key": "thailand",
             "role": "mention",
             "prominence": 0.205556
+          },
+          {
+            "key": "quangninh",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "caobang",
+            "role": "mention",
+            "prominence": 0.177778
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "dienbien",
+            "role": "mention",
+            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 8,
+        "primaryOrigins": 1,
+        "unresolvedOrigins": 24,
+        "derivedDocuments": 5
       }
     },
     {
@@ -4328,14 +4733,14 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T12:40:48.067Z",
-        "lastSeenAt": "2026-09-27T19:32:43.099Z",
+        "lastSeenAt": "2026-09-27T20:17:23.332Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 7,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T19:32:43.099Z",
+        "lastMaterialAt": "2026-09-27T20:17:23.332Z",
         "independentSourceCount": 9,
         "primaryDocCount": 0,
         "entities": [
@@ -4354,14 +4759,20 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 5,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 4,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E078",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e0e7-7e5f-7354-9ad9-6feeee85d305",
         "title": "MICE mở ra không gian hợp tác, động lực tăng trưởng mới cho du lịch Việt",
@@ -4385,6 +4796,11 @@
             "prominence": 0.7
           },
           {
+            "key": "hue",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
             "key": "danang",
             "role": "mention",
             "prominence": 0.279032
@@ -4403,13 +4819,12 @@
             "key": "caobang",
             "role": "mention",
             "prominence": 0.15
-          },
-          {
-            "key": "hue",
-            "role": "mention",
-            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 9,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 16,
+        "derivedDocuments": 1
       }
     },
     {
@@ -4435,6 +4850,11 @@
         "primaryDocCount": 0,
         "entities": [
           {
+            "key": "myanmar",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
             "key": "vietnam",
             "role": "subject",
             "prominence": 0.9
@@ -4443,13 +4863,12 @@
             "key": "asiad",
             "role": "subject",
             "prominence": 0.9
-          },
-          {
-            "key": "myanmar",
-            "role": "mention",
-            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 9,
+        "derivedDocuments": 1
       }
     },
     {
@@ -4475,23 +4894,29 @@
         "primaryDocCount": 6,
         "entities": [
           {
-            "key": "hcmc",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "hanoi",
             "role": "mention",
             "prominence": 0.35
+          },
+          {
+            "key": "hcmc",
+            "role": "subject",
+            "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 7,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 17,
+        "derivedDocuments": 4
       }
     },
     {
       "ref": "E081",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
         "title": "[Video] Tiêu điểm 26/9: Biển Đen dậy sóng - Rủi ro với nguồn cung lương thực toàn cầu",
@@ -4509,21 +4934,6 @@
         "independentSourceCount": 155,
         "primaryDocCount": 2,
         "entities": [
-          {
-            "key": "nato",
-            "role": "mention",
-            "prominence": 0.16875
-          },
-          {
-            "key": "redsea",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
-            "key": "baltic",
-            "role": "subject",
-            "prominence": 0.9
-          },
           {
             "key": "russia",
             "role": "actor",
@@ -4550,16 +4960,6 @@
             "prominence": 0.16875
           },
           {
-            "key": "miennam",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
-            "key": "vietnam",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
             "key": "canada",
             "role": "mention",
             "prominence": 0.15
@@ -4578,8 +4978,37 @@
             "key": "unga",
             "role": "mention",
             "prominence": 0.175
+          },
+          {
+            "key": "nato",
+            "role": "mention",
+            "prominence": 0.16875
+          },
+          {
+            "key": "redsea",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "baltic",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "miennam",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "vietnam",
+            "role": "mention",
+            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 29,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 54,
+        "derivedDocuments": 10
       }
     },
     {
@@ -4610,14 +5039,29 @@
             "prominence": 0.298148
           },
           {
-            "key": "palestine",
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "un",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "netanyahu",
             "role": "mention",
             "prominence": 0.35
           },
           {
-            "key": "france",
+            "key": "pm",
             "role": "mention",
-            "prominence": 0.15
+            "prominence": 0.196296
+          },
+          {
+            "key": "palestine",
+            "role": "mention",
+            "prominence": 0.35
           },
           {
             "key": "spain",
@@ -4638,30 +5082,21 @@
             "key": "unga",
             "role": "mention",
             "prominence": 0.27963
-          },
-          {
-            "key": "un",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
-            "key": "netanyahu",
-            "role": "mention",
-            "prominence": 0.35
-          },
-          {
-            "key": "pm",
-            "role": "mention",
-            "prominence": 0.196296
           }
-        ]
+        ],
+        "independentOrigins": 30,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 26,
+        "derivedDocuments": 8
       }
     },
     {
       "ref": "E083",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d188-812a-727b-b1f1-e6023a6da011",
         "title": "Mỹ nâng tổng mức vốn cho dự án xử lý dioxin tại sân bay Biên Hòa lên 430 triệu USD",
@@ -4695,11 +5130,6 @@
             "prominence": 0.35
           },
           {
-            "key": "hcmc",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
             "key": "china",
             "role": "mention",
             "prominence": 0.200505
@@ -4713,6 +5143,11 @@
             "key": "russia",
             "role": "mention",
             "prominence": 0.180303
+          },
+          {
+            "key": "hcmc",
+            "role": "mention",
+            "prominence": 0.15
           },
           {
             "key": "vietnam",
@@ -4734,48 +5169,39 @@
             "role": "mention",
             "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 27,
+        "primaryOrigins": 1,
+        "unresolvedOrigins": 115,
+        "derivedDocuments": 70
       }
     },
     {
       "ref": "E084",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "title": "Ông Tập tới Mỹ: Thảm đỏ, AI, đình chiến thương mại và rủi ro từ MAGA",
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-24T13:45:42.108Z",
-        "lastSeenAt": "2026-09-27T14:30:42.845Z",
+        "lastSeenAt": "2026-09-27T19:39:16.496Z",
         "claimCount": 27,
         "supportedCount": 0,
         "disputedCount": 1,
         "sourceCount": 43,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T14:30:42.845Z",
+        "lastMaterialAt": "2026-09-27T19:39:16.496Z",
         "independentSourceCount": 242,
         "primaryDocCount": 2,
         "entities": [
           {
-            "key": "xijinping",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "ai",
-            "role": "mention",
-            "prominence": 0.154049
-          },
-          {
-            "key": "taiwan",
-            "role": "mention",
-            "prominence": 0.182389
-          },
-          {
-            "key": "france",
             "role": "mention",
             "prominence": 0.154049
           },
@@ -4790,11 +5216,6 @@
             "prominence": 0.9
           },
           {
-            "key": "iran",
-            "role": "mention",
-            "prominence": 0.230972
-          },
-          {
             "key": "china",
             "role": "actor",
             "prominence": 0.7
@@ -4805,11 +5226,35 @@
             "prominence": 0.162146
           },
           {
+            "key": "xijinping",
+            "role": "subject",
+            "prominence": 0.9
+          },
+          {
+            "key": "taiwan",
+            "role": "mention",
+            "prominence": 0.182389
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.154049
+          },
+          {
+            "key": "iran",
+            "role": "mention",
+            "prominence": 0.230972
+          },
+          {
             "key": "trump",
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 31,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 84,
+        "derivedDocuments": 11
       }
     },
     {
@@ -4835,6 +5280,16 @@
         "primaryDocCount": 0,
         "entities": [
           {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.240909
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.240909
+          },
+          {
             "key": "palestine",
             "role": "mention",
             "prominence": 0.263636
@@ -4855,16 +5310,6 @@
             "prominence": 0.15
           },
           {
-            "key": "us",
-            "role": "mention",
-            "prominence": 0.240909
-          },
-          {
-            "key": "unga",
-            "role": "mention",
-            "prominence": 0.240909
-          },
-          {
             "key": "netanyahu",
             "role": "actor",
             "prominence": 0.7
@@ -4874,7 +5319,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 17,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 8,
+        "derivedDocuments": 1
       }
     },
     {
@@ -4900,11 +5349,6 @@
         "primaryDocCount": 4,
         "entities": [
           {
-            "key": "danang",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
             "key": "hanoi",
             "role": "mention",
             "prominence": 0.221429
@@ -4928,15 +5372,27 @@
             "key": "cambodia",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "danang",
+            "role": "mention",
+            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 7,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 18,
+        "derivedDocuments": 1
       }
     },
     {
       "ref": "E087",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A", "B"],
+      "relevantTo": [
+        "A",
+        "B"
+      ],
       "data": {
         "id": "01a0e2e4-3d35-761a-92c0-ae77b1107850",
         "title": "Giá vàng giảm mạnh, người mua lỗ hơn 6 triệu đồng/lượng chỉ sau 1 tuần",
@@ -4953,7 +5409,11 @@
         "lastMaterialAt": "2026-09-27T12:43:23.877Z",
         "independentSourceCount": 4,
         "primaryDocCount": 1,
-        "entities": []
+        "entities": [],
+        "independentOrigins": 1,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 3,
+        "derivedDocuments": 0
       }
     },
     {
@@ -4979,11 +5439,6 @@
         "primaryDocCount": 0,
         "entities": [
           {
-            "key": "ireland",
-            "role": "actor",
-            "prominence": 0.7
-          },
-          {
             "key": "pm",
             "role": "mention",
             "prominence": 0.292857
@@ -4992,8 +5447,17 @@
             "key": "uk",
             "role": "actor",
             "prominence": 0.7
+          },
+          {
+            "key": "ireland",
+            "role": "actor",
+            "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 4,
+        "derivedDocuments": 0
       }
     },
     {
@@ -5038,14 +5502,20 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 4,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 14,
+        "derivedDocuments": 13
       }
     },
     {
       "ref": "E090",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e184-f54c-7daf-96ac-ca668987fe38",
         "title": "Tạo cơ chế để một đồng vốn đầu tư tạo nhiều vòng giá trị",
@@ -5064,14 +5534,14 @@
         "primaryDocCount": 4,
         "entities": [
           {
-            "key": "us",
-            "role": "mention",
-            "prominence": 0.326471
-          },
-          {
             "key": "lam",
             "role": "mention",
             "prominence": 0.35
+          },
+          {
+            "key": "us",
+            "role": "mention",
+            "prominence": 0.326471
           },
           {
             "key": "hanoi",
@@ -5088,14 +5558,20 @@
             "role": "mention",
             "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 7,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 15,
+        "derivedDocuments": 9
       }
     },
     {
       "ref": "E091",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e182-0bd0-7e12-a4c9-b535b95ede43",
         "title": "[INFOGRAPHIC] 5,7 tỷ USD vào các khu chế xuất, khu công nghiệp TP.HCM",
@@ -5123,7 +5599,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 8,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 19,
+        "derivedDocuments": 4
       }
     },
     {
@@ -5148,6 +5628,11 @@
         "independentSourceCount": 50,
         "primaryDocCount": 3,
         "entities": [
+          {
+            "key": "vietnam",
+            "role": "actor",
+            "prominence": 0.7
+          },
           {
             "key": "pm",
             "role": "mention",
@@ -5192,20 +5677,21 @@
             "key": "philippines",
             "role": "mention",
             "prominence": 0.15
-          },
-          {
-            "key": "vietnam",
-            "role": "actor",
-            "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 5,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 38,
+        "derivedDocuments": 5
       }
     },
     {
       "ref": "E093",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e335-42c9-7cc7-9184-6588ec172c91",
         "title": "Nâng tầm hợp tác an ninh toàn cầu, bảo vệ Tổ quốc từ sớm, từ xa",
@@ -5244,11 +5730,6 @@
             "prominence": 0.35
           },
           {
-            "key": "unga",
-            "role": "mention",
-            "prominence": 0.331818
-          },
-          {
             "key": "us",
             "role": "mention",
             "prominence": 0.195455
@@ -5257,8 +5738,17 @@
             "key": "vietnam",
             "role": "mention",
             "prominence": 0.15
+          },
+          {
+            "key": "unga",
+            "role": "mention",
+            "prominence": 0.331818
           }
-        ]
+        ],
+        "independentOrigins": 11,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 8,
+        "derivedDocuments": 1
       }
     },
     {
@@ -5272,14 +5762,14 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-25T14:43:15.266Z",
-        "lastSeenAt": "2026-09-27T19:13:07.419Z",
-        "claimCount": 12,
+        "lastSeenAt": "2026-09-27T19:58:50.112Z",
+        "claimCount": 15,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 26,
         "primaryCount": 0,
-        "lastMaterialType": "new_claim",
-        "lastMaterialAt": "2026-09-27T19:13:07.419Z",
+        "lastMaterialType": "new_independent_evidence",
+        "lastMaterialAt": "2026-09-27T19:58:50.112Z",
         "independentSourceCount": 69,
         "primaryDocCount": 0,
         "entities": [
@@ -5291,12 +5781,22 @@
           {
             "key": "drone",
             "role": "mention",
-            "prominence": 0.206338
+            "prominence": 0.202632
+          },
+          {
+            "key": "israel",
+            "role": "mention",
+            "prominence": 0.176316
+          },
+          {
+            "key": "colombia",
+            "role": "subject",
+            "prominence": 0.9
           },
           {
             "key": "russia",
             "role": "mention",
-            "prominence": 0.178169
+            "prominence": 0.176316
           },
           {
             "key": "saudi",
@@ -5311,7 +5811,12 @@
           {
             "key": "oil",
             "role": "mention",
-            "prominence": 0.178169
+            "prominence": 0.176316
+          },
+          {
+            "key": "france",
+            "role": "mention",
+            "prominence": 0.176316
           },
           {
             "key": "middleeast",
@@ -5319,31 +5824,20 @@
             "prominence": 0.15
           },
           {
-            "key": "france",
-            "role": "mention",
-            "prominence": 0.178169
-          },
-          {
-            "key": "israel",
-            "role": "mention",
-            "prominence": 0.178169
-          },
-          {
-            "key": "colombia",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "trump",
             "role": "mention",
-            "prominence": 0.164085
+            "prominence": 0.176316
           },
           {
             "key": "us",
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 19,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 26,
+        "derivedDocuments": 7
       }
     },
     {
@@ -5378,7 +5872,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 9,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 1,
+        "derivedDocuments": 0
       }
     },
     {
@@ -5392,7 +5890,7 @@
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T00:25:03.292Z",
-        "lastSeenAt": "2026-09-27T18:45:48.738Z",
+        "lastSeenAt": "2026-09-27T20:05:33.388Z",
         "claimCount": 7,
         "supportedCount": 0,
         "disputedCount": 0,
@@ -5406,12 +5904,22 @@
           {
             "key": "laocai",
             "role": "mention",
-            "prominence": 0.175
+            "prominence": 0.17439
           },
           {
             "key": "laos",
             "role": "mention",
-            "prominence": 0.175
+            "prominence": 0.17439
+          },
+          {
+            "key": "haiphong",
+            "role": "mention",
+            "prominence": 0.320732
+          },
+          {
+            "key": "hanoi",
+            "role": "mention",
+            "prominence": 0.223171
           },
           {
             "key": "song_hong",
@@ -5421,19 +5929,13 @@
           {
             "key": "hcmc",
             "role": "mention",
-            "prominence": 0.175
-          },
-          {
-            "key": "haiphong",
-            "role": "mention",
-            "prominence": 0.325
-          },
-          {
-            "key": "hanoi",
-            "role": "mention",
-            "prominence": 0.2
+            "prominence": 0.17439
           }
-        ]
+        ],
+        "independentOrigins": 9,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 25,
+        "derivedDocuments": 3
       }
     },
     {
@@ -5468,28 +5970,34 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 6,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 2,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E098",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "title": "FPT hiến kế đào tạo nhân tài cho các công nghệ chiến lược",
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-27T10:09:40.913Z",
-        "lastSeenAt": "2026-09-27T18:49:11.851Z",
+        "lastSeenAt": "2026-09-27T20:07:12.196Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 8,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T18:49:11.851Z",
+        "lastMaterialAt": "2026-09-27T20:07:12.196Z",
         "independentSourceCount": 13,
         "primaryDocCount": 1,
         "entities": [
@@ -5508,7 +6016,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 6,
+        "derivedDocuments": 4
       }
     },
     {
@@ -5548,14 +6060,20 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 7,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 2,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E100",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e2e3-2ffa-73fd-9e52-c9273e52a82e",
         "title": "Hải Phòng dự kiến chi hơn 22.600 tỷ đồng xây dựng tuyến đường kết nối Đông Tây",
@@ -5598,7 +6116,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 2,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 4,
+        "derivedDocuments": 0
       }
     },
     {
@@ -5633,7 +6155,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 1,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 4,
+        "derivedDocuments": 1
       }
     },
     {
@@ -5688,7 +6214,11 @@
             "role": "mention",
             "prominence": 0.292857
           }
-        ]
+        ],
+        "independentOrigins": 6,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 0,
+        "derivedDocuments": 0
       }
     },
     {
@@ -5723,7 +6253,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 3,
+        "derivedDocuments": 1
       }
     },
     {
@@ -5763,28 +6297,34 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 19,
+        "derivedDocuments": 3
       }
     },
     {
       "ref": "E105",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0dfae-940b-7da0-aa12-4cdfb1836edb",
         "title": "Trade deliverables, Taiwan push and ‘strategic stability’: key Xi-Trump takeaways overall",
         "status": "emerging",
         "topic": "world",
         "firstSeenAt": "2026-09-26T21:45:55.360Z",
-        "lastSeenAt": "2026-09-27T18:55:28.227Z",
+        "lastSeenAt": "2026-09-27T20:13:49.688Z",
         "claimCount": 0,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 10,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T18:55:28.227Z",
+        "lastMaterialAt": "2026-09-27T20:13:49.688Z",
         "independentSourceCount": 15,
         "primaryDocCount": 0,
         "entities": [
@@ -5799,23 +6339,29 @@
             "prominence": 0.9
           },
           {
-            "key": "xijinping",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
             "key": "us",
             "role": "actor",
             "prominence": 0.7
+          },
+          {
+            "key": "xijinping",
+            "role": "mention",
+            "prominence": 0.15
           }
-        ]
+        ],
+        "independentOrigins": 8,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 3,
+        "derivedDocuments": 2
       }
     },
     {
       "ref": "E106",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
         "title": "Chủ tịch Tập Cận Bình đến Mỹ: Tổng thống Donald Trump ra sân bay đón, 'lằn ranh đỏ' Đài Loan và Iran",
@@ -5889,11 +6435,6 @@
             "prominence": 0.181325
           },
           {
-            "key": "trump",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "xijinping",
             "role": "subject",
             "prominence": 0.9
@@ -5902,8 +6443,17 @@
             "key": "macron",
             "role": "mention",
             "prominence": 0.154819
+          },
+          {
+            "key": "trump",
+            "role": "subject",
+            "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 54,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 258,
+        "derivedDocuments": 38
       }
     },
     {
@@ -5938,7 +6488,11 @@
             "role": "mention",
             "prominence": 0.196512
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 54,
+        "derivedDocuments": 28
       }
     },
     {
@@ -5969,11 +6523,6 @@
             "prominence": 0.9
           },
           {
-            "key": "ukraine",
-            "role": "subject",
-            "prominence": 0.9
-          },
-          {
             "key": "pm",
             "role": "mention",
             "prominence": 0.170833
@@ -5992,15 +6541,26 @@
             "key": "drone",
             "role": "subject",
             "prominence": 0.9
+          },
+          {
+            "key": "ukraine",
+            "role": "subject",
+            "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 9,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 7,
+        "derivedDocuments": 4
       }
     },
     {
       "ref": "E109",
       "kind": "event",
       "q": "background",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e2b9-d651-7b94-b61c-29ad8be85213",
         "title": "Ô nhiễm không khí tại Việt Nam: Biến chính sách thành hành động",
@@ -6028,7 +6588,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 1,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 2,
+        "derivedDocuments": 1
       }
     },
     {
@@ -6073,7 +6637,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 0,
+        "derivedDocuments": 0
       }
     },
     {
@@ -6118,7 +6686,11 @@
             "role": "subject",
             "prominence": 0.9
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 8,
+        "derivedDocuments": 3
       }
     },
     {
@@ -6153,7 +6725,11 @@
             "role": "mention",
             "prominence": 0.275
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 3,
+        "derivedDocuments": 3
       }
     },
     {
@@ -6213,7 +6789,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 3,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 23,
+        "derivedDocuments": 0
       }
     },
     {
@@ -6248,7 +6828,11 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 7,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 5,
+        "derivedDocuments": 0
       }
     },
     {
@@ -6283,14 +6867,20 @@
             "role": "actor",
             "prominence": 0.7
           }
-        ]
+        ],
+        "independentOrigins": 4,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 0,
+        "derivedDocuments": 0
       }
     },
     {
       "ref": "E116",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0dfc5-0ee9-7e98-97df-130e6ddca89a",
         "title": "Lãnh đạo Mỹ - Trung đã bàn những gì tại cuộc gặp thượng đỉnh?",
@@ -6343,14 +6933,20 @@
             "role": "mention",
             "prominence": 0.179412
           }
-        ]
+        ],
+        "independentOrigins": 15,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 12,
+        "derivedDocuments": 5
       }
     },
     {
       "ref": "E117",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0e182-4ea3-7dee-aebc-8160629f7e86",
         "title": "Vi phạm trong lĩnh vực báo chí có thể bị phạt đến 500 triệu đồng",
@@ -6367,28 +6963,34 @@
         "lastMaterialAt": "2026-09-27T06:16:48.552Z",
         "independentSourceCount": 3,
         "primaryDocCount": 1,
-        "entities": []
+        "entities": [],
+        "independentOrigins": 0,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 2,
+        "derivedDocuments": 1
       }
     },
     {
       "ref": "E118",
       "kind": "event",
       "q": "useful",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d789-101b-70b2-bad9-a1da266ee752",
         "title": "Thương mại Việt Nam-Malaysia hướng tới mốc 20 tỷ USD",
         "status": "emerging",
         "topic": "vietnam",
         "firstSeenAt": "2026-09-25T07:47:59.130Z",
-        "lastSeenAt": "2026-09-27T18:58:01.505Z",
+        "lastSeenAt": "2026-09-27T20:16:59.698Z",
         "claimCount": 7,
         "supportedCount": 0,
         "disputedCount": 0,
         "sourceCount": 23,
         "primaryCount": 0,
         "lastMaterialType": "new_independent_evidence",
-        "lastMaterialAt": "2026-09-27T18:58:01.505Z",
+        "lastMaterialAt": "2026-09-27T20:16:59.698Z",
         "independentSourceCount": 87,
         "primaryDocCount": 4,
         "entities": [
@@ -6413,29 +7015,9 @@
             "prominence": 0.264943
           },
           {
-            "key": "laocai",
-            "role": "mention",
-            "prominence": 0.15
-          },
-          {
-            "key": "laos",
-            "role": "mention",
-            "prominence": 0.161494
-          },
-          {
             "key": "malaysia",
             "role": "subject",
             "prominence": 0.9
-          },
-          {
-            "key": "philippines",
-            "role": "mention",
-            "prominence": 0.276437
-          },
-          {
-            "key": "quangtri",
-            "role": "mention",
-            "prominence": 0.172989
           },
           {
             "key": "vietnam",
@@ -6448,23 +7030,49 @@
             "prominence": 0.35
           },
           {
-            "key": "aseancup",
-            "role": "mention",
-            "prominence": 0.35
-          },
-          {
             "key": "kimsangsik",
             "role": "mention",
             "prominence": 0.207471
+          },
+          {
+            "key": "laocai",
+            "role": "mention",
+            "prominence": 0.15
+          },
+          {
+            "key": "laos",
+            "role": "mention",
+            "prominence": 0.161494
+          },
+          {
+            "key": "philippines",
+            "role": "mention",
+            "prominence": 0.276437
+          },
+          {
+            "key": "quangtri",
+            "role": "mention",
+            "prominence": 0.172989
+          },
+          {
+            "key": "aseancup",
+            "role": "mention",
+            "prominence": 0.35
           }
-        ]
+        ],
+        "independentOrigins": 17,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 29,
+        "derivedDocuments": 9
       }
     },
     {
       "ref": "E119",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": ["A"],
+      "relevantTo": [
+        "A"
+      ],
       "data": {
         "id": "01a0d3aa-015a-771e-9c56-3370111f97ef",
         "title": "Biểu cảm trái ngược của ông Trump và ông Tập khi oanh tạc cơ B-1 lướt qua",
@@ -6518,17 +7126,7 @@
             "prominence": 0.165831
           },
           {
-            "key": "china",
-            "role": "mention",
-            "prominence": 0.35
-          },
-          {
             "key": "japan",
-            "role": "mention",
-            "prominence": 0.172427
-          },
-          {
-            "key": "indonesia",
             "role": "mention",
             "prominence": 0.172427
           },
@@ -6581,8 +7179,22 @@
             "key": "kimsangsik",
             "role": "mention",
             "prominence": 0.159235
+          },
+          {
+            "key": "china",
+            "role": "mention",
+            "prominence": 0.35
+          },
+          {
+            "key": "indonesia",
+            "role": "mention",
+            "prominence": 0.172427
           }
-        ]
+        ],
+        "independentOrigins": 51,
+        "primaryOrigins": 0,
+        "unresolvedOrigins": 280,
+        "derivedDocuments": 46
       }
     }
   ]

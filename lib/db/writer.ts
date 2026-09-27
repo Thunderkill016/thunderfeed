@@ -16,6 +16,14 @@
 import { createHash } from "node:crypto";
 import type { PoolClient } from "pg";
 import { getPool, toJsonb, canonValue } from "./pool";
+import {
+  computeClaimState,
+  latestVotes,
+  positionsFromVotes,
+  posKey,
+  rankWinner,
+  type Position,
+} from "./positions";
 import { normalizeText } from "../model";
 import { canonicalSourceName, mediaInfoFor } from "../mediaData";
 import { entitySignature, extractEntities, canonicalEntity } from "../entities";
@@ -1340,9 +1348,11 @@ async function flushChanges(
 /** claim_change_type → the change record it produces (null = version only) */
 const CHANGE_RECORD: Record<string, string> = {
   confirmed: "claim_confirmed",
+  supported: "claim_supported",
   disputed: "claim_disputed",
   corrected: "claim_corrected",
   retracted: "claim_retracted",
+  unresolved: "claim_updated",
   value_changed: "claim_updated",
 };
 
@@ -1354,36 +1364,10 @@ const mapState = (s: string) =>
     ? s
     : null;
 
-/**
- * Position identity = value + unit. A unit change is a real change —
- * "4 %" and "4 basis_points" are different facts, never one position.
- */
-const posKey = (value: unknown, unit: string | null | undefined) =>
-  toJsonb({ v: canonValue(value) ?? null, u: unit || null });
-
-/**
- * One live position inside a claim: a value, the newest version carrying
- * it, and the set of sources whose LATEST assertion equals it.
- * A source that revises its number moves its vote — history keeps the
- * old assertion but the position loses the supporter.
- */
-interface Position {
-  valueJson: string;
-  /** newest claim_version carrying this value */
-  versionId: string;
-  versionNo: number;
-  /** sources whose latest assertion is this value */
-  sources: Set<string>;
-  hasPrimary: boolean;
-  /** newest evidence-time among supporters */
-  latestAt: number;
-  /**
-   * newest evidence-time among PRIMARY supporters only — the winner key
-   * between primary positions. A publisher corroborating an old value
-   * after a newer primary assertion must not pull recency back.
-   */
-  latestPrimaryAt: number;
-}
+/* Position identity + live-position machinery now lives in
+ * ./positions.ts — shared verbatim with the batch adjudicator so ingest
+ * and backfill compute the same claim truth. A unit change is still a
+ * real change: "4 %" and "4 basis_points" are different facts. */
 
 /**
  * Upsert one extracted claim against the event's truth-state.
@@ -1524,69 +1508,31 @@ async function upsertClaim(
     [cur.id],
   );
 
-  const latestVote = new Map<
-    string,
-    {
-      valueJson: string;
-      unit: string | null;
-      pos: string;
-      versionNo: number;
-      state: string;
-      primary: boolean;
-      at: number;
-    }
-  >();
-  const sortedVotes = [...votes.rows].sort(
-    (a, b) =>
-      Date.parse(a.vote_at) - Date.parse(b.vote_at) ||
-      a.version_no - b.version_no,
-  );
-  for (const v of sortedVotes) {
-    latestVote.set(v.name, {
+  const latestVote = latestVotes(
+    votes.rows.map((v) => ({
+      voter: v.name,
+      pos: posKey(v.value, v.unit),
       valueJson: toJsonb(v.value),
       unit: v.unit,
-      pos: posKey(v.value, v.unit),
       versionNo: v.version_no,
       state: v.state,
       primary: v.strength === "direct",
       at: Date.parse(v.vote_at),
-    });
-  }
+    })),
+  );
 
-  const positions = new Map<string, Position>();
   let maxVersionNo = 0;
-  for (const ver of vers.rows) {
+  for (const ver of vers.rows)
     maxVersionNo = Math.max(maxVersionNo, ver.version_no);
-    const vj = toJsonb(ver.value);
-    const pk = posKey(ver.value, ver.unit);
-    const p =
-      positions.get(pk) ??
-      ({
-        valueJson: vj,
-        versionId: ver.id,
-        versionNo: 0,
-        sources: new Set(),
-        hasPrimary: false,
-        latestAt: 0,
-        latestPrimaryAt: 0,
-      } satisfies Position);
-    if (ver.version_no > p.versionNo) {
-      p.versionId = ver.id;
-      p.versionNo = ver.version_no;
-    }
-    positions.set(pk, p);
-  }
-  for (const [src, vote] of latestVote) {
-    const p = positions.get(vote.pos);
-    if (p) {
-      p.sources.add(src);
-      if (vote.primary) {
-        p.hasPrimary = true;
-        p.latestPrimaryAt = Math.max(p.latestPrimaryAt, vote.at);
-      }
-      p.latestAt = Math.max(p.latestAt, vote.at);
-    }
-  }
+  const positions = positionsFromVotes(
+    latestVote,
+    vers.rows.map((ver) => ({
+      id: ver.id,
+      version_no: ver.version_no,
+      pos: posKey(ver.value, ver.unit),
+      valueJson: toJsonb(ver.value),
+    })),
+  );
 
   const priorVote = latestVote.get(voter);
   const priorVoteJson = priorVote?.valueJson ?? null;
@@ -1698,10 +1644,11 @@ async function upsertClaim(
     const p =
       positions.get(claimPos) ??
       ({
+        pos: claimPos,
         valueJson,
         versionId: mintedId,
         versionNo: 0,
-        sources: new Set(),
+        origins: new Set(),
         hasPrimary: false,
         latestAt: 0,
         latestPrimaryAt: 0,
@@ -1715,14 +1662,14 @@ async function upsertClaim(
   // (a self-correction withdraws support for the earlier figure).
   // A stale assertion moves nothing: the source stays at its newest vote.
   if (!stale && priorPos !== null && priorPos !== claimPos) {
-    positions.get(priorPos)?.sources.delete(voter);
+    positions.get(priorPos)?.origins.delete(voter);
   }
   const votePos = positions.get(claimPos);
   if (votePos && !stale) {
     const assertedAtMs = claim.assertedAt
       ? Date.parse(claim.assertedAt)
       : Date.parse(now);
-    votePos.sources.add(voter);
+    votePos.origins.add(voter);
     if (isPrimary) {
       votePos.hasPrimary = true;
       votePos.latestPrimaryAt = Math.max(votePos.latestPrimaryAt, assertedAtMs);
@@ -1731,25 +1678,14 @@ async function upsertClaim(
   }
 
   /* ---- deterministic winner: never order-dependent ---- */
-  // live positions = values holding at least one current supporter
-  const livePositions = [...positions.values()].filter(
-    (p) => p.sources.size > 0,
-  );
-  // every supporter retracted — fall back to the newest position so the
-  // claim still has a standing version (the retraction itself)
-  const ranked = livePositions.length ? livePositions : [...positions.values()];
-  const primaryPos = ranked.filter((p) => p.hasPrimary);
-  const winner = primaryPos.length
-    ? primaryPos.sort(
-        (a, b) =>
-          b.latestPrimaryAt - a.latestPrimaryAt ||
-          a.valueJson.localeCompare(b.valueJson),
-      )[0]
-    : ranked.sort(
-        (a, b) =>
-          b.sources.size - a.sources.size ||
-          a.valueJson.localeCompare(b.valueJson),
-      )[0];
+  const winner = rankWinner([...positions.values()]);
+  // a claim always has ≥1 version → ≥1 position; defensive no-op
+  if (!winner)
+    return {
+      claimId: cur.id,
+      claimVersionId: cur.current_version_id,
+      change: null,
+    };
 
   // vers was fetched before this call's mint — a winner minted this round
   // isn't in the snapshot, so synthesize its row from what we just wrote
@@ -1765,23 +1701,19 @@ async function upsertClaim(
           change_type: mint!.changeType,
         }
       : vers.rows.find((v) => v.id === winner.versionId);
-  const soleTerminal =
-    livePositions.length === 1 &&
-    (winnerVer?.state === "corrected" || winnerVer?.state === "retracted")
-      ? winnerVer.state
-      : null;
-  const computedState =
-    soleTerminal ??
-    (winner.hasPrimary
-      ? "confirmed"
-      : livePositions.length > 1
-        ? "disputed"
-        : "reported");
+  const computedState = computeClaimState({
+    positions: [...positions.values()],
+    winnerVersionState: winnerVer?.state,
+  });
 
   /* ---- converge current_version_id to the winner ---- */
   let currentVersionId = winner.versionId;
   if (winnerVer && winnerVer.state !== computedState) {
     // upgrade-only state mints: reported→confirmed, →disputed.
+    // 'supported' is deliberately NOT minted here: ingest votes by
+    // source name, and a wire reprint under a different outlet would
+    // inflate origin count — corroboration-tier escalation is owned by
+    // the batch adjudicator which votes by LINEAGE ROOT.
     // never mint silent downgrades (disputed→reported) — resolution is
     // recorded by whichever version actually settles the dispute.
     // The version always mints (it IS the truth state); the change row

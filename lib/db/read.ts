@@ -152,10 +152,14 @@ const DERIVED_RELS = new Set([
 type LinEdge = { parent: string | null; relation: string };
 type DocRow = { doc_id: string; source_id: string; kind: string };
 
-/** Effective lineage root per doc — re-pointed docs re-root descendants. */
-function effectiveRoots(
+/** Effective lineage root per doc — re-pointed docs re-root descendants.
+ *  `known` supplements root/source lookup for parents outside the doc
+ *  pool (a wire doc attached to event X whose origin only sits on event
+ *  Y is still a resolvable origin, not dangling provenance). */
+export function effectiveRoots(
   docs: DocRow[],
   latestLin: Map<string, LinEdge>,
+  known?: Map<string, DocRow>,
 ): {
   rootIds: Set<string>;
   confirmedIndependentOrigins: number;
@@ -163,7 +167,8 @@ function effectiveRoots(
   derivedDocuments: number;
   unresolvedOrigins: number;
 } {
-  const docById = new Map(docs.map((r) => [r.doc_id, r]));
+  const docById = new Map(known ?? docs.map((r) => [r.doc_id, r]));
+  for (const r of docs) docById.set(r.doc_id, r);
   // dangling = the walk could not be verified INSIDE this doc set —
   // root outside the pool, a derivation cycle, or the depth cap. A
   // dangling origin is unknowable; it must count as unresolved or the
@@ -213,7 +218,9 @@ function effectiveRoots(
 }
 
 /** Latest lineage edge per child doc — shared by view + batch paths. */
-async function latestLineage(docIds: string[]): Promise<Map<string, LinEdge>> {
+export async function latestLineage(
+  docIds: string[],
+): Promise<Map<string, LinEdge>> {
   const latestLin = new Map<string, LinEdge>();
   if (!docIds.length) return latestLin;
   const linR = await getPool().query<{
@@ -234,6 +241,91 @@ async function latestLineage(docIds: string[]): Promise<Map<string, LinEdge>> {
       relation: r.relation,
     });
   return latestLin;
+}
+
+export interface EventEvidenceStats {
+  /** every attached outlet — coverage, not independence */
+  rawSourceCount: number;
+  docCount: number;
+  /** distinct root sources whose latest relation is 'original' */
+  confirmedIndependentOrigins: number;
+  /** roots whose source kind is 'primary' */
+  primaryOrigins: number;
+  /** docs derived from a root (syndicated/rewritten/quoted/pr) */
+  derivedDocuments: number;
+  /** unknown lineage or dangling root — provenance not verified */
+  unresolvedOrigins: number;
+}
+
+/**
+ * Batch lineage-root stats per event — THE canonical evidence-strength
+ * read. Walks lineage closures so parents sitting on other events still
+ * resolve (their roots are real origins, just out of this event's pool).
+ */
+export async function getEventEvidenceStats(
+  eventIds: string[],
+): Promise<Map<string, EventEvidenceStats>> {
+  const out = new Map<string, EventEvidenceStats>();
+  if (!eventIds.length) return out;
+  const pool = getPool();
+  const docR = await pool.query<{
+    event_id: string;
+    doc_id: string;
+    source_id: string;
+    kind: string;
+  }>(
+    `SELECT DISTINCT ee.event_id, ed.id AS doc_id, ed.source_id, s.kind
+       FROM event_evidence ee
+       JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
+       JOIN evidence_documents ed ON ed.id = ev.document_id
+       JOIN sources s ON s.id = ed.source_id
+      WHERE ee.event_id = ANY($1)`,
+    [eventIds],
+  );
+  const byEvent = new Map<string, DocRow[]>();
+  const known = new Map<string, DocRow>();
+  for (const r of docR.rows) {
+    if (!byEvent.has(r.event_id)) byEvent.set(r.event_id, []);
+    byEvent.get(r.event_id)!.push(r);
+    known.set(r.doc_id, r);
+  }
+  /* lineage closure: follow parents up to the walk depth so roots
+   * outside the attached pool still carry source/kind (not dangling) */
+  const latestLin = new Map<string, LinEdge>();
+  let frontier = [...known.keys()];
+  for (let depth = 0; depth < 8 && frontier.length; depth++) {
+    const edges = await latestLineage(frontier);
+    const missing = new Set<string>();
+    for (const [child, e] of edges) {
+      latestLin.set(child, e);
+      if (e.parent && !known.has(e.parent)) missing.add(e.parent);
+    }
+    if (!missing.size) break;
+    const pr = await pool.query<{
+      doc_id: string;
+      source_id: string;
+      kind: string;
+    }>(
+      `SELECT ed.id AS doc_id, ed.source_id, s.kind
+         FROM evidence_documents ed JOIN sources s ON s.id = ed.source_id
+        WHERE ed.id = ANY($1)`,
+      [[...missing]],
+    );
+    for (const d of pr.rows) known.set(d.doc_id, d);
+    frontier = pr.rows.map((d) => d.doc_id);
+  }
+  for (const [eventId, docs] of byEvent) {
+    const s = effectiveRoots(docs, latestLin, known);
+    out.set(eventId, {
+      rawSourceCount: new Set(docs.map((d) => d.source_id)).size,
+      docCount: docs.length,
+      confirmedIndependentOrigins: s.confirmedIndependentOrigins,
+      primaryOrigins: s.primaryOrigins,
+      derivedDocuments: s.derivedDocuments,
+      unresolvedOrigins: s.unresolvedOrigins,
+    });
+  }
+  return out;
 }
 
 export async function getEventView(eventId: string): Promise<EventView | null> {
@@ -1717,15 +1809,18 @@ export interface EventListItem {
   firstSeenAt: string;
   lastSeenAt: string;
   claimCount: number;
+  /** raw attached outlets — coverage metadata, never independence */
   sourceCount: number;
-  /** distinct PRIMARY sources attached — wire reprints don't count here */
-  primaryCount: number;
-  /** distinct INDEPENDENCE groups — one wire reprinted by 15 outlets
-   *  counts once (R6); falls back to sourceCount when unclassified */
-  independentSourceCount: number;
-  /** docs carrying primary evidence themselves (official record /
-   *  government domain), regardless of the source's overall kind */
-  primaryDocCount: number;
+  /** lineage roots whose latest relation is 'original' — distinct
+   *  root sources = real independent origins */
+  independentOrigins: number;
+  /** lineage roots whose source kind is 'primary' */
+  primaryOrigins: number;
+  /** docs with unknown lineage or a dangling root — provenance not
+   *  verified; a majority here must cap evidence confidence */
+  unresolvedOrigins: number;
+  /** docs derived from a root (wire/rewrite/quote/press-release) */
+  derivedDocuments: number;
   /** claims whose current version reached supported/confirmed */
   supportedCount: number;
   /** claims whose current version is disputed — an evidence penalty */
@@ -1792,56 +1887,11 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
     ]),
   );
 
-  /* independent evidence ≠ outlet count: a wire reprinted by 15 outlets
-   * is ONE origin (independence_key collapses same-title clusters);
-   * unclassified docs keep their source as the group so coverage still
-   * counts. Primary docs are detected per-document, not per-source. */
-  const srcQ = await pool.query<{
-    event_id: string;
-    c: string;
-    indep: string;
-    prim: string;
-    primdoc: string;
-  }>(
-    `SELECT ee.event_id,
-            COUNT(DISTINCT ed.source_id) AS c,
-            /* independent origins = whichever bound is smaller: outlets
-             * cap independence (same wire on 15 outlets → 1 cluster → 1),
-             * clusters cap it the other way (one outlet can't be more
-             * independent than its distinct stories). Unclassified docs
-             * group per-source so coverage still counts once per outlet. */
-            LEAST(
-              COUNT(DISTINCT ed.source_id),
-              COUNT(DISTINCT COALESCE(ed.independence_key,
-                                      ed.source_id::text))
-            ) AS indep,
-            COUNT(DISTINCT ed.source_id) FILTER (WHERE s.kind = 'primary')
-              AS prim,
-            COUNT(DISTINCT ed.id) FILTER (
-              WHERE s.kind = 'primary'
-                 OR ed.document_type IN ('legal_document','press_release',
-                                         'transcript','dataset')
-                 OR ed.canonical_url ~* 'https?://[^/]*(gov\\.vn|sbv\\.gov|mof\\.gov|quochoi\\.vn|toaan\\.gov|congan\\.com\\.vn|nhandan\\.(vn|com)|chinhphu\\.vn)'
-            ) AS primdoc
-     FROM event_evidence ee
-     JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
-     JOIN evidence_documents ed ON ed.id = ev.document_id
-     JOIN sources s ON s.id = ed.source_id
-     WHERE ee.event_id = ANY($1)
-     GROUP BY ee.event_id`,
-    [ids],
-  );
-  const sourceCount = new Map(
-    srcQ.rows.map((r) => [
-      r.event_id,
-      {
-        c: Number(r.c),
-        indep: Number(r.indep),
-        primary: Number(r.prim),
-        primdoc: Number(r.primdoc),
-      },
-    ]),
-  );
+  /* independent evidence = lineage roots, not outlet counts and not
+   * title clusters: a wire reprinted by 15 outlets resolves to ONE
+   * origin via evidence_lineage; unresolved provenance is reported
+   * separately instead of being silently counted as independent */
+  const evidenceStats = await getEventEvidenceStats(ids);
 
   /* R6c: entity roles — mention rows carry near-zero prominence and
    * must not feed entityImportance/geo matching downstream */
@@ -1891,10 +1941,12 @@ export async function getRecentEvents(limit = 30): Promise<EventListItem[]> {
       claimCount: claimCount.get(e.id)?.c ?? 0,
       supportedCount: claimCount.get(e.id)?.supported ?? 0,
       disputedCount: claimCount.get(e.id)?.disputed ?? 0,
-      sourceCount: sourceCount.get(e.id)?.c ?? 0,
-      independentSourceCount: sourceCount.get(e.id)?.indep ?? 0,
-      primaryCount: sourceCount.get(e.id)?.primary ?? 0,
-      primaryDocCount: sourceCount.get(e.id)?.primdoc ?? 0,
+      sourceCount: evidenceStats.get(e.id)?.rawSourceCount ?? 0,
+      independentOrigins:
+        evidenceStats.get(e.id)?.confirmedIndependentOrigins ?? 0,
+      primaryOrigins: evidenceStats.get(e.id)?.primaryOrigins ?? 0,
+      unresolvedOrigins: evidenceStats.get(e.id)?.unresolvedOrigins ?? 0,
+      derivedDocuments: evidenceStats.get(e.id)?.derivedDocuments ?? 0,
       entities: entityRows.get(e.id) ?? [],
       lastMaterialType: m?.type,
       lastMaterialAt: m?.detected_at,

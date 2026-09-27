@@ -276,13 +276,20 @@ export function prominentEntities(e: {
   return extractEntities(e.title);
 }
 
-/** Evidence strength 0..1 — NOT coverage. Independent origins and claim
+/** Evidence strength 0..1 — NOT coverage. Lineage origins and claim
  *  adjudication move it; wire-reprint breadth barely does. */
 export function evidenceStrength(e: {
   sourceCount: number;
-  independentSourceCount?: number;
-  primaryCount: number;
-  primaryDocCount?: number;
+  /** confirmed lineage roots ('original' relation). Absent → fall back
+   *  to capped source breadth (pre-lineage rows) */
+  independentOrigins?: number;
+  /** roots whose source kind is 'primary' — authority evidence */
+  primaryOrigins?: number;
+  /** docs whose provenance is unknown/dangling. When they outnumber
+   *  confirmed origins, evidence is capped — a feed full of
+   *  unverifiable reprints can't reach 'strong' */
+  unresolvedOrigins?: number;
+  primaryCount?: number;
   claimCount: number;
   supportedCount: number;
   disputedCount: number;
@@ -293,22 +300,31 @@ export function evidenceStrength(e: {
    *  Disputes stay a ratio: they measure relative conflict */
   const supportedN = Math.min(1, e.supportedCount / 5);
   const disputedRatio = e.disputedCount / claimN;
-  /* independence: unclassified rows fall back to source breadth (lower
-   *  ceiling — raw counts overstate origins). 5 independent outlets is
-   *  saturated; a wire cluster counts once. */
-  const indep = e.independentSourceCount ?? Math.min(e.sourceCount, 5);
-  const primdocs = (e.primaryCount ?? 0) + (e.primaryDocCount ?? 0);
-  const v =
+  /* independence = confirmed lineage roots; rows predating lineage
+   *  classification fall back to source breadth (lower ceiling — raw
+   *  counts overstate origins). 5 independent origins is saturated. */
+  const indep = e.independentOrigins ?? Math.min(e.sourceCount, 5);
+  const prim = (e.primaryOrigins ?? 0) + (e.primaryCount ?? 0);
+  let v =
     0.3 + // baseline: the resolver already clustered it into an event
     0.35 * Math.min(1, indep / 5) +
     /* claim depth = extraction substantiveness, not importance — it
      *  stays inside evidence where it belongs, never in impact */
     0.15 * Math.min(1, e.claimCount / 30) +
-    0.1 * Math.min(1, primdocs) +
+    0.1 * Math.min(1, prim) +
     0.15 * supportedN -
     0.4 * disputedRatio;
-  return Math.max(0, Math.min(1, v));
+  v = Math.max(0, Math.min(1, v));
+  /* unverifiable-majority cap — same direction as confidenceState's
+   *  weak label: more unknowns than confirmed origins means the corpus
+   *  can't prove independence, so evidence stays moderate at best */
+  if ((e.unresolvedOrigins ?? 0) > indep)
+    v = Math.min(v, UNRESOLVED_MAJORITY_CAP);
+  return v;
 }
+
+/** ceiling on evidence when unverified docs outnumber confirmed origins */
+const UNRESOLVED_MAJORITY_CAP = 0.5;
 
 /** Final score 0..100. Relevance is an additive term, not a multiplier:
  *  a watch nudges ordering among comparably-sized items but can never
@@ -479,16 +495,14 @@ export function buildRadarFeed(
       detectedAt: e.lastSeenAt,
       href: `/event/${e.id}`,
       // coverage is context metadata, not confidence — independent
-      // origins are shown separately once clustering has classified them
+      // lineage origins are shown separately when they diverge
       evidence: [
-        e.independentSourceCount > 0 && e.independentSourceCount < e.sourceCount
-          ? `${e.sourceCount} nguồn · ${e.independentSourceCount} độc lập`
+        e.independentOrigins > 0 && e.independentOrigins < e.sourceCount
+          ? `${e.sourceCount} nguồn · ${e.independentOrigins} độc lập`
           : `${e.sourceCount} nguồn`,
         `${e.claimCount} dữ kiện`,
         ...(e.supportedCount > 0 ? [`${e.supportedCount} được xác nhận`] : []),
-        ...(e.primaryCount + (e.primaryDocCount ?? 0) > 0
-          ? [`${e.primaryCount + (e.primaryDocCount ?? 0)} nguồn gốc`]
-          : []),
+        ...(e.primaryOrigins > 0 ? [`${e.primaryOrigins} nguồn gốc`] : []),
         ...(e.disputedCount > 0 ? [`${e.disputedCount} tranh chấp`] : []),
       ],
       related: [],
