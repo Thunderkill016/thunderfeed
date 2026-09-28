@@ -1,0 +1,3 @@
+# Frozen benchmark/test fixtures — formatter churn creates diff noise
+# on generated files; content is produced by scripts, not hand-styled.
+tests/fixtures/*.json
