@@ -93,20 +93,35 @@ Quy tắc chống inflate:
 
 - **Series-measure registry**: mỗi macro series có `measure`
   (`level_index`, `rate_pct`, `price`, `stock`, `flow`,
-  `sentiment_index`) và `role` (`decision` vs `effective` vs `market` vs
-  `release`). Abnormality đo trên observation ĐÃ transform:
-  `rate_pct/sentiment_index` → Δ (pp/points); `level_index/price/stock/
-flow` → pct change. Z-score raw level của trending series (CPI index,
-  PAYEMS, M2, S&P) là bị cấm — nó sản xuất abnormality giả.
+  `sentiment_index`), `role` (`decision` vs `effective` vs `market` vs
+  `release`), và `transform` KHAI BÁO TƯỜNG MINH — không suy từ measure.
+  PAYEMS là canonical case: `measure:'stock'` nhưng `transform:'diff'`
+  (payroll surprise = Δ jobs, không phải %Δ tổng payrolls). Z-score raw
+  level của trending series (CPI index, PAYEMS, M2, S&P) là bị cấm.
+- **History phải as-of safe**: baseline của một print chỉ gồm
+  observations `obs_date < target.obs_date`, ở version tồn tại
+  `vintage_date <= target.vintage_date` (`asOfSeriesHistory`). Revision
+  landing sau target vintage không được leak vào baseline — đó là lý do
+  `macro_point_versions.vintage_date` tồn tại.
 - **Effective rate ≠ policy decision**: `FEDFUNDS` là effective market
   rate trong corridor — một step của nó là observation bất thường, không
   phải "Fed decision". Chỉ series `role=decision` (ví dụ `ECBDFR`) được
   mint reason "policy rate step".
-- **Dividend yield cần price time-consistent**: `priceBasis='pre_ex'`
-  (last close trước ex-date). `priceBasis='latest'` → caution
-  `lookahead_price`, yield không dùng được → `limited`. `cash_amount ≥
-referencePrice` → caution `provider_magnitude_unverified` (artifact
-  kiểu GOOGL 2014 "$567.97 dividend") → `limited`.
+- **Dividend yield cần price time-consistent VÀ convention/currency
+  consistent**: `priceBasis='pre_ex'` (last close trước ex-date) +
+  `priceConvention='as_traded'` (provider_adjusted nhúng split/dividend
+  adjustments — làm yield sai lớn trên dữ liệu lịch sử) + action
+  currency == price currency. `latest` → `lookahead_price`; convention
+  sai → `price_convention_unverified`; currency thiếu →
+  `currency_unverified`; khác nhau → `currency_mismatch`. Bất kỳ điều
+  nào sai → yield unverifiable → `limited`, KHÔNG BAO GIỜ chia hai con
+  số không kiểm chứng được. `cash_amount ≥ referencePrice` →
+  `provider_magnitude_unverified` (artifact kiểu GOOGL 2014 "$567.97
+  dividend") → `limited`.
+- **Index scope theo instrument semantics, không theo asset_class**:
+  prod lưu VN indexes là `asset_class='equity' +
+instrument_type='index'` → scope dùng `isIndex` trước; VN index
+  (HOSE/HNX/UPCOM/VN*) → `vietnam`, không bao giờ `issuer`.
 - **Market-vol baseline out-of-sample**: `trailingVol` = stdev của các
   phiên TRƯỚC signal session — không gồm chính return đang test (in-
   sample sẽ tự phình baseline, tự giảm z).
@@ -114,7 +129,8 @@ referencePrice` → caution `provider_magnitude_unverified` (artifact
   theo priority cố định (`vndirect > tiingo > alphavantage` cho equity,
   `vietcombank > er_api > fawaz > binance > derived` cho FX, `giavang >
 derived` cho commodity, `binance` cho crypto) — KHÔNG chọn provider có
-  |z| lớn nhất (đó là cherry-picking anomaly).
+  |z| lớn nhất (đó là cherry-picking anomaly). CA reference price cũng
+  theo priority này, `as_traded` only.
 
 ## `unknown` là label hợp lệ
 

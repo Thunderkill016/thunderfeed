@@ -5,6 +5,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  asOfSeriesHistory,
   classifyMacroSeries,
   scoreCorporateAction,
   scoreEventMateriality,
@@ -196,9 +197,11 @@ const ca = (amt: number, extra = {}) =>
     actionType: "cash_dividend",
     instrumentKey: "equity:HOSE:VNM",
     cashAmount: amt,
-    currency: "VND",
+    currency: "USD",
     referencePrice: 100,
     priceBasis: "pre_ex",
+    priceConvention: "as_traded",
+    priceCurrency: "USD",
     exDate: "2026-03-01T00:00:00Z",
     splitFactor: null,
     ...extra,
@@ -227,6 +230,24 @@ test("provider-magnitude anomaly ($567 'dividend') → flagged + limited", () =>
   assert.ok(a.cautions.includes("provider_magnitude_unverified"));
 });
 
+test("provider_adjusted price → yield unverifiable, capped", () => {
+  const a = ca(6, { priceConvention: "provider_adjusted" });
+  assert.equal(a.materiality, "limited");
+  assert.ok(a.cautions.includes("price_convention_unverified"));
+});
+
+test("unknown currency on either side → no yield upgrade", () => {
+  const a = ca(6, { currency: null, priceCurrency: "USD" });
+  assert.equal(a.materiality, "limited");
+  assert.ok(a.cautions.includes("currency_unverified"));
+  const b = ca(6, { priceCurrency: null });
+  assert.equal(b.materiality, "limited");
+  assert.ok(b.cautions.includes("currency_unverified"));
+  const c = ca(6, { currency: "VND", priceCurrency: "USD" });
+  assert.equal(c.materiality, "limited");
+  assert.ok(c.cautions.includes("currency_mismatch"));
+});
+
 test("split is mechanical — no channel, limited", () => {
   const a = scoreCorporateAction({
     actionType: "stock_split",
@@ -235,6 +256,8 @@ test("split is mechanical — no channel, limited", () => {
     currency: null,
     referencePrice: 341,
     priceBasis: "pre_ex",
+    priceConvention: "as_traded",
+    priceCurrency: "USD",
     exDate: "2020-08-31T00:00:00Z",
     splitFactor: 4,
   });
@@ -267,9 +290,23 @@ test("extreme z on single stock → meaningful; routine → limited/none", () =>
 });
 
 test("index move carries wider scope", () => {
-  const a = mv(3, 1, { isIndex: true, assetClass: "index" });
+  const a = mv(3, 1, {
+    isIndex: true,
+    assetClass: "index",
+    instrumentKey: "index:NGS:SPX",
+  });
   assert.equal(a.materiality, "meaningful");
   assert.equal(a.scope, "global_systemic");
+});
+
+test("VN30: asset_class='equity' + isIndex → scope=vietnam, never issuer", () => {
+  const a = mv(3, 1, {
+    isIndex: true,
+    assetClass: "equity", // prod stores indexes as equity+index type
+    instrumentKey: "index:HOSE:VN30",
+  });
+  assert.equal(a.scope, "vietnam");
+  assert.equal(a.materiality, "meaningful");
 });
 
 test("wire-copy count cannot inflate — scorer has no such input", () => {
@@ -305,12 +342,12 @@ test("series classification separates VN scope from global", () => {
 
 /* ── R7.0b semantics hardening ─────────────────────────────── */
 
-test("transform semantics: rates diff in pp, indexes/levels pct-change", () => {
-  const rate = transformSeries("rate_pct", 4.5, [4.0, 4.25]);
+test("transform semantics: declared per series — diff vs pct-change", () => {
+  const rate = transformSeries("diff", 4.5, [4.0, 4.25]);
   assert.equal(rate!.transform, "diff");
   assert.equal(rate!.observed, 0.25);
   assert.deepEqual(rate!.basis, [0.25]);
-  const cpi = transformSeries("level_index", 104, [100, 102]);
+  const cpi = transformSeries("pct_change", 104, [100, 102]);
   assert.equal(cpi!.transform, "pct_change");
   assert.ok(Math.abs(cpi!.observed - (2 / 102) * 100) < 1e-9);
   assert.ok(Math.abs(cpi!.basis[0] - 2) < 1e-9);
@@ -358,6 +395,59 @@ test("payroll LEVEL (159M) is not abnormal — only the Δ is measured", () => {
     history: trend,
   });
   assert.equal(a.materiality, "limited");
+});
+
+test("PAYEMS transform is Δ jobs (diff), not %Δ of the stock", () => {
+  assert.equal(classifyMacroSeries("fred", "PAYEMS").transform, "diff");
+  const tr = transformSeries("diff", 159200, [158000, 159000]);
+  /* +200 jobs — NOT +0.126%. A payroll print is a flow of new jobs. */
+  assert.equal(tr!.observed, 200);
+  assert.deepEqual(tr!.basis, [1000]);
+});
+
+test("PCEPILFE is a registered core inflation series", () => {
+  const m = classifyMacroSeries("fred", "PCEPILFE");
+  assert.equal(m.cls, "inflation");
+  assert.equal(m.salience, "core");
+  assert.deepEqual(
+    ["discounting", "fundamental"].every((c) =>
+      scoreMacroDelta({
+        provider: "fred",
+        seriesCode: "PCEPILFE",
+        frequency: "M",
+        kind: "macro_release",
+        value: 1,
+        prevValue: 1,
+        history: [],
+      }).channels.includes(c as "discounting"),
+    ),
+    true,
+  );
+});
+
+test("as-of history: later revisions NEVER leak into a vintage-T score", () => {
+  /* vintage T sees values [10, 20, 30]. A backfill lands at T+30
+   * revising the middle print to 99 — the T score's baseline must not
+   * contain it. */
+  const rows = [
+    { obsDate: "2025-01-01", vintageDate: "2025-01-15", value: 10 },
+    { obsDate: "2025-02-01", vintageDate: "2025-02-15", value: 20 },
+    { obsDate: "2025-02-01", vintageDate: "2025-03-25", value: 99 },
+    { obsDate: "2025-03-01", vintageDate: "2025-03-15", value: 30 },
+    { obsDate: "2025-04-01", vintageDate: "2025-04-15", value: 40 },
+  ];
+  assert.deepEqual(
+    asOfSeriesHistory(rows, "2025-04-01", "2025-04-15"),
+    [10, 99, 30],
+  );
+  /* scoring the 2025-03-01 print as known at its own vintage: the 99
+   * revision (vintage 03-25 > target vintage 03-15) is excluded */
+  assert.deepEqual(
+    asOfSeriesHistory(rows, "2025-03-01", "2025-03-15"),
+    [10, 20],
+  );
+  /* observations after the target obs never enter the baseline either */
+  assert.deepEqual(asOfSeriesHistory(rows, "2025-02-01", "2025-02-15"), [10]);
 });
 
 test("typed targets: country entity → country_exposure, never bare slug", () => {

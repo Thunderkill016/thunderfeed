@@ -99,9 +99,18 @@
           "trade_negotiation"
         ],
         "entities": [
-          { "slug": "us", "type": "country" },
-          { "slug": "vietnam", "type": "country" },
-          { "slug": "the_white_house", "type": "government_body" }
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "the_white_house",
+            "type": "government_body"
+          }
         ]
       }
     },
@@ -120,8 +129,14 @@
           "deposit_guarantee"
         ],
         "entities": [
-          { "slug": "federal_reserve", "type": "central_bank" },
-          { "slug": "us", "type": "country" }
+          {
+            "slug": "federal_reserve",
+            "type": "central_bank"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          }
         ]
       }
     },
@@ -139,7 +154,12 @@
           "policy_approved",
           "supply_chain_disruption"
         ],
-        "entities": [{ "slug": "who", "type": "multilateral_organization" }]
+        "entities": [
+          {
+            "slug": "who",
+            "type": "multilateral_organization"
+          }
+        ]
       }
     },
     {
@@ -150,7 +170,12 @@
       "subject": {
         "topic": "world",
         "predicates": ["deaths"],
-        "entities": [{ "slug": "uk", "type": "country" }]
+        "entities": [
+          {
+            "slug": "uk",
+            "type": "country"
+          }
+        ]
       }
     },
     {
@@ -161,7 +186,12 @@
       "subject": {
         "topic": "world",
         "predicates": ["dividend_declaration", "net_profit"],
-        "entities": [{ "slug": "some_company", "type": "company" }]
+        "entities": [
+          {
+            "slug": "some_company",
+            "type": "company"
+          }
+        ]
       }
     },
     {
@@ -173,11 +203,13 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:GOOGL",
         "cashAmount": 567.97,
-        "currency": null,
+        "currency": "USD",
         "referencePrice": 90.0,
         "priceBasis": "pre_ex",
         "exDate": "2014-04-02T17:00:00Z",
-        "splitFactor": null
+        "splitFactor": null,
+        "priceConvention": "as_traded",
+        "priceCurrency": "USD"
       }
     },
     {
@@ -193,7 +225,9 @@
         "referencePrice": 124.8,
         "priceBasis": "pre_ex",
         "exDate": "2020-08-31T00:00:00Z",
-        "splitFactor": 4
+        "splitFactor": 4,
+        "priceConvention": "as_traded",
+        "priceCurrency": "USD"
       }
     },
     {
@@ -209,7 +243,9 @@
         "referencePrice": 100.0,
         "priceBasis": "pre_ex",
         "exDate": "2021-06-10T00:00:00Z",
-        "splitFactor": null
+        "splitFactor": null,
+        "priceConvention": "as_traded",
+        "priceCurrency": "USD"
       }
     },
     {
@@ -225,7 +261,9 @@
         "referencePrice": 341.07,
         "priceBasis": "latest",
         "exDate": "2012-08-09T00:00:00Z",
-        "splitFactor": null
+        "splitFactor": null,
+        "priceConvention": "as_traded",
+        "priceCurrency": "USD"
       }
     },
     {
@@ -281,8 +319,14 @@
           "military_threat"
         ],
         "entities": [
-          { "slug": "iran", "type": "country" },
-          { "slug": "us", "type": "country" }
+          {
+            "slug": "iran",
+            "type": "country"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          }
         ]
       }
     },
@@ -295,8 +339,14 @@
         "topic": "vietnam",
         "predicates": ["interest_rate", "policy_rate", "rate_cut"],
         "entities": [
-          { "slug": "state_bank_of_vietnam", "type": "central_bank" },
-          { "slug": "vietnam", "type": "country" }
+          {
+            "slug": "state_bank_of_vietnam",
+            "type": "central_bank"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          }
         ]
       }
     },
@@ -308,7 +358,30 @@
       "subject": {
         "topic": "vietnam",
         "predicates": ["gold_price", "price_drop"],
-        "entities": [{ "slug": "vietnam", "type": "country" }]
+        "entities": [
+          {
+            "slug": "vietnam",
+            "type": "country"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "corporate_action",
+      "id": "ch:dividend-no-currency",
+      "title": "Dividend declared, no currency recorded anywhere",
+      "sourceSet": "challenge",
+      "subject": {
+        "actionType": "cash_dividend",
+        "instrumentKey": "equity:HOSE:AAA",
+        "cashAmount": 3000.0,
+        "currency": null,
+        "referencePrice": 50000.0,
+        "priceBasis": "pre_ex",
+        "priceConvention": "as_traded",
+        "priceCurrency": null,
+        "exDate": "2026-03-10T00:00:00Z",
+        "splitFactor": null
       }
     }
   ],
@@ -472,6 +545,14 @@
       "labeled_by": "pm-curated-v1",
       "reviewed": true,
       "note": "retail price complaint — no instrument predicate, observation only"
+    },
+    "corporate_action:ch:dividend-no-currency": {
+      "intrinsicMateriality": "limited",
+      "channels": ["fundamental"],
+      "affectedTargets": ["instrument:equity:HOSE:AAA"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "6% yield unverifiable — currency unknown on both sides → capped"
     }
   }
 }

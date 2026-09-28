@@ -77,6 +77,8 @@ function rescore(item: Item): MaterialityAssessment {
         currency: s.currency,
         referencePrice: s.referencePrice,
         priceBasis: s.priceBasis ?? "none",
+        priceConvention: s.priceConvention ?? null,
+        priceCurrency: s.priceCurrency ?? null,
         exDate: s.exDate ?? null,
         splitFactor: s.splitFactor,
       });
@@ -236,12 +238,15 @@ const holdout = blank();
 const challenge = blank();
 let reviewedN = 0;
 let unreviewedHigh = 0;
+const provenance = (l: LabelEntry) => {
+  if (l.reviewed) reviewedN++;
+  if (l.reviewed === false && rank(l.intrinsicMateriality) >= MATERIAL)
+    unreviewedHigh++;
+};
 for (const item of corpus.items as Item[]) {
   const label = labels[`${item.kind}:${item.id}`];
   if (!label) continue;
-  if (label.reviewed === false && rank(label.intrinsicMateriality) >= MATERIAL)
-    unreviewedHigh++;
-  if (label.reviewed) reviewedN++;
+  provenance(label);
   accumulate(item, label, item.sourceSet === "challenge" ? challenge : holdout);
 }
 /* optional separate challenge file */
@@ -251,8 +256,10 @@ try {
   );
   const chLabels: Record<string, LabelEntry> = ch.labels ?? {};
   for (const item of ch.items as Item[])
-    if (chLabels[`${item.kind}:${item.id}`])
+    if (chLabels[`${item.kind}:${item.id}`]) {
+      provenance(chLabels[`${item.kind}:${item.id}`]);
       accumulate(item, chLabels[`${item.kind}:${item.id}`], challenge);
+    }
 } catch {
   /* no challenge file yet */
 }

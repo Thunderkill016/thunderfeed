@@ -20,6 +20,7 @@ try {
 
 import { getPool } from "../../lib/db/pool.ts";
 import {
+  asOfSeriesHistory,
   scoreCorporateAction,
   scoreEventMateriality,
   scoreMacroDelta,
@@ -143,12 +144,16 @@ const items: Item[] = [];
     value: string;
     prev: string | null;
     series_id: string;
+    obs_date: string;
+    vintage_date: string;
   }>(
     `SELECT dd.id, dd.kind, dd.summary, dd.detected_at,
             ms.series_code, ms.provider, ms.frequency, ms.title,
             mpv.value::text AS value,
             ppv.value::text AS prev,
-            ms.id AS series_id
+            ms.id AS series_id,
+            mp.obs_date::text AS obs_date,
+            mpv.vintage_date::text AS vintage_date
        FROM data_deltas dd
        JOIN macro_point_versions mpv ON mpv.id = dd.macro_version_id
        JOIN macro_points mp ON mp.id = mpv.point_id
@@ -183,24 +188,33 @@ const items: Item[] = [];
     deltas.length = 0;
     deltas.push(...fred.slice(0, nFred), ...annual);
   }
-  /* trailing history per series for the abnormality baseline */
-  const seriesIds = [...new Set(deltas.map((d) => d.series_id))];
-  const histBySeries = new Map<string, number[]>();
-  for (const sid of seriesIds) {
-    const { rows } = await db.query<{ v: string }>(
-      `SELECT mpv.value::text AS v
-         FROM macro_points mp
-         JOIN macro_point_versions mpv ON mpv.id = mp.current_version_id
-        WHERE mp.series_id = $1
-        ORDER BY mp.obs_date DESC LIMIT 40`,
-      [sid],
-    );
-    histBySeries.set(sid, rows.map((r) => Number(r.v)).reverse());
-  }
+  /* as-of history per delta — the baseline must contain only
+   * observations BEFORE the target obs_date, at the version that was
+   * available as-of the target vintage_date. Latest-version history on
+   * the whole series leaks both backfilled points and later revisions. */
   for (const d of deltas) {
-    const history = (histBySeries.get(d.series_id) ?? []).filter((v) =>
-      Number.isFinite(v),
+    const { rows } = await db.query<{
+      obs_date: string;
+      vintage_date: string;
+      v: string;
+    }>(
+      `SELECT mp.obs_date::text, mpv.vintage_date::text, mpv.value::text AS v
+         FROM macro_points mp
+         JOIN macro_point_versions mpv ON mpv.point_id = mp.id
+        WHERE mp.series_id = $1 AND mp.obs_date < $2
+        ORDER BY mp.obs_date DESC
+        LIMIT 800`,
+      [d.series_id, d.obs_date.slice(0, 10)],
     );
+    const history = asOfSeriesHistory(
+      rows.map((r) => ({
+        obsDate: r.obs_date.slice(0, 10),
+        vintageDate: r.vintage_date.slice(0, 10),
+        value: Number(r.v),
+      })),
+      d.obs_date.slice(0, 10),
+      d.vintage_date.slice(0, 10),
+    ).slice(-40);
     items.push({
       kind: d.kind,
       id: d.id,
@@ -211,8 +225,10 @@ const items: Item[] = [];
         frequency: d.frequency,
         value: Number(d.value),
         prevValue: d.prev == null ? null : Number(d.prev),
-        /* trailing observations needed to re-score abnormality offline */
-        history: history.slice(0, -1),
+        obsDate: d.obs_date.slice(0, 10),
+        vintageDate: d.vintage_date.slice(0, 10),
+        /* trailing as-of observations to re-score abnormality offline */
+        history,
         detectedAt: d.detected_at,
         summary: d.summary,
       },
@@ -244,14 +260,20 @@ const items: Item[] = [];
     name: string;
     ticker: string | null;
     venue: string | null;
+    listing_currency: string | null;
+    instrument_currency: string | null;
     close: string | null;
     price_date: string | null;
+    price_provider: string | null;
+    price_basis: string | null;
   }>(
     `SELECT ca.id, ca.canonical_key, ca.action_type,
             cav.ex_date, cav.cash_amount::text, cav.currency,
             cav.split_factor::text,
             iv.name, lv.ticker, tv.acronym AS venue,
-            mpv.close::text, mpv.session_date::text AS price_date
+            lv.currency AS listing_currency, iv.currency AS instrument_currency,
+            mpv.close::text, mpv.session_date::text AS price_date,
+            mpv.provider AS price_provider, mpv.price_basis
        FROM corporate_actions ca
        JOIN corporate_action_versions cav ON cav.id = ca.current_version_id
        JOIN financial_instruments fi ON fi.id = ca.instrument_id
@@ -260,16 +282,27 @@ const items: Item[] = [];
        LEFT JOIN listing_versions lv ON lv.id = il.current_version_id
        LEFT JOIN trading_venues t ON t.id = il.venue_id
        LEFT JOIN trading_venue_versions tv ON tv.id = t.current_version_id
-       /* reference price must be time-consistent with the action —
-        * last close strictly BEFORE ex-date. Latest close is look-ahead. */
+       /* reference price must be time-consistent AND convention-consistent:
+        * canonical provider order, as_traded basis only (provider_adjusted
+        * prices embed later splits/dividends and corrupt historical yields),
+        * last close strictly BEFORE ex-date. Deterministic — provider rank
+        * first, then session date. */
        LEFT JOIN LATERAL (
-         SELECT mpv2.close, mp2.session_date FROM market_series ms
+         SELECT mpv2.close, mp2.session_date, ms.provider, ms.price_basis
+           FROM market_series ms
            JOIN market_points mp2 ON mp2.series_id = ms.id
            JOIN market_point_versions mpv2 ON mpv2.id = mp2.current_version_id
           WHERE ms.listing_id = il.id
+            AND ms.price_basis = 'as_traded'
             AND cav.ex_date IS NOT NULL
             AND mp2.session_date < cav.ex_date::date
-          ORDER BY mp2.session_date DESC LIMIT 1
+          ORDER BY CASE ms.provider
+                     WHEN 'vndirect' THEN 0
+                     WHEN 'tiingo' THEN 1
+                     WHEN 'alphavantage' THEN 2
+                     ELSE 3 END,
+                   mp2.session_date DESC
+          LIMIT 1
        ) mpv ON true
       ORDER BY cav.ex_date DESC NULLS LAST
       LIMIT 2000`,
@@ -289,16 +322,34 @@ const items: Item[] = [];
     cas.length = 0;
     cas.push(...keep.slice(0, N_CA));
   }
+  /* venue → quote currency — listing/instrument/action currency fields
+   * are NULL on prod today; the venue is the only reliable provenance
+   * for what currency a price is quoted in. */
+  const VENUE_CURRENCY: Record<string, string> = {
+    NGS: "USD",
+    NYSE: "USD",
+    NASDAQ: "USD",
+    ARCA: "USD",
+    HOSE: "VND",
+    HNX: "VND",
+    UPCOM: "VND",
+  };
   for (const c of cas) {
     const key = `equity:${c.venue ?? "?"}:${c.ticker ?? c.name}`;
     const priceBasis = c.close == null ? "none" : "pre_ex";
+    const venueCur = c.venue ? (VENUE_CURRENCY[c.venue] ?? null) : null;
     const input = {
       actionType: c.action_type as "cash_dividend" | "stock_split",
       instrumentKey: key,
       cashAmount: c.cash_amount == null ? null : Number(c.cash_amount),
-      currency: c.currency,
+      /* action currency unrecorded on prod — fall back to venue currency,
+       * which is what the cash_amount is actually quoted in */
+      currency: c.currency ?? venueCur,
       referencePrice: c.close == null ? null : Number(c.close),
       priceBasis: priceBasis as "pre_ex" | "none",
+      priceConvention: (c.price_basis ?? null) as
+        "as_traded" | "provider_adjusted" | "quoted" | null,
+      priceCurrency: c.listing_currency ?? c.instrument_currency ?? venueCur,
       exDate: c.ex_date,
       splitFactor: c.split_factor == null ? null : Number(c.split_factor),
     };
@@ -306,7 +357,11 @@ const items: Item[] = [];
       kind: "corporate_action",
       id: c.id,
       title: `${c.ticker ?? c.name} — ${c.action_type}`,
-      subject: { ...input, priceDate: c.price_date },
+      subject: {
+        ...input,
+        priceDate: c.price_date,
+        priceProvider: c.price_provider,
+      },
       baseline: scoreCorporateAction(input),
       sourceSet: "holdout",
       labels: null,

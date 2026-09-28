@@ -100,6 +100,11 @@ export type SeriesRole =
   | "market" /* yields, spreads, spot prices */
   | "release"; /* statistical releases */
 
+/* The lawful abnormality transform — DECLARED per series, never inferred
+ * from measure. PAYEMS is the canonical case: measure='stock' but the
+ * economically meaningful surprise is Δ jobs, not %Δ of the stock. */
+export type SeriesTransform = "diff" | "pct_change";
+
 interface MacroMeta {
   cls: MacroClass;
   /** 'core' series move broad asset prices; 'context' informs but rarely
@@ -108,6 +113,7 @@ interface MacroMeta {
   scope: Scope;
   measure: SeriesMeasure;
   role: SeriesRole;
+  transform: SeriesTransform;
 }
 
 const FRED_MAP: Record<string, MacroMeta> = {
@@ -120,6 +126,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "effective",
+    transform: "diff",
   },
   ECBDFR: {
     cls: "policy_rate",
@@ -127,6 +134,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "decision",
+    transform: "diff",
   },
   DGS2: {
     cls: "sovereign_yield",
@@ -134,6 +142,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "market",
+    transform: "diff",
   },
   DGS10: {
     cls: "sovereign_yield",
@@ -141,6 +150,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "market",
+    transform: "diff",
   },
   T10Y2Y: {
     cls: "sovereign_yield",
@@ -148,6 +158,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "market",
+    transform: "diff",
   },
   T10YIE: {
     cls: "inflation",
@@ -155,6 +166,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "market",
+    transform: "diff",
   },
   CPIAUCSL: {
     cls: "inflation",
@@ -162,6 +174,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "level_index",
     role: "release",
+    transform: "pct_change",
   },
   UNRATE: {
     cls: "labor",
@@ -169,6 +182,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "release",
+    transform: "diff",
   },
   PAYEMS: {
     cls: "labor",
@@ -176,6 +190,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "stock",
     role: "release",
+    transform: "diff",
   },
   GDPC1: {
     cls: "growth",
@@ -183,6 +198,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "stock",
     role: "release",
+    transform: "pct_change",
   },
   INDPRO: {
     cls: "growth",
@@ -190,6 +206,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "level_index",
     role: "release",
+    transform: "pct_change",
   },
   RSAFS: {
     cls: "growth",
@@ -197,6 +214,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "flow",
     role: "release",
+    transform: "pct_change",
   },
   HOUST: {
     cls: "growth",
@@ -204,6 +222,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "flow",
     role: "release",
+    transform: "pct_change",
   },
   UMCSENT: {
     cls: "sentiment",
@@ -211,6 +230,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "sentiment_index",
     role: "release",
+    transform: "diff",
   },
   M2SL: {
     cls: "money_supply",
@@ -218,6 +238,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "stock",
     role: "release",
+    transform: "pct_change",
   },
   WALCL: {
     cls: "money_supply",
@@ -225,6 +246,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "stock",
     role: "release",
+    transform: "pct_change",
   },
   BAMLH0A0HYM2: {
     cls: "credit",
@@ -232,6 +254,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "market",
+    transform: "diff",
   },
   VIXCLS: {
     cls: "risk_premium",
@@ -239,6 +262,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "level_index",
     role: "market",
+    transform: "diff",
   },
   SP500: {
     cls: "risk_premium",
@@ -246,6 +270,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "price",
     role: "market",
+    transform: "pct_change",
   },
   DCOILWTICO: {
     cls: "commodity",
@@ -253,6 +278,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "price",
     role: "market",
+    transform: "pct_change",
   },
   DTWEXBGS: {
     cls: "fx",
@@ -260,6 +286,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "price",
     role: "market",
+    transform: "pct_change",
   },
   DEXUSEU: {
     cls: "fx",
@@ -267,6 +294,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "price",
     role: "market",
+    transform: "pct_change",
   },
   DEXJPUS: {
     cls: "fx",
@@ -274,6 +302,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "price",
     role: "market",
+    transform: "pct_change",
   },
   DEXCHUS: {
     cls: "fx",
@@ -281,6 +310,15 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "price",
     role: "market",
+    transform: "pct_change",
+  },
+  PCEPILFE: {
+    cls: "inflation",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "level_index",
+    role: "release",
+    transform: "pct_change",
   },
   MORTGAGE30US: {
     cls: "policy_rate",
@@ -288,6 +326,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "market",
+    transform: "diff",
   },
   /* FRED annual CPI forecast series (FPCPITOTLZG<CC>) — annual levels of
    * the rate itself; still 'baseline' in practice via frequency='A' */
@@ -297,6 +336,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "release",
+    transform: "diff",
   },
   FPCPITOTLZGDEU: {
     cls: "inflation",
@@ -304,6 +344,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "release",
+    transform: "diff",
   },
   FPCPITOTLZGJPN: {
     cls: "inflation",
@@ -311,6 +352,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "release",
+    transform: "diff",
   },
   FPCPITOTLZGCHN: {
     cls: "inflation",
@@ -318,6 +360,7 @@ const FRED_MAP: Record<string, MacroMeta> = {
     scope: "global_systemic",
     measure: "rate_pct",
     role: "release",
+    transform: "diff",
   },
 };
 
@@ -374,6 +417,7 @@ export function classifyMacroSeries(
         scope: "global_systemic",
         measure: "level_index",
         role: "release",
+        transform: "pct_change",
       }
     );
   /* 'VNM:NGDP_RPCH' / 'VNM:NY.GDP.MKTP.KD.ZG' — split country prefix */
@@ -390,41 +434,26 @@ export function classifyMacroSeries(
     scope,
     measure: "rate_pct",
     role: "release",
+    transform: "diff",
   };
 }
 
 /* ── lawful transforms ──────────────────────────────────────── */
-
-type Transform = "diff" | "pct_change" | "none";
-
-export function transformFor(m: SeriesMeasure): Transform {
-  switch (m) {
-    case "rate_pct":
-    case "sentiment_index":
-      return "diff"; /* pp change for rates, point change for surveys */
-    case "level_index":
-    case "price":
-    case "stock":
-    case "flow":
-      return "pct_change";
-  }
-}
 
 interface TransformedObs {
   /** the current observation expressed in change-space */
   observed: number;
   /** trailing changes the observation is measured against */
   basis: number[];
-  transform: Transform;
+  transform: SeriesTransform;
 }
 
 export function transformSeries(
-  measure: SeriesMeasure,
+  t: SeriesTransform,
   value: number,
   history: number[], // oldest → newest, EXCLUDING value
 ): TransformedObs | null {
-  const t = transformFor(measure);
-  if (t === "none" || history.length < 2) return null;
+  if (history.length < 2) return null;
   const last = history[history.length - 1];
   let observed: number;
   const basis: number[] = [];
@@ -441,6 +470,34 @@ export function transformSeries(
     }
   }
   return { observed, basis, transform: t };
+}
+
+/* As-of history builder — the only legal baseline for replay. Rows are
+ * raw (obsDate, vintageDate, value); at vintage T only versions with
+ * vintageDate ≤ T existed, and a revision landed at T+30 must never leak
+ * into the score of the T print. */
+export interface MacroPointRow {
+  obsDate: string;
+  vintageDate: string;
+  value: number;
+}
+
+export function asOfSeriesHistory(
+  rows: MacroPointRow[],
+  targetObsDate: string,
+  targetVintageDate: string,
+): number[] {
+  const latest = new Map<string, { vintageDate: string; value: number }>();
+  for (const r of rows) {
+    if (r.obsDate >= targetObsDate) continue;
+    if (r.vintageDate > targetVintageDate) continue;
+    const cur = latest.get(r.obsDate);
+    if (!cur || r.vintageDate > cur.vintageDate)
+      latest.set(r.obsDate, { vintageDate: r.vintageDate, value: r.value });
+  }
+  return [...latest.entries()]
+    .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+    .map(([, v]) => v.value);
 }
 
 /* ── macro release/delta scoring ────────────────────────────── */
@@ -470,7 +527,7 @@ export function scoreMacroDelta(i: MacroDeltaInput): MaterialityAssessment {
    * CHANGE-SPACE — z-scoring a trending level (CPI index, payrolls, M2)
    * manufactures fake abnormality. consensus surprise remains IMPOSSIBLE
    * — no expectations data exists. */
-  const tr = transformSeries(meta.measure, i.value, i.history);
+  const tr = transformSeries(meta.transform, i.value, i.history);
   const az = tr ? absZ(tr.observed, tr.basis) : null;
   const absMove = i.prevValue == null ? null : Math.abs(i.value - i.prevValue);
 
@@ -590,6 +647,13 @@ export interface CorporateActionInput {
    * silently. */
   referencePrice: number | null;
   priceBasis: "pre_ex" | "latest" | "none";
+  /* as_traded is the only convention lawful for historical yield —
+   * provider_adjusted prices embed split/dividend adjustments and can be
+   * wildly wrong years later */
+  priceConvention?: "as_traded" | "provider_adjusted" | "quoted" | null;
+  /* currency of the reference price — must equal `currency` for yield
+   * math. Unknown on either side → unverified, no upgrade. */
+  priceCurrency?: string | null;
   exDate: string | null;
   splitFactor: number | null; // split_to / split_from
 }
@@ -601,6 +665,18 @@ export function scoreCorporateAction(
   const cautions: string[] = [];
   if (i.priceBasis === "latest") cautions.push("lookahead_price");
   if (i.priceBasis === "none") cautions.push("no_price_context");
+  const currencyVerified =
+    i.currency != null &&
+    i.priceCurrency != null &&
+    i.currency === i.priceCurrency;
+  if (!currencyVerified)
+    cautions.push(
+      i.currency == null || i.priceCurrency == null
+        ? "currency_unverified"
+        : "currency_mismatch",
+    );
+  if (i.priceConvention != null && i.priceConvention !== "as_traded")
+    cautions.push("price_convention_unverified");
 
   /* provider semantics guard: a per-share 'cash' amount at/above the
    * share price is not a dividend — it's a misrecorded distribution
@@ -636,8 +712,13 @@ export function scoreCorporateAction(
   } else if (i.referencePrice == null || i.referencePrice <= 0) {
     level = "limited";
     cautions.push("no_price_context");
-  } else if (i.priceBasis !== "pre_ex") {
-    /* without a time-consistent price the yield is unverifiable */
+  } else if (
+    i.priceBasis !== "pre_ex" ||
+    i.priceConvention !== "as_traded" ||
+    !currencyVerified
+  ) {
+    /* without a time-consistent, as-traded, same-currency price the
+     * yield is unverifiable — never silently divide two numbers */
     level = "limited";
   } else {
     const y = (i.cashAmount / i.referencePrice) * 100;
@@ -653,7 +734,11 @@ export function scoreCorporateAction(
     affectedTargets: targets,
     transmissionConfidence: "high",
     reason:
-      i.cashAmount != null && i.referencePrice && i.priceBasis === "pre_ex"
+      i.cashAmount != null &&
+      i.referencePrice &&
+      i.priceBasis === "pre_ex" &&
+      i.priceConvention === "as_traded" &&
+      currencyVerified
         ? `dividend yield ~${((i.cashAmount / i.referencePrice) * 100).toFixed(1)}% vs pre-ex close`
         : "dividend, magnitude unpriced",
     cautions,
@@ -687,16 +772,21 @@ export function scoreMarketMove(i: MarketMoveInput): MaterialityAssessment {
   } else {
     level = "limited";
   }
+  /* instrument semantics, not asset_class: a VN index arrives with
+   * asset_class='equity' + instrument_type='index' — it is never
+   * 'issuer'-scoped. */
+  const vnIndex = /(:|^)(HOSE|HNX|UPCOM|VN)(:|$)|VNINDEX|VN30|HNX/i.test(
+    i.instrumentKey,
+  );
   return {
     materiality: level,
-    scope:
-      i.assetClass === "index"
-        ? i.instrumentKey.includes("VN")
-          ? "vietnam"
-          : "global_systemic"
-        : i.assetClass === "equity"
-          ? "issuer"
-          : "global_systemic",
+    scope: i.isIndex
+      ? vnIndex
+        ? "vietnam"
+        : "global_systemic"
+      : i.assetClass === "equity"
+        ? "issuer"
+        : "global_systemic",
     /* a market move PROVES a reaction happened — it says nothing about
      * why. Channels stay empty on purpose. */
     channels: [],
