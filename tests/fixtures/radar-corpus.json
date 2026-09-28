@@ -304,10 +304,7 @@
         "ticker": "BTCUSDT"
       },
       "q": "must_see",
-      "relevantTo": [
-        "A",
-        "C"
-      ]
+      "relevantTo": ["A", "C"]
     },
     {
       "ref": "S02",
@@ -326,9 +323,7 @@
         "ticker": "ETHUSDT"
       },
       "q": "must_see",
-      "relevantTo": [
-        "C"
-      ]
+      "relevantTo": ["C"]
     },
     {
       "ref": "S03",
@@ -347,10 +342,7 @@
         "ticker": "SJC-PREM"
       },
       "q": "must_see",
-      "relevantTo": [
-        "A",
-        "B"
-      ]
+      "relevantTo": ["A", "B"]
     },
     {
       "ref": "S04",
@@ -369,9 +361,7 @@
         "ticker": "USDT-GAP"
       },
       "q": "must_see",
-      "relevantTo": [
-        "B"
-      ]
+      "relevantTo": ["B"]
     },
     {
       "ref": "S05",
@@ -390,10 +380,7 @@
         "ticker": "USDVND"
       },
       "q": "must_see",
-      "relevantTo": [
-        "A",
-        "B"
-      ]
+      "relevantTo": ["A", "B"]
     },
     {
       "ref": "S06",
@@ -412,9 +399,7 @@
         "ticker": "VNM"
       },
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ]
+      "relevantTo": ["A"]
     },
     {
       "ref": "S07",
@@ -433,9 +418,7 @@
         "ticker": "VNINDEX"
       },
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ]
+      "relevantTo": ["A"]
     },
     {
       "ref": "S08",
@@ -454,9 +437,7 @@
         "ticker": "SOLUSDT"
       },
       "q": "useful",
-      "relevantTo": [
-        "C"
-      ]
+      "relevantTo": ["C"]
     },
     {
       "ref": "E000",
@@ -490,9 +471,7 @@
       "ref": "E001",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e340-0ced-76ed-a1bb-e6493b576f90",
         "title": "Bộ trưởng Israel kêu gọi sáp nhập một phần Gaza, tấn công Bờ Tây",
@@ -536,9 +515,7 @@
       "ref": "E002",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0dc10-2dd3-7268-9926-68bc0251d560",
         "title": "Cơ trưởng kể về chuyến bay đặc biệt đưa chiếc A330 từ Mỹ về Việt Nam",
@@ -661,9 +638,7 @@
       "ref": "E004",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d188-8261-7022-9b2f-3ebdc95ceb55",
         "title": "Những CEO nào có thể tham gia quốc yến Mỹ - Trung?",
@@ -895,9 +870,7 @@
       "ref": "E007",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e17d-2151-7613-8f6b-b5016eb769f2",
         "title": "OpenAI thừa nhận sai sót nghiêm trọng của tác nhân AI",
@@ -1084,9 +1057,7 @@
       "ref": "E010",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e3fb-252f-772d-bc5f-c96740641b27",
         "title": "TKV hợp tác với Caterpillar, nâng cao năng lực phục vụ thị trường Việt Nam",
@@ -1323,9 +1294,7 @@
       "ref": "E013",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d705-3297-788d-8cef-837eac649a7a",
         "title": "Thương mại Việt Nam - Canada: Đo tiềm năng bằng những đơn hàng thật",
@@ -1409,9 +1378,7 @@
       "ref": "E014",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0dbfd-0aa0-75af-9359-b8fa163eccf2",
         "title": "Agentic AI bắt đầu đi vào vận hành thực tế ở Việt Nam",
@@ -1465,9 +1432,7 @@
       "ref": "E015",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d942-d946-786f-a1dd-0c746380307c",
         "title": "Kiên định mục tiêu phấn đấu tăng trưởng hai con số",
@@ -1516,9 +1481,7 @@
       "ref": "E016",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d176-5d58-771d-811d-3201b483f2d9",
         "title": "Iran nói Mỹ còn 5 ngày để mở cửa Hormuz, phủ nhận việc đàm phán ở New York",
@@ -1788,9 +1751,7 @@
       "ref": "E021",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d176-5a20-722f-a77b-4850e91ead78",
         "title": "Ông Trump đón ông Tập tại sân bay, Mỹ - Trung gia hạn đình chiến thương mại",
@@ -2111,9 +2072,7 @@
       "ref": "E025",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
         "title": "Bầu trời Kiev sáng rực trong đòn tập kích tên lửa đạn đạo của Nga",
@@ -2488,9 +2447,7 @@
       "ref": "E030",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0dcff-cd20-7fda-b508-f9eaf827f956",
         "title": "[Ảnh] Cầu nối Đồng Nai với Thành phố Hồ Chí Minh trước ngày thông xe",
@@ -2534,10 +2491,7 @@
       "ref": "E031",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A",
-        "B"
-      ],
+      "relevantTo": ["A", "B"],
       "data": {
         "id": "01a0d850-d474-7064-a2d4-96e5fa81ddf5",
         "title": "Nhân viên SJC lấy 30 lượng vàng để tráo vàng giá thấp",
@@ -2576,9 +2530,7 @@
       "ref": "E032",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d4f7-645f-746f-8d41-f904606ef9af",
         "title": "Việt Nam Police Propose Internet Cutoffs for Unpaid Fines",
@@ -2695,9 +2647,7 @@
       "ref": "E035",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e0c0-ca89-701e-a86e-68dd330a5f90",
         "title": "Nga và Đức có thể cùng mở lại đường ống Nord Stream?",
@@ -2785,9 +2735,7 @@
       "ref": "E037",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d188-7dc2-7886-866d-ef42359284ff",
         "title": "Ông Tô Lâm: Việt Nam không chấp nhận 'trung chuyển' hàng xuất khẩu",
@@ -2949,9 +2897,7 @@
       "ref": "E040",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e052-8261-7a56-9cc4-03c01eef922c",
         "title": "Xuất khẩu sang thị trường FTA không thể chỉ dựa vào ưu đãi thuế quan",
@@ -3318,10 +3264,7 @@
       "ref": "E048",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A",
-        "B"
-      ],
+      "relevantTo": ["A", "B"],
       "data": {
         "id": "01a0d789-cf7b-7121-adac-2a88a65aec1b",
         "title": "Mỹ cân nhắc phương án tạm cấm xuất khẩu dầu diesel, châu Âu lo ngại",
@@ -3497,9 +3440,7 @@
       "ref": "E052",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
         "title": "Iran không còn tin tưởng vào đàm phán với Mỹ",
@@ -3558,9 +3499,7 @@
       "ref": "E053",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e3d1-ab79-7427-9105-be6dd615fb45",
         "title": "Chính phủ ‘đặt khung’ 3 tiêu chí xác định trường nghề đặc thù để sắp xếp",
@@ -3594,9 +3533,7 @@
       "ref": "E054",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d91e-9a8b-7bb0-9d65-c8ff71b0a33a",
         "title": "Việt Nam đề nghị tăng cường hợp tác công nghệ mới với Canada",
@@ -3808,9 +3745,7 @@
       "ref": "E057",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0dbba-88e2-7b20-a33e-589e44459c67",
         "title": "Hà Nội: Bí thư, chủ tịch xã phải kiểm điểm công việc để biết ưu tiên việc gì trước, việc gì sau",
@@ -3928,9 +3863,7 @@
       "ref": "E059",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e364-e96f-7934-857d-6fa963aa25f3",
         "title": "Ngập khu dân cư cạnh cao tốc: Chủ tịch Đồng Nai yêu cầu đánh giá lại hệ thống thoát nước",
@@ -4086,9 +4019,7 @@
       "ref": "E063",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e37e-9526-7b1e-b866-8918735042b4",
         "title": "Xuất khẩu vượt Brazil, thị trường cà phê hòa tan Việt đang “nóng” đến đâu?",
@@ -4425,9 +4356,7 @@
       "ref": "E071",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d176-5a45-7db6-bd9d-a116caf76918",
         "title": "Ông Tô Lâm tiếp ông Hùng Cao tại New York: Có gì đáng chú ý?",
@@ -4496,9 +4425,7 @@
       "ref": "E072",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e1fa-84a5-74b2-a23c-34a1ccda7b30",
         "title": "Robot trở thành lực lượng sản xuất mới tại Trung Quốc",
@@ -4599,9 +4526,7 @@
       "ref": "E075",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e0ff-95d0-7e74-b40d-42ca0cce498d",
         "title": "VietCredit, Điện Máy Xanh cùng NAPAS hợp tác ra mắt Thẻ tín dụng số TINCard 3 trong 1",
@@ -4640,9 +4565,7 @@
       "ref": "E076",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0dd8e-7b72-7acd-8210-d6ba02b82621",
         "title": "Phó Thủ tướng Thường trực Chính phủ Phạm Gia Túc tiếp xúc cử tri tại Hà Tĩnh",
@@ -4770,9 +4693,7 @@
       "ref": "E078",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e0e7-7e5f-7354-9ad9-6feeee85d305",
         "title": "MICE mở ra không gian hợp tác, động lực tăng trưởng mới cho du lịch Việt",
@@ -4914,9 +4835,7 @@
       "ref": "E081",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
         "title": "[Video] Tiêu điểm 26/9: Biển Đen dậy sóng - Rủi ro với nguồn cung lương thực toàn cầu",
@@ -5094,9 +5013,7 @@
       "ref": "E083",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d188-812a-727b-b1f1-e6023a6da011",
         "title": "Mỹ nâng tổng mức vốn cho dự án xử lý dioxin tại sân bay Biên Hòa lên 430 triệu USD",
@@ -5180,9 +5097,7 @@
       "ref": "E084",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "title": "Ông Tập tới Mỹ: Thảm đỏ, AI, đình chiến thương mại và rủi ro từ MAGA",
@@ -5389,10 +5304,7 @@
       "ref": "E087",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A",
-        "B"
-      ],
+      "relevantTo": ["A", "B"],
       "data": {
         "id": "01a0e2e4-3d35-761a-92c0-ae77b1107850",
         "title": "Giá vàng giảm mạnh, người mua lỗ hơn 6 triệu đồng/lượng chỉ sau 1 tuần",
@@ -5513,9 +5425,7 @@
       "ref": "E090",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e184-f54c-7daf-96ac-ca668987fe38",
         "title": "Tạo cơ chế để một đồng vốn đầu tư tạo nhiều vòng giá trị",
@@ -5569,9 +5479,7 @@
       "ref": "E091",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e182-0bd0-7e12-a4c9-b535b95ede43",
         "title": "[INFOGRAPHIC] 5,7 tỷ USD vào các khu chế xuất, khu công nghiệp TP.HCM",
@@ -5689,9 +5597,7 @@
       "ref": "E093",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e335-42c9-7cc7-9184-6588ec172c91",
         "title": "Nâng tầm hợp tác an ninh toàn cầu, bảo vệ Tổ quốc từ sớm, từ xa",
@@ -5981,9 +5887,7 @@
       "ref": "E098",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "title": "FPT hiến kế đào tạo nhân tài cho các công nghệ chiến lược",
@@ -6071,9 +5975,7 @@
       "ref": "E100",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e2e3-2ffa-73fd-9e52-c9273e52a82e",
         "title": "Hải Phòng dự kiến chi hơn 22.600 tỷ đồng xây dựng tuyến đường kết nối Đông Tây",
@@ -6308,9 +6210,7 @@
       "ref": "E105",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0dfae-940b-7da0-aa12-4cdfb1836edb",
         "title": "Trade deliverables, Taiwan push and ‘strategic stability’: key Xi-Trump takeaways overall",
@@ -6359,9 +6259,7 @@
       "ref": "E106",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
         "title": "Chủ tịch Tập Cận Bình đến Mỹ: Tổng thống Donald Trump ra sân bay đón, 'lằn ranh đỏ' Đài Loan và Iran",
@@ -6558,9 +6456,7 @@
       "ref": "E109",
       "kind": "event",
       "q": "background",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e2b9-d651-7b94-b61c-29ad8be85213",
         "title": "Ô nhiễm không khí tại Việt Nam: Biến chính sách thành hành động",
@@ -6878,9 +6774,7 @@
       "ref": "E116",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0dfc5-0ee9-7e98-97df-130e6ddca89a",
         "title": "Lãnh đạo Mỹ - Trung đã bàn những gì tại cuộc gặp thượng đỉnh?",
@@ -6944,9 +6838,7 @@
       "ref": "E117",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0e182-4ea3-7dee-aebc-8160629f7e86",
         "title": "Vi phạm trong lĩnh vực báo chí có thể bị phạt đến 500 triệu đồng",
@@ -6974,9 +6866,7 @@
       "ref": "E118",
       "kind": "event",
       "q": "useful",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d789-101b-70b2-bad9-a1da266ee752",
         "title": "Thương mại Việt Nam-Malaysia hướng tới mốc 20 tỷ USD",
@@ -7070,9 +6960,7 @@
       "ref": "E119",
       "kind": "event",
       "q": "must_see",
-      "relevantTo": [
-        "A"
-      ],
+      "relevantTo": ["A"],
       "data": {
         "id": "01a0d3aa-015a-771e-9c56-3370111f97ef",
         "title": "Biểu cảm trái ngược của ông Trump và ông Tập khi oanh tạc cơ B-1 lướt qua",

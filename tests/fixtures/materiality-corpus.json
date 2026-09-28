@@ -1,17 +1,1227 @@
 {
-  "dumpedAt": "2026-09-28T09:37:52.501Z",
+  "dumpedAt": "2026-09-28T10:18:21.495Z",
   "rubric": "docs/materiality-rubric.md",
   "items": [
     {
       "kind": "event",
-      "id": "01a0e75f-e78c-77b6-a43f-a56914fe7f47",
-      "title": "MB tiên phong triển khai Nền tảng Tài trợ chuỗi cung ứng đa tầng",
+      "id": "01a0d176-5a20-722f-a77b-4850e91ead78",
+      "title": "Ông Trump đón ông Tập tại sân bay, Mỹ - Trung gia hạn đình chiến thương mại",
+      "subject": {
+        "topic": "world",
+        "predicates": [
+          "trust_in_negotiations",
+          "meeting",
+          "conflict_desire",
+          "g20_location",
+          "visit_duration",
+          "military_aid_allocation",
+          "hosting_event",
+          "su_kien_don_tiep",
+          "event_invitation",
+          "military_mobilization",
+          "trade_agreement_value",
+          "arms_control_talks",
+          "attack_weapon",
+          "trade_negotiation_extension",
+          "growth_pct",
+          "state_of_emergency",
+          "nuclear_stance",
+          "proposal_rejected",
+          "tariff_agreement",
+          "visit_end_date",
+          "ukraine_aid_disbursement",
+          "ai_dialogue_channel",
+          "arms_control_support",
+          "tariff_preference_goods_value",
+          "product_launch",
+          "aid_allocation",
+          "thoi_gian_dam_phan",
+          "sign_agreement",
+          "summit_hosting",
+          "negotiation_trust",
+          "military_deployment",
+          "ai_control_stance",
+          "proposal_rejection",
+          "sanctions",
+          "declaration_failed",
+          "trade_negotiation_deadline",
+          "don_tiep",
+          "g20_time",
+          "signed_agreement",
+          "tariff_reduction",
+          "dismiss_official",
+          "progress",
+          "tariff_agreement_value",
+          "damage_usd",
+          "cnn_ban",
+          "security_agreement_date",
+          "emergency_declaration",
+          "technology_rename",
+          "commodity_purchase",
+          "meeting_evaluation",
+          "consensus_reached",
+          "speech_location",
+          "agreed_results",
+          "de_xuat_lo_trinh",
+          "autonomous_taxi_launch",
+          "established_channel",
+          "gift",
+          "ai_communication_channel",
+          "nuclear_position",
+          "tuyen_bo",
+          "covid19_deaths",
+          "trade_agreement_extension",
+          "deaths",
+          "greeting_location",
+          "age",
+          "coal_purchase_commitment",
+          "meeting_location",
+          "evacuation",
+          "dismiss_date",
+          "propose_strait",
+          "meet_iran",
+          "ai_policy",
+          "return_date",
+          "security_agreement_signing",
+          "summit_meeting",
+          "trade_agreement",
+          "dismissal",
+          "muon_khoi_phuc",
+          "tariff_reduction_value",
+          "return",
+          "invitation",
+          "to_chuc_le_don",
+          "ap_dat_han_che",
+          "proposed_reopening",
+          "money_vnd",
+          "tariff_truce_extension",
+          "pandemic_declaration",
+          "meeting_date",
+          "stock_index",
+          "ai_cooperation",
+          "peace_proposal",
+          "tariff_preferences",
+          "coal_purchase",
+          "event_announcement_date",
+          "proposal",
+          "official_dismissed",
+          "established_communication_channel",
+          "money_usd",
+          "peace_agreement",
+          "communication_channel",
+          "trang_phuc",
+          "military_base_cost",
+          "rejected_proposal",
+          "fuel_efficiency_standard",
+          "consensus_points",
+          "invite_g20",
+          "agreements_reached",
+          "dialogue_channel",
+          "canh_bao",
+          "pandemic_declaration_failed",
+          "military_aid_disbursed",
+          "de_xuat_mo_lai",
+          "pandemic_declaration_status",
+          "dia_diem_don_tiep",
+          "proposed_plan",
+          "ceasefire_proposal_rejected",
+          "weapon_test",
+          "trade_negotiations_extension",
+          "arrest_or_dismissal",
+          "interest_rate",
+          "weapon_sale_approval",
+          "dismissal_date",
+          "ra_mat_dich_vu",
+          "thay_doi_dien_van",
+          "nuclear_policy",
+          "declaration_status",
+          "tariff_cut",
+          "strait_hormuz_proposal",
+          "support",
+          "proposed_action",
+          "tariff_cut_value",
+          "thoa_thuan_uu_dai_thue_quan",
+          "moi",
+          "security_agreement",
+          "airport_greeting",
+          "trade_truce_extension",
+          "rename_technology",
+          "visit_end",
+          "announcement_date",
+          "hormuz_strait_proposal",
+          "strait_hormuz_reopening_proposal",
+          "consensus_results",
+          "statement",
+          "meeting_time",
+          "produce_patriot",
+          "media_ban",
+          "reject_proposal",
+          "launch_date",
+          "security_agreement_signed",
+          "negotiation_distrust",
+          "conflict_stance",
+          "decision_allow_production",
+          "meet_iran_representative",
+          "qua_tang",
+          "medals",
+          "bac_bo_de_xuat_cua_iran",
+          "aid_disbursement",
+          "return_to_country",
+          "hormuz_proposal",
+          "clothing",
+          "minister_dismissal",
+          "de_doa_luan_toi",
+          "state_visit_duration",
+          "proposal_hormuz",
+          "dia_diem_gap_mat",
+          "khong_thong_qua_tuyen_bo",
+          "event_location",
+          "proposed_reopening_strait",
+          "diplomatic_relations",
+          "ai_dialogue",
+          "proposal_duration",
+          "fuel_economy_standards",
+          "meeting_schedule",
+          "proposal_strait_hormuz",
+          "ky_hiep_dinh",
+          "nuclear_warning",
+          "speech_date",
+          "aid_disbursed",
+          "thoi_gian_dam_phan_thuong_mai"
+        ],
+        "entities": [
+          {
+            "slug": "zelensky",
+            "type": "person"
+          },
+          {
+            "slug": "china",
+            "type": "country"
+          },
+          {
+            "slug": "taiwan",
+            "type": "country"
+          },
+          {
+            "slug": "asiad",
+            "type": "event_series"
+          },
+          {
+            "slug": "iran",
+            "type": "country"
+          },
+          {
+            "slug": "xijinping",
+            "type": "person"
+          },
+          {
+            "slug": "thailand",
+            "type": "country"
+          },
+          {
+            "slug": "russia",
+            "type": "country"
+          },
+          {
+            "slug": "france",
+            "type": "country"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "philippines",
+            "type": "country"
+          },
+          {
+            "slug": "asean",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "putin",
+            "type": "person"
+          },
+          {
+            "slug": "trump",
+            "type": "person"
+          },
+          {
+            "slug": "aseancup",
+            "type": "event_series"
+          },
+          {
+            "slug": "yemen",
+            "type": "country"
+          },
+          {
+            "slug": "saudi",
+            "type": "country"
+          },
+          {
+            "slug": "who",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "ukraine",
+            "type": "country"
+          },
+          {
+            "slug": "pakistan",
+            "type": "country"
+          },
+          {
+            "slug": "drone",
+            "type": "topic"
+          },
+          {
+            "slug": "redsea",
+            "type": "region"
+          },
+          {
+            "slug": "japan",
+            "type": "country"
+          },
+          {
+            "slug": "pm",
+            "type": "government_body"
+          },
+          {
+            "slug": "uk",
+            "type": "country"
+          },
+          {
+            "slug": "middleeast",
+            "type": "region"
+          },
+          {
+            "slug": "eu",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "netanyahu",
+            "type": "person"
+          },
+          {
+            "slug": "un",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "g20",
+            "type": "multilateral_organization"
+          }
+        ],
+        "claimStates": {
+          "corrected": 21,
+          "disputed": 24,
+          "supported": 6,
+          "reported": 163
+        },
+        "lastSeenAt": "2026-09-28T10:14:11.020Z"
+      },
+      "baseline": {
+        "materiality": "major",
+        "scope": "global_systemic",
+        "channels": [
+          "policy_regulatory",
+          "external",
+          "discounting",
+          "funding_liquidity"
+        ],
+        "directness": "first_order",
+        "persistence": "cyclical",
+        "horizon": "weeks",
+        "affectedTargets": [
+          {
+            "type": "country_exposure",
+            "key": "china"
+          },
+          {
+            "type": "country_exposure",
+            "key": "taiwan"
+          },
+          {
+            "type": "country_exposure",
+            "key": "iran"
+          },
+          {
+            "type": "country_exposure",
+            "key": "thailand"
+          }
+        ],
+        "transmissionConfidence": "low",
+        "reason": "predicate signal: tariff_agreement,ukraine_aid_disbursement,sanctions,tariff_reduction,trade_agreement,tariff_reduction_value,tariff_truce_extension,tariff_preferences,interest_rate,tariff_cut,tariff_cut_value,aid_disbursement,aid_disbursed",
+        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
+      "title": "Iran không còn tin tưởng vào đàm phán với Mỹ",
+      "subject": {
+        "topic": "world",
+        "predicates": [
+          "military_budget",
+          "survived_strikes",
+          "territory_reclaimed",
+          "canh_bao_giao_thuong_voi_iran",
+          "ban_ha_ten_lua_va_may_bay_khong_nguoi_lai_cua_houthi",
+          "uav_budget",
+          "tap_kich",
+          "aid_package_disbursed",
+          "investigation",
+          "giai_ngan_vien_tro",
+          "injured",
+          "diplomatic_demand",
+          "seizure",
+          "tourism_projects_launched",
+          "diplomatic_pressure",
+          "tuyen_bo_khong_tin_tuong_dam_phan_voi_my",
+          "chi_tieu_cho_uav",
+          "missile_attacks",
+          "drone_attacks",
+          "sanctions",
+          "negotiation_stance",
+          "fund_disbursement",
+          "deaths",
+          "strait_of_hormuz",
+          "jobs_created",
+          "arrest",
+          "diplomatic_meeting",
+          "sao_chep_nguoc_tau_lan_khong_nguoi_lai_cua_my",
+          "security_at_base",
+          "aid_package",
+          "bo_phieu",
+          "trust_in_us_negotiations",
+          "tan_cong_ukraine",
+          "warning_to_countries",
+          "seized_equipment",
+          "stance",
+          "airstrike",
+          "money_usd",
+          "attack",
+          "thu_giu_thiet_bi_lan_khong_nguoi_lai_cua_my",
+          "deploy_robot",
+          "uav_attacks",
+          "aerial_bomb_attacks",
+          "seize",
+          "ap_dat_han_che_dich_vu_chung_chi_bao_mat",
+          "action",
+          "arrests"
+        ],
+        "entities": [
+          {
+            "slug": "starmer",
+            "type": "person"
+          },
+          {
+            "slug": "iran",
+            "type": "country"
+          },
+          {
+            "slug": "ukraine",
+            "type": "country"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "uk",
+            "type": "country"
+          },
+          {
+            "slug": "baltic",
+            "type": "region"
+          },
+          {
+            "slug": "israel",
+            "type": "country"
+          },
+          {
+            "slug": "russia",
+            "type": "country"
+          },
+          {
+            "slug": "yemen",
+            "type": "country"
+          },
+          {
+            "slug": "who",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "france",
+            "type": "country"
+          },
+          {
+            "slug": "eu",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "drone",
+            "type": "topic"
+          },
+          {
+            "slug": "japan",
+            "type": "country"
+          },
+          {
+            "slug": "starlink",
+            "type": "brand"
+          },
+          {
+            "slug": "trump",
+            "type": "person"
+          },
+          {
+            "slug": "pm",
+            "type": "government_body"
+          },
+          {
+            "slug": "putin",
+            "type": "person"
+          },
+          {
+            "slug": "saudi",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 4,
+          "corrected": 5,
+          "reported": 44
+        },
+        "lastSeenAt": "2026-09-28T10:12:32.443Z"
+      },
+      "baseline": {
+        "materiality": "meaningful",
+        "scope": "global_systemic",
+        "channels": ["external", "policy_regulatory", "funding_liquidity"],
+        "directness": "first_order",
+        "persistence": "cyclical",
+        "horizon": "weeks",
+        "affectedTargets": [
+          {
+            "type": "country_exposure",
+            "key": "iran"
+          },
+          {
+            "type": "country_exposure",
+            "key": "ukraine"
+          },
+          {
+            "type": "country_exposure",
+            "key": "us"
+          },
+          {
+            "type": "country_exposure",
+            "key": "uk"
+          }
+        ],
+        "transmissionConfidence": "low",
+        "reason": "predicate signal: aid_package_disbursed,sanctions,fund_disbursement",
+        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e335-42c9-7cc7-9184-6588ec172c91",
+      "title": "Nâng tầm hợp tác an ninh toàn cầu, bảo vệ Tổ quốc từ sớm, từ xa",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [
+          "money_usd",
+          "aid_disbursement",
+          "military_budget",
+          "deaths",
+          "attacks",
+          "attacked",
+          "territory_reclaimed",
+          "aid_package_disbursed",
+          "diplomatic_meeting",
+          "target_hit"
+        ],
+        "entities": [
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "russia",
+            "type": "country"
+          },
+          {
+            "slug": "lam",
+            "type": "person"
+          },
+          {
+            "slug": "starlink",
+            "type": "brand"
+          },
+          {
+            "slug": "canada",
+            "type": "country"
+          },
+          {
+            "slug": "ukraine",
+            "type": "country"
+          },
+          {
+            "slug": "un",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "unga",
+            "type": "event_series"
+          }
+        ],
+        "claimStates": {
+          "reported": 7,
+          "disputed": 3
+        },
+        "lastSeenAt": "2026-09-28T10:10:57.555Z"
+      },
+      "baseline": {
+        "materiality": "limited",
+        "scope": "global_systemic",
+        "channels": ["external"],
+        "directness": "first_order",
+        "persistence": "cyclical",
+        "horizon": "weeks",
+        "affectedTargets": [
+          {
+            "type": "country_exposure",
+            "key": "us"
+          },
+          {
+            "type": "country_exposure",
+            "key": "russia"
+          },
+          {
+            "type": "country_exposure",
+            "key": "canada"
+          },
+          {
+            "type": "country_exposure",
+            "key": "ukraine"
+          }
+        ],
+        "transmissionConfidence": "low",
+        "reason": "predicate signal: aid_disbursement,aid_package_disbursed",
+        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e755-6e23-70e2-848e-013f32f5a0ed",
+      "title": "\"Ngoại giao gấu trúc” kết nối Mỹ - Trung Quốc",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [
+          "stay_duration",
+          "visit_duration",
+          "visit_end_date",
+          "duration",
+          "hotline_establishment",
+          "ai_communication_channel",
+          "area_ha",
+          "tariff_reduction_value",
+          "consensus_points",
+          "coal_purchase",
+          "money_usd"
+        ],
+        "entities": [
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "china",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 1,
+          "reported": 10
+        },
+        "lastSeenAt": "2026-09-28T10:09:09.626Z"
+      },
+      "baseline": {
+        "materiality": "meaningful",
+        "scope": "vietnam",
+        "channels": ["policy_regulatory", "external"],
+        "directness": "first_order",
+        "persistence": "cyclical",
+        "horizon": "weeks",
+        "affectedTargets": [
+          {
+            "type": "country_exposure",
+            "key": "us"
+          },
+          {
+            "type": "country_exposure",
+            "key": "china"
+          }
+        ],
+        "transmissionConfidence": "low",
+        "reason": "predicate signal: tariff_reduction_value",
+        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "title": "The tricky tests awaiting Andy Burnham after Labour conference",
+      "subject": {
+        "topic": "world",
+        "predicates": [
+          "ra_toi_hau_thu",
+          "deaths",
+          "military_action",
+          "proposal",
+          "reject_proposal",
+          "expect_negotiation",
+          "commitment",
+          "ceasefire_proposal",
+          "growth_pct",
+          "de_xuat",
+          "tourist_decrease",
+          "maintain_position",
+          "money_usd",
+          "tuyen_bo",
+          "injured",
+          "ap_dat",
+          "bac_bo",
+          "thu_nghiem",
+          "cam_van"
+        ],
+        "entities": [
+          {
+            "slug": "oil",
+            "type": "commodity"
+          },
+          {
+            "slug": "trump",
+            "type": "person"
+          },
+          {
+            "slug": "iran",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 4,
+          "reported": 17
+        },
+        "lastSeenAt": "2026-09-28T10:03:13.801Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d176-5aac-7048-9097-d2ee08f32068",
+      "title": "OpenAI agent 'infiltrated' Australian government website, PM says",
+      "subject": {
+        "topic": "world",
+        "predicates": ["user_images_leaked", "undesirable_incidents_count"],
+        "entities": [
+          {
+            "slug": "chatgpt",
+            "type": "brand"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "ai",
+            "type": "topic"
+          },
+          {
+            "slug": "openai",
+            "type": "company"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 1,
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:54:03.379Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e6f3-77a5-7439-88e8-7b27a5ac7b68",
+      "title": "France’s far-right National Rally surges in Senate elections",
+      "subject": {
+        "topic": "world",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "france",
+            "type": "country"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:53:52.804Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e71a-d145-7de3-a2c9-e2d553cbac55",
+      "title": "Bảo đảm an ninh dữ liệu góp phần bảo vệ quyền và lợi ích hợp pháp của người dân",
       "subject": {
         "topic": "vietnam",
         "predicates": [],
         "entities": [
           {
             "slug": "france",
+            "type": "country"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:53:41.516Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e37e-9526-7b1e-b866-8918735042b4",
+      "title": "Xuất khẩu vượt Brazil, thị trường cà phê hòa tan Việt đang “nóng” đến đâu?",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["money_usd", "growth_pct"],
+        "entities": [
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "brazil",
+            "type": "country"
+          },
+          {
+            "slug": "japan",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "corrected": 1,
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:53:25.346Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e25c-a5c6-7caf-803b-0b09f0b70b83",
+      "title": "Người dân Thụy Sĩ đi bỏ phiếu về chính sách trung lập lịch sử của đất nước",
+      "subject": {
+        "topic": "world",
+        "predicates": [
+          "money_usd",
+          "voting_date",
+          "deaths",
+          "diplomatic_meeting",
+          "fund_disbursement",
+          "statement",
+          "voting_event",
+          "bo_sung",
+          "injured",
+          "support",
+          "proposal",
+          "action",
+          "bo_phieu",
+          "missile_attacks_reported",
+          "uav_attacks_reported",
+          "tuyen_bo",
+          "hanh_dong"
+        ],
+        "entities": [
+          {
+            "slug": "russia",
+            "type": "country"
+          },
+          {
+            "slug": "switzerland",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 3,
+          "reported": 16
+        },
+        "lastSeenAt": "2026-09-28T09:53:08.365Z"
+      },
+      "baseline": {
+        "materiality": "limited",
+        "scope": "global_systemic",
+        "channels": ["funding_liquidity"],
+        "directness": "first_order",
+        "persistence": "cyclical",
+        "horizon": "weeks",
+        "affectedTargets": [
+          {
+            "type": "country_exposure",
+            "key": "russia"
+          },
+          {
+            "type": "country_exposure",
+            "key": "switzerland"
+          }
+        ],
+        "transmissionConfidence": "low",
+        "reason": "predicate signal: fund_disbursement",
+        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d91d-b74c-7ea3-af1e-ec579c30dbbc",
+      "title": "HLV Philippines: 'Chúng tôi không sợ Việt Nam'",
+      "subject": {
+        "topic": "sports",
+        "predicates": [
+          "money_vnd",
+          "tournament_status",
+          "gold_medals",
+          "match_result",
+          "goal_scored",
+          "unbeaten_streak",
+          "asiad_rank",
+          "money_usd",
+          "tournament_absence",
+          "world_skills_medals",
+          "match_score",
+          "tournament_match",
+          "gold_medals_asiad",
+          "product_launch",
+          "injury_status",
+          "durian_export_revenue",
+          "broadcast_rights",
+          "injury",
+          "evacuated",
+          "undefeated_streak",
+          "flood_affected_roads",
+          "award",
+          "total_medals_asiad",
+          "deaths"
+        ],
+        "entities": [
+          {
+            "slug": "singapore",
+            "type": "country"
+          },
+          {
+            "slug": "japan",
+            "type": "country"
+          },
+          {
+            "slug": "musk",
+            "type": "person"
+          },
+          {
+            "slug": "malaysia",
+            "type": "country"
+          },
+          {
+            "slug": "china",
+            "type": "country"
+          },
+          {
+            "slug": "bangladesh",
+            "type": "country"
+          },
+          {
+            "slug": "hcmc",
+            "type": "place"
+          },
+          {
+            "slug": "cantho",
+            "type": "place"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "pm",
+            "type": "government_body"
+          },
+          {
+            "slug": "tesla",
+            "type": "company"
+          },
+          {
+            "slug": "starlink",
+            "type": "brand"
+          },
+          {
+            "slug": "northkorea",
+            "type": "country"
+          },
+          {
+            "slug": "pakistan",
+            "type": "country"
+          },
+          {
+            "slug": "vinfast",
+            "type": "company"
+          },
+          {
+            "slug": "asiad",
+            "type": "event_series"
+          },
+          {
+            "slug": "philippines",
+            "type": "country"
+          },
+          {
+            "slug": "hanoi",
+            "type": "place"
+          },
+          {
+            "slug": "greece",
+            "type": "country"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "danang",
+            "type": "place"
+          },
+          {
+            "slug": "asean",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "indonesia",
+            "type": "country"
+          },
+          {
+            "slug": "germany",
+            "type": "country"
+          },
+          {
+            "slug": "thailand",
+            "type": "country"
+          },
+          {
+            "slug": "laos",
+            "type": "country"
+          },
+          {
+            "slug": "russia",
+            "type": "country"
+          },
+          {
+            "slug": "france",
+            "type": "country"
+          },
+          {
+            "slug": "aseancup",
+            "type": "event_series"
+          },
+          {
+            "slug": "kimsangsik",
+            "type": "person"
+          }
+        ],
+        "claimStates": {
+          "disputed": 3,
+          "corrected": 4,
+          "supported": 1,
+          "reported": 24
+        },
+        "lastSeenAt": "2026-09-28T09:52:21.129Z"
+      },
+      "baseline": {
+        "materiality": "none",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no economic predicate and topic/entities are non-economic",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e45c-26ac-7690-ba46-d70cef6d0d5e",
+      "title": "Lịch thi đấu, kênh phát FIFA ASEAN Cup hôm nay: Indonesia quyết đấu Malaysia, Singapore và Bangladesh không còn đường lùi",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["money_usd"],
+        "entities": [
+          {
+            "slug": "asiad",
+            "type": "event_series"
+          },
+          {
+            "slug": "singapore",
+            "type": "country"
+          },
+          {
+            "slug": "bangladesh",
+            "type": "country"
+          },
+          {
+            "slug": "aseancup",
+            "type": "event_series"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "indonesia",
+            "type": "country"
+          },
+          {
+            "slug": "malaysia",
+            "type": "country"
+          },
+          {
+            "slug": "thailand",
+            "type": "country"
+          },
+          {
+            "slug": "asean",
+            "type": "multilateral_organization"
+          }
+        ],
+        "claimStates": {
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:51:59.933Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e197-2d60-7b10-a67e-80ccfa90e74d",
+      "title": "Phó Chủ tịch Quốc hội Nguyễn Doãn Anh thăm chính thức Na Uy: Tạo động lực mới cho quan hệ song phương",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "germany",
+            "type": "country"
+          },
+          {
+            "slug": "norway",
             "type": "country"
           },
           {
@@ -20,7 +1230,1524 @@
           }
         ],
         "claimStates": {},
-        "lastSeenAt": "2026-09-28T09:36:57.159Z"
+        "lastSeenAt": "2026-09-28T09:51:48.181Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d176-5de4-7ebb-9961-a40bdf4f0bb7",
+      "title": "Tây Ban Nha đề xuất cải tổ Hội đồng Bảo an Liên Hợp Quốc",
+      "subject": {
+        "topic": "world",
+        "predicates": ["money_usd", "deaths"],
+        "entities": [
+          {
+            "slug": "spain",
+            "type": "country"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "unga",
+            "type": "event_series"
+          },
+          {
+            "slug": "pm",
+            "type": "government_body"
+          },
+          {
+            "slug": "israel",
+            "type": "country"
+          },
+          {
+            "slug": "palestine",
+            "type": "country"
+          },
+          {
+            "slug": "netanyahu",
+            "type": "person"
+          },
+          {
+            "slug": "un",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "ireland",
+            "type": "country"
+          },
+          {
+            "slug": "france",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 1,
+          "supported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:51:18.385Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d3ad-b0ca-7dcf-aa6a-5cd00825e1c3",
+      "title": "Nga đẩy lùi đợt tấn công dữ dội của UAV Ukraine vào Moscow",
+      "subject": {
+        "topic": "world",
+        "predicates": ["deaths"],
+        "entities": [
+          {
+            "slug": "pm",
+            "type": "government_body"
+          },
+          {
+            "slug": "france",
+            "type": "country"
+          },
+          {
+            "slug": "ukraine",
+            "type": "country"
+          },
+          {
+            "slug": "zelensky",
+            "type": "person"
+          },
+          {
+            "slug": "drone",
+            "type": "topic"
+          },
+          {
+            "slug": "russia",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 1
+        },
+        "lastSeenAt": "2026-09-28T09:51:03.521Z"
+      },
+      "baseline": {
+        "materiality": "none",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no economic predicate and topic/entities are non-economic",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d188-8261-7022-9b2f-3ebdc95ceb55",
+      "title": "Những CEO nào có thể tham gia quốc yến Mỹ - Trung?",
+      "subject": {
+        "topic": "business",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "china",
+            "type": "country"
+          },
+          {
+            "slug": "xijinping",
+            "type": "person"
+          },
+          {
+            "slug": "g20",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "putin",
+            "type": "person"
+          },
+          {
+            "slug": "france",
+            "type": "country"
+          },
+          {
+            "slug": "iran",
+            "type": "country"
+          },
+          {
+            "slug": "northkorea",
+            "type": "country"
+          },
+          {
+            "slug": "russia",
+            "type": "country"
+          },
+          {
+            "slug": "trump",
+            "type": "person"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:50:30.052Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d6f3-8843-7b91-9c17-1d1ce9a583d0",
+      "title": "Pháp hứa gửi quân, vũ khí tới Ảrập Xêút giữa căng thẳng với nhóm thân Iran",
+      "subject": {
+        "topic": "world",
+        "predicates": ["deaths"],
+        "entities": [
+          {
+            "slug": "iran",
+            "type": "country"
+          },
+          {
+            "slug": "saudi",
+            "type": "country"
+          },
+          {
+            "slug": "france",
+            "type": "country"
+          },
+          {
+            "slug": "yemen",
+            "type": "country"
+          },
+          {
+            "slug": "redsea",
+            "type": "region"
+          }
+        ],
+        "claimStates": {
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:50:07.988Z"
+      },
+      "baseline": {
+        "materiality": "none",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no economic predicate and topic/entities are non-economic",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0dc5d-fb67-77eb-97c7-067b659fd8b7",
+      "title": "Hàng loạt đại biểu bỏ ra ngoài khi Thủ tướng Israel lên phát biểu",
+      "subject": {
+        "topic": "world",
+        "predicates": ["deaths"],
+        "entities": [
+          {
+            "slug": "un",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "pm",
+            "type": "government_body"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "netanyahu",
+            "type": "person"
+          },
+          {
+            "slug": "unga",
+            "type": "event_series"
+          },
+          {
+            "slug": "uk",
+            "type": "country"
+          },
+          {
+            "slug": "palestine",
+            "type": "country"
+          },
+          {
+            "slug": "israel",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:49:42.164Z"
+      },
+      "baseline": {
+        "materiality": "none",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no economic predicate and topic/entities are non-economic",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
+      "title": "Bầu trời Kiev sáng rực trong đòn tập kích tên lửa đạn đạo của Nga",
+      "subject": {
+        "topic": "world",
+        "predicates": [
+          "conflict_duration",
+          "injured",
+          "aid_package",
+          "aid_disbursed",
+          "smuggled_goods_value",
+          "casualties_update",
+          "ceasefire_rejection",
+          "military_deployment",
+          "aerial_bomb_attacks",
+          "meeting_proposal",
+          "reject_visit",
+          "g20_location",
+          "reject_meeting_location",
+          "gap_go",
+          "tuyen_bo",
+          "ceasefire_proposal_review",
+          "institute_branch_closed",
+          "fund_disbursement",
+          "uav_shot_down",
+          "outbreak_year",
+          "warning_to_europe",
+          "ceasefire_consideration",
+          "negotiation_stance",
+          "military_budget",
+          "drone_budget",
+          "election_list_reception",
+          "chi_trich",
+          "ceasefire_proposal_status",
+          "money_vnd",
+          "injuries",
+          "ceasefire_proposal",
+          "weapon_agreement",
+          "deploy_ugv",
+          "mobilize_troops",
+          "uav_spending",
+          "mobilization_scenario",
+          "disbursement",
+          "proposal",
+          "bi_tan_cong",
+          "aid_disbursement",
+          "import_increase",
+          "disburse_funds",
+          "speech_change",
+          "support_maritime_corridor",
+          "counter_offensive",
+          "deny_conflict",
+          "military_aid_approved",
+          "uav_attacks",
+          "missile_attack_casualties",
+          "meeting_date",
+          "propose_location",
+          "penetration_depth",
+          "missile_attack",
+          "missile_attacks",
+          "closure",
+          "disbursement_amount",
+          "ceasefire_proposals",
+          "uav_budget",
+          "weapon_launch",
+          "weapon_usage",
+          "prison_sentence",
+          "money_usd",
+          "survival_condition",
+          "weapon_deployment",
+          "black_sea_ceasefire",
+          "ngung_ban_bien_den",
+          "potential_mobilization",
+          "hormuz_proposal",
+          "casualties",
+          "debt_to_gdp",
+          "threat_expand_conflict",
+          "meeting_location_proposal",
+          "military_aid_disbursement",
+          "proposed_location",
+          "len_an",
+          "sentence_years",
+          "deaths",
+          "institute_closure",
+          "missile_agreement",
+          "strait_hormuz_plan",
+          "event_date",
+          "territory_recontrolled",
+          "patriot_production_approval",
+          "conflict_denial",
+          "smuggled_money",
+          "ngoai_giao_gap_go",
+          "financial_disbursement",
+          "ceasefire_negotiation",
+          "ceasefire_readiness",
+          "meeting",
+          "drone_spending",
+          "missile_intercept_rate",
+          "drone_spending_plan",
+          "troop_mobilization",
+          "ceasefire_review",
+          "danh_chan_uav",
+          "invitation",
+          "energy_infrastructure_attack_ceasefire",
+          "un_meeting_date",
+          "missile_rejection",
+          "power_water_loss",
+          "diplomatic_contact",
+          "territory_reclaimed",
+          "diplomatic_meeting",
+          "military_mobilization",
+          "missile_attack_count",
+          "missile_agreement_reached",
+          "host_meeting"
+        ],
+        "entities": [
+          {
+            "slug": "canada",
+            "type": "country"
+          },
+          {
+            "slug": "yemen",
+            "type": "country"
+          },
+          {
+            "slug": "putin",
+            "type": "person"
+          },
+          {
+            "slug": "ireland",
+            "type": "country"
+          },
+          {
+            "slug": "poland",
+            "type": "country"
+          },
+          {
+            "slug": "saudi",
+            "type": "country"
+          },
+          {
+            "slug": "france",
+            "type": "country"
+          },
+          {
+            "slug": "tesla",
+            "type": "company"
+          },
+          {
+            "slug": "who",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "unga",
+            "type": "event_series"
+          },
+          {
+            "slug": "nato",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "dienbien",
+            "type": "place"
+          },
+          {
+            "slug": "redsea",
+            "type": "region"
+          },
+          {
+            "slug": "eu",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "g20",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "bytedance",
+            "type": "company"
+          },
+          {
+            "slug": "trump",
+            "type": "person"
+          },
+          {
+            "slug": "qatar",
+            "type": "country"
+          },
+          {
+            "slug": "ukraine",
+            "type": "country"
+          },
+          {
+            "slug": "zelensky",
+            "type": "person"
+          },
+          {
+            "slug": "drone",
+            "type": "topic"
+          },
+          {
+            "slug": "middleeast",
+            "type": "region"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "un",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "baltic",
+            "type": "region"
+          },
+          {
+            "slug": "russia",
+            "type": "country"
+          },
+          {
+            "slug": "hungary",
+            "type": "country"
+          },
+          {
+            "slug": "germany",
+            "type": "country"
+          },
+          {
+            "slug": "tiktok",
+            "type": "brand"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "iran",
+            "type": "country"
+          },
+          {
+            "slug": "macron",
+            "type": "person"
+          },
+          {
+            "slug": "uae",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 13,
+          "supported": 1,
+          "reported": 108,
+          "corrected": 14
+        },
+        "lastSeenAt": "2026-09-28T09:48:08.147Z"
+      },
+      "baseline": {
+        "materiality": "limited",
+        "scope": "global_systemic",
+        "channels": ["external", "funding_liquidity", "policy_regulatory"],
+        "directness": "first_order",
+        "persistence": "cyclical",
+        "horizon": "weeks",
+        "affectedTargets": [
+          {
+            "type": "country_exposure",
+            "key": "canada"
+          },
+          {
+            "type": "country_exposure",
+            "key": "yemen"
+          },
+          {
+            "type": "country_exposure",
+            "key": "ireland"
+          },
+          {
+            "type": "country_exposure",
+            "key": "poland"
+          }
+        ],
+        "transmissionConfidence": "low",
+        "reason": "predicate signal: aid_disbursed,fund_disbursement,disbursement,aid_disbursement,disburse_funds,debt_to_gdp,military_aid_disbursement,financial_disbursement",
+        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e76a-0873-7c96-9c45-a9217055f560",
+      "title": "Cổ phiếu tiêu dùng Trung Quốc thất thế trong lúc cổ phiếu AI lên cơn sốt",
+      "subject": {
+        "topic": "business",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "china",
+            "type": "country"
+          },
+          {
+            "slug": "ai",
+            "type": "topic"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:48:00.954Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e71c-e8d5-7803-a0c4-5f9cead29f2b",
+      "title": "Xe đầu kéo lao xuống vực, nam tài xế tử vong tại chỗ",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "hue",
+            "type": "place"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:47:45.188Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e769-b127-76f7-a595-c270c6d9b100",
+      "title": "Thủ tướng chủ trì phiên họp Ban Chỉ đạo 57 chuyên đề phát triển kinh tế-xã hội",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "pm",
+            "type": "government_body"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:47:38.606Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e769-7fd3-7e6c-a810-17959c023bc1",
+      "title": "Bé gái sơ sinh bị bỏ rơi bên đường kèm thư xin lỗi của &apos;mẹ đơn thân&apos;",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "nghean",
+            "type": "place"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:47:25.977Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d869-ae01-7f66-814e-00c4710d6da5",
+      "title": "'Rái cá sông Giang' Huy Hoàng lỡ huy chương, về thứ 4 chung kết 400m tự do ASIAD 20",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [
+          "ai_cooperation",
+          "money_usd",
+          "rank",
+          "tariff_preference",
+          "competition",
+          "product_production",
+          "competition_stage",
+          "supply_chain",
+          "agreement"
+        ],
+        "entities": [
+          {
+            "slug": "southkorea",
+            "type": "country"
+          },
+          {
+            "slug": "japan",
+            "type": "country"
+          },
+          {
+            "slug": "asiad",
+            "type": "event_series"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "china",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "reported": 6,
+          "disputed": 3
+        },
+        "lastSeenAt": "2026-09-28T09:46:43.486Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e68a-06d4-7b9c-bfc6-922629540956",
+      "title": "TP Hồ Chí Minh yêu cầu không đùn đẩy, né tránh trong việc cung cấp thông tin báo chí",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "hcmc",
+            "type": "place"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:46:33.015Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0dbfd-0aa0-75af-9359-b8fa163eccf2",
+      "title": "Agentic AI bắt đầu đi vào vận hành thực tế ở Việt Nam",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [
+          "match_result",
+          "medal",
+          "rank",
+          "tournament_stage",
+          "money_usd",
+          "money_vnd"
+        ],
+        "entities": [
+          {
+            "slug": "myanmar",
+            "type": "country"
+          },
+          {
+            "slug": "hcmc",
+            "type": "place"
+          },
+          {
+            "slug": "asiad",
+            "type": "event_series"
+          },
+          {
+            "slug": "india",
+            "type": "country"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "reported": 8
+        },
+        "lastSeenAt": "2026-09-28T09:46:12.122Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e6e7-9532-7362-a839-9ccae82ea640",
+      "title": "Phát huy vai trò tiên phong của doanh nghiệp trong kiến tạo giá trị du lịch",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "vietnam",
+            "type": "country"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:45:57.524Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e3da-c2bd-7660-be52-d3ed1e4fcd40",
+      "title": "Điền kinh Thái Lan gây chấn động Asiad, lập kỷ lục nội dung 200m",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "thailand",
+            "type": "country"
+          },
+          {
+            "slug": "asiad",
+            "type": "event_series"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:45:34.584Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e6f4-a5bd-7934-9a55-f04eac98a2b6",
+      "title": "Lợi suất trái phiếu Mỹ tăng vọt gây sức ép lên lĩnh vực hạ tầng AI",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "oil",
+            "type": "commodity"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "ai",
+            "type": "topic"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:45:23.715Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e767-6f81-7a96-84f5-45b50260a144",
+      "title": "Hàng Việt trước loạt thách thức mới tại thị trường Liên minh châu Âu",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["deaths", "money_usd", "growth_pct"],
+        "entities": [
+          {
+            "slug": "india",
+            "type": "country"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "thailand",
+            "type": "country"
+          },
+          {
+            "slug": "eu",
+            "type": "multilateral_organization"
+          }
+        ],
+        "claimStates": {
+          "reported": 3
+        },
+        "lastSeenAt": "2026-09-28T09:45:10.727Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0dd8e-7b72-7acd-8210-d6ba02b82621",
+      "title": "Phó Thủ tướng Thường trực Chính phủ Phạm Gia Túc tiếp xúc cử tri tại Hà Tĩnh",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [
+          "price",
+          "durian_export_revenue",
+          "money_usd",
+          "competition_winner",
+          "match_result",
+          "congress_term",
+          "money_vnd",
+          "inspection",
+          "deaths"
+        ],
+        "entities": [
+          {
+            "slug": "thailand",
+            "type": "country"
+          },
+          {
+            "slug": "langson",
+            "type": "place"
+          },
+          {
+            "slug": "dienbien",
+            "type": "place"
+          },
+          {
+            "slug": "nghean",
+            "type": "place"
+          },
+          {
+            "slug": "lamdong",
+            "type": "place"
+          },
+          {
+            "slug": "caobang",
+            "type": "place"
+          },
+          {
+            "slug": "pm",
+            "type": "government_body"
+          },
+          {
+            "slug": "hanoi",
+            "type": "place"
+          },
+          {
+            "slug": "bariavungtau",
+            "type": "place"
+          },
+          {
+            "slug": "china",
+            "type": "country"
+          },
+          {
+            "slug": "quangninh",
+            "type": "place"
+          },
+          {
+            "slug": "laos",
+            "type": "country"
+          },
+          {
+            "slug": "hatinh",
+            "type": "place"
+          }
+        ],
+        "claimStates": {
+          "corrected": 1,
+          "disputed": 1,
+          "supported": 1,
+          "reported": 6
+        },
+        "lastSeenAt": "2026-09-28T09:44:47.284Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0dfae-940b-7da0-aa12-4cdfb1836edb",
+      "title": "Trade deliverables, Taiwan push and ‘strategic stability’: key Xi-Trump takeaways overall",
+      "subject": {
+        "topic": "world",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "xijinping",
+            "type": "person"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "china",
+            "type": "country"
+          },
+          {
+            "slug": "taiwan",
+            "type": "country"
+          },
+          {
+            "slug": "trump",
+            "type": "person"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:44:31.096Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e740-a1be-77fd-878b-1acf71c9f4cc",
+      "title": "Tận dụng CPTPP để mở rộng xuất khẩu, đa dạng hóa thị trường",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "eu",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "japan",
+            "type": "country"
+          },
+          {
+            "slug": "binhduong",
+            "type": "place"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:44:18.610Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d84e-573b-719c-8cff-0236ae45f541",
+      "title": "Saudi Arabia, Thổ Nhĩ Kỳ và Pakistan họp khẩn về Hiệp ước Mecaa",
+      "subject": {
+        "topic": "world",
+        "predicates": ["deaths"],
+        "entities": [
+          {
+            "slug": "yemen",
+            "type": "country"
+          },
+          {
+            "slug": "pakistan",
+            "type": "country"
+          },
+          {
+            "slug": "un",
+            "type": "multilateral_organization"
+          },
+          {
+            "slug": "saudi",
+            "type": "country"
+          },
+          {
+            "slug": "drone",
+            "type": "topic"
+          },
+          {
+            "slug": "turkey",
+            "type": "country"
+          },
+          {
+            "slug": "iran",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:44:03.105Z"
+      },
+      "baseline": {
+        "materiality": "none",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no economic predicate and topic/entities are non-economic",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e340-0ced-76ed-a1bb-e6493b576f90",
+      "title": "Bộ trưởng Israel kêu gọi sáp nhập một phần Gaza, tấn công Bờ Tây",
+      "subject": {
+        "topic": "world",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "palestine",
+            "type": "country"
+          },
+          {
+            "slug": "lebanon",
+            "type": "country"
+          },
+          {
+            "slug": "israel",
+            "type": "country"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:43:46.255Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e688-eb3d-7020-983b-350693d8d3f7",
+      "title": "Phát hiện gần 1 tấn pháo và nguyên liệu chế tạo pháo tại nhà dân ở Nghệ An",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "nghean",
+            "type": "place"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:43:33.379Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e765-c805-7072-9d39-ad0d9c32f5b3",
+      "title": "VnExpress Marathon Grand Tour Nghệ An 2026 thu hút hơn 7.000 vận động viên trong nước và quốc tế",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["growth_pct"],
+        "entities": [
+          {
+            "slug": "asiad",
+            "type": "event_series"
+          },
+          {
+            "slug": "bariavungtau",
+            "type": "place"
+          },
+          {
+            "slug": "binhduong",
+            "type": "place"
+          },
+          {
+            "slug": "danang",
+            "type": "place"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          },
+          {
+            "slug": "nghean",
+            "type": "place"
+          }
+        ],
+        "claimStates": {
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:43:22.312Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e4e8-a172-7374-b041-4edae60faba1",
+      "title": "Vucic resigns as Serbia's president, setting up election that could see him become PM",
+      "subject": {
+        "topic": "world",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "pm",
+            "type": "government_body"
+          },
+          {
+            "slug": "starmer",
+            "type": "person"
+          },
+          {
+            "slug": "putin",
+            "type": "person"
+          },
+          {
+            "slug": "sweden",
+            "type": "country"
+          },
+          {
+            "slug": "us",
+            "type": "country"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:43:01.086Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e67b-8e99-7cb6-9bc1-a6f9c9599352",
+      "title": "Dự báo thời tiết 28/9/2026: Miền Bắc nắng mạnh giữa mùa thu, Hà Nội trên 35 độ",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["temperature", "penalty", "weather"],
+        "entities": [
+          {
+            "slug": "hanoi",
+            "type": "place"
+          },
+          {
+            "slug": "mienbac",
+            "type": "region"
+          },
+          {
+            "slug": "miennam",
+            "type": "region"
+          }
+        ],
+        "claimStates": {
+          "supported": 1,
+          "reported": 5
+        },
+        "lastSeenAt": "2026-09-28T09:42:43.206Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e184-c961-79b9-9d0b-90e3d7bfd3e4",
+      "title": "Khách Nga bắt đầu đến Phú Quốc trú đông",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["money_vnd"],
+        "entities": [
+          {
+            "slug": "airbus",
+            "type": "company"
+          },
+          {
+            "slug": "russia",
+            "type": "country"
+          },
+          {
+            "slug": "angiang",
+            "type": "place"
+          },
+          {
+            "slug": "phuquoc",
+            "type": "place"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 1
+        },
+        "lastSeenAt": "2026-09-28T09:42:25.257Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -118,7 +2845,312 @@
           "reported": 10,
           "disputed": 2
         },
-        "lastSeenAt": "2026-09-28T09:36:20.360Z"
+        "lastSeenAt": "2026-09-28T09:42:09.109Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0d850-d474-7064-a2d4-96e5fa81ddf5",
+      "title": "Nhân viên SJC lấy 30 lượng vàng để tráo vàng giá thấp",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["sentence_years"],
+        "entities": [
+          {
+            "slug": "us",
+            "type": "country"
+          },
+          {
+            "slug": "federal_reserve",
+            "type": "central_bank"
+          }
+        ],
+        "claimStates": {
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:41:52.637Z"
+      },
+      "baseline": {
+        "materiality": "none",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no economic predicate and topic/entities are non-economic",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e2fe-9cb4-7055-9280-b3a34750458a",
+      "title": "Hà Nội: Tạm tháo biển khoảng cách trên cầu Nhật Tân",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [
+          "purpose",
+          "action",
+          "traffic_status",
+          "statement",
+          "plan"
+        ],
+        "entities": [
+          {
+            "slug": "hanoi",
+            "type": "place"
+          },
+          {
+            "slug": "france",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "disputed": 3,
+          "reported": 3
+        },
+        "lastSeenAt": "2026-09-28T09:41:28.924Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e716-b8b3-7cce-8987-06b2b29b150f",
+      "title": "Hà Nội dự kiến bồi thường về đất gấp 2 lần quy định cho 7 dự án đường sắt",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "hanoi",
+            "type": "place"
+          },
+          {
+            "slug": "pm",
+            "type": "government_body"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:41:12.706Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e35d-8cce-7bb5-a12e-4213f34759a3",
+      "title": "ASIAD 2026: Thể thao Việt Nam ghi nhận những kết quả đáng chú ý",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["area_ha", "money_vnd"],
+        "entities": [
+          {
+            "slug": "myanmar",
+            "type": "country"
+          },
+          {
+            "slug": "asiad",
+            "type": "event_series"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "reported": 2
+        },
+        "lastSeenAt": "2026-09-28T09:40:24.573Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0ddb1-212f-75b2-94db-dc448bad6076",
+      "title": "Republic of Ireland news conference delayed before controversial Israel game",
+      "subject": {
+        "topic": "world",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "ireland",
+            "type": "country"
+          },
+          {
+            "slug": "hungary",
+            "type": "country"
+          },
+          {
+            "slug": "israel",
+            "type": "country"
+          },
+          {
+            "slug": "palestine",
+            "type": "country"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:39:59.346Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e67e-3094-7caa-8fe0-c1fc8f59f9c9",
+      "title": "525",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["arrests"],
+        "entities": [
+          {
+            "slug": "france",
+            "type": "country"
+          }
+        ],
+        "claimStates": {
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:39:03.299Z"
+      },
+      "baseline": {
+        "materiality": "none",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no economic predicate and topic/entities are non-economic",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e761-a711-7018-8a10-53b9f2a62159",
+      "title": "Xử nghiêm các hành vi bạo lực, xâm hại, lợi dụng người khuyết tật để trục lợi",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["money_usd"],
+        "entities": [
+          {
+            "slug": "haiphong",
+            "type": "place"
+          },
+          {
+            "slug": "hanoi",
+            "type": "place"
+          }
+        ],
+        "claimStates": {
+          "reported": 1
+        },
+        "lastSeenAt": "2026-09-28T09:38:51.727Z"
+      },
+      "baseline": {
+        "materiality": "unknown",
+        "scope": null,
+        "channels": [],
+        "directness": null,
+        "persistence": null,
+        "horizon": null,
+        "affectedTargets": [],
+        "transmissionConfidence": null,
+        "reason": "no high-precision predicate → unknown is the honest label",
+        "cautions": ["predicate_not_materiality"]
+      },
+      "sourceSet": "holdout",
+      "labels": null
+    },
+    {
+      "kind": "event",
+      "id": "01a0e75f-e78c-77b6-a43f-a56914fe7f47",
+      "title": "MB tiên phong triển khai Nền tảng Tài trợ chuỗi cung ứng đa tầng",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [],
+        "entities": [
+          {
+            "slug": "france",
+            "type": "country"
+          },
+          {
+            "slug": "vietnam",
+            "type": "country"
+          }
+        ],
+        "claimStates": {},
+        "lastSeenAt": "2026-09-28T09:36:57.159Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -505,588 +3537,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0d176-5a20-722f-a77b-4850e91ead78",
-      "title": "Ông Trump đón ông Tập tại sân bay, Mỹ - Trung gia hạn đình chiến thương mại",
-      "subject": {
-        "topic": "world",
-        "predicates": [
-          "trust_in_negotiations",
-          "meeting",
-          "conflict_desire",
-          "g20_location",
-          "visit_duration",
-          "military_aid_allocation",
-          "hosting_event",
-          "su_kien_don_tiep",
-          "event_invitation",
-          "military_mobilization",
-          "trade_agreement_value",
-          "arms_control_talks",
-          "attack_weapon",
-          "trade_negotiation_extension",
-          "growth_pct",
-          "state_of_emergency",
-          "nuclear_stance",
-          "proposal_rejected",
-          "tariff_agreement",
-          "visit_end_date",
-          "ukraine_aid_disbursement",
-          "ai_dialogue_channel",
-          "arms_control_support",
-          "tariff_preference_goods_value",
-          "product_launch",
-          "aid_allocation",
-          "thoi_gian_dam_phan",
-          "sign_agreement",
-          "summit_hosting",
-          "negotiation_trust",
-          "military_deployment",
-          "ai_control_stance",
-          "proposal_rejection",
-          "sanctions",
-          "declaration_failed",
-          "trade_negotiation_deadline",
-          "don_tiep",
-          "g20_time",
-          "signed_agreement",
-          "tariff_reduction",
-          "dismiss_official",
-          "progress",
-          "tariff_agreement_value",
-          "damage_usd",
-          "cnn_ban",
-          "security_agreement_date",
-          "emergency_declaration",
-          "technology_rename",
-          "commodity_purchase",
-          "meeting_evaluation",
-          "consensus_reached",
-          "speech_location",
-          "agreed_results",
-          "de_xuat_lo_trinh",
-          "autonomous_taxi_launch",
-          "established_channel",
-          "gift",
-          "ai_communication_channel",
-          "nuclear_position",
-          "tuyen_bo",
-          "covid19_deaths",
-          "trade_agreement_extension",
-          "deaths",
-          "greeting_location",
-          "age",
-          "coal_purchase_commitment",
-          "meeting_location",
-          "evacuation",
-          "dismiss_date",
-          "propose_strait",
-          "meet_iran",
-          "ai_policy",
-          "return_date",
-          "security_agreement_signing",
-          "summit_meeting",
-          "trade_agreement",
-          "dismissal",
-          "muon_khoi_phuc",
-          "tariff_reduction_value",
-          "return",
-          "invitation",
-          "to_chuc_le_don",
-          "ap_dat_han_che",
-          "proposed_reopening",
-          "money_vnd",
-          "tariff_truce_extension",
-          "pandemic_declaration",
-          "meeting_date",
-          "stock_index",
-          "ai_cooperation",
-          "peace_proposal",
-          "tariff_preferences",
-          "coal_purchase",
-          "event_announcement_date",
-          "proposal",
-          "official_dismissed",
-          "established_communication_channel",
-          "money_usd",
-          "peace_agreement",
-          "communication_channel",
-          "trang_phuc",
-          "military_base_cost",
-          "rejected_proposal",
-          "fuel_efficiency_standard",
-          "consensus_points",
-          "invite_g20",
-          "agreements_reached",
-          "dialogue_channel",
-          "canh_bao",
-          "pandemic_declaration_failed",
-          "military_aid_disbursed",
-          "de_xuat_mo_lai",
-          "pandemic_declaration_status",
-          "dia_diem_don_tiep",
-          "proposed_plan",
-          "ceasefire_proposal_rejected",
-          "weapon_test",
-          "trade_negotiations_extension",
-          "arrest_or_dismissal",
-          "interest_rate",
-          "weapon_sale_approval",
-          "dismissal_date",
-          "ra_mat_dich_vu",
-          "thay_doi_dien_van",
-          "nuclear_policy",
-          "declaration_status",
-          "tariff_cut",
-          "strait_hormuz_proposal",
-          "support",
-          "proposed_action",
-          "tariff_cut_value",
-          "thoa_thuan_uu_dai_thue_quan",
-          "moi",
-          "security_agreement",
-          "airport_greeting",
-          "trade_truce_extension",
-          "rename_technology",
-          "visit_end",
-          "announcement_date",
-          "hormuz_strait_proposal",
-          "strait_hormuz_reopening_proposal",
-          "consensus_results",
-          "statement",
-          "meeting_time",
-          "produce_patriot",
-          "media_ban",
-          "reject_proposal",
-          "launch_date",
-          "security_agreement_signed",
-          "negotiation_distrust",
-          "conflict_stance",
-          "decision_allow_production",
-          "meet_iran_representative",
-          "qua_tang",
-          "medals",
-          "bac_bo_de_xuat_cua_iran",
-          "aid_disbursement",
-          "return_to_country",
-          "hormuz_proposal",
-          "clothing",
-          "minister_dismissal",
-          "de_doa_luan_toi",
-          "state_visit_duration",
-          "proposal_hormuz",
-          "dia_diem_gap_mat",
-          "khong_thong_qua_tuyen_bo",
-          "event_location",
-          "proposed_reopening_strait",
-          "diplomatic_relations",
-          "ai_dialogue",
-          "proposal_duration",
-          "fuel_economy_standards",
-          "meeting_schedule",
-          "proposal_strait_hormuz",
-          "ky_hiep_dinh",
-          "nuclear_warning",
-          "speech_date",
-          "aid_disbursed",
-          "thoi_gian_dam_phan_thuong_mai"
-        ],
-        "entities": [
-          {
-            "slug": "zelensky",
-            "type": "person"
-          },
-          {
-            "slug": "china",
-            "type": "country"
-          },
-          {
-            "slug": "taiwan",
-            "type": "country"
-          },
-          {
-            "slug": "asiad",
-            "type": "event_series"
-          },
-          {
-            "slug": "iran",
-            "type": "country"
-          },
-          {
-            "slug": "xijinping",
-            "type": "person"
-          },
-          {
-            "slug": "thailand",
-            "type": "country"
-          },
-          {
-            "slug": "russia",
-            "type": "country"
-          },
-          {
-            "slug": "france",
-            "type": "country"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "philippines",
-            "type": "country"
-          },
-          {
-            "slug": "asean",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "putin",
-            "type": "person"
-          },
-          {
-            "slug": "trump",
-            "type": "person"
-          },
-          {
-            "slug": "aseancup",
-            "type": "event_series"
-          },
-          {
-            "slug": "yemen",
-            "type": "country"
-          },
-          {
-            "slug": "saudi",
-            "type": "country"
-          },
-          {
-            "slug": "who",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "ukraine",
-            "type": "country"
-          },
-          {
-            "slug": "pakistan",
-            "type": "country"
-          },
-          {
-            "slug": "drone",
-            "type": "topic"
-          },
-          {
-            "slug": "redsea",
-            "type": "region"
-          },
-          {
-            "slug": "japan",
-            "type": "country"
-          },
-          {
-            "slug": "pm",
-            "type": "government_body"
-          },
-          {
-            "slug": "uk",
-            "type": "country"
-          },
-          {
-            "slug": "middleeast",
-            "type": "region"
-          },
-          {
-            "slug": "eu",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "netanyahu",
-            "type": "person"
-          },
-          {
-            "slug": "un",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "g20",
-            "type": "multilateral_organization"
-          }
-        ],
-        "claimStates": {
-          "corrected": 21,
-          "disputed": 24,
-          "supported": 6,
-          "reported": 163
-        },
-        "lastSeenAt": "2026-09-28T09:28:05.398Z"
-      },
-      "baseline": {
-        "materiality": "major",
-        "scope": "global_systemic",
-        "channels": [
-          "policy_regulatory",
-          "external",
-          "discounting",
-          "funding_liquidity"
-        ],
-        "directness": "first_order",
-        "persistence": "cyclical",
-        "horizon": "weeks",
-        "affectedTargets": [
-          {
-            "type": "country_exposure",
-            "key": "china"
-          },
-          {
-            "type": "country_exposure",
-            "key": "taiwan"
-          },
-          {
-            "type": "country_exposure",
-            "key": "iran"
-          },
-          {
-            "type": "country_exposure",
-            "key": "thailand"
-          }
-        ],
-        "transmissionConfidence": "low",
-        "reason": "predicate signal: tariff_agreement,ukraine_aid_disbursement,sanctions,tariff_reduction,trade_agreement,tariff_reduction_value,tariff_truce_extension,tariff_preferences,interest_rate,tariff_cut,tariff_cut_value,aid_disbursement,aid_disbursed",
-        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
-      "title": "Iran không còn tin tưởng vào đàm phán với Mỹ",
-      "subject": {
-        "topic": "world",
-        "predicates": [
-          "military_budget",
-          "survived_strikes",
-          "territory_reclaimed",
-          "canh_bao_giao_thuong_voi_iran",
-          "ban_ha_ten_lua_va_may_bay_khong_nguoi_lai_cua_houthi",
-          "uav_budget",
-          "tap_kich",
-          "aid_package_disbursed",
-          "investigation",
-          "giai_ngan_vien_tro",
-          "injured",
-          "diplomatic_demand",
-          "seizure",
-          "tourism_projects_launched",
-          "diplomatic_pressure",
-          "tuyen_bo_khong_tin_tuong_dam_phan_voi_my",
-          "chi_tieu_cho_uav",
-          "missile_attacks",
-          "drone_attacks",
-          "sanctions",
-          "negotiation_stance",
-          "fund_disbursement",
-          "deaths",
-          "strait_of_hormuz",
-          "jobs_created",
-          "arrest",
-          "diplomatic_meeting",
-          "sao_chep_nguoc_tau_lan_khong_nguoi_lai_cua_my",
-          "security_at_base",
-          "aid_package",
-          "bo_phieu",
-          "trust_in_us_negotiations",
-          "tan_cong_ukraine",
-          "warning_to_countries",
-          "seized_equipment",
-          "stance",
-          "airstrike",
-          "money_usd",
-          "attack",
-          "thu_giu_thiet_bi_lan_khong_nguoi_lai_cua_my",
-          "deploy_robot",
-          "uav_attacks",
-          "aerial_bomb_attacks",
-          "ap_dat_han_che_dich_vu_chung_chi_bao_mat",
-          "action",
-          "arrests"
-        ],
-        "entities": [
-          {
-            "slug": "starmer",
-            "type": "person"
-          },
-          {
-            "slug": "iran",
-            "type": "country"
-          },
-          {
-            "slug": "ukraine",
-            "type": "country"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "uk",
-            "type": "country"
-          },
-          {
-            "slug": "baltic",
-            "type": "region"
-          },
-          {
-            "slug": "israel",
-            "type": "country"
-          },
-          {
-            "slug": "russia",
-            "type": "country"
-          },
-          {
-            "slug": "yemen",
-            "type": "country"
-          },
-          {
-            "slug": "who",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "france",
-            "type": "country"
-          },
-          {
-            "slug": "eu",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "drone",
-            "type": "topic"
-          },
-          {
-            "slug": "starlink",
-            "type": "brand"
-          },
-          {
-            "slug": "trump",
-            "type": "person"
-          },
-          {
-            "slug": "pm",
-            "type": "government_body"
-          },
-          {
-            "slug": "putin",
-            "type": "person"
-          },
-          {
-            "slug": "saudi",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "disputed": 3,
-          "corrected": 5,
-          "reported": 39,
-          "supported": 1
-        },
-        "lastSeenAt": "2026-09-28T09:26:23.720Z"
-      },
-      "baseline": {
-        "materiality": "meaningful",
-        "scope": "global_systemic",
-        "channels": ["external", "policy_regulatory", "funding_liquidity"],
-        "directness": "first_order",
-        "persistence": "cyclical",
-        "horizon": "weeks",
-        "affectedTargets": [
-          {
-            "type": "country_exposure",
-            "key": "iran"
-          },
-          {
-            "type": "country_exposure",
-            "key": "ukraine"
-          },
-          {
-            "type": "country_exposure",
-            "key": "us"
-          },
-          {
-            "type": "country_exposure",
-            "key": "uk"
-          }
-        ],
-        "transmissionConfidence": "low",
-        "reason": "predicate signal: aid_package_disbursed,sanctions,fund_disbursement",
-        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e755-6e23-70e2-848e-013f32f5a0ed",
-      "title": "\"Ngoại giao gấu trúc” kết nối Mỹ - Trung Quốc",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [
-          "stay_duration",
-          "visit_duration",
-          "visit_end_date",
-          "ai_communication_channel",
-          "area_ha",
-          "tariff_reduction_value",
-          "consensus_points",
-          "money_usd"
-        ],
-        "entities": [
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "china",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "disputed": 1,
-          "reported": 7
-        },
-        "lastSeenAt": "2026-09-28T09:25:30.669Z"
-      },
-      "baseline": {
-        "materiality": "meaningful",
-        "scope": "vietnam",
-        "channels": ["policy_regulatory", "external"],
-        "directness": "first_order",
-        "persistence": "cyclical",
-        "horizon": "weeks",
-        "affectedTargets": [
-          {
-            "type": "country_exposure",
-            "key": "us"
-          },
-          {
-            "type": "country_exposure",
-            "key": "china"
-          }
-        ],
-        "transmissionConfidence": "low",
-        "reason": "predicate signal: tariff_reduction_value",
-        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "title": "[GALLERY] Hiền Thục dạo chơi Nhật Bản, sắc vóc trẻ trung ở tuổi 45",
       "subject": {
@@ -1119,63 +3569,6 @@
           "reported": 10
         },
         "lastSeenAt": "2026-09-28T09:21:08.052Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
-      "title": "The tricky tests awaiting Andy Burnham after Labour conference",
-      "subject": {
-        "topic": "world",
-        "predicates": [
-          "ra_toi_hau_thu",
-          "deaths",
-          "proposal",
-          "reject_proposal",
-          "ceasefire_proposal",
-          "growth_pct",
-          "de_xuat",
-          "money_usd",
-          "tuyen_bo",
-          "injured",
-          "ap_dat",
-          "bac_bo",
-          "thu_nghiem",
-          "cam_van"
-        ],
-        "entities": [
-          {
-            "slug": "oil",
-            "type": "commodity"
-          },
-          {
-            "slug": "trump",
-            "type": "person"
-          },
-          {
-            "slug": "iran",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "disputed": 3,
-          "reported": 12
-        },
-        "lastSeenAt": "2026-09-28T09:17:44.760Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -1332,47 +3725,6 @@
           "reported": 1
         },
         "lastSeenAt": "2026-09-28T09:12:51.282Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e37e-9526-7b1e-b866-8918735042b4",
-      "title": "Xuất khẩu vượt Brazil, thị trường cà phê hòa tan Việt đang “nóng” đến đâu?",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": ["money_usd", "growth_pct"],
-        "entities": [
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "brazil",
-            "type": "country"
-          },
-          {
-            "slug": "japan",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "reported": 2
-        },
-        "lastSeenAt": "2026-09-28T09:12:35.960Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -1555,92 +3907,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0e4e8-a172-7374-b041-4edae60faba1",
-      "title": "Vucic resigns as Serbia's president, setting up election that could see him become PM",
-      "subject": {
-        "topic": "world",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "pm",
-            "type": "government_body"
-          },
-          {
-            "slug": "starmer",
-            "type": "person"
-          },
-          {
-            "slug": "putin",
-            "type": "person"
-          },
-          {
-            "slug": "sweden",
-            "type": "country"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T09:11:29.758Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e6f4-a5bd-7934-9a55-f04eac98a2b6",
-      "title": "Lợi suất trái phiếu Mỹ tăng vọt gây sức ép lên lĩnh vực hạ tầng AI",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "oil",
-            "type": "commodity"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "ai",
-            "type": "topic"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T09:11:20.879Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0d82c-b3d0-7de2-8416-667505cb9b47",
       "title": "Giáo hoàng Lêô XIV mở chuyến tông du đầu tiên tại Pháp",
       "subject": {
@@ -1782,214 +4048,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0d176-5aac-7048-9097-d2ee08f32068",
-      "title": "OpenAI agent 'infiltrated' Australian government website, PM says",
-      "subject": {
-        "topic": "world",
-        "predicates": ["user_images_leaked", "undesirable_incidents_count"],
-        "entities": [
-          {
-            "slug": "chatgpt",
-            "type": "brand"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "ai",
-            "type": "topic"
-          },
-          {
-            "slug": "openai",
-            "type": "company"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "disputed": 1,
-          "reported": 1
-        },
-        "lastSeenAt": "2026-09-28T09:09:19.874Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e6f3-77a5-7439-88e8-7b27a5ac7b68",
-      "title": "France’s far-right National Rally surges in Senate elections",
-      "subject": {
-        "topic": "world",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "france",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T09:09:10.157Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e71a-d145-7de3-a2c9-e2d553cbac55",
-      "title": "Bảo đảm an ninh dữ liệu góp phần bảo vệ quyền và lợi ích hợp pháp của người dân",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "france",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T09:09:00.311Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e68a-06d4-7b9c-bfc6-922629540956",
-      "title": "TP Hồ Chí Minh yêu cầu không đùn đẩy, né tránh trong việc cung cấp thông tin báo chí",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "hcmc",
-            "type": "place"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T09:08:50.434Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e45c-26ac-7690-ba46-d70cef6d0d5e",
-      "title": "Lịch thi đấu, kênh phát FIFA ASEAN Cup hôm nay: Indonesia quyết đấu Malaysia, Singapore và Bangladesh không còn đường lùi",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": ["money_usd"],
-        "entities": [
-          {
-            "slug": "asiad",
-            "type": "event_series"
-          },
-          {
-            "slug": "singapore",
-            "type": "country"
-          },
-          {
-            "slug": "bangladesh",
-            "type": "country"
-          },
-          {
-            "slug": "aseancup",
-            "type": "event_series"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "indonesia",
-            "type": "country"
-          },
-          {
-            "slug": "malaysia",
-            "type": "country"
-          },
-          {
-            "slug": "thailand",
-            "type": "country"
-          },
-          {
-            "slug": "asean",
-            "type": "multilateral_organization"
-          }
-        ],
-        "claimStates": {
-          "reported": 1
-        },
-        "lastSeenAt": "2026-09-28T09:08:27.426Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0e6af-9764-70a8-951b-ec25810f0355",
       "title": "Mentions of open models in latest US earnings calls surged 6x YoY, with open models hitting 56% of Vercel tokens in August and 40% of AT&T's AI workloads (Financial Times)",
       "subject": {
@@ -2011,773 +4069,6 @@
         ],
         "claimStates": {},
         "lastSeenAt": "2026-09-28T09:08:16.502Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0d176-5de4-7ebb-9961-a40bdf4f0bb7",
-      "title": "Tây Ban Nha đề xuất cải tổ Hội đồng Bảo an Liên Hợp Quốc",
-      "subject": {
-        "topic": "world",
-        "predicates": ["money_usd", "deaths"],
-        "entities": [
-          {
-            "slug": "spain",
-            "type": "country"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "unga",
-            "type": "event_series"
-          },
-          {
-            "slug": "pm",
-            "type": "government_body"
-          },
-          {
-            "slug": "israel",
-            "type": "country"
-          },
-          {
-            "slug": "palestine",
-            "type": "country"
-          },
-          {
-            "slug": "netanyahu",
-            "type": "person"
-          },
-          {
-            "slug": "un",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "ireland",
-            "type": "country"
-          },
-          {
-            "slug": "france",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "disputed": 1,
-          "supported": 1
-        },
-        "lastSeenAt": "2026-09-28T09:07:45.840Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0d3ad-b0ca-7dcf-aa6a-5cd00825e1c3",
-      "title": "Nga đẩy lùi đợt tấn công dữ dội của UAV Ukraine vào Moscow",
-      "subject": {
-        "topic": "world",
-        "predicates": ["deaths"],
-        "entities": [
-          {
-            "slug": "pm",
-            "type": "government_body"
-          },
-          {
-            "slug": "france",
-            "type": "country"
-          },
-          {
-            "slug": "ukraine",
-            "type": "country"
-          },
-          {
-            "slug": "zelensky",
-            "type": "person"
-          },
-          {
-            "slug": "drone",
-            "type": "topic"
-          },
-          {
-            "slug": "russia",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "disputed": 1
-        },
-        "lastSeenAt": "2026-09-28T09:07:31.555Z"
-      },
-      "baseline": {
-        "materiality": "none",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no economic predicate and topic/entities are non-economic",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0dc5d-fb67-77eb-97c7-067b659fd8b7",
-      "title": "Hàng loạt đại biểu bỏ ra ngoài khi Thủ tướng Israel lên phát biểu",
-      "subject": {
-        "topic": "world",
-        "predicates": ["deaths"],
-        "entities": [
-          {
-            "slug": "un",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "pm",
-            "type": "government_body"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "netanyahu",
-            "type": "person"
-          },
-          {
-            "slug": "unga",
-            "type": "event_series"
-          },
-          {
-            "slug": "uk",
-            "type": "country"
-          },
-          {
-            "slug": "palestine",
-            "type": "country"
-          },
-          {
-            "slug": "israel",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "reported": 1
-        },
-        "lastSeenAt": "2026-09-28T09:07:06.897Z"
-      },
-      "baseline": {
-        "materiality": "none",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no economic predicate and topic/entities are non-economic",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
-      "title": "Bầu trời Kiev sáng rực trong đòn tập kích tên lửa đạn đạo của Nga",
-      "subject": {
-        "topic": "world",
-        "predicates": [
-          "conflict_duration",
-          "injured",
-          "aid_package",
-          "aid_disbursed",
-          "smuggled_goods_value",
-          "casualties_update",
-          "ceasefire_rejection",
-          "military_deployment",
-          "aerial_bomb_attacks",
-          "meeting_proposal",
-          "reject_visit",
-          "g20_location",
-          "reject_meeting_location",
-          "gap_go",
-          "tuyen_bo",
-          "ceasefire_proposal_review",
-          "institute_branch_closed",
-          "fund_disbursement",
-          "uav_shot_down",
-          "outbreak_year",
-          "warning_to_europe",
-          "ceasefire_consideration",
-          "negotiation_stance",
-          "military_budget",
-          "drone_budget",
-          "election_list_reception",
-          "chi_trich",
-          "ceasefire_proposal_status",
-          "money_vnd",
-          "injuries",
-          "ceasefire_proposal",
-          "weapon_agreement",
-          "deploy_ugv",
-          "mobilize_troops",
-          "uav_spending",
-          "mobilization_scenario",
-          "disbursement",
-          "proposal",
-          "bi_tan_cong",
-          "aid_disbursement",
-          "import_increase",
-          "disburse_funds",
-          "speech_change",
-          "support_maritime_corridor",
-          "counter_offensive",
-          "deny_conflict",
-          "military_aid_approved",
-          "uav_attacks",
-          "missile_attack_casualties",
-          "meeting_date",
-          "propose_location",
-          "penetration_depth",
-          "missile_attack",
-          "missile_attacks",
-          "closure",
-          "disbursement_amount",
-          "ceasefire_proposals",
-          "uav_budget",
-          "weapon_launch",
-          "weapon_usage",
-          "prison_sentence",
-          "money_usd",
-          "survival_condition",
-          "weapon_deployment",
-          "black_sea_ceasefire",
-          "ngung_ban_bien_den",
-          "potential_mobilization",
-          "hormuz_proposal",
-          "casualties",
-          "debt_to_gdp",
-          "threat_expand_conflict",
-          "meeting_location_proposal",
-          "military_aid_disbursement",
-          "proposed_location",
-          "len_an",
-          "sentence_years",
-          "deaths",
-          "institute_closure",
-          "missile_agreement",
-          "strait_hormuz_plan",
-          "event_date",
-          "territory_recontrolled",
-          "patriot_production_approval",
-          "conflict_denial",
-          "smuggled_money",
-          "ngoai_giao_gap_go",
-          "financial_disbursement",
-          "ceasefire_negotiation",
-          "ceasefire_readiness",
-          "meeting",
-          "drone_spending",
-          "missile_intercept_rate",
-          "drone_spending_plan",
-          "troop_mobilization",
-          "ceasefire_review",
-          "danh_chan_uav",
-          "invitation",
-          "energy_infrastructure_attack_ceasefire",
-          "un_meeting_date",
-          "missile_rejection",
-          "power_water_loss",
-          "diplomatic_contact",
-          "territory_reclaimed",
-          "diplomatic_meeting",
-          "military_mobilization",
-          "missile_attack_count",
-          "missile_agreement_reached",
-          "host_meeting"
-        ],
-        "entities": [
-          {
-            "slug": "canada",
-            "type": "country"
-          },
-          {
-            "slug": "yemen",
-            "type": "country"
-          },
-          {
-            "slug": "putin",
-            "type": "person"
-          },
-          {
-            "slug": "ireland",
-            "type": "country"
-          },
-          {
-            "slug": "poland",
-            "type": "country"
-          },
-          {
-            "slug": "saudi",
-            "type": "country"
-          },
-          {
-            "slug": "france",
-            "type": "country"
-          },
-          {
-            "slug": "tesla",
-            "type": "company"
-          },
-          {
-            "slug": "who",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "unga",
-            "type": "event_series"
-          },
-          {
-            "slug": "nato",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "dienbien",
-            "type": "place"
-          },
-          {
-            "slug": "redsea",
-            "type": "region"
-          },
-          {
-            "slug": "eu",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "g20",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "bytedance",
-            "type": "company"
-          },
-          {
-            "slug": "trump",
-            "type": "person"
-          },
-          {
-            "slug": "qatar",
-            "type": "country"
-          },
-          {
-            "slug": "ukraine",
-            "type": "country"
-          },
-          {
-            "slug": "zelensky",
-            "type": "person"
-          },
-          {
-            "slug": "drone",
-            "type": "topic"
-          },
-          {
-            "slug": "middleeast",
-            "type": "region"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "un",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "baltic",
-            "type": "region"
-          },
-          {
-            "slug": "russia",
-            "type": "country"
-          },
-          {
-            "slug": "hungary",
-            "type": "country"
-          },
-          {
-            "slug": "germany",
-            "type": "country"
-          },
-          {
-            "slug": "tiktok",
-            "type": "brand"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "iran",
-            "type": "country"
-          },
-          {
-            "slug": "macron",
-            "type": "person"
-          },
-          {
-            "slug": "uae",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "disputed": 13,
-          "supported": 1,
-          "reported": 108,
-          "corrected": 14
-        },
-        "lastSeenAt": "2026-09-28T09:05:25.459Z"
-      },
-      "baseline": {
-        "materiality": "limited",
-        "scope": "global_systemic",
-        "channels": ["external", "funding_liquidity", "policy_regulatory"],
-        "directness": "first_order",
-        "persistence": "cyclical",
-        "horizon": "weeks",
-        "affectedTargets": [
-          {
-            "type": "country_exposure",
-            "key": "canada"
-          },
-          {
-            "type": "country_exposure",
-            "key": "yemen"
-          },
-          {
-            "type": "country_exposure",
-            "key": "ireland"
-          },
-          {
-            "type": "country_exposure",
-            "key": "poland"
-          }
-        ],
-        "transmissionConfidence": "low",
-        "reason": "predicate signal: aid_disbursed,fund_disbursement,disbursement,aid_disbursement,disburse_funds,debt_to_gdp,military_aid_disbursement,financial_disbursement",
-        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0d91d-b74c-7ea3-af1e-ec579c30dbbc",
-      "title": "HLV Philippines: 'Chúng tôi không sợ Việt Nam'",
-      "subject": {
-        "topic": "sports",
-        "predicates": [
-          "money_vnd",
-          "tournament_status",
-          "gold_medals",
-          "match_result",
-          "goal_scored",
-          "unbeaten_streak",
-          "asiad_rank",
-          "money_usd",
-          "tournament_absence",
-          "world_skills_medals",
-          "match_score",
-          "tournament_match",
-          "gold_medals_asiad",
-          "product_launch",
-          "injury_status",
-          "durian_export_revenue",
-          "broadcast_rights",
-          "injury",
-          "evacuated",
-          "undefeated_streak",
-          "flood_affected_roads",
-          "award",
-          "total_medals_asiad",
-          "deaths"
-        ],
-        "entities": [
-          {
-            "slug": "singapore",
-            "type": "country"
-          },
-          {
-            "slug": "japan",
-            "type": "country"
-          },
-          {
-            "slug": "musk",
-            "type": "person"
-          },
-          {
-            "slug": "malaysia",
-            "type": "country"
-          },
-          {
-            "slug": "china",
-            "type": "country"
-          },
-          {
-            "slug": "bangladesh",
-            "type": "country"
-          },
-          {
-            "slug": "hcmc",
-            "type": "place"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "pm",
-            "type": "government_body"
-          },
-          {
-            "slug": "tesla",
-            "type": "company"
-          },
-          {
-            "slug": "starlink",
-            "type": "brand"
-          },
-          {
-            "slug": "northkorea",
-            "type": "country"
-          },
-          {
-            "slug": "pakistan",
-            "type": "country"
-          },
-          {
-            "slug": "vinfast",
-            "type": "company"
-          },
-          {
-            "slug": "asiad",
-            "type": "event_series"
-          },
-          {
-            "slug": "philippines",
-            "type": "country"
-          },
-          {
-            "slug": "hanoi",
-            "type": "place"
-          },
-          {
-            "slug": "greece",
-            "type": "country"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "danang",
-            "type": "place"
-          },
-          {
-            "slug": "asean",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "indonesia",
-            "type": "country"
-          },
-          {
-            "slug": "germany",
-            "type": "country"
-          },
-          {
-            "slug": "thailand",
-            "type": "country"
-          },
-          {
-            "slug": "laos",
-            "type": "country"
-          },
-          {
-            "slug": "russia",
-            "type": "country"
-          },
-          {
-            "slug": "france",
-            "type": "country"
-          },
-          {
-            "slug": "aseancup",
-            "type": "event_series"
-          },
-          {
-            "slug": "kimsangsik",
-            "type": "person"
-          }
-        ],
-        "claimStates": {
-          "disputed": 3,
-          "corrected": 4,
-          "supported": 1,
-          "reported": 24
-        },
-        "lastSeenAt": "2026-09-28T09:04:44.093Z"
-      },
-      "baseline": {
-        "materiality": "none",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no economic predicate and topic/entities are non-economic",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0dbfd-0aa0-75af-9359-b8fa163eccf2",
-      "title": "Agentic AI bắt đầu đi vào vận hành thực tế ở Việt Nam",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [
-          "match_result",
-          "medal",
-          "rank",
-          "tournament_stage",
-          "money_usd",
-          "money_vnd"
-        ],
-        "entities": [
-          {
-            "slug": "myanmar",
-            "type": "country"
-          },
-          {
-            "slug": "hcmc",
-            "type": "place"
-          },
-          {
-            "slug": "asiad",
-            "type": "event_series"
-          },
-          {
-            "slug": "india",
-            "type": "country"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "reported": 8
-        },
-        "lastSeenAt": "2026-09-28T09:04:29.974Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e67e-3094-7caa-8fe0-c1fc8f59f9c9",
-      "title": "525",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": ["arrests"],
-        "entities": [
-          {
-            "slug": "france",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "reported": 1
-        },
-        "lastSeenAt": "2026-09-28T09:04:11.036Z"
-      },
-      "baseline": {
-        "materiality": "none",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no economic predicate and topic/entities are non-economic",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e6e7-9532-7362-a839-9ccae82ea640",
-      "title": "Phát huy vai trò tiên phong của doanh nghiệp trong kiến tạo giá trị du lịch",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "vietnam",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T09:03:54.513Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -2875,84 +4166,6 @@
         ],
         "claimStates": {},
         "lastSeenAt": "2026-09-28T09:03:05.655Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e716-b8b3-7cce-8987-06b2b29b150f",
-      "title": "Hà Nội dự kiến bồi thường về đất gấp 2 lần quy định cho 7 dự án đường sắt",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "hanoi",
-            "type": "place"
-          },
-          {
-            "slug": "pm",
-            "type": "government_body"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T09:02:56.044Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e740-a1be-77fd-878b-1acf71c9f4cc",
-      "title": "Tận dụng CPTPP để mở rộng xuất khẩu, đa dạng hóa thị trường",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "eu",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "japan",
-            "type": "country"
-          },
-          {
-            "slug": "binhduong",
-            "type": "place"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T09:02:47.659Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -3234,43 +4447,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0d850-d474-7064-a2d4-96e5fa81ddf5",
-      "title": "Nhân viên SJC lấy 30 lượng vàng để tráo vàng giá thấp",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": ["sentence_years"],
-        "entities": [
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "federal_reserve",
-            "type": "central_bank"
-          }
-        ],
-        "claimStates": {
-          "reported": 1
-        },
-        "lastSeenAt": "2026-09-28T09:00:25.909Z"
-      },
-      "baseline": {
-        "materiality": "none",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no economic predicate and topic/entities are non-economic",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0e681-fecd-7881-bed6-352be19ce52a",
       "title": "Hai kiện hàng lạ dạt vào bờ biển Phú Quốc, nghi chứa 40kg ma túy",
       "subject": {
@@ -3288,49 +4464,6 @@
         ],
         "claimStates": {},
         "lastSeenAt": "2026-09-28T09:00:11.768Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0ddb1-212f-75b2-94db-dc448bad6076",
-      "title": "Republic of Ireland news conference delayed before controversial Israel game",
-      "subject": {
-        "topic": "world",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "ireland",
-            "type": "country"
-          },
-          {
-            "slug": "hungary",
-            "type": "country"
-          },
-          {
-            "slug": "israel",
-            "type": "country"
-          },
-          {
-            "slug": "palestine",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T08:59:27.662Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -3431,50 +4564,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0e2fe-9cb4-7055-9280-b3a34750458a",
-      "title": "Hà Nội: Tạm tháo biển khoảng cách trên cầu Nhật Tân",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [
-          "purpose",
-          "action",
-          "traffic_status",
-          "statement",
-          "plan"
-        ],
-        "entities": [
-          {
-            "slug": "hanoi",
-            "type": "place"
-          },
-          {
-            "slug": "france",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "disputed": 3,
-          "reported": 3
-        },
-        "lastSeenAt": "2026-09-28T08:56:52.223Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0e6f0-c3bb-7db3-a2d8-820dc3ad9906",
       "title": "Môi giới “chọn mặt gửi vàng” khi thị trường BĐS cạnh tranh khắc nghiệt",
       "subject": {
@@ -3517,55 +4606,6 @@
         "affectedTargets": [],
         "transmissionConfidence": null,
         "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0d6f3-8843-7b91-9c17-1d1ce9a583d0",
-      "title": "Pháp hứa gửi quân, vũ khí tới Ảrập Xêút giữa căng thẳng với nhóm thân Iran",
-      "subject": {
-        "topic": "world",
-        "predicates": ["deaths"],
-        "entities": [
-          {
-            "slug": "iran",
-            "type": "country"
-          },
-          {
-            "slug": "saudi",
-            "type": "country"
-          },
-          {
-            "slug": "france",
-            "type": "country"
-          },
-          {
-            "slug": "yemen",
-            "type": "country"
-          },
-          {
-            "slug": "redsea",
-            "type": "region"
-          }
-        ],
-        "claimStates": {
-          "reported": 1
-        },
-        "lastSeenAt": "2026-09-28T08:55:55.834Z"
-      },
-      "baseline": {
-        "materiality": "none",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no economic predicate and topic/entities are non-economic",
         "cautions": ["predicate_not_materiality"]
       },
       "sourceSet": "holdout",
@@ -3618,66 +4658,6 @@
           "reported": 12
         },
         "lastSeenAt": "2026-09-28T08:53:43.873Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0d869-ae01-7f66-814e-00c4710d6da5",
-      "title": "'Rái cá sông Giang' Huy Hoàng lỡ huy chương, về thứ 4 chung kết 400m tự do ASIAD 20",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [
-          "ai_cooperation",
-          "money_usd",
-          "rank",
-          "tariff_preference",
-          "competition",
-          "product_production",
-          "competition_stage",
-          "supply_chain",
-          "agreement"
-        ],
-        "entities": [
-          {
-            "slug": "southkorea",
-            "type": "country"
-          },
-          {
-            "slug": "japan",
-            "type": "country"
-          },
-          {
-            "slug": "asiad",
-            "type": "event_series"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "china",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "reported": 6,
-          "disputed": 3
-        },
-        "lastSeenAt": "2026-09-28T08:49:05.840Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -3828,55 +4808,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0e184-c961-79b9-9d0b-90e3d7bfd3e4",
-      "title": "Khách Nga bắt đầu đến Phú Quốc trú đông",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": ["money_vnd"],
-        "entities": [
-          {
-            "slug": "airbus",
-            "type": "company"
-          },
-          {
-            "slug": "russia",
-            "type": "country"
-          },
-          {
-            "slug": "angiang",
-            "type": "place"
-          },
-          {
-            "slug": "phuquoc",
-            "type": "place"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "disputed": 1
-        },
-        "lastSeenAt": "2026-09-28T08:28:36.060Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0da07-c418-7a03-9d8f-775fa3ffe2b9",
       "title": "Chủ tịch Quốc hội: Sẽ chuyển ý kiến của cử tri đến Bộ GD& ĐT về tình trạng gộp môn 'cơ học'",
       "subject": {
@@ -3996,73 +4927,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0d188-8261-7022-9b2f-3ebdc95ceb55",
-      "title": "Những CEO nào có thể tham gia quốc yến Mỹ - Trung?",
-      "subject": {
-        "topic": "business",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "china",
-            "type": "country"
-          },
-          {
-            "slug": "xijinping",
-            "type": "person"
-          },
-          {
-            "slug": "g20",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "putin",
-            "type": "person"
-          },
-          {
-            "slug": "france",
-            "type": "country"
-          },
-          {
-            "slug": "iran",
-            "type": "country"
-          },
-          {
-            "slug": "northkorea",
-            "type": "country"
-          },
-          {
-            "slug": "russia",
-            "type": "country"
-          },
-          {
-            "slug": "trump",
-            "type": "person"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T08:25:54.941Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0d4be-fffa-7ba6-a1fd-330f237ea4ff",
       "title": "Cách nào phát triển doanh nghiệp du lịch Việt Nam xứng tầm quốc tế?",
       "subject": {
@@ -4118,76 +4982,6 @@
           "disputed": 2
         },
         "lastSeenAt": "2026-09-28T08:24:40.118Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e197-2d60-7b10-a67e-80ccfa90e74d",
-      "title": "Phó Chủ tịch Quốc hội Nguyễn Doãn Anh thăm chính thức Na Uy: Tạo động lực mới cho quan hệ song phương",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "germany",
-            "type": "country"
-          },
-          {
-            "slug": "norway",
-            "type": "country"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T08:23:53.669Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e71c-e8d5-7803-a0c4-5f9cead29f2b",
-      "title": "Xe đầu kéo lao xuống vực, nam tài xế tử vong tại chỗ",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "hue",
-            "type": "place"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T08:23:46.617Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -4378,41 +5172,6 @@
         ],
         "claimStates": {},
         "lastSeenAt": "2026-09-28T08:20:29.839Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e3da-c2bd-7660-be52-d3ed1e4fcd40",
-      "title": "Điền kinh Thái Lan gây chấn động Asiad, lập kỷ lục nội dung 200m",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "thailand",
-            "type": "country"
-          },
-          {
-            "slug": "asiad",
-            "type": "event_series"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T08:17:53.012Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -4822,47 +5581,6 @@
           "reported": 2
         },
         "lastSeenAt": "2026-09-28T07:59:01.427Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e35d-8cce-7bb5-a12e-4213f34759a3",
-      "title": "ASIAD 2026: Thể thao Việt Nam ghi nhận những kết quả đáng chú ý",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": ["area_ha", "money_vnd"],
-        "entities": [
-          {
-            "slug": "myanmar",
-            "type": "country"
-          },
-          {
-            "slug": "asiad",
-            "type": "event_series"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "reported": 2
-        },
-        "lastSeenAt": "2026-09-28T07:57:16.355Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -5716,37 +6434,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0e688-eb3d-7020-983b-350693d8d3f7",
-      "title": "Phát hiện gần 1 tấn pháo và nguyên liệu chế tạo pháo tại nhà dân ở Nghệ An",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "nghean",
-            "type": "place"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T06:23:14.455Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0e688-570d-700b-a9ca-3114adf88222",
       "title": "Thành phố đáng sống nhất Việt Nam muốn xây dự án 90ha ngay dưới chân núi được mệnh danh là “chốn bồng lai tiên cảnh”, dự kiến có tòa nhà 20 tầng",
       "subject": {
@@ -6239,101 +6926,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0d84e-573b-719c-8cff-0236ae45f541",
-      "title": "Saudi Arabia, Thổ Nhĩ Kỳ và Pakistan họp khẩn về Hiệp ước Mecaa",
-      "subject": {
-        "topic": "world",
-        "predicates": ["deaths"],
-        "entities": [
-          {
-            "slug": "yemen",
-            "type": "country"
-          },
-          {
-            "slug": "pakistan",
-            "type": "country"
-          },
-          {
-            "slug": "un",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "saudi",
-            "type": "country"
-          },
-          {
-            "slug": "turkey",
-            "type": "country"
-          },
-          {
-            "slug": "iran",
-            "type": "country"
-          }
-        ],
-        "claimStates": {
-          "reported": 1
-        },
-        "lastSeenAt": "2026-09-28T06:06:47.073Z"
-      },
-      "baseline": {
-        "materiality": "none",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no economic predicate and topic/entities are non-economic",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e67b-8e99-7cb6-9bc1-a6f9c9599352",
-      "title": "Dự báo thời tiết 28/9/2026: Miền Bắc nắng mạnh giữa mùa thu, Hà Nội trên 35 độ",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": ["temperature", "penalty", "weather"],
-        "entities": [
-          {
-            "slug": "hanoi",
-            "type": "place"
-          },
-          {
-            "slug": "mienbac",
-            "type": "region"
-          },
-          {
-            "slug": "miennam",
-            "type": "region"
-          }
-        ],
-        "claimStates": {
-          "supported": 1,
-          "reported": 5
-        },
-        "lastSeenAt": "2026-09-28T06:05:32.351Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0e69c-f343-7fab-8f54-e929e2f6cdb5",
       "title": "Cầu thủ Ireland cúi đầu, từ chối bắt tay đối thủ Israel",
       "subject": {
@@ -6495,45 +7087,6 @@
           "reported": 1
         },
         "lastSeenAt": "2026-09-28T05:35:07.987Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e340-0ced-76ed-a1bb-e6493b576f90",
-      "title": "Bộ trưởng Israel kêu gọi sáp nhập một phần Gaza, tấn công Bờ Tây",
-      "subject": {
-        "topic": "world",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "palestine",
-            "type": "country"
-          },
-          {
-            "slug": "lebanon",
-            "type": "country"
-          },
-          {
-            "slug": "israel",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-28T05:25:22.007Z"
       },
       "baseline": {
         "materiality": "unknown",
@@ -7749,88 +8302,6 @@
     },
     {
       "kind": "event",
-      "id": "01a0e335-42c9-7cc7-9184-6588ec172c91",
-      "title": "Nâng tầm hợp tác an ninh toàn cầu, bảo vệ Tổ quốc từ sớm, từ xa",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [
-          "money_usd",
-          "aid_disbursement",
-          "deaths",
-          "attacks",
-          "attacked",
-          "diplomatic_meeting"
-        ],
-        "entities": [
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "russia",
-            "type": "country"
-          },
-          {
-            "slug": "lam",
-            "type": "person"
-          },
-          {
-            "slug": "canada",
-            "type": "country"
-          },
-          {
-            "slug": "un",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "unga",
-            "type": "event_series"
-          }
-        ],
-        "claimStates": {
-          "reported": 3,
-          "disputed": 3
-        },
-        "lastSeenAt": "2026-09-28T00:15:20.202Z"
-      },
-      "baseline": {
-        "materiality": "limited",
-        "scope": "global_systemic",
-        "channels": ["external"],
-        "directness": "first_order",
-        "persistence": "cyclical",
-        "horizon": "weeks",
-        "affectedTargets": [
-          {
-            "type": "country_exposure",
-            "key": "us"
-          },
-          {
-            "type": "country_exposure",
-            "key": "russia"
-          },
-          {
-            "type": "country_exposure",
-            "key": "canada"
-          },
-          {
-            "type": "country_exposure",
-            "key": "vietnam"
-          }
-        ],
-        "transmissionConfidence": "low",
-        "reason": "predicate signal: aid_disbursement",
-        "cautions": ["predicate_baseline_only", "entity_mentions_not_exposure"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
       "id": "01a0e327-d7d8-71c6-86fc-d29635a70fa7",
       "title": "Cảnh sát Anh sơ tán người dân gần căn cứ không quân Mỹ",
       "subject": {
@@ -7985,369 +8456,6 @@
       "labels": null
     },
     {
-      "kind": "event",
-      "id": "01a0e2e1-dc96-77ee-80fb-17958d47058e",
-      "title": "Hồng Ngự Đồng Tháp vô địch Festival Bóng đá nữ U13",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "northkorea",
-            "type": "country"
-          },
-          {
-            "slug": "southkorea",
-            "type": "country"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-27T22:39:18.290Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e00e-62cd-7627-a925-24fdd81b1d4c",
-      "title": "Serbia kỳ vọng thỏa thuận khí đốt với Nga sẽ được gia hạn",
-      "subject": {
-        "topic": "world",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "russia",
-            "type": "country"
-          },
-          {
-            "slug": "putin",
-            "type": "person"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-27T22:38:12.277Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e17d-2151-7613-8f6b-b5016eb769f2",
-      "title": "OpenAI thừa nhận sai sót nghiêm trọng của tác nhân AI",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "openai",
-            "type": "company"
-          },
-          {
-            "slug": "chatgpt",
-            "type": "brand"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-27T22:36:39.216Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e43a-cd35-7788-bb44-59bee56b2af2",
-      "title": "Phật giáo Việt Nam-Lào: Thắp sáng giá trị tâm linh, vun đắp tình đoàn kết đặc biệt",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "france",
-            "type": "country"
-          },
-          {
-            "slug": "germany",
-            "type": "country"
-          },
-          {
-            "slug": "china",
-            "type": "country"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "laos",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-27T22:35:59.948Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e436-7efd-724b-a0c0-0112f4b888fd",
-      "title": "Sở hữu lợi thế đặc biệt của người đi sau, chuyên gia chỉ ra 'mắt xích' Việt Nam còn thiếu để quy hoạch TOD sánh ngang với Tokyo, Singapore, Hong Kong",
-      "subject": {
-        "topic": "business",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "hongkong",
-            "type": "place"
-          },
-          {
-            "slug": "singapore",
-            "type": "country"
-          },
-          {
-            "slug": "japan",
-            "type": "country"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-27T22:35:45.565Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e1f3-3c33-7ea9-bc7e-bd981232a39b",
-      "title": "5 thông điệp đối ngoại của Nga tại Đại hội đồng Liên hợp quốc khóa 81",
-      "subject": {
-        "topic": "world",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "russia",
-            "type": "country"
-          },
-          {
-            "slug": "unga",
-            "type": "event_series"
-          },
-          {
-            "slug": "un",
-            "type": "multilateral_organization"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-27T22:31:36.923Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e4fc-6de3-742b-9393-037a78faddc9",
-      "title": "Tết Trung Thu-nhịp cầu gìn giữ văn hóa Việt tại Berlin",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "germany",
-            "type": "country"
-          },
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "israel",
-            "type": "country"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-27T22:29:03.468Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0e374-e727-701b-aa06-7efe29a1bdee",
-      "title": "Vận động viên người khuyết tật cập nhật kiến thức dinh dưỡng trước các giải đấu quốc tế",
-      "subject": {
-        "topic": "vietnam",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "vietnam",
-            "type": "country"
-          },
-          {
-            "slug": "asiad",
-            "type": "event_series"
-          },
-          {
-            "slug": "hcmc",
-            "type": "place"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-27T22:24:04.711Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
-      "kind": "event",
-      "id": "01a0dfae-940b-7da0-aa12-4cdfb1836edb",
-      "title": "Trade deliverables, Taiwan push and ‘strategic stability’: key Xi-Trump takeaways overall",
-      "subject": {
-        "topic": "world",
-        "predicates": [],
-        "entities": [
-          {
-            "slug": "xijinping",
-            "type": "person"
-          },
-          {
-            "slug": "us",
-            "type": "country"
-          },
-          {
-            "slug": "taiwan",
-            "type": "country"
-          },
-          {
-            "slug": "trump",
-            "type": "person"
-          }
-        ],
-        "claimStates": {},
-        "lastSeenAt": "2026-09-27T21:57:33.331Z"
-      },
-      "baseline": {
-        "materiality": "unknown",
-        "scope": null,
-        "channels": [],
-        "directness": null,
-        "persistence": null,
-        "horizon": null,
-        "affectedTargets": [],
-        "transmissionConfidence": null,
-        "reason": "no high-precision predicate → unknown is the honest label",
-        "cautions": ["predicate_not_materiality"]
-      },
-      "sourceSet": "holdout",
-      "labels": null
-    },
-    {
       "kind": "macro_release",
       "id": "01a0e124-e5f4-7181-8ed5-f1f7886e0f5b",
       "title": "GDPC1 — Real Gross Domestic Product",
@@ -8385,7 +8493,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct +0.89% — |z|=0.14 of own changes",
+        "reason": "pct +0.37% — |z|=0.14 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -8647,7 +8755,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct -0.13% — |z|=1.63 of own changes",
+        "reason": "pct -0.15% — |z|=1.99 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -8689,7 +8797,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct +1.15% — |z|=1.83 of own changes",
+        "reason": "pct +0.65% — |z|=1.11 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -8731,7 +8839,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct -0.64% — |z|=2.31 of own changes",
+        "reason": "pct -0.13% — |z|=0.51 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -8759,7 +8867,7 @@
         "summary": "MORTGAGE30US kỳ 2026-09-24: 7.03"
       },
       "baseline": {
-        "materiality": "meaningful",
+        "materiality": "limited",
         "scope": "global_systemic",
         "channels": ["discounting", "funding_liquidity"],
         "directness": "direct",
@@ -8771,8 +8879,8 @@
             "key": "fred:MORTGAGE30US"
           }
         ],
-        "transmissionConfidence": "medium",
-        "reason": "Δ +0.27pp — |z|=3.99 of own changes",
+        "transmissionConfidence": "low",
+        "reason": "Δ +0.08pp — |z|=0.88 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -8813,7 +8921,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "Δ +2.20pp — |z|=0.59 of own changes",
+        "reason": "Δ -3.50pp — |z|=0.74 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -8856,7 +8964,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct +0.50% — |z|=2.30 of own changes",
+        "reason": "pct +0.14% — |z|=0.71 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -8885,7 +8993,7 @@
         "summary": "DCOILWTICO kỳ 2026-09-22: 96.41"
       },
       "baseline": {
-        "materiality": "meaningful",
+        "materiality": "limited",
         "scope": "global_systemic",
         "channels": ["external", "fundamental"],
         "directness": "direct",
@@ -8897,8 +9005,8 @@
             "key": "fred:DCOILWTICO"
           }
         ],
-        "transmissionConfidence": "medium",
-        "reason": "pct -4.96% — |z|=1.88 of own changes",
+        "transmissionConfidence": "low",
+        "reason": "pct -0.58% — |z|=0.33 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -8926,7 +9034,7 @@
         "summary": "BAMLH0A0HYM2 kỳ 2026-09-24: 2.8"
       },
       "baseline": {
-        "materiality": "major",
+        "materiality": "meaningful",
         "scope": "global_systemic",
         "channels": ["funding_liquidity"],
         "directness": "direct",
@@ -8938,8 +9046,8 @@
             "key": "fred:BAMLH0A0HYM2"
           }
         ],
-        "transmissionConfidence": "high",
-        "reason": "Δ +0.12pp — |z|=3.83 of own changes",
+        "transmissionConfidence": "medium",
+        "reason": "Δ +0.07pp — |z|=2.20 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -8980,7 +9088,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "Δ -0.60pp — |z|=0.46 of own changes",
+        "reason": "Δ -0.66pp — |z|=0.52 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9022,7 +9130,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct +0.49% — |z|=0.56 of own changes",
+        "reason": "pct +0.51% — |z|=0.61 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9065,7 +9173,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct +0.11% — |z|=0.12 of own changes",
+        "reason": "pct +0.02% — |z|=0.21 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9095,7 +9203,7 @@
         "summary": "M2SL kỳ 2026-08-01: 23342.8"
       },
       "baseline": {
-        "materiality": "meaningful",
+        "materiality": "limited",
         "scope": "global_systemic",
         "channels": ["funding_liquidity"],
         "directness": "direct",
@@ -9107,8 +9215,8 @@
             "key": "fred:M2SL"
           }
         ],
-        "transmissionConfidence": "medium",
-        "reason": "pct +0.99% — |z|=2.83 of own changes",
+        "transmissionConfidence": "low",
+        "reason": "pct +0.54% — |z|=1.02 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9149,7 +9257,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "Δ -0.01pp — |z|=0.55 of own changes",
+        "reason": "Δ +0.01pp — |z|=0.39 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9177,7 +9285,7 @@
         "summary": "T10Y2Y kỳ 2026-09-25: 0.36"
       },
       "baseline": {
-        "materiality": "major",
+        "materiality": "meaningful",
         "scope": "global_systemic",
         "channels": ["discounting"],
         "directness": "direct",
@@ -9189,8 +9297,8 @@
             "key": "fred:T10Y2Y"
           }
         ],
-        "transmissionConfidence": "high",
-        "reason": "Δ +0.10pp — |z|=3.63 of own changes",
+        "transmissionConfidence": "medium",
+        "reason": "Δ +0.05pp — |z|=1.79 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9218,7 +9326,7 @@
         "summary": "DGS10 kỳ 2026-09-24: 5.18"
       },
       "baseline": {
-        "materiality": "major",
+        "materiality": "limited",
         "scope": "global_systemic",
         "channels": ["discounting"],
         "directness": "direct",
@@ -9230,8 +9338,8 @@
             "key": "fred:DGS10"
           }
         ],
-        "transmissionConfidence": "high",
-        "reason": "Δ +0.22pp — |z|=4.67 of own changes",
+        "transmissionConfidence": "low",
+        "reason": "Δ +0.07pp — |z|=1.17 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9259,7 +9367,7 @@
         "summary": "DGS2 kỳ 2026-09-24: 4.87"
       },
       "baseline": {
-        "materiality": "major",
+        "materiality": "limited",
         "scope": "global_systemic",
         "channels": ["discounting"],
         "directness": "direct",
@@ -9271,8 +9379,8 @@
             "key": "fred:DGS2"
           }
         ],
-        "transmissionConfidence": "high",
-        "reason": "Δ +0.16pp — |z|=2.90 of own changes",
+        "transmissionConfidence": "low",
+        "reason": "Δ +0.02pp — |z|=0.07 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9355,7 +9463,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "Δ +183.00pp — |z|=0.88 of own changes",
+        "reason": "Δ +162.00pp — |z|=0.70 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9395,7 +9503,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "Δ -0.10pp — |z|=1.00 of own changes",
+        "reason": "Δ +0.00pp — |z|=0.13 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9438,7 +9546,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct +0.39% — |z|=1.35 of own changes",
+        "reason": "pct +0.25% — |z|=0.03 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9481,7 +9589,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct +0.47% — |z|=1.06 of own changes",
+        "reason": "pct +0.40% — |z|=0.72 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9522,7 +9630,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct -11.40% — |z|=1.29 of own changes",
+        "reason": "pct -2.60% — |z|=0.32 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9564,7 +9672,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct +0.70% — |z|=0.54 of own changes",
+        "reason": "pct +1.24% — |z|=1.43 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -9607,7 +9715,7 @@
           }
         ],
         "transmissionConfidence": "low",
-        "reason": "pct +0.22% — |z|=0.31 of own changes",
+        "reason": "pct +0.02% — |z|=0.04 of own changes",
         "cautions": []
       },
       "sourceSet": "holdout",
@@ -11576,7 +11684,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:META",
         "cashAmount": 0.525,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 665.75,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11600,8 +11708,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11614,7 +11722,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:NVDA",
         "cashAmount": 0.25,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 223.67,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11638,8 +11746,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11652,7 +11760,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:GOOGL",
         "cashAmount": 0.22,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 342.48,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11676,8 +11784,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11690,7 +11798,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:GOOG",
         "cashAmount": 0.22,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 339.08,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11714,8 +11822,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11728,7 +11836,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:MSFT",
         "cashAmount": 0.91,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 484.31,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11752,8 +11860,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.2% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11766,7 +11874,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:AAPL",
         "cashAmount": 0.27,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 313.33,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11790,8 +11898,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11804,7 +11912,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NYSE:ORCL",
         "cashAmount": 0.5,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 144.22,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11828,8 +11936,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.3% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11842,7 +11950,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:META",
         "cashAmount": 0.525,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 566.98,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11866,8 +11974,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11880,7 +11988,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:GOOG",
         "cashAmount": 0.22,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 365.76,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11904,8 +12012,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11918,7 +12026,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:GOOGL",
         "cashAmount": 0.22,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 368.53,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11942,8 +12050,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11956,7 +12064,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:NVDA",
         "cashAmount": 0.25,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 214.75,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -11980,8 +12088,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -11994,7 +12102,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:MSFT",
         "cashAmount": 0.91,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 421.06,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -12018,8 +12126,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.2% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12032,7 +12140,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:AAPL",
         "cashAmount": 0.27,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 293.32,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -12056,8 +12164,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.1% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12070,7 +12178,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NYSE:ORCL",
         "cashAmount": 0.5,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": 143.66,
         "priceBasis": "pre_ex",
         "priceConvention": "as_traded",
@@ -12094,8 +12202,8 @@
           }
         ],
         "transmissionConfidence": "high",
-        "reason": "dividend yield ~0.3% vs pre-ex close",
-        "cautions": []
+        "reason": "dividend, magnitude unpriced",
+        "cautions": ["currency_unverified"]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12108,7 +12216,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:GOOGL",
         "cashAmount": 0.21,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": null,
         "priceBasis": "none",
         "priceConvention": null,
@@ -12133,7 +12241,11 @@
         ],
         "transmissionConfidence": "high",
         "reason": "dividend, magnitude unpriced",
-        "cautions": ["no_price_context", "no_price_context"]
+        "cautions": [
+          "no_price_context",
+          "currency_unverified",
+          "no_price_context"
+        ]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12146,7 +12258,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:GOOG",
         "cashAmount": 0.21,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": null,
         "priceBasis": "none",
         "priceConvention": null,
@@ -12171,7 +12283,11 @@
         ],
         "transmissionConfidence": "high",
         "reason": "dividend, magnitude unpriced",
-        "cautions": ["no_price_context", "no_price_context"]
+        "cautions": [
+          "no_price_context",
+          "currency_unverified",
+          "no_price_context"
+        ]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12184,7 +12300,7 @@
         "actionType": "cash_dividend",
         "instrumentKey": "equity:NGS:AAPL",
         "cashAmount": 0.26,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": null,
         "priceBasis": "none",
         "priceConvention": null,
@@ -12209,7 +12325,11 @@
         ],
         "transmissionConfidence": "high",
         "reason": "dividend, magnitude unpriced",
-        "cautions": ["no_price_context", "no_price_context"]
+        "cautions": [
+          "no_price_context",
+          "currency_unverified",
+          "no_price_context"
+        ]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12222,7 +12342,7 @@
         "actionType": "stock_split",
         "instrumentKey": "equity:NGS:GOOGL",
         "cashAmount": null,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": null,
         "priceBasis": "none",
         "priceConvention": null,
@@ -12247,7 +12367,11 @@
         ],
         "transmissionConfidence": "high",
         "reason": "split changes units, not value",
-        "cautions": ["mechanical_no_value_change", "no_price_context"]
+        "cautions": [
+          "mechanical_no_value_change",
+          "no_price_context",
+          "currency_unverified"
+        ]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12260,7 +12384,7 @@
         "actionType": "stock_split",
         "instrumentKey": "equity:NGS:GOOG",
         "cashAmount": null,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": null,
         "priceBasis": "none",
         "priceConvention": null,
@@ -12285,7 +12409,11 @@
         ],
         "transmissionConfidence": "high",
         "reason": "split changes units, not value",
-        "cautions": ["mechanical_no_value_change", "no_price_context"]
+        "cautions": [
+          "mechanical_no_value_change",
+          "no_price_context",
+          "currency_unverified"
+        ]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12298,7 +12426,7 @@
         "actionType": "stock_split",
         "instrumentKey": "equity:NGS:AAPL",
         "cashAmount": null,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": null,
         "priceBasis": "none",
         "priceConvention": null,
@@ -12323,7 +12451,11 @@
         ],
         "transmissionConfidence": "high",
         "reason": "split changes units, not value",
-        "cautions": ["mechanical_no_value_change", "no_price_context"]
+        "cautions": [
+          "mechanical_no_value_change",
+          "no_price_context",
+          "currency_unverified"
+        ]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12336,7 +12468,7 @@
         "actionType": "stock_split",
         "instrumentKey": "equity:NGS:AAPL",
         "cashAmount": null,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": null,
         "priceBasis": "none",
         "priceConvention": null,
@@ -12361,7 +12493,11 @@
         ],
         "transmissionConfidence": "high",
         "reason": "split changes units, not value",
-        "cautions": ["mechanical_no_value_change", "no_price_context"]
+        "cautions": [
+          "mechanical_no_value_change",
+          "no_price_context",
+          "currency_unverified"
+        ]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12374,7 +12510,7 @@
         "actionType": "stock_split",
         "instrumentKey": "equity:NGS:AAPL",
         "cashAmount": null,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": null,
         "priceBasis": "none",
         "priceConvention": null,
@@ -12399,7 +12535,11 @@
         ],
         "transmissionConfidence": "high",
         "reason": "split changes units, not value",
-        "cautions": ["mechanical_no_value_change", "no_price_context"]
+        "cautions": [
+          "mechanical_no_value_change",
+          "no_price_context",
+          "currency_unverified"
+        ]
       },
       "sourceSet": "holdout",
       "labels": null
@@ -12412,7 +12552,7 @@
         "actionType": "stock_split",
         "instrumentKey": "equity:NGS:AAPL",
         "cashAmount": null,
-        "currency": "USD",
+        "currency": null,
         "referencePrice": null,
         "priceBasis": "none",
         "priceConvention": null,
@@ -12437,7 +12577,11 @@
         ],
         "transmissionConfidence": "high",
         "reason": "split changes units, not value",
-        "cautions": ["mechanical_no_value_change", "no_price_context"]
+        "cautions": [
+          "mechanical_no_value_change",
+          "no_price_context",
+          "currency_unverified"
+        ]
       },
       "sourceSet": "holdout",
       "labels": null

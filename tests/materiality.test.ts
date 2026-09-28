@@ -425,6 +425,33 @@ test("PCEPILFE is a registered core inflation series", () => {
   );
 });
 
+test("diff transform uses the adjacent observation — 120→130, not 110→130", () => {
+  const tr = transformSeries("diff", 130, [100, 110, 120]);
+  assert.equal(tr!.observed, 10);
+  assert.deepEqual(tr!.basis, [10, 10]);
+});
+
+test("ECBDFR step without prevValue → major + 'policy rate step +0.75pp'", () => {
+  const a = macro({
+    seriesCode: "ECBDFR",
+    value: 1.5,
+    prevValue: null, // prod: prev_macro_version_id is always NULL
+    history: [0.0, 0.25, 0.5, 0.5, 0.75],
+  });
+  assert.equal(a.materiality, "major");
+  assert.match(a.reason, /policy rate step \+0\.75pp/);
+});
+
+test("FEDFUNDS identical step → abnormal rate move, never 'policy rate step'", () => {
+  const a = macro({
+    seriesCode: "FEDFUNDS",
+    value: 1.5,
+    prevValue: null,
+    history: [0.0, 0.25, 0.5, 0.5, 0.75],
+  });
+  assert.doesNotMatch(a.reason, /policy rate step/);
+});
+
 test("as-of history: later revisions NEVER leak into a vintage-T score", () => {
   /* vintage T sees values [10, 20, 30]. A backfill lands at T+30
    * revising the middle print to 99 — the T score's baseline must not

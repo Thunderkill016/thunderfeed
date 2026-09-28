@@ -529,7 +529,6 @@ export function scoreMacroDelta(i: MacroDeltaInput): MaterialityAssessment {
    * — no expectations data exists. */
   const tr = transformSeries(meta.transform, i.value, i.history);
   const az = tr ? absZ(tr.observed, tr.basis) : null;
-  const absMove = i.prevValue == null ? null : Math.abs(i.value - i.prevValue);
 
   if (meta.salience === "baseline" || i.frequency === "A") {
     cautions.push("annual_forecast_baseline");
@@ -550,11 +549,18 @@ export function scoreMacroDelta(i: MacroDeltaInput): MaterialityAssessment {
   /* discrete policy-rate steps: only a series that IS the official
    * decision instrument can mint a "policy decision" — ECBDFR is set by
    * the governing council; FEDFUNDS is an effective market average and a
-   * step in it is an observation, not a decision. */
+   * step in it is an observation, not a decision. The step is measured as
+   * the transformed current move (value minus last as-of observation) —
+   * never via prev_macro_version_id, which is an ingest linkage, not the
+   * previous-period observation. */
+  const decisionStep =
+    meta.transform === "diff" && i.history.length >= 1
+      ? i.value - i.history[i.history.length - 1]
+      : null;
   if (
     meta.role === "decision" &&
-    absMove != null &&
-    absMove >= 0.1 &&
+    decisionStep != null &&
+    Math.abs(decisionStep) >= 0.1 &&
     i.frequency !== "D" /* daily prints can't carry a decision */
   ) {
     return {
@@ -566,7 +572,7 @@ export function scoreMacroDelta(i: MacroDeltaInput): MaterialityAssessment {
       horizon: "months",
       affectedTargets: [target],
       transmissionConfidence: "high",
-      reason: `policy rate step ${absMove.toFixed(2)}`,
+      reason: `policy rate step ${decisionStep >= 0 ? "+" : ""}${decisionStep.toFixed(2)}pp`,
       cautions,
     };
   }

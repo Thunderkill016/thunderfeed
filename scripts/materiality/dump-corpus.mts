@@ -201,10 +201,12 @@ const items: Item[] = [];
       `SELECT mp.obs_date::text, mpv.vintage_date::text, mpv.value::text AS v
          FROM macro_points mp
          JOIN macro_point_versions mpv ON mpv.point_id = mp.id
-        WHERE mp.series_id = $1 AND mp.obs_date < $2
+        WHERE mp.series_id = $1
+          AND mp.obs_date < $2::date
+          AND mpv.vintage_date <= $3::date
         ORDER BY mp.obs_date DESC
         LIMIT 800`,
-      [d.series_id, d.obs_date.slice(0, 10)],
+      [d.series_id, d.obs_date.slice(0, 10), d.vintage_date.slice(0, 10)],
     );
     const history = asOfSeriesHistory(
       rows.map((r) => ({
@@ -239,7 +241,9 @@ const items: Item[] = [];
         kind: d.kind as "macro_release" | "macro_revision",
         value: Number(d.value),
         prevValue: d.prev == null ? null : Number(d.prev),
-        history: history.slice(0, -1), // exclude the released value itself
+        /* asOf history already excludes the target obs — pass it whole;
+         * slicing here would drop t-1, the most relevant print */
+        history,
       }),
       sourceSet: "holdout",
       labels: null,
@@ -342,9 +346,9 @@ const items: Item[] = [];
       actionType: c.action_type as "cash_dividend" | "stock_split",
       instrumentKey: key,
       cashAmount: c.cash_amount == null ? null : Number(c.cash_amount),
-      /* action currency unrecorded on prod — fall back to venue currency,
-       * which is what the cash_amount is actually quoted in */
-      currency: c.currency ?? venueCur,
+      /* action currency is what the provider RECORDED — never infer it
+       * from the venue; a NULL here is currency_unverified, full stop */
+      currency: c.currency,
       referencePrice: c.close == null ? null : Number(c.close),
       priceBasis: priceBasis as "pre_ex" | "none",
       priceConvention: (c.price_basis ?? null) as
@@ -376,11 +380,12 @@ const items: Item[] = [];
     provider: string;
     name: string;
     asset_class: string;
+    instrument_type: string | null;
     ticker: string | null;
     venue: string | null;
   }>(
     `SELECT ms.id AS series_id, ms.provider, iv.name, iv.asset_class,
-            lv.ticker, tv.acronym AS venue
+            iv.instrument_type, lv.ticker, tv.acronym AS venue
        FROM market_series ms
        JOIN instrument_listings il ON il.id = ms.listing_id
        JOIN financial_instruments fi ON fi.id = il.instrument_id
@@ -445,7 +450,9 @@ const items: Item[] = [];
       name: s.name,
       key,
       assetClass: s.asset_class,
-      isIndex: s.asset_class === "index" || s.name.includes("Index"),
+      /* instrument semantics, not asset_class/name: prod stores VN
+       * indexes as asset_class='equity' + instrument_type='index' */
+      isIndex: s.instrument_type === "index",
       date: asc[asc.length - 1].date,
       pct: last,
       z: sd > 0 ? last / sd : null,
