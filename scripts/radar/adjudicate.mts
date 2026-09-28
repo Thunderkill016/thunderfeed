@@ -1,15 +1,24 @@
-/* R6.1 adjudication runner — recomputes claim truth on changed events
+/* R6.1b adjudication runner — recomputes claim truth on changed events
  * via the shared position engine (lib/db/adjudicate.ts → positions.ts).
  *
  *   DATABASE_URL=... npx tsx scripts/radar/adjudicate.mts [--since ISO] [--events N] [--dry]
  *
- * Scope: events changed since the last successful run (or --since, or
- * the last --events). State changes are append-only claim_versions
- * mints; 'confirmed' is never minted by batch (authority = ingest act).
+ * Scope: events changed since the last committed cursor (or --since, or
+ * a default window). Mutable states (reported/supported/disputed) are
+ * recomputed against the current evidence graph; the minted state is
+ * path-invariant — batch may mint 'confirmed' when direct primary
+ * evidence is discovered retroactively. Per-event failure granularity:
+ * a failed event never advances the watermark and is retried next run.
  * Every run is recorded in job_runs. */
 import { getPool } from "../../lib/db/pool.ts";
 import { adjudicateEvents } from "../../lib/db/adjudicate.ts";
-import { finishJob, lastDoneCursor, startJob } from "../../lib/db/jobs.ts";
+import {
+  checkpointCursor,
+  finishJob,
+  lastDoneCursor,
+  startJob,
+  updateJob,
+} from "../../lib/db/jobs.ts";
 
 const args = process.argv.slice(2);
 const evIdx = args.indexOf("--events");
@@ -26,8 +35,8 @@ const since: string =
     : ((await lastDoneCursor("adjudicate")) ??
       new Date(Date.now() - DEFAULT_WINDOW_H * 3600_000).toISOString());
 
-const { rows } = await db.query<{ id: string; title: string }>(
-  `SELECT e.id, ev.title
+const { rows } = await db.query<{ id: string; title: string; ts: string }>(
+  `SELECT e.id, ev.title, e.last_seen_at AS ts
      FROM events e JOIN event_versions ev ON ev.id = e.current_version_id
     WHERE e.status NOT IN ('merged','archived') AND e.last_seen_at > $1
     ORDER BY e.last_seen_at ASC
@@ -38,36 +47,52 @@ console.log(
   `adjudicate: ${rows.length} changed events since ${since}${DRY ? " (dry)" : ""}`,
 );
 
-const decisions = await adjudicateEvents(
-  rows.map((r) => r.id),
-  { dryRun: DRY },
-);
-const byEvent = new Map<string, typeof decisions>();
-for (const d of decisions) {
-  if (!byEvent.has(d.eventId)) byEvent.set(d.eventId, []);
-  byEvent.get(d.eventId)!.push(d);
-}
-for (const e of rows) {
-  const ds = byEvent.get(e.id) ?? [];
-  if (!ds.length) continue;
-  console.log(`\n${e.title}`);
-  for (const d of ds) console.log(`  ${d.from} → ${d.to}  (${d.reason})`);
-}
+/* per-event adjudication — one event's bad data can never block or
+ * misattribute another's truth transition */
+const failedIds = new Set<string>();
 const tally = new Map<string, number>();
-for (const d of decisions) tally.set(d.to, (tally.get(d.to) ?? 0) + 1);
+let minted = 0;
+for (const e of rows) {
+  try {
+    const decisions = await adjudicateEvents([e.id], { dryRun: DRY });
+    for (const d of decisions) {
+      console.log(`${e.title}\n  ${d.from} → ${d.to}  (${d.reason})`);
+      tally.set(d.to, (tally.get(d.to) ?? 0) + 1);
+      minted++;
+    }
+  } catch (err) {
+    failedIds.add(e.id);
+    console.error(`event ${e.id} failed:`, (err as Error).message);
+  }
+  if (run && (failedIds.size + minted) % 50 === 0) {
+    await updateJob(run.id, {
+      processed: rows.indexOf(e) + 1,
+      failed: failedIds.size,
+      cursorTs: checkpointCursor(
+        rows.map((r) => ({ id: r.id, lastSeenAt: r.ts })),
+        failedIds,
+        since,
+      ),
+    });
+  }
+}
+
 console.log(
-  `\ntotal: ${decisions.length} claims moved — ` +
-    [...tally].map(([k, v]) => `${k}:${v}`).join(" "),
+  `\ntotal: ${minted} claims moved — ` +
+    [...tally].map(([k, v]) => `${k}:${v}`).join(" ") +
+    ` | failed events: ${failedIds.size}`,
 );
-/* cursor = watermark = the newest last_seen_at we actually processed —
- * next run only looks at events changed after it */
-const cursor = rows.length
-  ? (
-      await db.query<{ m: string }>(
-        `SELECT max(last_seen_at) m FROM events WHERE id = ANY($1)`,
-        [rows.map((r) => r.id)],
-      )
-    ).rows[0].m
-  : since;
-if (run) await finishJob(run.id, { processed: rows.length, cursorTs: cursor });
+/* cursor only covers the contiguous successful prefix — a failed event
+ * is never jumped over; next run retries exactly it */
+const cursor = checkpointCursor(
+  rows.map((r) => ({ id: r.id, lastSeenAt: r.ts })),
+  failedIds,
+  since,
+);
+if (run)
+  await finishJob(run.id, {
+    processed: rows.length - failedIds.size,
+    failed: failedIds.size,
+    cursorTs: cursor,
+  });
 await db.end();

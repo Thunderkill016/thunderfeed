@@ -1,14 +1,25 @@
-/* job_runs — observable cron jobs (0037). Every batch pass (enrich,
+/* job_runs — observable cron jobs (0037/0038). Every batch pass (enrich,
  * adjudicate, relineage…) records: who ran, when, how far it got, what
  * failed. A run that dies at 3000/6000 leaves status='running' with the
  * cursor where it stopped — resumable, and visible without guessing.
  *
+ * Cursor correctness: the watermark only covers the CONTIGUOUS
+ * SUCCESSFUL PREFIX of the sweep — a failed event can never be jumped
+ * over and lost. A run with per-event failures lands 'partial' (work
+ * committed up to the cursor is real) rather than 'done'; the next run
+ * resumes from the cursor and retries exactly the failed events.
+ * A 'running' row left by a dead process is marked stale when the next
+ * run starts, so crashed runs surface instead of pretending liveness.
+ *
  *   const run = await startJob("enrich", { mode: "incremental" });
  *   const since = opts.since ?? await lastDoneCursor("enrich");
- *   ... per-event work, await updateJob(run.id, { processed, cursorTs })
- *   await finishJob(run.id, { processed, failed, cursorTs });
+ *   ... per-event work; on failure: failedIds.add(e.id)
+ *   await finishJob(run.id, { processed, failed, cursorTs: checkpointCursor(...) });
  */
 import { getPool } from "./pool";
+
+/** a 'running' row older than this was abandoned by a dead process */
+export const STALE_RUN_MINUTES = 30;
 
 export interface JobRun {
   id: string;
@@ -19,7 +30,16 @@ export async function startJob(
   job: string,
   metadata: Record<string, unknown> = {},
 ): Promise<JobRun> {
-  const { rows } = await getPool().query<{ id: string }>(
+  const pool = getPool();
+  /* recover stale runners: this new run is proof the old one is dead */
+  await pool.query(
+    `UPDATE job_runs SET status='failed', finished_at=now(),
+            error='stale: superseded — runner died without finishing'
+      WHERE job=$1 AND status='running'
+        AND started_at < now() - interval '${STALE_RUN_MINUTES} minutes'`,
+    [job],
+  );
+  const { rows } = await pool.query<{ id: string }>(
     `INSERT INTO job_runs (job, status, metadata) VALUES ($1, 'running', $2)
      RETURNING id`,
     [job, JSON.stringify(metadata)],
@@ -27,16 +47,36 @@ export async function startJob(
   return { id: rows[0].id, cursorTs: null };
 }
 
-/** Watermark for incremental runs: cursor of the last successful run of
- *  this job. Returns null on first run (caller picks a default window). */
+/** Watermark for incremental runs: cursor of the last run that committed
+ *  work ('done' or 'partial' — a partial run's cursor is still a valid
+ *  contiguous-success watermark). Returns null on first run. */
 export async function lastDoneCursor(job: string): Promise<string | null> {
   const { rows } = await getPool().query<{ c: string | null }>(
     `SELECT cursor_ts AS c FROM job_runs
-      WHERE job = $1 AND status = 'done' AND cursor_ts IS NOT NULL
+      WHERE job = $1 AND status IN ('done','partial') AND cursor_ts IS NOT NULL
       ORDER BY finished_at DESC LIMIT 1`,
     [job],
   );
   return rows[0]?.c ?? null;
+}
+
+/**
+ * The cursor may only advance over a contiguous successful prefix.
+ * `events` must be in processing order (asc last_seen_at); the first
+ * failed id freezes the watermark there — later successes still commit
+ * but stay behind the cursor so the next run re-examines them.
+ */
+export function checkpointCursor(
+  events: { id: string; lastSeenAt: string }[],
+  failedIds: ReadonlySet<string>,
+  fallback: string,
+): string {
+  let cursor = fallback;
+  for (const e of events) {
+    if (failedIds.has(e.id)) break;
+    cursor = e.lastSeenAt;
+  }
+  return cursor;
 }
 
 /** Progress heartbeat mid-run — processed/failed/cursor visible live. */
@@ -63,6 +103,11 @@ export async function finishJob(
     error?: string;
   },
 ): Promise<void> {
+  const status = result.error
+    ? "failed"
+    : (result.failed ?? 0) > 0
+      ? "partial"
+      : "done";
   await getPool().query(
     `UPDATE job_runs SET
        status      = $2,
@@ -74,7 +119,7 @@ export async function finishJob(
      WHERE id = $1`,
     [
       id,
-      result.error ? "failed" : "done",
+      status,
       result.processed ?? null,
       result.failed ?? null,
       result.cursorTs ?? null,

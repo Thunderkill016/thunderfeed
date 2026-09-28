@@ -268,6 +268,8 @@ export async function getEventEvidenceStats(
   const out = new Map<string, EventEvidenceStats>();
   if (!eventIds.length) return out;
   const pool = getPool();
+  /* IN-list over ANY($1) — pg-mem doesn't bind array params into ANY() */
+  const eph = eventIds.map((_, i) => `$${i + 1}`).join(",");
   const docR = await pool.query<{
     event_id: string;
     doc_id: string;
@@ -279,8 +281,8 @@ export async function getEventEvidenceStats(
        JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
        JOIN evidence_documents ed ON ed.id = ev.document_id
        JOIN sources s ON s.id = ed.source_id
-      WHERE ee.event_id = ANY($1)`,
-    [eventIds],
+      WHERE ee.event_id IN (${eph})`,
+    eventIds,
   );
   const byEvent = new Map<string, DocRow[]>();
   const known = new Map<string, DocRow>();
@@ -301,6 +303,8 @@ export async function getEventEvidenceStats(
       if (e.parent && !known.has(e.parent)) missing.add(e.parent);
     }
     if (!missing.size) break;
+    const missingIds = [...missing];
+    const mph = missingIds.map((_, i) => `$${i + 1}`).join(",");
     const pr = await pool.query<{
       doc_id: string;
       source_id: string;
@@ -308,8 +312,8 @@ export async function getEventEvidenceStats(
     }>(
       `SELECT ed.id AS doc_id, ed.source_id, s.kind
          FROM evidence_documents ed JOIN sources s ON s.id = ed.source_id
-        WHERE ed.id = ANY($1)`,
-      [[...missing]],
+        WHERE ed.id IN (${mph})`,
+      missingIds,
     );
     for (const d of pr.rows) known.set(d.doc_id, d);
     frontier = pr.rows.map((d) => d.doc_id);

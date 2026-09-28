@@ -17,6 +17,7 @@
 import { getPool } from "../../lib/db/pool.ts";
 import { prominenceFor } from "../../lib/enrich.ts";
 import {
+  checkpointCursor,
   finishJob,
   lastDoneCursor,
   startJob,
@@ -68,16 +69,17 @@ const { rows: docs } = await db.query<{
   `SELECT ee.event_id, COALESCE(ev.title, '') AS title
    FROM event_evidence ee
    JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
-   WHERE ee.event_id = ANY($1)`,
-  [ids],
+   WHERE ee.event_id IN (${ids.map((_, i) => `$${i + 1}`).join(",")})`,
+  ids,
 );
 
 const { rows: entRows } = await db.query<{
   event_id: string;
   entity_slug: string;
 }>(
-  `SELECT event_id, entity_slug FROM event_entities WHERE event_id = ANY($1)`,
-  [ids],
+  `SELECT event_id, entity_slug FROM event_entities
+   WHERE event_id IN (${ids.map((_, i) => `$${i + 1}`).join(",")})`,
+  ids,
 );
 
 const { rows: claimSubs } = await db.query<{
@@ -86,8 +88,8 @@ const { rows: claimSubs } = await db.query<{
 }>(
   `SELECT DISTINCT c.event_id, en.canonical_key
    FROM claims c JOIN entities en ON en.id = c.subject_entity_id
-   WHERE c.event_id = ANY($1)`,
-  [ids],
+   WHERE c.event_id IN (${ids.map((_, i) => `$${i + 1}`).join(",")})`,
+  ids,
 );
 const subjectsByEvent = new Map<string, Set<string>>();
 for (const r of claimSubs) {
@@ -109,9 +111,8 @@ for (const r of entRows) {
 }
 
 let processed = 0;
-let failed = 0;
 let entUpdates = 0;
-let cursor = since;
+const failedIds = new Set<string>();
 
 for (const e of events) {
   const docTitles = docTitlesByEvent.get(e.id) ?? [];
@@ -154,20 +155,41 @@ for (const e of events) {
       await c.query("COMMIT");
     } catch (err) {
       await c.query("ROLLBACK").catch(() => {});
-      failed++;
+      failedIds.add(e.id);
       console.error(`enrich ${e.id}:`, (err as Error).message);
     } finally {
       c.release();
     }
   }
   processed++;
-  cursor = e.last_seen_at;
+  /* cursor correctness: the watermark covers only the contiguous
+   * successful prefix — a failed event is never jumped over; the next
+   * run's cursor makes it retry exactly the events that failed */
+  const cursor = checkpointCursor(
+    events.map((r) => ({ id: r.id, lastSeenAt: r.last_seen_at })),
+    failedIds,
+    since,
+  );
   if (run && processed % 50 === 0)
-    await updateJob(run.id, { processed, failed, cursorTs: cursor });
+    await updateJob(run.id, {
+      processed,
+      failed: failedIds.size,
+      cursorTs: cursor,
+    });
 }
 
 console.log(
-  `enriched: ${processed} events, ${entUpdates} entity rows, ${failed} failed`,
+  `enriched: ${processed} events, ${entUpdates} entity rows, ${failedIds.size} failed`,
 );
-if (run) await finishJob(run.id, { processed, failed, cursorTs: cursor });
+const cursor = checkpointCursor(
+  events.map((r) => ({ id: r.id, lastSeenAt: r.last_seen_at })),
+  failedIds,
+  since,
+);
+if (run)
+  await finishJob(run.id, {
+    processed: processed - failedIds.size,
+    failed: failedIds.size,
+    cursorTs: cursor,
+  });
 await db.end();

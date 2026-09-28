@@ -13,14 +13,20 @@
  *             reprinted by 15 outlets is one origin; evidence collapsed
  *             to its effective root via evidence_lineage
  *
- *   state   — mints 'supported' / 'disputed' only. NEVER 'confirmed':
- *             confirmation is an authority act that happens at ingest
- *             (primary/direct evidence). If reconstruction finds a
- *             primary-backed winner, the claim mints 'supported' with
- *             the reason preserved — the audit log must not record a
- *             confirmation ceremony that never happened.
- *             'unresolved' is never minted by age — absence of
- *             corroboration is not uncertainty.
+ *   state   — PATH-INVARIANT: batch mints the SAME canonical state the
+ *             ingest path would have produced from the same evidence
+ *             graph — including 'confirmed' when the winner is backed
+ *             by direct primary evidence discovered retroactively.
+ *             Audit timing lives in `reason` (retroactive_primary),
+ *             never in the state value itself.
+ *
+ *             Mutable truth states (reported / supported / disputed) are
+ *             RECOMPUTED every run — provenance changes under them
+ *             (two "independent" origins collapsing into one wire root,
+ *             a late-arriving parent) mint correction versions back down.
+ *             'confirmed'/'corrected'/'retracted' are authority-protected
+ *             and never touched. 'unresolved' is reserved for manual
+ *             flagging — absence of corroboration is not uncertainty.
  *
  * Writes are APPEND-ONLY: adjudication mints a new claim_versions row
  * (version_no+1, same value, new state) — triggers reject UPDATE.
@@ -39,12 +45,26 @@ import {
   type Vote,
 } from "./positions";
 
-/* change_type on claim_versions is claim_change_type (has 'supported',
- * 'disputed' since 0037); changes.type gets the audit-grade record. */
+/* change_type on claim_versions names the NEW state when the enum has it;
+ * a provenance-driven downgrade back to 'reported' is 'recomputed' (0038),
+ * not a value change. changes.type gets the audit-grade ledger record. */
+const MINT_CHANGE_TYPE: Record<string, string> = {
+  confirmed: "confirmed",
+  supported: "supported",
+  disputed: "disputed",
+  reported: "recomputed",
+};
 const CHANGE_RECORD: Record<string, string> = {
+  confirmed: "claim_confirmed",
   supported: "claim_supported",
   disputed: "claim_disputed",
+  reported: "claim_updated",
 };
+
+/** Truth states the batch recomputes — mutable conclusions standing on a
+ *  live evidence graph. 'confirmed'/'corrected'/'retracted' are
+ *  authority-protected; 'unresolved' is reserved for manual flagging. */
+export const MUTABLE_STATES = ["reported", "supported", "disputed"] as const;
 
 interface ClaimRow {
   claim_id: string;
@@ -87,13 +107,15 @@ async function resolveOriginSources(
 ): Promise<Map<string, string>> {
   const out = new Map<string, string>();
   if (!docIds.length) return out;
+  /* IN-lists over ANY($1) — pg-mem doesn't bind array params into ANY() */
+  const docPh = docIds.map((_, i) => `$${i + 1}`).join(",");
   const { rows: docs } = await client.query<{
     doc_id: string;
     source_id: string;
   }>(
     `SELECT ed.id AS doc_id, ed.source_id
-       FROM evidence_documents ed WHERE ed.id = ANY($1)`,
-    [docIds],
+       FROM evidence_documents ed WHERE ed.id IN (${docPh})`,
+    docIds,
   );
   const srcOf = new Map(docs.map((d) => [d.doc_id, d.source_id]));
   /* lineage closure — roots may sit outside this doc set; fetch their
@@ -107,13 +129,14 @@ async function resolveOriginSources(
     ),
   ];
   while (frontier.length) {
+    const fph = frontier.map((_, i) => `$${i + 1}`).join(",");
     const { rows: extra } = await client.query<{
       doc_id: string;
       source_id: string;
     }>(
       `SELECT ed.id AS doc_id, ed.source_id
-         FROM evidence_documents ed WHERE ed.id = ANY($1)`,
-      [frontier],
+         FROM evidence_documents ed WHERE ed.id IN (${fph})`,
+      frontier,
     );
     if (!extra.length) break;
     for (const d of extra) srcOf.set(d.doc_id, d.source_id);
@@ -165,23 +188,31 @@ export async function adjudicateEvents(
   const pool = getPool();
   const nowMs = Date.now();
 
-  /* scope: claims whose standing state is still 'reported' — adjudication
-   * is a one-way escalation; terminal/adjudicated states are settled */
+  /* scope: claims on MUTABLE truth states — reported/supported/disputed
+   * all recompute against the current evidence graph. A claim minted
+   * 'supported' by two origins that later relineage-collapse into one
+   * root does not stay supported forever. */
+  const eph = eventIds.map((_, i) => `$${i + 1}`).join(",");
   const { rows: claims } = await pool.query<ClaimRow>(
     `SELECT c.id AS claim_id, c.event_id, cv.state
        FROM claims c
        JOIN claim_versions cv ON cv.id = c.current_version_id
-      WHERE c.event_id = ANY($1) AND cv.state = 'reported'`,
-    [eventIds],
+      WHERE c.event_id IN (${eph}) AND cv.state::text = ANY($${eventIds.length + 1})`,
+    [...eventIds, [...MUTABLE_STATES]],
   );
+  if (process.env.ADJ_DEBUG)
+    console.error(
+      `[adj] scope: ${claims.length} claims in ${eventIds.length} events`,
+    );
   if (!claims.length) return [];
   const claimIds = claims.map((r) => r.claim_id);
 
+  const cph = claimIds.map((_, i) => `$${i + 1}`).join(",");
   const { rows: versions } = await pool.query<VersionRow>(
     `SELECT claim_id, id, version_no, value, unit, value_type, state
-       FROM claim_versions WHERE claim_id = ANY($1)
+       FROM claim_versions WHERE claim_id IN (${cph})
       ORDER BY version_no`,
-    [claimIds],
+    claimIds,
   );
 
   /* ALL claim_evidence across ALL versions — the logical claim is the
@@ -196,8 +227,8 @@ export async function adjudicateEvents(
        JOIN claim_versions cv ON cv.id = ce.claim_version_id
        JOIN evidence_versions ev ON ev.id = ce.evidence_version_id
        JOIN evidence_documents ed ON ed.id = ev.document_id
-      WHERE cv.claim_id = ANY($1)`,
-    [claimIds],
+      WHERE cv.claim_id IN (${cph})`,
+    claimIds,
   );
 
   const originOf = await resolveOriginSources(pool as pg.Pool, [
@@ -247,20 +278,29 @@ export async function adjudicateEvents(
     const winnerVer = winner
       ? vers.find((v) => v.id === winner.versionId)
       : undefined;
-    let to = computeClaimState({
+    const to = computeClaimState({
       positions: [...positions.values()],
       winnerVersionState: winnerVer?.state,
     });
-    /* batch adjudication never mints 'confirmed' — confirmation is an
-     * ingest-time authority act; a primary-backed winner reconstructed
-     * here escalates to 'supported' with the reason on the audit row */
+    if (process.env.ADJ_DEBUG)
+      console.error(
+        `[adj] claim ${c.claim_id} votes=${votes.length} ` +
+          `positions=${[...positions.values()].map((p) => `${p.pos}:${p.origins.size}o`).join(",")} ` +
+          `→ ${to} (was ${c.state})`,
+      );
+    /* Path invariance: the state is whatever the shared engine computes —
+     * confirmed included. `reason` records whether confirmation was seen
+     * live or retroactively; it does not alter the canonical value. */
     const reason =
       to === "confirmed"
-        ? "primary_origin_seen"
+        ? c.state === "reported"
+          ? "primary_asserted"
+          : "retroactive_primary"
         : to === "disputed"
           ? "live_positions"
-          : "independent_corroboration";
-    if (to === "confirmed") to = "supported";
+          : to === "supported"
+            ? "independent_corroboration"
+            : "origins_reclassified";
     if (to === c.state) continue;
     decisions.push({
       claimId: c.claim_id,
@@ -293,7 +333,13 @@ export async function adjudicateEvents(
  * readers see is purely the truth-state move. */
 async function mintClaimState(
   client: pg.PoolClient,
-  d: { claimId: string; eventId: string; to: string; reason: string },
+  d: {
+    claimId: string;
+    eventId: string;
+    from: string;
+    to: string;
+    reason: string;
+  },
   nowMs: number,
 ): Promise<void> {
   const cur = await client.query<{
@@ -336,9 +382,10 @@ async function mintClaimState(
       cv.valid_from,
       new Date(nowMs).toISOString(),
       cv.id,
-      /* change_type carries the exact new state — supported is NOT
-       * written as 'confirmed' anymore (0037 added the enum values) */
-      d.to,
+      /* change_type names the new state; downgrades to 'reported' are
+       * recorded as 'recomputed' — provenance correction, not a value
+       * change (0038) */
+      MINT_CHANGE_TYPE[d.to] ?? "recomputed",
       contentHash(d.claimId, `adjudicate:${d.to}:${newVn}`),
     ],
   );
@@ -364,7 +411,7 @@ async function mintClaimState(
       ev.rows[0]?.id ?? null,
       minted[0].id,
       CHANGE_RECORD[d.to] ?? "claim_updated",
-      `${cv.predicate} — reported → ${d.to} (${d.reason})`,
+      `${cv.predicate} — ${d.from} → ${d.to} (${d.reason})`,
       new Date(nowMs).toISOString(),
     ],
   );
