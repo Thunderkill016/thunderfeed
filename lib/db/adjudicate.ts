@@ -171,20 +171,30 @@ async function resolveOriginSources(
   return out;
 }
 
-/** Adjudicate the claims of the given events. Returns minted decisions. */
-export async function adjudicateEvents(
-  eventIds: string[],
-  opts: { dryRun?: boolean } = {},
-): Promise<
-  {
+export interface AdjudicateResult {
+  /** transitions the engine computed from the observed evidence graph */
+  decisions: {
     claimId: string;
     eventId: string;
     from: string;
     to: string;
     reason: string;
-  }[]
-> {
-  if (eventIds.length === 0) return [];
+  }[];
+  /** the subset that actually minted a version (empty under dryRun) */
+  landed: AdjudicateResult["decisions"];
+  /** decisions dropped because a concurrent writer took the version
+   * slot — the claim moved to that writer's mint instead; a nonzero
+   * count means "not every computed transition is what stands" */
+  superseded: number;
+}
+
+/** Adjudicate the claims of the given events. */
+export async function adjudicateEvents(
+  eventIds: string[],
+  opts: { dryRun?: boolean } = {},
+): Promise<AdjudicateResult> {
+  const empty: AdjudicateResult = { decisions: [], landed: [], superseded: 0 };
+  if (eventIds.length === 0) return empty;
   const pool = getPool();
   const nowMs = Date.now();
 
@@ -204,7 +214,7 @@ export async function adjudicateEvents(
     console.error(
       `[adj] scope: ${claims.length} claims in ${eventIds.length} events`,
     );
-  if (!claims.length) return [];
+  if (!claims.length) return empty;
   const claimIds = claims.map((r) => r.claim_id);
 
   const cph = claimIds.map((_, i) => `$${i + 1}`).join(",");
@@ -311,7 +321,8 @@ export async function adjudicateEvents(
     });
   }
 
-  if (opts.dryRun || decisions.length === 0) return decisions;
+  if (opts.dryRun || decisions.length === 0)
+    return { decisions, landed: [], superseded: 0 };
 
   const client = await pool.connect();
   const landed: typeof decisions = [];
@@ -327,7 +338,7 @@ export async function adjudicateEvents(
   } finally {
     client.release();
   }
-  return landed;
+  return { decisions, landed, superseded: decisions.length - landed.length };
 }
 
 /* Mint version_no+1 carrying the new state; identical value, so the diff

@@ -143,36 +143,53 @@ export async function enqueueDirty(
   job: string,
   reason: string,
 ): Promise<void> {
+  /* re-enqueue is a NEW unit of work: generation+1 invalidates every
+   * ack token a consumer may still be holding for the older read */
   await client.query(
-    `INSERT INTO dirty_events (event_id, job, reason)
-     VALUES ($1, $2, $3)
+    `INSERT INTO dirty_events (event_id, job, reason, generation)
+     VALUES ($1, $2, $3, 1)
      ON CONFLICT (event_id, job)
-     DO UPDATE SET processed_at = NULL, reason = $3, queued_at = now()`,
+     DO UPDATE SET processed_at = NULL, reason = $3, queued_at = now(),
+                   generation = dirty_events.generation + 1`,
     [eventId, job, reason],
   );
 }
 
-/** Pending event ids for a consumer job — live events only. */
-export async function pendingDirtyEvents(job: string): Promise<string[]> {
-  const { rows } = await getPool().query<{ event_id: string }>(
-    `SELECT d.event_id FROM dirty_events d
+/** One pending unit of work — the ack token is (eventId, generation). */
+export interface DirtyWork {
+  eventId: string;
+  generation: number;
+}
+
+/** Pending work for a consumer job — live events only. */
+export async function pendingDirtyEvents(job: string): Promise<DirtyWork[]> {
+  const { rows } = await getPool().query<{
+    event_id: string;
+    generation: number;
+  }>(
+    `SELECT d.event_id, d.generation::int AS generation FROM dirty_events d
        JOIN events e ON e.id = d.event_id
       WHERE d.job = $1 AND d.processed_at IS NULL
         AND e.status NOT IN ('merged','archived')
       ORDER BY d.queued_at`,
     [job],
   );
-  return rows.map((r) => r.event_id);
+  return rows.map((r) => ({ eventId: r.event_id, generation: r.generation }));
 }
 
-/** Acknowledge — only call after the event's unit of work committed. */
+/** Acknowledge the EXACT unit that was read — returns false when a newer
+ * generation exists (someone re-dirtied the event mid-flight), in which
+ * case nothing is acked and the pending row survives for retry. */
 export async function markDirtyDone(
   eventId: string,
   job: string,
-): Promise<void> {
-  await getPool().query(
+  generation: number,
+): Promise<boolean> {
+  const { rowCount } = await getPool().query(
     `UPDATE dirty_events SET processed_at = now()
-      WHERE event_id = $1 AND job = $2 AND processed_at IS NULL`,
-    [eventId, job],
+      WHERE event_id = $1 AND job = $2 AND generation = $3
+        AND processed_at IS NULL`,
+    [eventId, job, generation],
   );
+  return (rowCount ?? 0) > 0;
 }

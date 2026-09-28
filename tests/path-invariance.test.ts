@@ -19,6 +19,7 @@ import { adjudicateEvents } from "../lib/db/adjudicate";
 import { relineageEvents } from "../lib/db/relineage";
 import {
   checkpointCursor,
+  enqueueDirty,
   finishJob,
   lastDoneCursor,
   markDirtyDone,
@@ -152,7 +153,7 @@ test("invariance: 5 wire copies of Reuters → 1 origin → never supported", as
   assert.equal(r2.eventId, r1.eventId);
 
   /* batch adjudication sees the SAME collapsed origins as ingest */
-  const decisions = await adjudicateEvents([r1.eventId]);
+  const { decisions } = await adjudicateEvents([r1.eventId]);
   const cs = await claimStates(r1.eventId);
   for (const c of cs) assert.equal(c.state, "reported");
   assert.equal(
@@ -172,7 +173,7 @@ test("invariance: Reuters + BBC independently agree → batch mints supported", 
   const r2 = await persistCluster(b, extractClaims(b));
   assert.equal(r2.eventId, r1.eventId);
 
-  const decisions = await adjudicateEvents([r1.eventId]);
+  const { decisions } = await adjudicateEvents([r1.eventId]);
   const claim = (await claimStates(r1.eventId)).find(
     (c) => Number(c.value) === 20,
   )!;
@@ -208,7 +209,7 @@ test("invariance: primary evidence attached retroactively → batch mints confir
     [ver[0].id],
   );
 
-  const decisions = await adjudicateEvents([r1.eventId]);
+  const { decisions } = await adjudicateEvents([r1.eventId]);
   const after = (await claimStates(r1.eventId)).find(
     (c) => c.claim_id === claim.claim_id,
   )!;
@@ -512,17 +513,23 @@ test("orchestration: relineage dirties an event the time-cursor already passed",
 
   /* the queue — not the timestamp — carries the work */
   const pending = await pendingDirtyEvents("adjudicate");
+  const pendingIds = pending.map((w) => w.eventId);
   assert.ok(
-    pending.includes(r1.eventId) && pending.includes(eventY),
+    pendingIds.includes(r1.eventId) && pendingIds.includes(eventY),
     "relineage must dirty every event whose docs were re-minted",
   );
 
-  await adjudicateEvents(pending);
+  await adjudicateEvents(pendingIds);
   /* per-item ack: finishing X leaves Y retryable — acknowledgement is
    * never implicit in the batch */
-  await markDirtyDone(r1.eventId, "adjudicate");
-  assert.deepEqual(await pendingDirtyEvents("adjudicate"), [eventY]);
-  await markDirtyDone(eventY, "adjudicate");
+  const wX = pending.find((w) => w.eventId === r1.eventId)!;
+  const wY = pending.find((w) => w.eventId === eventY)!;
+  await markDirtyDone(r1.eventId, "adjudicate", wX.generation);
+  assert.deepEqual(
+    (await pendingDirtyEvents("adjudicate")).map((w) => w.eventId),
+    [eventY],
+  );
+  await markDirtyDone(eventY, "adjudicate", wY.generation);
   const after = (await claimStates(r1.eventId)).find(
     (c) => c.claim_id === claim.claim_id,
   )!;
@@ -537,4 +544,63 @@ test("orchestration: relineage dirties an event the time-cursor already passed",
   /* idempotent: draining again mints no further versions */
   await adjudicateEvents([r1.eventId, eventY]);
   assert.equal(await countClaimVersions(claim.claim_id), versionsBefore + 1);
+});
+
+/* ── I. generation-safe queue — the lost-wakeup race ──────────
+ * R6.1c's ack was identity-only: a producer re-enqueue during
+ * processing could be acknowledged by the consumer that never saw it.
+ * generation binds every unit of work to the read that claimed it. */
+test("queue: re-enqueue during processing survives the older ack", async () => {
+  setupDb();
+  const a = cluster([reutersArt(0)]);
+  const r1 = await persistCluster(a, extractClaims(a));
+
+  await enqueueDirty(getPool(), r1.eventId, "adjudicate", "relineage");
+  const [w1] = await pendingDirtyEvents("adjudicate");
+  assert.equal(w1.eventId, r1.eventId);
+  assert.equal(w1.generation, 1);
+
+  /* producer re-dirties while the consumer is mid-flight */
+  await enqueueDirty(getPool(), r1.eventId, "adjudicate", "relineage");
+
+  /* the stale consumer's ack must NOT clear work it never saw */
+  assert.equal(
+    await markDirtyDone(w1.eventId, "adjudicate", w1.generation),
+    false,
+    "ack of a stale generation lands on 0 rows",
+  );
+  const [w2] = await pendingDirtyEvents("adjudicate");
+  assert.equal(w2.eventId, r1.eventId);
+  assert.equal(w2.generation, 2, "the newer unit is still pending");
+
+  await adjudicateEvents([w2.eventId]);
+  assert.equal(
+    await markDirtyDone(w2.eventId, "adjudicate", w2.generation),
+    true,
+  );
+  assert.equal((await pendingDirtyEvents("adjudicate")).length, 0);
+});
+
+test("queue: swept event re-dirtied mid-run stays pending", async () => {
+  setupDb();
+  const a = cluster([reutersArt(0)]);
+  const r1 = await persistCluster(a, extractClaims(a));
+
+  /* X sits in BOTH the timestamp sweep and the dirty queue — the sweep
+   * succeeds, but a producer re-dirties before the ack lands */
+  await enqueueDirty(getPool(), r1.eventId, "adjudicate", "relineage");
+  const w = (await pendingDirtyEvents("adjudicate")).find(
+    (x) => x.eventId === r1.eventId,
+  )!;
+  await adjudicateEvents([r1.eventId]); // the sweep's successful work
+  await enqueueDirty(getPool(), r1.eventId, "adjudicate", "relineage"); // gen 2
+
+  assert.equal(
+    await markDirtyDone(r1.eventId, "adjudicate", w.generation),
+    false,
+    "sweep success must not ack the newer generation it never read",
+  );
+  const pending = await pendingDirtyEvents("adjudicate");
+  assert.equal(pending.length, 1);
+  assert.equal(pending[0].generation, 2);
 });

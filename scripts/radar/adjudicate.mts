@@ -54,10 +54,12 @@ console.log(
 const failedIds = new Set<string>();
 const tally = new Map<string, number>();
 let minted = 0;
+let superseded = 0;
 for (const e of rows) {
   try {
-    const decisions = await adjudicateEvents([e.id], { dryRun: DRY });
-    for (const d of decisions) {
+    const res = await adjudicateEvents([e.id], { dryRun: DRY });
+    superseded += res.superseded;
+    for (const d of DRY ? res.decisions : res.landed) {
       console.log(`${e.title}\n  ${d.from} → ${d.to}  (${d.reason})`);
       tally.set(d.to, (tally.get(d.to) ?? 0) + 1);
       minted++;
@@ -85,27 +87,32 @@ for (const e of rows) {
  * event is acknowledged only after its adjudication commits. */
 const dirty = await pendingDirtyEvents("adjudicate");
 let dirtyDone = 0;
-for (const id of dirty) {
+for (const w of dirty) {
   /* already adjudicated by this run's sweep — ack it so the queue
-   * drains instead of re-processing forever (only on success) */
-  if (rows.some((r) => r.id === id)) {
-    if (!DRY && !failedIds.has(id)) {
-      await markDirtyDone(id, "adjudicate");
+   * drains instead of re-processing forever (only on success, and
+   * only for the generation we read: a re-enqueue mid-run survives) */
+  if (rows.some((r) => r.id === w.eventId)) {
+    if (!DRY && !failedIds.has(w.eventId)) {
+      await markDirtyDone(w.eventId, "adjudicate", w.generation);
       dirtyDone++;
     }
     continue;
   }
   try {
-    const decisions = await adjudicateEvents([id], { dryRun: DRY });
-    for (const d of decisions) {
+    const res = await adjudicateEvents([w.eventId], { dryRun: DRY });
+    superseded += res.superseded;
+    for (const d of DRY ? res.decisions : res.landed) {
       console.log(`  [dirty] ${d.from} → ${d.to}  (${d.reason})`);
       tally.set(d.to, (tally.get(d.to) ?? 0) + 1);
       minted++;
     }
-    if (!DRY) await markDirtyDone(id, "adjudicate");
+    /* ack binds the generation read BEFORE work started — if a producer
+     * re-dirtied the event mid-flight, this updates 0 rows and the
+     * newer unit stays pending instead of being silently eaten */
+    if (!DRY) await markDirtyDone(w.eventId, "adjudicate", w.generation);
     dirtyDone++;
   } catch (err) {
-    console.error(`dirty event ${id} failed:`, (err as Error).message);
+    console.error(`dirty event ${w.eventId} failed:`, (err as Error).message);
     /* left pending — retried next run; does not move the time cursor */
   }
 }
@@ -115,7 +122,8 @@ if (dirty.length)
 console.log(
   `\ntotal: ${minted} claims moved — ` +
     [...tally].map(([k, v]) => `${k}:${v}`).join(" ") +
-    ` | failed events: ${failedIds.size}`,
+    ` | failed events: ${failedIds.size}` +
+    (superseded ? ` | superseded mints: ${superseded}` : ""),
 );
 /* cursor only covers the contiguous successful prefix — a failed event
  * is never jumped over; next run retries exactly it */
