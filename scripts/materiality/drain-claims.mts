@@ -23,6 +23,7 @@ const r = await drainClaimMateriality({ metadata: { trigger: "cli" } });
 console.log(
   `processed=${r.processed} inserted=${r.assessmentsInserted} ` +
     `reused=${r.assessmentsReused} projected=${r.projectionUpdated} ` +
-    `stale=${r.staleGeneration} failed=${r.failed} run=${r.runId}`,
+    `stale=${r.staleGeneration} failed=${r.failed} ` +
+    `pending=${r.pendingRemaining} run=${r.runId}`,
 );
 await getPool().end();

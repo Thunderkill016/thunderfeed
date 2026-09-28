@@ -353,6 +353,51 @@ test("worker read v1 → writer lands v2 + gen2 → v1 cannot publish", async ()
   assert.equal((await projectionOf(claimId)).length, 0);
 });
 
+test("drain re-reads after a stale-only pass — same run drains the newer generation", async () => {
+  setupDb();
+  const eventId = await mkEvent();
+  const { claimId } = await mkClaim({ eventId, value: 500, unit: "usd" });
+  await enqueueDirtyClaim(getPool(), claimId, "materiality", "ingest");
+
+  /* deterministic mid-flight producer: patch the pool so that the first
+   * pending-read resolves, THEN the generation bumps — the pass's publish
+   * attempt goes stale, and the fixed loop must re-read and drain gen2
+   * inside the SAME run instead of breaking on progress===0. */
+  const pool = getPool();
+  type QFn = (sql: string, params?: unknown[]) => Promise<unknown>;
+  const origQuery = pool.query.bind(pool) as unknown as QFn;
+  let bumped = false;
+  const patched: QFn = async (sql, params) => {
+    const res = await origQuery(sql, params);
+    /* after the pending read resolves, bump generation — the subsequent
+     * publish in this pass must go stale; the drain loop then has to
+     * re-read and drain gen2 in the SAME run */
+    if (!bumped && sql.includes("FROM dirty_claims")) {
+      bumped = true;
+      await origQuery(
+        `UPDATE dirty_claims
+           SET generation = generation + 1, processed_at = NULL
+         WHERE claim_id = $1 AND job = 'materiality'`,
+        [claimId],
+      );
+    }
+    return res;
+  };
+  (pool as { query: unknown }).query = patched;
+  try {
+    const r = await drainClaimMateriality();
+    assert.equal(r.staleGeneration, 1, "pass 1's publish went stale");
+    assert.equal(r.processed, 1, "pass 2 drained gen2 in the same run");
+    assert.equal(r.pendingRemaining, 0);
+    assert.equal(r.failed, 0);
+    const p = (await projectionOf(claimId))[0];
+    assert.equal(p.source_generation, 2, "projection carries gen2");
+    assert.equal((await assessmentsOf(claimId)).length, 1);
+  } finally {
+    (pool as { query: unknown }).query = origQuery;
+  }
+});
+
 test("gen2 publishes → stale gen1 finishes later → projection stays gen2", async () => {
   setupDb();
   const eventId = await mkEvent();

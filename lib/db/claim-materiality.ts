@@ -523,6 +523,10 @@ export interface DrainResult {
   projectionUpdated: number;
   staleGeneration: number;
   failed: number;
+  /* dirty rows still unprocessed when the run ended — a run that hit the
+   * pass bound or persistent failures reports honestly instead of
+   * looking fully drained */
+  pendingRemaining: number;
   runId: string;
 }
 
@@ -542,6 +546,7 @@ export async function drainClaimMateriality(
     projectionUpdated: 0,
     staleGeneration: 0,
     failed: 0,
+    pendingRemaining: 0,
     runId: run.id,
   };
   try {
@@ -555,6 +560,7 @@ export async function drainClaimMateriality(
         pending.map((p) => p.claimId),
       );
       let progress = 0;
+      let staleThisPass = 0;
       for (const work of pending) {
         const row = inputs.get(work.claimId);
         if (!row) {
@@ -566,6 +572,7 @@ export async function drainClaimMateriality(
           const res = await publishClaimAssessment(work, row.input, assessment);
           if (res.status === "stale") {
             r.staleGeneration++;
+            staleThisPass++;
             continue;
           }
           r.processed++;
@@ -582,8 +589,13 @@ export async function drainClaimMateriality(
         }
       }
       await updateJob(run.id, { processed: r.processed, failed: r.failed });
-      if (!progress) break; // everything pending is stale-locked → next run
+      /* no progress AND nothing stale ⇒ remaining rows are deterministic
+       * failures a re-read can't fix → stop. stale-without-progress means
+       * a producer bumped a generation mid-pass → loop so this SAME run
+       * drains the newer generation rather than leaving it for next time */
+      if (!progress && !staleThisPass) break;
     }
+    r.pendingRemaining = (await pendingDirtyClaims(MATERIALITY_JOB)).length;
     await finishJob(run.id, { processed: r.processed, failed: r.failed });
   } catch (err) {
     await finishJob(run.id, {
