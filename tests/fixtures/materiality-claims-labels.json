@@ -1,0 +1,3419 @@
+{
+  "meta": {
+    "generatedAt": "2025",
+    "methodVersion": "r7.1b",
+    "selection": "all economically-typed claims + deterministic md5-stratified negative sample; every meaningful/major/systemic second-reviewed",
+    "corpusLabeled": 200,
+    "challengeLabeled": 32,
+    "corpusSize": 287
+  },
+  "labels": {
+    "01a0d17a-99ff-7864-bc04-d009e78eec28": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d17a-9aec-76a7-8300-5fbae3770b91": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d17a-9b9d-71b6-ae83-379c25f456d2": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d188-7f84-7d99-8ba5-62c9a56b7cd7": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d188-8147-7329-a5af-3380aa54983b": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d188-817f-7290-8789-ffb91890b227": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d188-819c-716d-b3cf-a53c9544aee9": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d188-861c-7c6b-8591-34196b987998": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d188-8962-7656-9416-adc778311d13": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d1ab-6079-726f-bed8-e8d2f7dd2c1e": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d1ab-6080-7958-bd9b-9839ff3320c0": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d1ab-61c0-7487-94be-e14d95f7e088": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d1ab-61c4-71b1-bb17-1e4d7eb4e4e7": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d1ab-624c-72ac-857c-3e1523c13de2": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d1ab-6463-74d5-9056-6c7b0606d570": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3a6-f6f7-7348-b84f-1bbbf80c20b4": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3a6-f701-7ca5-a325-524066024e05": {
+      "scope": "global_systemic",
+      "channels": [
+        "discounting"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "Fed rate level 1%, no delta",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3a9-e388-746e-8c30-a70861452faa": {
+      "scope": "global_systemic",
+      "channels": [
+        "discounting"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "Fed rate level 1%",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3a9-e6fb-7838-82bc-2063f32c50d5": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3a9-fc6d-7eaf-9f81-5a903f309caf": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3a9-fc75-72c8-a31a-a287e5986b6a": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-0461-7f70-af57-4070c9bc60aa": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-08bf-72b3-9e12-afa84530d128": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-19aa-7968-9b7d-fcff021a19f9": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-1efb-7f27-b645-9f18608047d0": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-289d-7320-85e0-591faf38aebe": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-2d84-775c-8b1a-97ecdc271c19": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-2d8a-771b-952f-edbd9a3818b9": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-376e-7e0c-b0cc-342321c06f63": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-425f-731e-9720-c1286e670a4d": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-4882-704a-bdc5-719a8acfe077": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3aa-5887-7203-b987-87c0d1eb0ea5": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3ab-13ef-79ae-a8dc-60a9aaa5d056": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3ac-02be-714f-8054-c00d44056d4e": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3b0-2fa9-74dd-8b99-4e68efe04017": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3cf-309d-7dbb-b52c-998e44c16df1": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3e3-4ef0-7891-ae7a-802fdd369aca": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d3f1-e9b8-766b-9e57-bbae4e87e60f": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d447-0e2d-79a6-9734-b2ccfde31385": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d447-0e3a-7e53-9f7e-2c9565345062": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d44e-65d5-77f9-9be1-43062be63f9b": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d44e-65df-7794-baef-9e8f76767cd4": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d45b-3304-7463-a2d5-ce37fa52f072": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d470-961d-776d-960f-efeece77a14e": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d478-7fe0-7b54-9254-e35b82096eda": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d478-7fe5-7ee8-82eb-1a483efefc57": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4be-1eaf-7722-9ae2-1992554f6434": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4be-35e8-7b88-a360-7dfe06425478": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4bf-00cf-7281-b1b6-d87b161c8a8e": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4bf-00d4-70b1-a1e1-c5e1e96dafdd": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4bf-7236-7fe6-b2cf-cc4d256eb292": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4bf-93ae-79c9-81be-79ba28168af9": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4bf-f8ab-7dde-b0c8-347be535e776": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4bf-f8b3-731f-81c7-e565212a97ac": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4c0-6484-7816-857e-cab6f1747e1a": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4c1-01b7-75fa-a997-90a164abc651": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4d6-6c2b-7afe-9728-c7d0fa247385": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4e2-2e46-7f6d-b958-8b0e5e60bf89": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4ed-05c1-76d6-9e1d-ea287c5cc16e": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4ed-2e9b-790c-8bc4-689480abc407": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4f1-b4ca-7ba5-9e88-1dee62a0136b": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4f5-799c-7748-8b24-4a15b1cec295": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4f5-94a3-7016-bebc-fb654afb673b": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4f5-96c9-702b-8029-12ded05ef2c7": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d4fd-1f51-7e29-96a9-985e7d5a313a": {
+      "scope": null,
+      "channels": [
+        "discounting"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "7% level, subject unresolved",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d556-0f1a-727d-b438-be51b90959ab": {
+      "scope": null,
+      "channels": [
+        "discounting"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "7% prev=7 unchanged",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d556-8db8-7af7-86d0-4ebe374ef6cf": {
+      "scope": null,
+      "channels": [
+        "discounting"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "30% disputed level — not a policy step",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d6f2-a7e1-7c62-a2fa-2c8329016543": {
+      "scope": "sector",
+      "channels": [
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:fr"
+      ],
+      "note": "France debt/GDP 119.3%",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "debt_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d6f3-b2ba-72a5-b386-51644328e019": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d6f3-ceef-78a0-9efd-245d31d03f0d": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d787-6140-7682-85a6-d624e2e611b8": {
+      "scope": null,
+      "channels": [
+        "discounting"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "7% prev=7",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d787-6155-7f8b-a80e-c8dd4f0b9a85": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d788-219c-7aa3-bff9-3bdd29f779a8": {
+      "scope": "vietnam",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "tầm ruột dẹt price",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d788-21b0-7c31-b515-3ff6bcd67e0f": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "truce +2 months",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0d788-21b5-75d1-a83c-c22b81fbfe41": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "truce +2 months",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0d788-3b25-784b-9a9a-c874951bd4a6": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d788-e725-778e-8513-b4d01cb71d3b": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d788-eb80-776a-8680-f2304a963c60": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d788-fb43-7161-a66a-cb886f2528ce": {
+      "scope": "vietnam",
+      "channels": [
+        "discounting"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
+      "note": "NHNN 1% level",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d789-c7a9-7b62-95ad-093c339c2c45": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d789-c7af-7553-b3a6-f7f230f5d962": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d7b6-5dc1-7956-bd78-4ea62e5956b3": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d7c9-e7bf-7d61-999e-c047a7b0753f": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "$2.45B Gaza recovery plan",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fiscal_spending",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0d7cf-1c5b-7359-aebc-ff632126b858": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d7d3-a68a-752b-8f4d-c6e8d869c4df": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d7eb-abe8-7f2c-a89f-d8993f1d145c": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "extension, disputed, unresolved subj",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d828-42b9-7088-9b37-573e8a66b3ad": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "oil 1-week high",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d83e-2cea-7aa7-90eb-7278e861e3ff": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d848-fb61-7a10-b331-d099973946d2": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d851-69ee-73ce-b747-bf6839293a90": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d863-655c-7567-80ef-3ca1e816b0b1": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d8d4-95c0-7a05-8442-e14fce48610e": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d8f7-3c49-766d-836c-a4bf2a169726": {
+      "scope": "vietnam",
+      "channels": [
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
+      "note": "BSR-ExxonMobil crude framework",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0d9eb-6fa1-7fb7-a03f-bc866bf9daed": {
+      "scope": null,
+      "channels": [
+        "discounting"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "7% level",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0daa3-151d-770d-893c-84439e11f682": {
+      "scope": "issuer",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "entity:hoan_my"
+      ],
+      "note": "profit level, no delta",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "corporate_profit_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0db17-25d3-74bc-8b45-fd458ce809d5": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "new US-CN deal",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dba3-f38a-77f9-98a1-06a828dbb13a": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "narrow cert services",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dba3-f7bc-78d8-a89d-9c0db2bcd9a7": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "oil -2%",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dba5-8145-7b14-8c3a-a2d53e0507f4": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "€6.6B",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dbaa-e382-7c33-9ccd-04d749b8fb8d": {
+      "scope": "vietnam",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "commodity:gold_sjc"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dbed-1f06-7654-8d5d-e2cdbe67ee93": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "US Treasury extension",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dbee-5a30-75dd-b4f7-8fb562d5e727": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "banking services disrupted",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dc0a-bda6-7a4c-9e2d-d1c533d01826": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "oil -2%",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dc10-6d43-7294-894e-0db315749f3c": {
+      "scope": "vietnam",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "commodity:gold_sjc"
+      ],
+      "note": "SJC <145tr",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dc10-71c4-7267-8f68-26d76df49fc9": {
+      "scope": "vietnam",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "commodity:gold_sjc"
+      ],
+      "note": "SJC -2tr/wk",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dc2a-0356-7c6c-9714-451d410cc6d5": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dc2f-7cf4-7ca0-9d12-2ca5b56b88a9": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dcf3-498d-76fb-95a8-1771fa18e70b": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dd31-e2b0-73cb-a410-91fbdd3cd8ef": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dd54-ae30-761d-a04b-ea4a3a7ccc51": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "aid €6.6B",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dd60-2cb6-7dc9-9d80-a9b4b5658097": {
+      "scope": "vietnam",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
+      "note": "48 tỷ đồng commune",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "investment_commitment",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dd77-21ac-7ae3-b6b6-8cc88603d07f": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "$30B goods tariff reduction",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dd9d-56eb-7a99-a5a3-da3710bc8d29": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dd9f-446e-743f-8e94-6d7e13fca751": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dda0-a5e5-77f7-b7a5-eb5b5ca06afa": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "cert services",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dda6-62ab-76e1-814f-420eb3ff841e": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0ddbb-6e85-7573-aa68-fa0dede4fbb6": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0ddbc-8c04-76e5-b908-fcf9ac34eecd": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "EU military aid",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dddd-8f3e-789d-afed-eb2bd525043d": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0de15-b1c3-796b-9ff1-6a7c38b996e6": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0de15-c9f1-727e-a4df-9f433f52f23b": {
+      "scope": "vietnam",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "QR payment ×8 tourism",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0de34-f387-7d48-a68a-6975c9244fbf": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "$400M Ukraine tranche",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0decc-22b2-7c96-8854-90e81ce34af8": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dece-a734-729e-9c43-1c6598380dce": {
+      "scope": "sector",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "Brazil imports ×222",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dee4-b126-7434-b5e2-f713be18aa5f": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0def9-0371-7ad9-92f4-bb96ac62bdcf": {
+      "scope": "vietnam",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
+      "note": "Canadian dev-finance grid",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "investment_commitment",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0df5a-33e0-7b0f-9b31-26bd3f85e885": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "€4.7B military aid",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0df99-ba99-74ca-ae81-a7f1fad81932": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dff0-2450-71d4-b7cf-721657e00d19": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0dff7-ec59-7a37-8c40-7e68e3ab136a": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "$30B tariff-preference deal",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e004-3c00-706a-93e4-51f97b26207c": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e00a-5760-7bc6-878c-c0bd94bdf4fc": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e021-f481-791a-b4ac-2dab9abb8d63": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e033-b66c-7758-a586-1a2b70691eb6": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "impose cert sanctions",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e040-61d5-7168-96d3-9a34f01fb255": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e056-875e-7721-b591-169e2da986fa": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e056-8f1c-7cf3-ab67-74d04d5b5249": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "$30B, disputed wording",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e059-ac95-75b9-8dc1-88a09b6666ab": {
+      "scope": "vietnam",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
+      "note": "VN signed 17 FTAs (context)",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e066-d38f-71e8-b7fc-836344040f54": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "UN blacklist 61 cos",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e067-a700-7bc8-be1a-1f43aa5bb133": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "cert services",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e074-dd6f-796d-9492-c2f43f3bdf7c": {
+      "scope": "global_systemic",
+      "channels": [
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:cn"
+      ],
+      "note": "CN 20Mt US coal purchase",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e081-67c7-76f4-ad50-72f84487e0f6": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e0b3-06e6-7fb4-a8c4-c0dcc3794428": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e0f3-c983-7cc9-9215-e50d6d4a7034": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e17e-5a4a-7b14-b685-117d3fee8661": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "growth figure, unclear indicator subject",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e19e-f3c4-7ed4-8e60-ec47fc839252": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "disputed wording",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e1bf-f147-7b6d-ad8c-7a757d2cc7f4": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e1e5-2a59-77be-b20f-b4cebed9bdac": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e1e7-c68d-7119-ab5e-704d909fec7e": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "đề xuất hủy $810M",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "fiscal_spending",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e227-1cae-7150-9d21-7ae6c7a2a5cf": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "corrected 30 tỷ",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e247-97b3-7ff2-9d0f-c1297184aff7": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "$810M cancellation",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "fiscal_spending",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e26c-c013-7cda-98a7-a6c702631410": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "banking disruption",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e287-e5b3-7721-877e-11ea59808363": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "~$400M",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e2e2-f330-75e8-af48-378b16f6ab98": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e2e3-3d53-78df-ba8d-97a3409b9d9e": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "cert services",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e2f8-c831-7f49-88a0-fa0f35f83353": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e2fd-c5d1-7e18-b0bd-3b1e1c1754e7": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e311-86d0-70a3-8290-5df8957ff5cc": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e316-6d42-7617-9abc-06d1e81c7102": {
+      "scope": "vietnam",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "trám đen price",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e350-a900-7219-92ee-f4b7c48b4273": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "cert services",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e3c3-2610-731d-ab52-44dd327d8160": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e3f4-1a26-7fd9-a5de-d827be277da1": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e44c-098b-74f2-916b-95afc47c9170": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e4d0-1b47-74d5-b476-aad9fbfbec7d": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e55e-fdf6-7d26-85e9-5fa078b4803e": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e560-8eee-73fc-95b1-bb034495811f": {
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "Iran jobs 3.2k (claim context)",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e673-f331-7183-8b75-520980be63d5": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "Brent $106.14",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e673-f7b5-7f42-8114-bcf70eab15ce": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "note": "Brent +1.74%",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "economic_indicator_change",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e754-632b-7e60-bf99-97c368e01879": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e756-2283-73ec-b1ad-a60976f76f3e": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "$60B goods — regime scale",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "major"
+    },
+    "01a0e786-4eb2-737e-94ad-8113b28714b6": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e7a3-5d83-743b-b376-fb3ee8846f1a": {
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "corrected 60→30",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0e7a7-d784-72be-b4e4-f9266aab22fb": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "limited"
+    },
+    "01a0e7aa-1930-77d1-812a-948b13d82adb": {
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "",
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "meaningful"
+    },
+    "01a0dc36-d2d4-73f1-a85a-e4d25029180b": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d1ab-63ff-72da-91de-54a72db6dfc0": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "money figure, no action semantics",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "unknown"
+    },
+    "01a0db19-bd43-7a7a-b27b-2cbd4e084c04": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0dbe9-54a3-7a50-97e1-34d5acaa3786": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "Greenland military-presence pact — mislabeled predicate",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d801-77df-711c-a259-dc272561c916": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d7d1-70f8-7438-b8f0-a4d8e8128e28": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0dc07-29ee-7baf-b04e-82cf3b27466e": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d90d-001a-7df0-a084-3c699e2934ce": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0db9f-b2bc-7ad0-8dff-1795d7ffd375": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0e702-b75a-7214-8c2e-5f7fdaa64c5c": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0dbec-32ff-7728-8974-981b5713f2b5": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0e22e-e03f-7ea5-94c5-1c73d6fb2f4f": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0e3c6-bbeb-7e26-bc07-8ea175d45632": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0e3f4-d9e8-7aa3-886f-0e38250153ab": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0e77d-0bb8-7421-9816-5cf37b770fb2": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d17a-9b40-76de-9aa8-ba21a1bacac9": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d7c9-df54-7415-bfd9-98818e6a641b": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d7c9-e389-7c95-8e3d-2d704e4d8273": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d7c9-f02b-704a-8a3e-c006266804d4": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d7ee-39b8-7104-9375-6d2a41a87767": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d825-76ba-7f85-9a25-0463011f49ee": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d87b-e696-7e86-a948-eebe6cc17ba0": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d8f2-a3af-75ef-901e-ecd82d658032": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d8f3-df10-733b-afed-9b8193e2d1bd": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d917-a5f0-7411-84e6-3a7716d452f2": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "01a0d932-b069-73c9-8344-8903f0eab43c": {
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "note": "non-economic claim",
+      "labeled_by": "analyst-1",
+      "reviewed": false,
+      "reviewed_by": null,
+      "economicAction": "non_economic",
+      "intrinsicMateriality": "none"
+    },
+    "chal-011": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "systemic",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "removal of 25pp = regime shift, same ladder as +25pp"
+    },
+    "chal-005": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited",
+      "channels": [
+        "discounting"
+      ],
+      "note": "bank rate ≠ policy"
+    },
+    "chal-019": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "credit_liquidity_shock",
+      "intrinsicMateriality": "systemic",
+      "scope": "global_systemic",
+      "channels": [
+        "funding_liquidity",
+        "discounting"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "interbank freeze"
+    },
+    "chal-008": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "major",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "+20pp"
+    },
+    "chal-021": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "credit_liquidity_shock",
+      "intrinsicMateriality": "systemic",
+      "scope": "global_systemic",
+      "channels": [
+        "funding_liquidity",
+        "discounting"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "sovereign default"
+    },
+    "chal-027": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "investment_commitment",
+      "intrinsicMateriality": "meaningful",
+      "scope": "issuer",
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [
+        "entity:vinamilk"
+      ],
+      "note": "macro-scale capex"
+    },
+    "chal-024": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fiscal_spending",
+      "intrinsicMateriality": "major",
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "macro stimulus"
+    },
+    "chal-016": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "removal"
+    },
+    "chal-018": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "credit_liquidity_shock",
+      "intrinsicMateriality": "major",
+      "scope": "global_systemic",
+      "channels": [
+        "funding_liquidity",
+        "discounting"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "crisis facility"
+    },
+    "chal-001": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "monetary_policy_change",
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": [
+        "discounting",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "+25bp routine"
+    },
+    "chal-015": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "export_regulation_change",
+      "intrinsicMateriality": "major",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "semiconductor"
+    },
+    "chal-004": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "interest_rate_observation",
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": [
+        "discounting"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "level only"
+    },
+    "chal-029": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "unknown_economic_action",
+      "intrinsicMateriality": "unknown",
+      "note": "context number, no economic action — abstain"
+    },
+    "chal-002": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "monetary_policy_change",
+      "intrinsicMateriality": "major",
+      "scope": "global_systemic",
+      "channels": [
+        "discounting",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "country_exposure:eu"
+      ],
+      "note": "+75bp shock"
+    },
+    "chal-014": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:ru"
+      ],
+      "note": "banking system"
+    },
+    "chal-012": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "trade_agreement",
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
+      "note": "VN-EU lane"
+    },
+    "chal-013": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "sanction_change",
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:ir"
+      ],
+      "note": "narrow"
+    },
+    "chal-025": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "corporate_profit_change",
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [
+        "entity:vinamilk"
+      ],
+      "note": "level"
+    },
+    "chal-009": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "systemic",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "+40pp regime shift"
+    },
+    "chal-017": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fund_disbursement",
+      "intrinsicMateriality": "limited",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "note": "$450M routine"
+    },
+    "chal-028": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "investment_commitment",
+      "intrinsicMateriality": "limited",
+      "channels": [
+        "fundamental"
+      ],
+      "note": "unquantified"
+    },
+    "chal-030": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "limited",
+      "note": "mention only"
+    },
+    "chal-032": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "credit_liquidity_shock",
+      "intrinsicMateriality": "systemic",
+      "scope": "global_systemic",
+      "channels": [
+        "funding_liquidity",
+        "discounting"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "magnitude preserved"
+    },
+    "chal-023": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fiscal_spending",
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": ""
+    },
+    "chal-020": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "banking_stress",
+      "intrinsicMateriality": "meaningful",
+      "channels": [
+        "funding_liquidity"
+      ],
+      "note": "institution rescue"
+    },
+    "chal-022": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "fiscal_spending",
+      "intrinsicMateriality": "limited",
+      "scope": "vietnam",
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
+      "note": ""
+    },
+    "chal-010": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:us",
+        "country_exposure:cn"
+      ],
+      "note": "usd value not pp"
+    },
+    "chal-031": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "credit_liquidity_shock",
+      "intrinsicMateriality": "none",
+      "note": "excluded"
+    },
+    "chal-026": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "corporate_profit_change",
+      "intrinsicMateriality": "meaningful",
+      "scope": "issuer",
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [
+        "entity:vinamilk"
+      ],
+      "note": "+32% delta"
+    },
+    "chal-007": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "tariff_change",
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": [
+        "policy_regulatory",
+        "external"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "+5pp"
+    },
+    "chal-003": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "monetary_policy_change",
+      "intrinsicMateriality": "systemic",
+      "scope": "global_systemic",
+      "channels": [
+        "discounting",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "country_exposure:us"
+      ],
+      "note": "+100bp"
+    },
+    "chal-006": {
+      "labeled_by": "analyst-1",
+      "reviewed": true,
+      "reviewed_by": "pm-review",
+      "economicAction": "monetary_policy_change",
+      "intrinsicMateriality": "meaningful",
+      "scope": "vietnam",
+      "channels": [
+        "discounting",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
+      "note": "VN step"
+    }
+  }
+}

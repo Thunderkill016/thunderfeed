@@ -75,9 +75,16 @@ export interface ClaimMaterialityInput {
   };
   evidence: {
     claimState: ClaimState;
+    /** distinct root SOURCES whose latest relation is 'original' — R6
+     * effectiveRoots semantics, never a COUNT of cached origin ids */
+    confirmedIndependentOrigins: number;
+    /** distinct root sources whose source.kind = 'primary' */
     primaryOrigins: number;
-    independentOrigins: number;
+    /** docs with no lineage / 'unknown' / dangling derivation */
     unresolvedOrigins: number;
+    derivedDocuments: number;
+    /** every attached outlet — coverage, not independence */
+    rawSourceCount: number;
   };
 }
 
@@ -97,6 +104,8 @@ export type EconomicActionType =
   | "corporate_profit_change"
   | "corporate_action"
   | "economic_indicator_change"
+  | "credit_liquidity_shock"
+  | "banking_stress"
   | "unknown_economic_action"
   | "non_economic";
 
@@ -151,8 +160,10 @@ const PREDICATE_ACTIONS: Record<string, PredicateSpec> = {
   reciprocal_tariff: { action: "tariff_change", magnitudeUnit: "percent" },
   trade_agreement: { action: "trade_agreement" },
   trade_agreement_extension: { action: "trade_agreement" },
-  signed_agreement: { action: "trade_agreement" },
   trade_deal: { action: "trade_agreement" },
+  /* signed_agreement stays unmapped — the corpus shows it covers security
+   * pacts (Greenland) as often as trade deals; guessing is worse than
+   * abstaining. */
   // sanctions / export controls
   sanctions: { action: "sanction_change", direction: "impose" },
   sanction: { action: "sanction_change", direction: "impose" },
@@ -175,6 +186,18 @@ const PREDICATE_ACTIONS: Record<string, PredicateSpec> = {
   debt: { action: "debt_change" },
   debt_to_gdp: { action: "debt_change", magnitudeUnit: "percent" },
   national_debt: { action: "debt_change" },
+  sovereign_default: { action: "credit_liquidity_shock" },
+  default: { action: "credit_liquidity_shock" },
+  bank_run: { action: "credit_liquidity_shock" },
+  bank_failure: { action: "banking_stress" },
+  bank_rescue: { action: "banking_stress" },
+  bailout: { action: "banking_stress" },
+  credit_freeze: { action: "credit_liquidity_shock" },
+  interbank_freeze: { action: "credit_liquidity_shock" },
+  liquidity_facility: { action: "credit_liquidity_shock" },
+  emergency_lending: { action: "credit_liquidity_shock" },
+  banking_stress: { action: "banking_stress" },
+  bank_recapitalization: { action: "banking_stress" },
   // corporate
   investment: { action: "investment_commitment" },
   investment_commitment: { action: "investment_commitment" },
@@ -198,11 +221,31 @@ const PREDICATE_ACTIONS: Record<string, PredicateSpec> = {
     magnitudeUnit: "percent",
   },
   cpi: { action: "economic_indicator_change" },
+  /* an observed price/price-change of a traded asset IS an economic
+   * indicator observation — it is not an agent action, but it is not
+   * "unknown" either */
+  price: { action: "economic_indicator_change" },
+  price_change: { action: "economic_indicator_change" },
+  oil_price: { action: "economic_indicator_change" },
+  stock_index: { action: "economic_indicator_change" },
+  jobs_created: { action: "economic_indicator_change" },
+  signed_ftas: { action: "economic_indicator_change" },
+  qr_payment_growth: { action: "economic_indicator_change" },
+  import_increase: { action: "economic_indicator_change" },
+  import_value: { action: "economic_indicator_change" },
+  export_value: { action: "economic_indicator_change" },
+  commodity_purchase: { action: "economic_indicator_change" },
+  recovery_plan_budget: { action: "fiscal_spending" },
+  federal_budget_cancellation: { action: "fiscal_spending" },
+  budget_cancellation: { action: "fiscal_spending" },
+  de_xuat_huy_ngan_sach: { action: "fiscal_spending" },
+  them_cong_ty_vao_danh_sach_den: {
+    action: "sanction_change",
+    direction: "impose",
+  },
   money_usd: { action: "unknown_economic_action", magnitudeUnit: "usd" },
   money_vnd: { action: "unknown_economic_action", magnitudeUnit: "vnd" },
   damage_usd: { action: "unknown_economic_action", magnitudeUnit: "usd" },
-  price: { action: "unknown_economic_action" },
-  price_change: { action: "unknown_economic_action" },
 };
 
 /* Predicates that are clearly non-economic — scores, casualties, ceremony.
@@ -250,66 +293,112 @@ const NON_ECONOMIC = new Set([
 
 /* ── subject resolution ─────────────────────────────────────── */
 
+/* \b is ASCII-only in JS — it never fires around "ỹ", "ộ", "ă"…, which is
+ * why "Bộ Tài Chính Mỹ" used to resolve to nothing (and "Mỹ và Trung
+ * Quốc" silently skipped the US). Use Unicode letter boundaries instead. */
+const L = String.raw`(?<![\p{L}\p{N}])`;
+const R = String.raw`(?![\p{L}\p{N}])`;
+const jx = (s: TemplateStringsArray) => new RegExp(`${L}(?:${s[0]})${R}`, "iu");
+
 /** Country-code hints for qualifierText that never resolved to an entity.
  * Not a fake entity — only used to set affectedJurisdiction for scope. */
 const SUBJECT_JURISDICTIONS: [RegExp, string][] = [
-  [/\b(federal reserve|fed|fomc)\b/i, "US"],
-  [/\b(ecb|european central bank)\b/i, "EU"],
-  [/\b(nhnn|ngân hàng nhà nước|sbv|state bank of vietnam)\b/i, "VN"],
-  [/\b(pboc|people's bank of china)\b/i, "CN"],
-  [/\b(boj|bank of japan)\b/i, "JP"],
-  [/\b(boe|bank of england)\b/i, "GB"],
-  [/\b(united states|u\.?s\.?|mỹ|hoa kỳ|washington)\b/i, "US"],
-  [/\b(trung quốc|china|beijing|bắc kinh)\b/i, "CN"],
-  [/\b(việt nam|vietnam|hà nội|hanoi)\b/i, "VN"],
-  [/\b(nga|russia|moscow|matxcơva)\b/i, "RU"],
-  [/\b(ukraine|ukraina|kyiv|kiev)\b/i, "UA"],
-  [/\b(iran|tehran)\b/i, "IR"],
-  [/\b(eu|european union|châu âu)\b/i, "EU"],
-  [/\b(nhật|japan|tokyo)\b/i, "JP"],
-  [/\b(hàn quốc|south korea|korea|seoul)\b/i, "KR"],
-  [/\b(ấn độ|india|new delhi)\b/i, "IN"],
-  [/\b(taiwan|đài loan)\b/i, "TW"],
+  [jx`federal reserve|fed|fomc`, "US"],
+  [jx`ecb|european central bank`, "EU"],
+  [jx`nhnn|ngân hàng nhà nước|sbv|state bank of vietnam`, "VN"],
+  [jx`pboc|people's bank of china`, "CN"],
+  [jx`boj|bank of japan`, "JP"],
+  [jx`boe|bank of england`, "GB"],
+  [
+    jx`united states|u\.?s\.?|mỹ|hoa kỳ|washington|nhà trắng|white house|bộ tài chính mỹ|us treasury`,
+    "US",
+  ],
+  [jx`trung quốc|china|beijing|bắc kinh`, "CN"],
+  [jx`việt nam|vietnam|hà nội|hanoi`, "VN"],
+  [jx`nga|russia|moscow|matxcơva|kremlin|điện kremlin`, "RU"],
+  [jx`ukraine|ukraina|kyiv|kiev`, "UA"],
+  [jx`iran|tehran`, "IR"],
+  [jx`eu|european union|châu âu|brussels`, "EU"],
+  [jx`nhật|japan|tokyo`, "JP"],
+  [jx`hàn quốc|south korea|korea|seoul`, "KR"],
+  [jx`ấn độ|india|new delhi`, "IN"],
+  [jx`taiwan|đài loan`, "TW"],
 ];
 
 const GLOBAL_JURISDICTIONS = new Set(["US", "EU", "CN", "JP", "GB"]);
+
+/** Central-bank / monetary-authority patterns. A generic `interest_rate`
+ * claim is only a monetary_policy_change when the subject is a proven
+ * policy authority AND a previous decision value exists — exactly the
+ * R7.0 lesson: an effective rate observation is not a policy decision. */
+const POLICY_AUTHORITIES = [
+  jx`federal reserve|fed|fomc`,
+  jx`ecb|european central bank`,
+  jx`nhnn|ngân hàng nhà nước|sbv|state bank of vietnam`,
+  jx`pboc|people's bank of china`,
+  jx`boj|bank of japan`,
+  jx`boe|bank of england`,
+  jx`ngân hàng trung ương|central bank`,
+];
+
+function isPolicyAuthority(
+  qualifierText: string | null,
+  canonicalKey: string | null,
+  entityType: string | null,
+): boolean {
+  if (entityType === "central_bank" || entityType === "monetary_authority")
+    return true;
+  const blob = `${qualifierText ?? ""} ${canonicalKey ?? ""}`;
+  return POLICY_AUTHORITIES.some((re) => re.test(blob));
+}
 
 export interface ResolvedSubject {
   entityId: string | null;
   canonicalKey: string | null;
   type: string | null;
-  jurisdiction: string | null; // country_code or alias-derived
+  jurisdiction: string | null; // first matched — primary affected country
+  /** every jurisdiction named in the subject ("Mỹ và Trung Quốc" → US+CN) */
+  jurisdictions: string[];
+  /** subject is a central bank / monetary authority */
+  policyAuthority: boolean;
   caution: "subject_unresolved" | "subject_text_only" | null;
 }
 
 export function resolveSubject(i: ClaimMaterialityInput): ResolvedSubject {
+  const policyAuthority = isPolicyAuthority(
+    i.subject.qualifierText ?? null,
+    i.subject.canonicalKey ?? null,
+    i.subject.type ?? null,
+  );
   if (i.subject.entityId) {
+    const j = i.subject.countryCode ?? null;
     return {
       entityId: i.subject.entityId,
       canonicalKey: i.subject.canonicalKey ?? null,
       type: i.subject.type ?? null,
-      jurisdiction: i.subject.countryCode ?? null,
+      jurisdiction: j,
+      jurisdictions: j ? [j] : [],
+      policyAuthority,
       caution: null,
     };
   }
-  const text = i.subject.qualifierText;
+  /* qualifier text is the primary subject hint, but prod rows often carry
+   * only a canonicalKey display name ("Bộ Tài Chính Mỹ") — scan both */
+  const text = i.subject.qualifierText ?? i.subject.canonicalKey;
   if (text) {
-    for (const [re, code] of SUBJECT_JURISDICTIONS) {
-      if (re.test(text)) {
-        return {
-          entityId: null,
-          canonicalKey: null,
-          type: null,
-          jurisdiction: code,
-          caution: "subject_text_only",
-        };
-      }
-    }
+    /* text-fallback still preserves the declared entity type — a company
+     * named only in qualifier text is still an issuer-scoped subject */
+    const declaredType = i.subject.type ?? null;
+    const hits = SUBJECT_JURISDICTIONS.filter(([re]) => re.test(text)).map(
+      ([, code]) => code,
+    );
     return {
       entityId: null,
       canonicalKey: null,
-      type: null,
-      jurisdiction: null,
+      type: declaredType,
+      jurisdiction: hits[0] ?? null,
+      jurisdictions: [...new Set(hits)],
+      policyAuthority,
       caution: "subject_text_only",
     };
   }
@@ -318,6 +407,8 @@ export function resolveSubject(i: ClaimMaterialityInput): ResolvedSubject {
     canonicalKey: null,
     type: null,
     jurisdiction: null,
+    jurisdictions: [],
+    policyAuthority,
     caution: "subject_unresolved",
   };
 }
@@ -331,9 +422,10 @@ function numericValue(v: unknown): number | null {
   if (!s) return null;
   // "2.300 tỷ" — dots ending in exactly-3-digit groups are VN thousands
   // separators; "6,6" / "1.50" are decimals. Decide before stripping.
-  if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) {
+  // leading group "0" excluded — "0.001" is a decimal, not "0,001" thousand
+  if (/^-?[1-9]\d{0,2}(\.\d{3})+(,\d+)?$/.test(s)) {
     s = s.replace(/\./g, "").replace(",", ".");
-  } else if (/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) {
+  } else if (/^-?[1-9]\d{0,2}(,\d{3})+(\.\d+)?$/.test(s)) {
     s = s.replace(/,/g, "");
   } else {
     s = s.replace(",", ".");
@@ -342,15 +434,19 @@ function numericValue(v: unknown): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-/** Ordered: VNĐ/EUR/CNY/JPY/GBP tokens before plain "$" (USD). Symbols are
- * checked with includes because \b fails after non-word characters. */
+/** Pure currency rates — magnitude (tỷ/triệu/ty_/bn) is applied earlier.
+ * Ordered: VNĐ/EUR/CNY/JPY/GBP before plain "$" (USD). */
 const USD_APPROX: [RegExp | string, number][] = [
-  [/\bvnđ\b|\bvnd\b|đồng/i, 1 / 25000],
-  [/\beuro\b|\beur\b|€/i, 1.08],
-  [/\byuan\b|\bcny\b|nhân dân tệ/i, 0.14],
-  [/\bjpy\b|yên/i, 0.0067],
-  [/\bgbp\b|£/, 1.27],
-  [/\busd\b|\bus\$\b|\$|đô la/i, 1],
+  // [a-z_]* prefix tolerates normalized unit spellings like "ty_vnd",
+  // where \b never fires after the underscore. (?=_bn|\b) lets the
+  // currency match inside magnitude units like "usd_bn" — the _bn part
+  // is handled by the magnitude step, not doubled here.
+  [/[a-z_]*vnđ(?=_bn\b|\b)|[a-z_]*vnd(?=_bn\b|\b)|đồng/i, 1 / 25000],
+  [/[a-z_]*euro(?=_bn\b|\b)|[a-z_]*eur(?=_bn\b|\b)|€/i, 1.08],
+  [/[a-z_]*yuan(?=_bn\b|\b)|[a-z_]*cny(?=_bn\b|\b)|nhân dân tệ/i, 0.14],
+  [/[a-z_]*jpy(?=_bn\b|\b)|yên/i, 0.0067],
+  [/[a-z_]*gbp(?=_bn\b|\b)|£/, 1.27],
+  [/[a-z_]*usd(?=_bn\b|\b)|[a-z_]*us\$|\$|đô la/i, 1],
 ];
 
 /** Parse "6,6 tỉ euro" / "$2.65" / "2.300 tỷ đồng" into approximate USD.
@@ -363,14 +459,29 @@ export function approxUsd(value: unknown, unit: string | null): number | null {
   const blob = `${text ?? ""} ${unit ?? ""}`.toLowerCase();
   // \b fails around non-ASCII vowels (tỷ, triệu) — use lookahead instead.
   // "tỉ" needs a non-letter lookahead so it never fires inside "tỉnh".
-  if (/(tỷ|tỉ)(?=[^a-zà-ỹ]|$)|\bbillion\b|\bbn\b/i.test(blob)) n *= 1e9;
-  else if (/(triệu)(?=[^a-zà-ỹ]|$)|\bmillion\b|\bmn\b/i.test(blob)) n *= 1e6;
+  // ty_/trieu_ cover normalized unit spellings from the extractor
+  // ("ty_usd" = tỷ USD — the unit already carries the scale).
+  if (
+    /(tỷ|tỉ|nghìn tỷ)(?=[^a-zà-ỹ]|$)|\bty_|\b[a-z0-9_]+_bn\b|\bbillion\b|\bbn\b/i.test(
+      blob,
+    )
+  )
+    n *= 1e9;
+  else if (
+    /(triệu)(?=[^a-zà-ỹ]|$)|\btrieu_|\b[a-z0-9_]+_mn\b|\bmillion\b|\bmn\b/i.test(
+      blob,
+    )
+  )
+    n *= 1e6;
   else if (/(nghìn)(?=[^a-zà-ỹ]|$)|\bthousand\b/i.test(blob)) n *= 1e3;
   for (const [cur, rate] of USD_APPROX) {
     if (typeof cur === "string" ? blob.includes(cur) : cur.test(blob))
       return n * rate;
   }
-  return n; // no currency marker → treat number as USD-scale, caller sees magnitude
+  /* No currency marker → NULL, not an implicit USD assumption.
+   * "500" with unit=null is not $500 — unknown currency must surface as
+   * currency_unverified, not a silent magnitude upgrade. */
+  return null;
 }
 
 /* ── action inference ───────────────────────────────────────── */
@@ -411,9 +522,22 @@ export function inferClaimAction(i: ClaimMaterialityInput): EconomicAction {
     else direction = "unchanged";
   }
 
+  let type = spec.action;
+  /* A generic `interest_rate` is only a policy decision when a policy
+   * authority AND a previous decision value both exist. Same invariant
+   * as the macro engine: effective-rate observations are observations. */
+  if (type === "monetary_policy_change") {
+    const policyNamed = /^(policy_rate|base_rate|refinancing_rate)$/.test(
+      i.predicate,
+    );
+    const hasDelta = i.previous != null && prev !== null;
+    if (!hasDelta || !(policyNamed || subj.policyAuthority))
+      type = "interest_rate_observation";
+  }
+
   return {
     ...base,
-    type: spec.action,
+    type,
     magnitude,
     magnitudeUnit: spec.magnitudeUnit ?? i.current.unit ?? null,
     direction,
@@ -436,7 +560,7 @@ export interface ClaimMaterialityAssessment extends MaterialityAssessment {
 }
 
 const METHOD = "deterministic-claim";
-const METHOD_VERSION = "r7.1a.1";
+const METHOD_VERSION = "r7.1b.1";
 
 function assess(
   i: ClaimMaterialityInput,
@@ -484,7 +608,8 @@ function assess(
     transCap = "low";
     cautions.push("unresolved_claim");
   }
-  if (i.evidence.independentOrigins <= 1) cautions.push("single_origin");
+  if (i.evidence.confirmedIndependentOrigins <= 1)
+    cautions.push("single_origin");
 
   const empty = (
     m: MaterialityLevel | "unknown",
@@ -520,19 +645,23 @@ function assess(
     ]);
 
   const jurisdiction = action.affectedJurisdiction;
-  const globalScope =
-    jurisdiction !== null && GLOBAL_JURISDICTIONS.has(jurisdiction);
+  const jurisdictions = subj.jurisdictions.length
+    ? subj.jurisdictions
+    : jurisdiction
+      ? [jurisdiction]
+      : [];
+  const globalScope = jurisdictions.some((j) => GLOBAL_JURISDICTIONS.has(j));
   const scope: Scope = globalScope
     ? "global_systemic"
-    : jurisdiction === "VN"
+    : jurisdictions.includes("VN")
       ? "vietnam"
       : subj.type === "company" || subj.entityId != null
         ? "issuer"
         : "sector";
 
   const targets: Target[] = [];
-  if (jurisdiction)
-    targets.push({ type: "country_exposure", key: jurisdiction.toLowerCase() });
+  for (const j of jurisdictions)
+    targets.push({ type: "country_exposure", key: j.toLowerCase() });
   if (subj.entityId && subj.type !== "country")
     targets.push({ type: "entity", key: subj.canonicalKey ?? subj.entityId });
 
@@ -565,7 +694,12 @@ function assess(
         level = globalScope ? "major" : "meaningful";
         reasonCodes.push("policy_step_large");
       } else if (step >= 0.1) {
-        level = globalScope ? "meaningful" : "limited";
+        /* a home-market (VN) central-bank decision is meaningful to this
+         * radar even though it is not globally systemic */
+        level =
+          globalScope || jurisdictions.includes("VN")
+            ? "meaningful"
+            : "limited";
         reasonCodes.push("policy_step");
       } else {
         level = "limited";
@@ -603,8 +737,13 @@ function assess(
           reasonCodes.push("tariff_flow_small");
         } else {
           level = "limited";
-          reasonCodes.push("tariff_unsized");
-          cautions.push("magnitude_text_only");
+          if (numericValue(i.current.value) !== null) {
+            reasonCodes.push("amount_currency_unverified");
+            cautions.push("currency_unverified");
+          } else {
+            reasonCodes.push("tariff_unsized");
+            cautions.push("magnitude_text_only");
+          }
         }
         break;
       }
@@ -622,15 +761,20 @@ function assess(
         level = "limited";
         reasonCodes.push("tariff_minor_or_unsized");
       }
-      if (!globalScope && jurisdiction === "VN") level = cap(level, "major");
+      if (!globalScope && jurisdictions.includes("VN"))
+        level = cap(level, "major");
       break;
     }
     case "trade_agreement": {
       channels = ["policy_regulatory", "external"];
       persistence = "structural";
       horizon = "months";
-      level = globalScope ? "meaningful" : "limited";
+      /* a bilateral trade lane touching the home market is meaningful —
+       * VN-EU/VN-US style deals move the product's core exposures */
+      level =
+        globalScope || jurisdictions.includes("VN") ? "meaningful" : "limited";
       if (globalScope) reasonCodes.push("trade_deal_global");
+      else if (jurisdictions.includes("VN")) reasonCodes.push("trade_deal_vn");
       else reasonCodes.push("trade_deal");
       break;
     }
@@ -638,10 +782,27 @@ function assess(
     case "export_regulation_change": {
       channels = ["policy_regulatory", "external"];
       persistence = "structural";
-      if (action.type === "export_regulation_change" && globalScope) {
+      /* narrow targeted measures (individuals, named officials, single
+       * technical-service restrictions) stay limited even when the
+       * sanctioning power is global — "hạn chế" is a restricted measure,
+       * not a comprehensive regime */
+      const narrow =
+        action.type === "sanction_change" &&
+        /(cá nhân|quan chức|individual|officials?|doanh nhân|hạn chế|chứng chỉ|certificate|targeted)/i.test(
+          String(i.current.value ?? ""),
+        );
+      /* sanctions touching commodity/systemic-scale jurisdictions are
+       * meaningful even though the target itself is not "global" */
+      const majorTarget = jurisdictions.some((j) =>
+        ["US", "EU", "CN", "RU", "IR", "JP", "GB"].includes(j),
+      );
+      if (narrow) {
+        level = "limited";
+        reasonCodes.push("sanction_narrow");
+      } else if (action.type === "export_regulation_change" && globalScope) {
         level = "major"; // e.g. chip export controls — direct supply channel
         reasonCodes.push("export_control_global");
-      } else if (globalScope) {
+      } else if (globalScope || majorTarget) {
         level = "meaningful";
         reasonCodes.push("sanction_global");
       } else {
@@ -657,13 +818,20 @@ function assess(
       const usd = approxUsd(i.current.value, i.current.unit);
       if (usd === null) {
         level = "limited";
-        reasonCodes.push("amount_unparsed");
-        cautions.push("magnitude_text_only");
+        if (numericValue(i.current.value) !== null) {
+          reasonCodes.push("amount_currency_unverified");
+          cautions.push("currency_unverified");
+        } else {
+          reasonCodes.push("amount_unparsed");
+          cautions.push("magnitude_text_only");
+        }
       } else if (usd >= 50e9 && globalScope) {
         level = "major";
         reasonCodes.push("spending_macro_scale");
       } else if (usd >= 5e9) {
-        level = globalScope ? "meaningful" : "limited";
+        /* a ≥$5B flow is meaningful on its own — €6.6B of reconstruction
+         * aid matters even when the funding subject didn't resolve */
+        level = "meaningful";
         reasonCodes.push("spending_large");
       } else {
         level = "limited";
@@ -690,6 +858,8 @@ function assess(
       } else {
         level = "limited";
         reasonCodes.push("capex_commitment");
+        if (usd === null && numericValue(i.current.value) !== null)
+          cautions.push("currency_unverified");
       }
       break;
     }
@@ -711,9 +881,48 @@ function assess(
       level = "limited";
       reasonCodes.push("corporate_action_claim");
       break;
+    case "credit_liquidity_shock": {
+      channels = ["funding_liquidity", "discounting"];
+      directness = "direct";
+      persistence = "structural";
+      horizon = "immediate";
+      transConf = "high";
+      /* Sovereign default / credit freeze / emergency facility — a
+       * global-jurisdiction shock is systemic; a local one is major. */
+      const crisisVerb =
+        /^(sovereign_default|default|bank_run|credit_freeze|interbank_freeze)$/.test(
+          i.predicate,
+        );
+      if (globalScope && crisisVerb) {
+        level = "systemic";
+        reasonCodes.push("systemic_credit_shock");
+      } else if (globalScope || crisisVerb) {
+        level = "major";
+        reasonCodes.push("credit_shock");
+      } else {
+        level = "meaningful";
+        reasonCodes.push("credit_stress");
+      }
+      break;
+    }
+    case "banking_stress": {
+      channels = ["funding_liquidity"];
+      directness = "first_order";
+      horizon = "weeks";
+      level = globalScope ? "major" : "meaningful";
+      reasonCodes.push(globalScope ? "bank_stress_global" : "bank_stress");
+      break;
+    }
     case "economic_indicator_change": {
       channels = ["fundamental"];
-      const pct = mag;
+      /* the magnitude ladder is percentage semantics — "20 triệu tấn" is
+       * a volume, not a 20pp move, and must not take the pct path */
+      const isPct =
+        action.magnitudeUnit === "percent" ||
+        /%|percent|phần trăm/i.test(
+          `${i.current.unit ?? ""} ${i.current.value ?? ""}`,
+        );
+      const pct = isPct ? mag : null;
       if (pct !== null && pct >= 2 && globalScope) {
         level = "meaningful";
         reasonCodes.push("indicator_large_global");

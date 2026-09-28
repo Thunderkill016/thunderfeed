@@ -1,4 +1,4 @@
-/* R7.1a — claim-level materiality acceptance tests.
+/* R7.1a/b — claim-level materiality acceptance tests.
  *
  * Invariants under test:
  *  - reasoning unit is the CLAIM (value + prev → economic action)
@@ -17,6 +17,7 @@ import {
   scoreClaimMateriality,
   type ClaimMaterialityInput,
 } from "../lib/materiality-claims";
+import { effectiveRoots } from "../lib/db/read";
 
 function claim(
   over: Partial<ClaimMaterialityInput> = {},
@@ -38,9 +39,11 @@ function claim(
     subject: { qualifierText: "Federal Reserve" },
     evidence: {
       claimState: "supported",
+      confirmedIndependentOrigins: 3,
       primaryOrigins: 2,
-      independentOrigins: 3,
       unresolvedOrigins: 0,
+      derivedDocuments: 1,
+      rawSourceCount: 4,
     },
     ...over,
   };
@@ -56,9 +59,17 @@ describe("economic action inference", () => {
   });
 
   it("rate level with no previous = observation, not a step", () => {
-    const c = claim({ previous: null });
-    const r = scoreClaimMateriality(c);
-    assert.ok(r.reasonCodes.includes("rate_level_no_delta"));
+    const r = scoreClaimMateriality(claim({ previous: null }));
+    assert.equal(r.action.type, "interest_rate_observation");
+    assert.ok(r.reasonCodes.includes("rate_observation_only"));
+    assert.equal(r.materiality, "limited");
+  });
+
+  it("interest_rate without a policy authority → observation even with delta", () => {
+    const r = scoreClaimMateriality(
+      claim({ subject: { qualifierText: "Ngân hàng Vietcombank" } }),
+    );
+    assert.equal(r.action.type, "interest_rate_observation");
     assert.equal(r.materiality, "limited");
   });
 
@@ -91,8 +102,10 @@ describe("claim materiality vs truth state — independent dimensions", () => {
         evidence: {
           claimState: "disputed",
           primaryOrigins: 0,
-          independentOrigins: 1,
+          confirmedIndependentOrigins: 1,
           unresolvedOrigins: 2,
+          derivedDocuments: 0,
+          rawSourceCount: 1,
         },
       }),
     );
@@ -108,8 +121,10 @@ describe("claim materiality vs truth state — independent dimensions", () => {
         evidence: {
           claimState: "retracted",
           primaryOrigins: 1,
-          independentOrigins: 1,
+          confirmedIndependentOrigins: 1,
           unresolvedOrigins: 0,
+          derivedDocuments: 0,
+          rawSourceCount: 1,
         },
       }),
     );
@@ -125,8 +140,10 @@ describe("claim materiality vs truth state — independent dimensions", () => {
         evidence: {
           claimState: "corrected",
           primaryOrigins: 1,
-          independentOrigins: 2,
+          confirmedIndependentOrigins: 2,
           unresolvedOrigins: 0,
+          derivedDocuments: 0,
+          rawSourceCount: 1,
         },
       }),
     );
@@ -141,8 +158,10 @@ describe("claim materiality vs truth state — independent dimensions", () => {
         evidence: {
           claimState: "reported",
           primaryOrigins: 0,
-          independentOrigins: 1,
+          confirmedIndependentOrigins: 1,
           unresolvedOrigins: 0,
+          derivedDocuments: 0,
+          rawSourceCount: 1,
         },
       }),
     );
@@ -285,8 +304,10 @@ describe("event aggregation — max credible claim, not average", () => {
           evidence: {
             claimState: "retracted",
             primaryOrigins: 0,
-            independentOrigins: 0,
+            confirmedIndependentOrigins: 0,
             unresolvedOrigins: 0,
+            derivedDocuments: 0,
+            rawSourceCount: 1,
           },
         }),
       ),
@@ -307,8 +328,10 @@ describe("event aggregation — max credible claim, not average", () => {
           evidence: {
             claimState: "retracted",
             primaryOrigins: 0,
-            independentOrigins: 0,
+            confirmedIndependentOrigins: 0,
             unresolvedOrigins: 0,
+            derivedDocuments: 0,
+            rawSourceCount: 1,
           },
         }),
       ),
@@ -323,5 +346,204 @@ describe("event aggregation — max credible claim, not average", () => {
     ]);
     assert.equal(agg.materiality, "limited");
     assert.equal(agg.contributingClaimIds.length, 0); // nothing ≥ meaningful
+  });
+});
+
+/* ── R7.1b — provenance reuses canonical effectiveRoots semantics ── */
+
+type Doc = { doc_id: string; source_id: string; kind: string };
+const doc = (id: string, source: string, kind = "news"): Doc => ({
+  doc_id: id,
+  source_id: source,
+  kind,
+});
+
+describe("claim evidence stats — canonical effectiveRoots semantics", () => {
+  it("Reuters original + 4 syndicated Reuters copies → 1 independent origin", () => {
+    const docs = [
+      doc("d0", "reuters"),
+      doc("d1", "reuters"),
+      doc("d2", "reuters"),
+      doc("d3", "reuters"),
+      doc("d4", "reuters"),
+    ];
+    const lin = new Map<string, { parent: string | null; relation: string }>([
+      ["d0", { parent: null, relation: "original" }],
+      ["d1", { parent: "d0", relation: "syndicated" }],
+      ["d2", { parent: "d0", relation: "syndicated" }],
+      ["d3", { parent: "d0", relation: "syndicated" }],
+      ["d4", { parent: "d0", relation: "syndicated" }],
+    ]);
+    const s = effectiveRoots(docs, lin);
+    assert.equal(s.confirmedIndependentOrigins, 1); // one newsroom, not five docs
+    assert.equal(s.derivedDocuments, 4);
+    assert.equal(s.unresolvedOrigins, 0);
+  });
+
+  it("Fed primary doc + 10 rewrites → 1 primary origin", () => {
+    const docs = [doc("f0", "federalreserve.gov", "primary")];
+    const lin = new Map<string, { parent: string | null; relation: string }>([
+      ["f0", { parent: null, relation: "original" }],
+    ]);
+    for (let i = 1; i <= 10; i++) {
+      docs.push(doc(`r${i}`, `outlet${i}`));
+      lin.set(`r${i}`, { parent: "f0", relation: "rewritten" });
+    }
+    const s = effectiveRoots(docs, lin);
+    assert.equal(s.primaryOrigins, 1); // source.kind='primary' ≠ relation='original'
+    assert.equal(s.confirmedIndependentOrigins, 1);
+    assert.equal(s.derivedDocuments, 10);
+    assert.equal(s.unresolvedOrigins, 0);
+  });
+
+  it("unknown / no-lineage document → 1 unresolved origin", () => {
+    const s1 = effectiveRoots([doc("u1", "mystery")], new Map());
+    assert.equal(s1.unresolvedOrigins, 1);
+    const s2 = effectiveRoots(
+      [doc("u2", "mystery")],
+      new Map([["u2", { parent: null, relation: "unknown" }]]),
+    );
+    assert.equal(s2.unresolvedOrigins, 1);
+    assert.equal(s2.confirmedIndependentOrigins, 0);
+  });
+
+  it("dangling derived chain → unresolved, never silently resolved", () => {
+    const s = effectiveRoots(
+      [doc("c1", "blog")],
+      new Map([["c1", { parent: "ghost", relation: "rewritten" }]]),
+    );
+    assert.equal(s.unresolvedOrigins, 1);
+    assert.equal(s.confirmedIndependentOrigins, 0);
+  });
+});
+
+/* ── R7.1b — subject resolution hardening ── */
+
+describe("R7.1b subject semantics", () => {
+  it("unicode boundary: 'Bộ Tài Chính Mỹ' / bare 'Mỹ' resolve to US", () => {
+    for (const t of ["Bộ Tài Chính Mỹ", "Mỹ", "Nhà Trắng"]) {
+      const s = resolveSubject(claim({ subject: { qualifierText: t } }));
+      assert.equal(s.jurisdiction, "US", t);
+    }
+  });
+
+  it("'Mỹ và Trung Quốc' yields BOTH jurisdictions, not just the first", () => {
+    const s = resolveSubject(
+      claim({ subject: { qualifierText: "Mỹ và Trung Quốc" } }),
+    );
+    assert.deepEqual([...s.jurisdictions].sort(), ["CN", "US"]);
+  });
+
+  it("canonicalKey fallback when qualifierText is null", () => {
+    const s = resolveSubject(
+      claim({
+        subject: { qualifierText: null, canonicalKey: "Bộ Tài Chính Mỹ" },
+      }),
+    );
+    assert.equal(s.jurisdiction, "US");
+  });
+
+  it("text-resolved company keeps declared type → issuer scope", () => {
+    const r = scoreClaimMateriality(
+      claim({
+        predicate: "net_profit",
+        current: {
+          ...claim().current,
+          value: "9.500 tỷ đồng",
+          valueType: "text",
+          unit: "VNĐ",
+        },
+        previous: { versionId: "v1", value: "7.200 tỷ đồng", unit: "VNĐ" },
+        subject: { qualifierText: "Vinamilk", type: "company" },
+      }),
+    );
+    assert.equal(r.scope, "issuer");
+    assert.equal(r.materiality, "meaningful"); // earnings_delta, not unscoped
+  });
+});
+
+describe("R7.1b scoring guards", () => {
+  it("NHNN +25bp home-market policy step → meaningful, not limited", () => {
+    const r = scoreClaimMateriality(
+      claim({
+        predicate: "refinancing_rate",
+        current: { ...claim().current, value: 4.75 },
+        previous: { versionId: "v1", value: 4.5, unit: "%" },
+        subject: { qualifierText: "NHNN" },
+      }),
+    );
+    assert.equal(r.action.type, "monetary_policy_change");
+    assert.equal(r.materiality, "meaningful");
+    assert.equal(r.scope, "vietnam");
+  });
+
+  it("narrow sanctions (individuals / restricted services) stay limited", () => {
+    const r = scoreClaimMateriality(
+      claim({
+        predicate: "sanctions",
+        current: {
+          ...claim().current,
+          value: "trừng phạt 3 cá nhân quan chức",
+          valueType: "text",
+          unit: null,
+        },
+        previous: null,
+        subject: { qualifierText: "Mỹ" },
+      }),
+    );
+    assert.equal(r.materiality, "limited");
+    assert.ok(r.reasonCodes.includes("sanction_narrow"));
+  });
+
+  it("non-percent indicator magnitude never takes the % ladder", () => {
+    const r = scoreClaimMateriality(
+      claim({
+        predicate: "commodity_purchase",
+        current: {
+          ...claim().current,
+          value: "20 triệu tấn than Mỹ trong 2 năm",
+          valueType: "text",
+          unit: "tấn",
+        },
+        previous: null,
+        subject: { qualifierText: "Trung Quốc" },
+      }),
+    );
+    assert.equal(r.materiality, "limited"); // 20M tons ≠ 20pp
+  });
+
+  it("≥$5B disbursement is meaningful even with unresolved subject", () => {
+    const r = scoreClaimMateriality(
+      claim({
+        predicate: "fund_disbursement",
+        current: {
+          ...claim().current,
+          value: "6,6 tỉ euro",
+          valueType: "text",
+          unit: "euro",
+        },
+        previous: null,
+        subject: {},
+      }),
+    );
+    assert.equal(r.materiality, "meaningful");
+  });
+
+  it("credit_freeze on a global jurisdiction → systemic; VN → local major-capable", () => {
+    const us = scoreClaimMateriality(
+      claim({
+        predicate: "credit_freeze",
+        current: {
+          ...claim().current,
+          value: "thị trường liên ngân hàng đóng băng",
+          valueType: "text",
+          unit: null,
+        },
+        previous: null,
+        subject: { qualifierText: "Mỹ" },
+      }),
+    );
+    assert.equal(us.action.type, "credit_liquidity_shock");
+    assert.equal(us.materiality, "systemic");
   });
 });
