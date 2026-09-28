@@ -35,7 +35,19 @@ function claim(
       state: "supported",
       validFrom: "2025-06-01",
     },
-    previous: { versionId: "v1", value: 4.25, unit: "%" },
+    previousVersion: {
+      versionId: "v1",
+      value: 4.5,
+      unit: "%",
+      state: "reported",
+    },
+    economicComparison: {
+      from: 4.25,
+      to: 4.5,
+      unit: "%",
+      basis: "explicit_in_claim",
+      confidence: "high",
+    },
     subject: { qualifierText: "Federal Reserve" },
     evidence: {
       claimState: "supported",
@@ -58,10 +70,29 @@ describe("economic action inference", () => {
     assert.equal(a.affectedJurisdiction, "US"); // qualifierText resolved
   });
 
-  it("rate level with no previous = observation, not a step", () => {
-    const r = scoreClaimMateriality(claim({ previous: null }));
+  it("rate level with no comparison = observation, not a step", () => {
+    const r = scoreClaimMateriality(claim({ economicComparison: null }));
     assert.equal(r.action.type, "interest_rate_observation");
     assert.ok(r.reasonCodes.includes("rate_observation_only"));
+    assert.equal(r.materiality, "limited");
+  });
+
+  it("previousVersion is truth history — a reported→supported bump is not a rate step", () => {
+    /* prod reality: interest_rate 7% v1(reported) → v2(supported) is truth
+     * convergence, not 6.75→7.00. previousVersion must never feed
+     * the economic delta. */
+    const r = scoreClaimMateriality(
+      claim({
+        economicComparison: null,
+        previousVersion: {
+          versionId: "v1",
+          value: 4.25,
+          unit: "%",
+          state: "reported",
+        },
+      }),
+    );
+    assert.equal(r.action.type, "interest_rate_observation");
     assert.equal(r.materiality, "limited");
   });
 
@@ -98,7 +129,13 @@ describe("claim materiality vs truth state — independent dimensions", () => {
     const r = scoreClaimMateriality(
       claim({
         current: { ...claim().current, value: 5.5, state: "disputed" },
-        previous: { versionId: "v1", value: 4.5, unit: "%" },
+        economicComparison: {
+          from: 4.5,
+          to: 5.5,
+          unit: "%",
+          basis: "explicit_in_claim",
+          confidence: "high",
+        },
         evidence: {
           claimState: "disputed",
           primaryOrigins: 0,
@@ -136,7 +173,13 @@ describe("claim materiality vs truth state — independent dimensions", () => {
     const r = scoreClaimMateriality(
       claim({
         current: { ...claim().current, value: 5.5, state: "corrected" },
-        previous: { versionId: "v1", value: 4.5, unit: "%" },
+        economicComparison: {
+          from: 4.5,
+          to: 5.5,
+          unit: "%",
+          basis: "explicit_in_claim",
+          confidence: "high",
+        },
         evidence: {
           claimState: "corrected",
           primaryOrigins: 1,
@@ -175,7 +218,13 @@ describe("magnitude thresholds", () => {
     const r = scoreClaimMateriality(
       claim({
         current: { ...claim().current, value: 1.5 },
-        previous: { versionId: "v1", value: 0.75, unit: "%" },
+        economicComparison: {
+          from: 0.75,
+          to: 1.5,
+          unit: "%",
+          basis: "explicit_in_claim",
+          confidence: "high",
+        },
         subject: { qualifierText: "ECB" },
       }),
     );
@@ -193,7 +242,13 @@ describe("magnitude thresholds", () => {
           unit: "%",
           qualifiers: { subject: "Mỹ" },
         },
-        previous: { versionId: "v1", value: 30, unit: "%" },
+        economicComparison: {
+          from: 30,
+          to: 10,
+          unit: "%",
+          basis: "explicit_in_claim",
+          confidence: "high",
+        },
         subject: { qualifierText: "Mỹ" },
       }),
     );
@@ -213,7 +268,7 @@ describe("magnitude thresholds", () => {
           unit: "USD",
           valueType: "text",
         },
-        previous: null,
+        economicComparison: null,
         subject: { qualifierText: "Trung Quốc và Mỹ" },
       }),
     );
@@ -234,7 +289,7 @@ describe("magnitude thresholds", () => {
           unit: "euro",
           valueType: "text",
         },
-        previous: null,
+        economicComparison: null,
         subject: { qualifierText: "EU" },
       }),
     );
@@ -286,7 +341,13 @@ describe("event aggregation — max credible claim, not average", () => {
       claim({
         claimId: "big",
         current: { ...claim().current, value: 5.5 },
-        previous: { versionId: "v1", value: 4.5, unit: "%" },
+        economicComparison: {
+          from: 4.5,
+          to: 5.5,
+          unit: "%",
+          basis: "explicit_in_claim",
+          confidence: "high",
+        },
       }),
     );
     const agg = aggregateClaimsToEvent([...trivia, big]);
@@ -453,7 +514,13 @@ describe("R7.1b subject semantics", () => {
           valueType: "text",
           unit: "VNĐ",
         },
-        previous: { versionId: "v1", value: "7.200 tỷ đồng", unit: "VNĐ" },
+        economicComparison: {
+          from: 7.2e9,
+          to: 9.5e9,
+          unit: "USD",
+          basis: "prior_reporting_period",
+          confidence: "high",
+        },
         subject: { qualifierText: "Vinamilk", type: "company" },
       }),
     );
@@ -468,7 +535,13 @@ describe("R7.1b scoring guards", () => {
       claim({
         predicate: "refinancing_rate",
         current: { ...claim().current, value: 4.75 },
-        previous: { versionId: "v1", value: 4.5, unit: "%" },
+        economicComparison: {
+          from: 4.5,
+          to: 4.75,
+          unit: "%",
+          basis: "explicit_in_claim",
+          confidence: "high",
+        },
         subject: { qualifierText: "NHNN" },
       }),
     );
@@ -487,7 +560,7 @@ describe("R7.1b scoring guards", () => {
           valueType: "text",
           unit: null,
         },
-        previous: null,
+        economicComparison: null,
         subject: { qualifierText: "Mỹ" },
       }),
     );
@@ -505,7 +578,7 @@ describe("R7.1b scoring guards", () => {
           valueType: "text",
           unit: "tấn",
         },
-        previous: null,
+        economicComparison: null,
         subject: { qualifierText: "Trung Quốc" },
       }),
     );
@@ -522,7 +595,7 @@ describe("R7.1b scoring guards", () => {
           valueType: "text",
           unit: "euro",
         },
-        previous: null,
+        economicComparison: null,
         subject: {},
       }),
     );
@@ -539,7 +612,7 @@ describe("R7.1b scoring guards", () => {
           valueType: "text",
           unit: null,
         },
-        previous: null,
+        economicComparison: null,
         subject: { qualifierText: "Mỹ" },
       }),
     );

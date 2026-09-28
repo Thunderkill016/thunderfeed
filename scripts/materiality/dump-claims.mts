@@ -26,6 +26,15 @@ try {
 
 import { getPool } from "../../lib/db/pool.ts";
 import { effectiveRoots, latestLineage } from "../../lib/db/read.ts";
+import { resolveOriginSources } from "../../lib/db/adjudicate.ts";
+import {
+  latestVotes,
+  positionsFromVotes,
+  posKey,
+  rankWinner,
+  type Vote,
+} from "../../lib/db/positions.ts";
+import { toJsonb } from "../../lib/db/pool.ts";
 
 const ECONOMIC_PREDICATES = [
   "interest_rate",
@@ -99,40 +108,69 @@ interface ClaimEvidenceStats {
   rawSourceCount: number;
 }
 
+/* Evidence stats at the LOGICAL CLAIM grain, not the current version:
+ * R6 mints truth-state versions (reported→supported) that carry no new
+ * evidence, so current_version_id alone misses docs pinned to v1.
+ *
+ * Contract — same vote semantics as the batch adjudicator
+ * (lib/db/adjudicate.ts), never a re-count:
+ *   all claim_versions → claim_evidence
+ *   → voter = lineage-root source (resolveOriginSources)
+ *   → latest vote per voter (latestVotes, evidence time)
+ *   → winner position (positionsFromVotes + rankWinner)
+ *   → live standing docs = docs behind votes on the winning position
+ *   → latestLineage closure + effectiveRoots over those docs */
 async function getClaimEvidenceStats(
-  claimVersionIds: string[],
+  claimIds: string[],
 ): Promise<Map<string, ClaimEvidenceStats>> {
   const db = getPool();
   const out = new Map<string, ClaimEvidenceStats>();
-  if (!claimVersionIds.length) return out;
+  if (!claimIds.length) return out;
 
-  // claim_version → backing documents
-  const { rows: docRows } = await db.query<{
-    claim_version_id: string;
-    doc_id: string;
+  const { rows: versions } = await db.query<{
+    claim_id: string;
+    id: string;
+    version_no: number;
+    value: unknown;
+    unit: string | null;
   }>(
-    `SELECT ce.claim_version_id, ev.document_id AS doc_id
-       FROM claim_evidence ce
-       JOIN evidence_versions ev ON ev.id = ce.evidence_version_id
-      WHERE ce.claim_version_id = ANY($1)`,
-    [claimVersionIds],
+    `SELECT claim_id, id, version_no, value, unit
+       FROM claim_versions WHERE claim_id = ANY($1)`,
+    [claimIds],
   );
-  const docsByCv = new Map<string, string[]>();
-  for (const r of docRows)
+  const versByClaim = new Map<string, typeof versions>();
+  for (const v of versions)
     (
-      docsByCv.get(r.claim_version_id) ??
-      docsByCv.set(r.claim_version_id, []).get(r.claim_version_id)!
-    ).push(r.doc_id);
+      versByClaim.get(v.claim_id) ??
+      versByClaim.set(v.claim_id, []).get(v.claim_id)!
+    ).push(v);
 
-  const allDocIds = [...new Set(docRows.map((r) => r.doc_id))];
-  if (!allDocIds.length) return out;
+  // every evidence attachment across ALL versions of these claims
+  const { rows: evRows } = await db.query<{
+    claim_id: string;
+    version_no: number;
+    value: unknown;
+    unit: string | null;
+    doc_id: string;
+    source_id: string;
+    vote_at: string;
+  }>(
+    `SELECT cv.claim_id, cv.version_no, cv.value, cv.unit,
+            ed.id AS doc_id, ed.source_id,
+            COALESCE(ed.published_at, ev.observed_at) AS vote_at
+       FROM claim_evidence ce
+       JOIN claim_versions cv ON cv.id = ce.claim_version_id
+       JOIN evidence_versions ev ON ev.id = ce.evidence_version_id
+       JOIN evidence_documents ed ON ed.id = ev.document_id
+      WHERE cv.claim_id = ANY($1)`,
+    [claimIds],
+  );
+  if (!evRows.length) return out;
 
-  /* Lineage closure: fetch latest edges for the pool AND for every
-   * parent the walk touches, so a root outside the claim's own docs is
-   * resolved instead of counted dangling. effectiveRoots owns the
-   * counting semantics — this only feeds it complete inputs. */
+  /* lineage closure over every touched doc AND its ancestors — a root
+   * outside the doc set must resolve, not count dangling */
   const edges = new Map<string, { parent: string | null; relation: string }>();
-  let frontier = allDocIds;
+  let frontier = [...new Set(evRows.map((r) => r.doc_id))];
   for (let depth = 0; depth < 8 && frontier.length; depth++) {
     const lin = await latestLineage(frontier);
     const next = new Set<string>();
@@ -142,8 +180,7 @@ async function getClaimEvidenceStats(
     }
     frontier = [...next];
   }
-
-  const touchedIds = new Set(allDocIds);
+  const touchedIds = new Set(evRows.map((r) => r.doc_id));
   for (const e of edges.values()) if (e.parent) touchedIds.add(e.parent);
   const { rows: docMeta } = await db.query<{
     doc_id: string;
@@ -158,18 +195,65 @@ async function getClaimEvidenceStats(
   );
   const known = new Map(docMeta.map((d) => [d.doc_id, d]));
 
-  for (const cvId of claimVersionIds) {
-    const docIds = docsByCv.get(cvId) ?? [];
-    const docs = docIds
+  // voter identity = lineage-root source — wire reprints collapse
+  const originOf = await resolveOriginSources(db as never, [
+    ...new Set(evRows.map((r) => r.doc_id)),
+  ]);
+
+  interface Evote extends Vote {
+    docId: string;
+  }
+  const evByClaim = new Map<string, Evote[]>();
+  for (const r of evRows) {
+    const vote: Evote = {
+      voter: originOf.get(r.doc_id) ?? r.source_id,
+      pos: posKey(r.value, r.unit),
+      valueJson: toJsonb(r.value),
+      unit: r.unit,
+      versionNo: r.version_no,
+      state: "supported",
+      primary: false,
+      at: Date.parse(r.vote_at),
+      docId: r.doc_id,
+    };
+    (
+      evByClaim.get(r.claim_id) ??
+      evByClaim.set(r.claim_id, []).get(r.claim_id)!
+    ).push(vote);
+  }
+
+  for (const claimId of claimIds) {
+    const vers = (versByClaim.get(claimId) ?? []).map((v) => ({
+      id: v.id,
+      version_no: v.version_no,
+      pos: posKey(v.value, v.unit),
+      valueJson: toJsonb(v.value),
+    }));
+    // latestVotes preserves our objects (docId survives the Vote type)
+    const latest = latestVotes(evByClaim.get(claimId) ?? []) as Map<
+      string,
+      Evote
+    >;
+    const winner = rankWinner([...positionsFromVotes(latest, vers).values()]);
+    // live standing docs = the docs behind each voter's latest vote,
+    // restricted to votes standing on the winning position — a source
+    // whose latest assertion moved elsewhere no longer counts here
+    const standingDocs = [
+      ...new Set(
+        [...latest.values()]
+          .filter((v) => winner && v.pos === winner.pos)
+          .map((v) => v.docId),
+      ),
+    ]
       .map((id) => known.get(id))
       .filter((d): d is NonNullable<typeof d> => d != null);
-    const stats = effectiveRoots(docs, edges, known);
-    out.set(cvId, {
+    const stats = effectiveRoots(standingDocs, edges, known);
+    out.set(claimId, {
       confirmedIndependentOrigins: stats.confirmedIndependentOrigins,
       primaryOrigins: stats.primaryOrigins,
       unresolvedOrigins: stats.unresolvedOrigins,
       derivedDocuments: stats.derivedDocuments,
-      rawSourceCount: new Set(docs.map((d) => d.source_id)).size,
+      rawSourceCount: new Set(standingDocs.map((d) => d.source_id)).size,
     });
   }
   return out;
@@ -201,9 +285,6 @@ SELECT
   c.predicate,
   c.claim_type,
   c.subject_entity_id,
-  e.canonical_key   AS entity_key,
-  e.entity_type,
-  e.country_code,
   cv.id             AS version_id,
   cv.value,
   cv.value_type,
@@ -213,12 +294,12 @@ SELECT
   cv.valid_from::text AS valid_from,
   pv.id             AS prev_version_id,
   pv.value          AS prev_value,
-  pv.unit           AS prev_unit
+  pv.unit           AS prev_unit,
+  pv.state          AS prev_state
 FROM chosen z
 JOIN claims c ON c.id = z.id
 JOIN claim_versions cv ON cv.id = c.current_version_id
 LEFT JOIN claim_versions pv ON pv.id = cv.previous_version_id
-LEFT JOIN entities e ON e.id = c.subject_entity_id
 ORDER BY c.id`;
 
   const { rows } = await db.query(sql, [
@@ -227,10 +308,10 @@ ORDER BY c.id`;
     NEGATIVE_SAMPLE,
   ]);
 
-  const statsMap = await getClaimEvidenceStats(rows.map((r) => r.version_id));
+  const statsMap = await getClaimEvidenceStats(rows.map((r) => r.claim_id));
 
   const items = rows.map((r) => {
-    const ev = statsMap.get(r.version_id);
+    const ev = statsMap.get(r.claim_id);
     return {
       claimId: r.claim_id,
       eventId: r.event_id,
@@ -245,18 +326,28 @@ ORDER BY c.id`;
         state: r.state,
         validFrom: r.valid_from,
       },
-      previous: r.prev_version_id
+      /* truth-history only — previous_version_id records the prior TRUTH
+       * state of this proposition, never an economic prior period.
+       * Prod claims carry no structured from→to yet, so
+       * economicComparison stays null and rates/tariffs score as
+       * level observations until a real comparison is bound. */
+      previousVersion: r.prev_version_id
         ? {
             versionId: r.prev_version_id,
             value: r.prev_value,
             unit: r.prev_unit,
+            state: r.prev_state,
           }
         : null,
+      economicComparison: null,
+      /* prod reality: no entities table is bound yet and
+       * subject_entity_id is NULL on every claim — canonicalKey/type/
+       * countryCode stay null and the qualifier text carries the load */
       subject: {
         entityId: r.subject_entity_id,
-        canonicalKey: r.entity_key,
-        type: r.entity_type,
-        countryCode: r.country_code,
+        canonicalKey: null,
+        type: null,
+        countryCode: null,
         qualifierText: r.qualifiers?.subject ?? null,
       },
       evidence: {

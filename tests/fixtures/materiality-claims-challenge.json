@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T12:03:09.567Z",
-  "methodVersion": "r7.1b",
+  "generatedAt": "2026-09-28T12:47:43.433Z",
+  "methodVersion": "r7.1b.1",
   "items": [
     {
       "claimId": "chal-001",
@@ -17,10 +17,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-001-v1",
-        "value": 4.25,
-        "unit": "%"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 4.25,
+        "to": 4.5,
+        "unit": "%",
+        "basis": "explicit_in_claim",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "Federal Reserve"
@@ -50,10 +53,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-002-v1",
-        "value": 0.75,
-        "unit": "%"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 0.75,
+        "to": 1.5,
+        "unit": "%",
+        "basis": "explicit_in_claim",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "ECB"
@@ -83,10 +89,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-003-v1",
-        "value": 4.5,
-        "unit": "%"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 4.5,
+        "to": 5.5,
+        "unit": "%",
+        "basis": "explicit_in_claim",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "Federal Reserve"
@@ -116,7 +125,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": {
+        "versionId": "chal-004-v1",
+        "value": 4.5,
+        "unit": "%",
+        "state": "reported"
+      },
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Federal Reserve"
       },
@@ -128,7 +143,7 @@
         "derivedDocuments": 1,
         "rawSourceCount": 3
       },
-      "scenario": "rate level no prev"
+      "scenario": "rate level, truth history only"
     },
     {
       "claimId": "chal-005",
@@ -138,6 +153,41 @@
       "sourceSet": "challenge",
       "current": {
         "versionId": "chal-005-v2",
+        "value": 7,
+        "valueType": "number",
+        "unit": "%",
+        "qualifiers": null,
+        "state": "supported",
+        "validFrom": "2025-01-15"
+      },
+      "previousVersion": {
+        "versionId": "chal-005-v1",
+        "value": 6.75,
+        "unit": "%",
+        "state": "disputed"
+      },
+      "economicComparison": null,
+      "subject": {
+        "qualifierText": "Federal Reserve"
+      },
+      "evidence": {
+        "claimState": "supported",
+        "confirmedIndependentOrigins": 2,
+        "primaryOrigins": 1,
+        "unresolvedOrigins": 0,
+        "derivedDocuments": 1,
+        "rawSourceCount": 3
+      },
+      "scenario": "prevVersion DIFFERS (disputed history) — still not a step"
+    },
+    {
+      "claimId": "chal-006",
+      "eventId": "chal-006-ev",
+      "predicate": "interest_rate",
+      "claimType": null,
+      "sourceSet": "challenge",
+      "current": {
+        "versionId": "chal-006-v2",
         "value": 4.63,
         "valueType": "number",
         "unit": "%",
@@ -145,10 +195,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-005-v1",
-        "value": 4.58,
-        "unit": "%"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 4.58,
+        "to": 4.63,
+        "unit": "%",
+        "basis": "explicit_in_claim",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "Ngân hàng Vietcombank"
@@ -161,16 +214,16 @@
         "derivedDocuments": 1,
         "rawSourceCount": 3
       },
-      "scenario": "effective rate, bank subject"
+      "scenario": "bank rate delta, no authority"
     },
     {
-      "claimId": "chal-006",
-      "eventId": "chal-006-ev",
+      "claimId": "chal-007",
+      "eventId": "chal-007-ev",
       "predicate": "refinancing_rate",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-006-v2",
+        "versionId": "chal-007-v2",
         "value": 4.75,
         "valueType": "number",
         "unit": "%",
@@ -178,10 +231,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-006-v1",
-        "value": 4.5,
-        "unit": "%"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 4.5,
+        "to": 4.75,
+        "unit": "%",
+        "basis": "explicit_in_claim",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "NHNN"
@@ -197,13 +253,13 @@
       "scenario": "nhnn +25bp"
     },
     {
-      "claimId": "chal-007",
-      "eventId": "chal-007-ev",
+      "claimId": "chal-008",
+      "eventId": "chal-008-ev",
       "predicate": "tariff_rate",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-007-v2",
+        "versionId": "chal-008-v2",
         "value": 25,
         "valueType": "number",
         "unit": "%",
@@ -211,10 +267,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-007-v1",
-        "value": 20,
-        "unit": "%"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 20,
+        "to": 25,
+        "unit": "%",
+        "basis": "explicit_in_claim",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "United States"
@@ -230,13 +289,13 @@
       "scenario": "tariff +5pp"
     },
     {
-      "claimId": "chal-008",
-      "eventId": "chal-008-ev",
+      "claimId": "chal-009",
+      "eventId": "chal-009-ev",
       "predicate": "tariff_rate",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-008-v2",
+        "versionId": "chal-009-v2",
         "value": 40,
         "valueType": "number",
         "unit": "%",
@@ -244,10 +303,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-008-v1",
-        "value": 20,
-        "unit": "%"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 20,
+        "to": 40,
+        "unit": "%",
+        "basis": "explicit_in_claim",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "United States"
@@ -263,13 +325,13 @@
       "scenario": "tariff +20pp"
     },
     {
-      "claimId": "chal-009",
-      "eventId": "chal-009-ev",
+      "claimId": "chal-010",
+      "eventId": "chal-010-ev",
       "predicate": "tariff_rate",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-009-v2",
+        "versionId": "chal-010-v2",
         "value": 60,
         "valueType": "number",
         "unit": "%",
@@ -277,10 +339,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-009-v1",
-        "value": 20,
-        "unit": "%"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 20,
+        "to": 60,
+        "unit": "%",
+        "basis": "explicit_in_claim",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "United States"
@@ -296,13 +361,43 @@
       "scenario": "tariff +40pp"
     },
     {
-      "claimId": "chal-010",
-      "eventId": "chal-010-ev",
+      "claimId": "chal-011",
+      "eventId": "chal-011-ev",
+      "predicate": "tariff_rate",
+      "claimType": null,
+      "sourceSet": "challenge",
+      "current": {
+        "versionId": "chal-011-v2",
+        "value": 20,
+        "valueType": "number",
+        "unit": "%",
+        "qualifiers": null,
+        "state": "supported",
+        "validFrom": "2025-01-15"
+      },
+      "previousVersion": null,
+      "economicComparison": null,
+      "subject": {
+        "qualifierText": "United States"
+      },
+      "evidence": {
+        "claimState": "supported",
+        "confirmedIndependentOrigins": 2,
+        "primaryOrigins": 1,
+        "unresolvedOrigins": 0,
+        "derivedDocuments": 1,
+        "rawSourceCount": 3
+      },
+      "scenario": "tariff level 20%, no comparison"
+    },
+    {
+      "claimId": "chal-012",
+      "eventId": "chal-012-ev",
       "predicate": "tariff_reduction",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-010-v2",
+        "versionId": "chal-012-v2",
         "value": "30 tỷ USD",
         "valueType": "text",
         "unit": "USD",
@@ -310,7 +405,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Mỹ và Trung Quốc"
       },
@@ -325,13 +421,13 @@
       "scenario": "$30B goods ≠ 30pp"
     },
     {
-      "claimId": "chal-011",
-      "eventId": "chal-011-ev",
+      "claimId": "chal-013",
+      "eventId": "chal-013-ev",
       "predicate": "tariff",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-011-v2",
+        "versionId": "chal-013-v2",
         "value": 0,
         "valueType": "number",
         "unit": "%",
@@ -339,10 +435,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-011-v1",
-        "value": 25,
-        "unit": "%"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 25,
+        "to": 0,
+        "unit": "%",
+        "basis": "explicit_in_claim",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "United States"
@@ -355,16 +454,16 @@
         "derivedDocuments": 1,
         "rawSourceCount": 3
       },
-      "scenario": "tariff removal"
+      "scenario": "tariff removal 25→0"
     },
     {
-      "claimId": "chal-012",
-      "eventId": "chal-012-ev",
+      "claimId": "chal-014",
+      "eventId": "chal-014-ev",
       "predicate": "trade_agreement",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-012-v2",
+        "versionId": "chal-014-v2",
         "value": "hiệp định thương mại song phương mới",
         "valueType": "text",
         "unit": null,
@@ -372,7 +471,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Việt Nam và EU"
       },
@@ -387,13 +487,13 @@
       "scenario": "trade agreement unquantified"
     },
     {
-      "claimId": "chal-013",
-      "eventId": "chal-013-ev",
+      "claimId": "chal-015",
+      "eventId": "chal-015-ev",
       "predicate": "sanctions",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-013-v2",
+        "versionId": "chal-015-v2",
         "value": "trừng phạt 3 cá nhân quan chức",
         "valueType": "text",
         "unit": null,
@@ -401,7 +501,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "United States"
       },
@@ -416,13 +517,13 @@
       "scenario": "narrow individual sanctions"
     },
     {
-      "claimId": "chal-014",
-      "eventId": "chal-014-ev",
+      "claimId": "chal-016",
+      "eventId": "chal-016-ev",
       "predicate": "sanctions",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-014-v2",
+        "versionId": "chal-016-v2",
         "value": "trừng phạt toàn diện hệ thống ngân hàng",
         "valueType": "text",
         "unit": null,
@@ -430,7 +531,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Nga"
       },
@@ -445,13 +547,13 @@
       "scenario": "sovereign sanctions russia"
     },
     {
-      "claimId": "chal-015",
-      "eventId": "chal-015-ev",
+      "claimId": "chal-017",
+      "eventId": "chal-017-ev",
       "predicate": "export_control",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-015-v2",
+        "versionId": "chal-017-v2",
         "value": "cấm xuất khẩu chip AI tiên tiến",
         "valueType": "text",
         "unit": null,
@@ -459,7 +561,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "United States"
       },
@@ -474,13 +577,13 @@
       "scenario": "chip export control"
     },
     {
-      "claimId": "chal-016",
-      "eventId": "chal-016-ev",
+      "claimId": "chal-018",
+      "eventId": "chal-018-ev",
       "predicate": "lift_sanctions",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-016-v2",
+        "versionId": "chal-018-v2",
         "value": "gỡ bỏ trừng phạt dầu mỏ",
         "valueType": "text",
         "unit": null,
@@ -488,7 +591,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Iran"
       },
@@ -503,13 +607,13 @@
       "scenario": "sanction lifted"
     },
     {
-      "claimId": "chal-017",
-      "eventId": "chal-017-ev",
+      "claimId": "chal-019",
+      "eventId": "chal-019-ev",
       "predicate": "fund_disbursement",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-017-v2",
+        "versionId": "chal-019-v2",
         "value": "450 triệu USD",
         "valueType": "text",
         "unit": "USD",
@@ -517,7 +621,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "World Bank"
       },
@@ -532,13 +637,13 @@
       "scenario": "normal aid disbursement"
     },
     {
-      "claimId": "chal-018",
-      "eventId": "chal-018-ev",
+      "claimId": "chal-020",
+      "eventId": "chal-020-ev",
       "predicate": "liquidity_facility",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-018-v2",
+        "versionId": "chal-020-v2",
         "value": "swap line mở rộng toàn cầu $500 tỷ",
         "valueType": "text",
         "unit": "USD",
@@ -546,7 +651,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Federal Reserve"
       },
@@ -561,13 +667,13 @@
       "scenario": "systemic liquidity facility"
     },
     {
-      "claimId": "chal-019",
-      "eventId": "chal-019-ev",
+      "claimId": "chal-021",
+      "eventId": "chal-021-ev",
       "predicate": "credit_freeze",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-019-v2",
+        "versionId": "chal-021-v2",
         "value": "thị trường liên ngân hàng đóng băng",
         "valueType": "text",
         "unit": null,
@@ -575,7 +681,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "United States"
       },
@@ -590,13 +697,13 @@
       "scenario": "bank funding freeze US"
     },
     {
-      "claimId": "chal-020",
-      "eventId": "chal-020-ev",
+      "claimId": "chal-022",
+      "eventId": "chal-022-ev",
       "predicate": "bailout",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-020-v2",
+        "versionId": "chal-022-v2",
         "value": "gói cứu trợ $20 tỷ cho ngân hàng",
         "valueType": "text",
         "unit": "USD",
@@ -604,7 +711,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Credit Suisse"
       },
@@ -619,13 +727,13 @@
       "scenario": "bank rescue $20B"
     },
     {
-      "claimId": "chal-021",
-      "eventId": "chal-021-ev",
+      "claimId": "chal-023",
+      "eventId": "chal-023-ev",
       "predicate": "sovereign_default",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-021-v2",
+        "versionId": "chal-023-v2",
         "value": "vỡ nợ trái phiếu chính phủ",
         "valueType": "text",
         "unit": null,
@@ -633,7 +741,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "United States"
       },
@@ -648,13 +757,13 @@
       "scenario": "sovereign default US"
     },
     {
-      "claimId": "chal-022",
-      "eventId": "chal-022-ev",
+      "claimId": "chal-024",
+      "eventId": "chal-024-ev",
       "predicate": "fiscal_spending",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-022-v2",
+        "versionId": "chal-024-v2",
         "value": "500 triệu USD",
         "valueType": "text",
         "unit": "USD",
@@ -662,7 +771,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Việt Nam"
       },
@@ -677,13 +787,13 @@
       "scenario": "$500M local"
     },
     {
-      "claimId": "chal-023",
-      "eventId": "chal-023-ev",
+      "claimId": "chal-025",
+      "eventId": "chal-025-ev",
       "predicate": "fiscal_spending",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-023-v2",
+        "versionId": "chal-025-v2",
         "value": "10 tỷ USD",
         "valueType": "text",
         "unit": "USD",
@@ -691,7 +801,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "United States"
       },
@@ -706,13 +817,13 @@
       "scenario": "$10B package"
     },
     {
-      "claimId": "chal-024",
-      "eventId": "chal-024-ev",
+      "claimId": "chal-026",
+      "eventId": "chal-026-ev",
       "predicate": "stimulus",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-024-v2",
+        "versionId": "chal-026-v2",
         "value": "100 tỷ USD",
         "valueType": "text",
         "unit": "USD",
@@ -720,7 +831,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "United States"
       },
@@ -735,13 +847,13 @@
       "scenario": "$100B stimulus"
     },
     {
-      "claimId": "chal-025",
-      "eventId": "chal-025-ev",
+      "claimId": "chal-027",
+      "eventId": "chal-027-ev",
       "predicate": "net_profit",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-025-v2",
+        "versionId": "chal-027-v2",
         "value": "2.300 tỷ đồng",
         "valueType": "text",
         "unit": "VNĐ",
@@ -749,7 +861,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Vinamilk",
         "type": "company"
@@ -765,13 +878,13 @@
       "scenario": "profit level"
     },
     {
-      "claimId": "chal-026",
-      "eventId": "chal-026-ev",
+      "claimId": "chal-028",
+      "eventId": "chal-028-ev",
       "predicate": "net_profit",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-026-v2",
+        "versionId": "chal-028-v2",
         "value": "9.500 tỷ đồng",
         "valueType": "text",
         "unit": "VNĐ",
@@ -779,10 +892,13 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": {
-        "versionId": "chal-026-v1",
-        "value": "7.200 tỷ đồng",
-        "unit": "VNĐ"
+      "previousVersion": null,
+      "economicComparison": {
+        "from": 7200000000,
+        "to": 9500000000,
+        "unit": "VNĐ",
+        "basis": "prior_reporting_period",
+        "confidence": "high"
       },
       "subject": {
         "qualifierText": "Vinamilk",
@@ -796,16 +912,16 @@
         "derivedDocuments": 1,
         "rawSourceCount": 3
       },
-      "scenario": "profit delta"
+      "scenario": "profit delta YoY"
     },
     {
-      "claimId": "chal-027",
-      "eventId": "chal-027-ev",
+      "claimId": "chal-029",
+      "eventId": "chal-029-ev",
       "predicate": "investment",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-027-v2",
+        "versionId": "chal-029-v2",
         "value": "2 tỷ USD",
         "valueType": "text",
         "unit": "USD",
@@ -813,7 +929,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Vinamilk",
         "type": "company"
@@ -829,13 +946,13 @@
       "scenario": "capex $2B"
     },
     {
-      "claimId": "chal-028",
-      "eventId": "chal-028-ev",
+      "claimId": "chal-030",
+      "eventId": "chal-030-ev",
       "predicate": "investment",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-028-v2",
+        "versionId": "chal-030-v2",
         "value": "cân nhắc mở rộng đầu tư",
         "valueType": "text",
         "unit": null,
@@ -843,7 +960,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Samsung"
       },
@@ -858,13 +976,13 @@
       "scenario": "vague investment"
     },
     {
-      "claimId": "chal-029",
-      "eventId": "chal-029-ev",
+      "claimId": "chal-031",
+      "eventId": "chal-031-ev",
       "predicate": "money_usd",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-029-v2",
+        "versionId": "chal-031-v2",
         "value": "4.4",
         "valueType": "number",
         "unit": "usd_bn",
@@ -872,7 +990,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {},
       "evidence": {
         "claimState": "supported",
@@ -885,13 +1004,13 @@
       "scenario": "money_usd in casualty story"
     },
     {
-      "claimId": "chal-030",
-      "eventId": "chal-030-ev",
+      "claimId": "chal-032",
+      "eventId": "chal-032-ev",
       "predicate": "tariff",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-030-v2",
+        "versionId": "chal-032-v2",
         "value": "đề cập chính sách thuế quan",
         "valueType": "text",
         "unit": null,
@@ -899,7 +1018,8 @@
         "state": "supported",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "đại biểu Quốc hội"
       },
@@ -914,13 +1034,13 @@
       "scenario": "tariff word unrelated"
     },
     {
-      "claimId": "chal-031",
-      "eventId": "chal-031-ev",
+      "claimId": "chal-033",
+      "eventId": "chal-033-ev",
       "predicate": "credit_freeze",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-031-v2",
+        "versionId": "chal-033-v2",
         "value": "đóng băng toàn bộ",
         "valueType": "text",
         "unit": null,
@@ -928,7 +1048,8 @@
         "state": "retracted",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "Federal Reserve"
       },
@@ -943,13 +1064,13 @@
       "scenario": "retracted systemic"
     },
     {
-      "claimId": "chal-032",
-      "eventId": "chal-032-ev",
+      "claimId": "chal-034",
+      "eventId": "chal-034-ev",
       "predicate": "credit_freeze",
       "claimType": null,
       "sourceSet": "challenge",
       "current": {
-        "versionId": "chal-032-v2",
+        "versionId": "chal-034-v2",
         "value": "thị trường liên ngân hàng đóng băng",
         "valueType": "text",
         "unit": null,
@@ -957,7 +1078,8 @@
         "state": "disputed",
         "validFrom": "2025-01-15"
       },
-      "previous": null,
+      "previousVersion": null,
+      "economicComparison": null,
       "subject": {
         "qualifierText": "United States"
       },

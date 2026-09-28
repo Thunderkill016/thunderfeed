@@ -88,11 +88,15 @@ function setMetrics(rows: Scored[]) {
   const prec = matP.length ? matTP / matP.length : 0;
   const rec = matR.length ? matTP / matR.length : 0;
 
-  // high-impact false positives: pred major/systemic, gold < meaningful
-  const hiFP = rows.filter(
-    (r) =>
-      HIGH.has(r.pred.materiality) &&
-      !MATERIAL.has(r.gold.intrinsicMateriality),
+  // high-impact: precision over all major/systemic predictions, FP count,
+  // and FP rate among gold non-material rows — a bare "0/113" reads like
+  // a coverage stat, not a precision stat
+  const predHigh = rows.filter((r) => HIGH.has(r.pred.materiality));
+  const goldNonMat = rows.filter(
+    (r) => !MATERIAL.has(r.gold.intrinsicMateriality),
+  );
+  const hiFP = predHigh.filter(
+    (r) => !MATERIAL.has(r.gold.intrinsicMateriality),
   );
   // systemic recall
   const goldSys = rows.filter(
@@ -136,10 +140,12 @@ function setMetrics(rows: Scored[]) {
     tG += g.size;
   }
 
-  // unsupported causality: pred asserts channels gold didn't list
+  // unsupported causality: pred asserts a channel gold did not list —
+  // gold=[] + pred=["fundamental","external"] is the WORST case, not a
+  // skip; the old early-return exempted exactly the failures this
+  // metric exists to catch
   const caus = rows.filter((r) => {
     const goldChannels = r.gold.channels ?? [];
-    if (!goldChannels.length) return false;
     return r.pred.channels.some((c) => !goldChannels.includes(c));
   });
 
@@ -158,7 +164,11 @@ function setMetrics(rows: Scored[]) {
     matP: prec,
     matR: rec,
     matF1: f1(prec, rec),
-    hiFP: `${hiFP.length}/${classified.length || 1}`,
+    hiFP: hiFP.length,
+    hiPrecision: predHigh.length
+      ? (predHigh.length - hiFP.length) / predHigh.length
+      : null,
+    hiFPrate: goldNonMat.length ? hiFP.length / goldNonMat.length : 0,
     hiFProws: hiFP.map((r) => r.id),
     sysRecall: goldSys.length ? `${sysHit}/${goldSys.length}` : "n/a",
     channelIoU: iouN ? iouSum / iouN : 0,
@@ -226,7 +236,7 @@ const print = (name: string, m: ReturnType<typeof setMetrics>) =>
       `  coverage           ${m.coverage.toFixed(3)}  (abstained ${m.abstained})\n` +
       `  accuracy           overall ${m.accOverall.toFixed(3)} · classified-only ${m.accClassified.toFixed(3)} · within-1 ${m.within1.toFixed(3)}\n` +
       `  material flag      P ${m.matP.toFixed(3)} · R ${m.matR.toFixed(3)} · F1 ${m.matF1.toFixed(3)}\n` +
-      `  high-impact FP     ${m.hiFP}${m.hiFProws.length ? " → " + m.hiFProws.join(", ") : ""}\n` +
+      `  high-impact        FP ${m.hiFP} · precision ${m.hiPrecision === null ? "n/a" : m.hiPrecision.toFixed(3)} · FPrate(non-mat) ${m.hiFPrate.toFixed(3)}${m.hiFProws.length ? " → " + m.hiFProws.join(", ") : ""}\n` +
       `  systemic recall    ${m.sysRecall}\n` +
       `  action             acc ${m.actAcc.toFixed(3)} · abstention ${m.actAbstainRate.toFixed(3)}\n` +
       `  channel IoU        ${m.channelIoU.toFixed(3)}\n` +

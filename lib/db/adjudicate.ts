@@ -101,7 +101,7 @@ interface EvRow {
  * with no derived lineage votes as its own source; a wire rewrite votes
  * as the root's source (collapses reprints into one origin).
  */
-async function resolveOriginSources(
+export async function resolveOriginSources(
   client: pg.PoolClient | pg.Pool,
   docIds: string[],
 ): Promise<Map<string, string>> {

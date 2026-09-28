@@ -59,10 +59,25 @@ export interface ClaimMaterialityInput {
     state: ClaimState;
     validFrom: string | null;
   };
-  previous?: {
+  /* R6 truth/version history ONLY — previous_version_id is the prior
+   * truth state of the same logical proposition (reported→supported),
+   * NOT the prior economic period. It must never be subtracted to mint
+   * an economic delta. */
+  previousVersion?: {
     versionId: string;
     value: unknown;
     unit: string | null;
+    state: string | null;
+  } | null;
+  /* The only legitimate economic delta: the claim itself carries a
+   * from→to, a structured series supplies one, or a prior reporting
+   * period is bound. A truth-state version bump never qualifies. */
+  economicComparison?: {
+    from: number;
+    to: number;
+    unit: string | null;
+    basis: "explicit_in_claim" | "structured_series" | "prior_reporting_period";
+    confidence: "high" | "medium";
   } | null;
   subject: {
     entityId?: string | null;
@@ -511,11 +526,14 @@ export function inferClaimAction(i: ClaimMaterialityInput): EconomicAction {
   }
 
   const cur = numericValue(i.current.value);
-  const prev = i.previous ? numericValue(i.previous.value) : null;
+  /* previousVersion is truth history (reported→supported), NEVER an
+   * economic prior — the only from→to this engine may subtract is an
+   * explicit economicComparison. */
+  const cmp = i.economicComparison ?? null;
   let magnitude = cur;
   let direction = spec.direction ?? null;
-  if (cur !== null && prev !== null) {
-    const delta = cur - prev;
+  if (cmp) {
+    const delta = cmp.to - cmp.from;
     magnitude = Math.abs(delta);
     if (delta > 0) direction = "increase";
     else if (delta < 0) direction = "decrease";
@@ -524,14 +542,14 @@ export function inferClaimAction(i: ClaimMaterialityInput): EconomicAction {
 
   let type = spec.action;
   /* A generic `interest_rate` is only a policy decision when a policy
-   * authority AND a previous decision value both exist. Same invariant
-   * as the macro engine: effective-rate observations are observations. */
+   * authority AND a real economic comparison both exist. Same invariant
+   * as the macro engine: effective-rate observations are observations,
+   * and a truth-state version bump is not a rate step. */
   if (type === "monetary_policy_change") {
     const policyNamed = /^(policy_rate|base_rate|refinancing_rate)$/.test(
       i.predicate,
     );
-    const hasDelta = i.previous != null && prev !== null;
-    if (!hasDelta || !(policyNamed || subj.policyAuthority))
+    if (!cmp || !(policyNamed || subj.policyAuthority))
       type = "interest_rate_observation";
   }
 
@@ -674,20 +692,17 @@ function assess(
   // truth-state ceiling: disputed/unresolved claims keep their intrinsic
   // magnitude but their transmission confidence is capped.
   const mag = action.magnitude;
+  const cmp = i.economicComparison ?? null;
 
   switch (action.type) {
     case "monetary_policy_change": {
       channels = ["discounting", "funding_liquidity"];
       directness = "direct";
       horizon = "months";
-      // magnitude = |Δpp| when a previous version exists, else level move —
-      // an unchanged rate observation is not a policy step.
-      const step = i.previous ? mag : null;
-      if (step === null) {
-        level = "limited";
-        reasonCodes.push("rate_level_no_delta");
-        cautions.push("no_prior_observation");
-      } else if (step >= 1.0) {
+      /* reached only when an economicComparison exists — magnitude is
+       * the policy step |Δpp|, never a truth-history version diff */
+      const step = mag ?? 0;
+      if (step >= 1.0) {
         level = globalScope ? "systemic" : "major";
         reasonCodes.push("policy_step_shock");
       } else if (step >= 0.5) {
@@ -743,11 +758,15 @@ function assess(
           } else {
             reasonCodes.push("tariff_unsized");
             cautions.push("magnitude_text_only");
+            /* a bare tariff mention asserts no transmission lane */
+            channels = [];
           }
         }
         break;
       }
-      const pct = mag;
+      /* pp ladder applies to CHANGE magnitude only. A bare
+       * "tariff_rate = 20%" is a level observation, not a +20pp move. */
+      const pct = cmp ? mag : null;
       if (pct !== null && pct >= 25 && globalScope) {
         level = "systemic";
         reasonCodes.push("tariff_regime_shift");
@@ -757,9 +776,14 @@ function assess(
       } else if (pct !== null && pct >= 5) {
         level = "meaningful";
         reasonCodes.push("tariff_material");
+      } else if (pct === null && mag !== null) {
+        level = "limited";
+        reasonCodes.push("tariff_level_only");
       } else {
         level = "limited";
         reasonCodes.push("tariff_minor_or_unsized");
+        /* no number and no delta — a bare mention asserts no lane */
+        if (mag === null) channels = [];
       }
       if (!globalScope && jurisdictions.includes("VN"))
         level = cap(level, "major");
@@ -865,7 +889,7 @@ function assess(
     }
     case "corporate_profit_change": {
       channels = ["fundamental"];
-      const hasDelta = i.previous != null;
+      const hasDelta = i.economicComparison != null;
       const scoped = subj.type === "company" || subj.entityId != null;
       if (hasDelta && scoped) {
         level = "meaningful";
@@ -923,7 +947,17 @@ function assess(
           `${i.current.unit ?? ""} ${i.current.value ?? ""}`,
         );
       const pct = isPct ? mag : null;
-      if (pct !== null && pct >= 2 && globalScope) {
+      /* plausibility guard — a 70% "growth" print is almost always a
+       * market-implied probability or an extraction error, never a
+       * real GDP growth rate. Applies to growth predicates only:
+       * inflation of 70% is genuinely possible. */
+      const implausibleGrowth =
+        /growth|gdp/.test(i.predicate) && pct !== null && pct > 20;
+      if (implausibleGrowth) {
+        level = "limited";
+        reasonCodes.push("implausible_growth_value");
+        cautions.push("implausible_indicator");
+      } else if (pct !== null && pct >= 2 && globalScope) {
         level = "meaningful";
         reasonCodes.push("indicator_large_global");
       } else if (pct !== null && pct >= 1) {
