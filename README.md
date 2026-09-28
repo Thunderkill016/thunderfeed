@@ -64,6 +64,12 @@ echo "GEMINI_API_KEY=..." > .env.local   # có sẵn trong ../diem-tin/.env
 
 Không có key vẫn chạy đầy đủ với nhận định deterministic.
 
+`DATABASE_URL` trong `.env.local` trỏ Postgres local (`diemtin` — dev
+fixture DB, KHÔNG phải production). Ops lên canonical prod dùng pooler
+URL theo convention của `scripts/audit-db-security.mts`
+(`postgres.<ref>@aws-0-…pooler.supabase.com` + `SUPABASE_DB_PASS`),
+truyền explicit — không đổi `.env.local` sang prod.
+
 ```sh
 npm test           # unit tests (node:test)
 npm run typecheck  # tsc --noEmit

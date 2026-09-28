@@ -36,6 +36,16 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Early drain: producers from a PREVIOUS run (incl. one that died
+      # mid-Build on the 45-min ceiling) leave durable dirty_claims —
+      # clear them before this cycle's work so a wedged Build can never
+      # leave projections stale for a whole cycle. Cheap no-op when the
+      # queue is empty; the post-adjudicate drain below still owns
+      # this cycle's fresh work.
+      - name: Drain claim materiality (backlog)
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/materiality/drain-claims.mts
       - name: Build edition → Postgres
         env:
           DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
