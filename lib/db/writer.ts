@@ -50,7 +50,7 @@ import {
   type LineageDoc,
 } from "../lineage";
 import type { Article, StoryCluster } from "../model";
-import { enqueueDirty } from "./jobs";
+import { enqueueDirty, enqueueDirtyClaim } from "./jobs";
 
 /* ------------------------------- inputs ---------------------------------- */
 
@@ -1819,8 +1819,8 @@ async function linkClaimEvidence(
   stance = "supports",
   evidenceStrength = "secondary",
   method: "model" | "rule" | "manual" = "rule",
-): Promise<void> {
-  await client.query(
+): Promise<boolean> {
+  const { rowCount } = await client.query(
     `INSERT INTO claim_evidence
        (claim_version_id, evidence_version_id, stance, evidence_strength,
         extraction_method)
@@ -1828,6 +1828,7 @@ async function linkClaimEvidence(
      ON CONFLICT (claim_version_id, evidence_version_id) DO NOTHING`,
     [claimVersionId, evidenceVersionId, stance, evidenceStrength, method],
   );
+  return (rowCount ?? 0) > 0;
 }
 
 /* ---------------------------- orchestration ------------------------------ */
@@ -2230,6 +2231,24 @@ export async function persistCluster(
             "adjudicate",
             "ingest_relineage",
           );
+        /* claim-grain hand-off: a provenance change on a doc backing a
+         * claim (any version, any event) changes its materiality input */
+        const { rows: touchedClaims } = await client.query<{
+          claim_id: string;
+        }>(
+          `SELECT DISTINCT cv.claim_id FROM claim_evidence ce
+             JOIN claim_versions cv ON cv.id = ce.claim_version_id
+             JOIN evidence_versions ev ON ev.id = ce.evidence_version_id
+            WHERE ev.document_id = $1`,
+          [docId],
+        );
+        for (const r of touchedClaims)
+          await enqueueDirtyClaim(
+            client,
+            r.claim_id,
+            "materiality",
+            "ingest_relineage",
+          );
       }
       // final relation per attached article (two articles can share a doc)
       for (const a of attachedArticles) {
@@ -2303,7 +2322,7 @@ export async function persistCluster(
               : assertedByPrimary && out.change
                 ? "originates"
                 : "supports";
-        await linkClaimEvidence(
+        const evidenceLinked = await linkClaimEvidence(
           client,
           out.claimVersionId,
           evId,
@@ -2311,6 +2330,15 @@ export async function persistCluster(
           assertedByPrimary ? "direct" : "secondary",
           claim.method ?? "rule",
         );
+        /* atomic hand-off to the materiality worker: a new truth value/
+         * state or a newly linked evidence doc changes the claim's
+         * scorer input — dirty it inside THIS transaction so the queue
+         * commit is never separable from the write that stale-d it */
+        if (out.change || evidenceLinked)
+          await enqueueDirtyClaim(client, out.claimId, "materiality", "ingest");
+      } else if (out.change) {
+        // claim moved (value/state) with no evidence attached this round
+        await enqueueDirtyClaim(client, out.claimId, "materiality", "ingest");
       }
       if (out.change) {
         changes.push(out.change.summary);

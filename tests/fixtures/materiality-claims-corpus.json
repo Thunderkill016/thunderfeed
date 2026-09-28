@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T13:13:53.979Z",
+  "generatedAt": "2026-09-28T14:03:36.024Z",
   "methodVersion": "r7.1b",
   "selectionVersion": "claims-v2",
   "claimCount": 145,
@@ -7,7 +7,6 @@
   "items": [
     {
       "claimId": "01a0d17a-99ff-7864-bc04-d009e78eec28",
-      "eventId": "01a0d176-5b29-7b0a-9fe8-d773a8d2f14a",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -41,11 +40,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b29-7b0a-9fe8-d773a8d2f14a",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d17a-9abd-7581-a548-e38fccdc3952",
-      "eventId": "01a0d176-5bcd-7c44-bbf9-81b054c39c73",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -82,11 +81,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5bcd-7c44-bbf9-81b054c39c73",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d17a-9ae0-7abc-9477-55d8fcb578fd",
-      "eventId": "01a0d176-5be3-74dd-9c8f-3b933e19a062",
       "predicate": "victims",
       "claimType": "numeric",
       "current": {
@@ -115,11 +114,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5be3-74dd-9c8f-3b933e19a062",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d17a-9aec-76a7-8300-5fbae3770b91",
-      "eventId": "01a0d176-5be3-74dd-9c8f-3b933e19a062",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -153,11 +152,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5be3-74dd-9c8f-3b933e19a062",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d17a-9b40-76de-9aa8-ba21a1bacac9",
-      "eventId": "01a0d176-5c17-74a6-af89-72a5ef7121c3",
       "predicate": "sentence_years",
       "claimType": "numeric",
       "current": {
@@ -186,11 +185,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d176-5c17-74a6-af89-72a5ef7121c3",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d17a-9b9d-71b6-ae83-379c25f456d2",
-      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -227,11 +226,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 4
       },
+      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d188-7f84-7d99-8ba5-62c9a56b7cd7",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -268,11 +267,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d188-8147-7329-a5af-3380aa54983b",
-      "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -306,11 +305,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d188-817f-7290-8789-ffb91890b227",
-      "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -344,11 +343,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d188-8189-7705-82e9-2bd42441ff94",
-      "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -377,11 +376,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d188-819c-716d-b3cf-a53c9544aee9",
-      "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -415,11 +414,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d188-861c-7c6b-8591-34196b987998",
-      "eventId": "01a0d176-5b29-7b0a-9fe8-d773a8d2f14a",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -453,11 +452,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b29-7b0a-9fe8-d773a8d2f14a",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d188-8962-7656-9416-adc778311d13",
-      "eventId": "01a0d188-895c-7c23-9297-812882b10f63",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -486,11 +485,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-895c-7c23-9297-812882b10f63",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d188-8aa4-717b-8294-7c16b60861a1",
-      "eventId": "01a0d188-8a9d-7aaf-aa08-14e01b307f35",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -519,11 +518,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-8a9d-7aaf-aa08-14e01b307f35",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-592c-7c70-aa02-6450d5235994",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -557,11 +556,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-6079-726f-bed8-e8d2f7dd2c1e",
-      "eventId": "01a0d1ab-6070-73c9-a98f-69fc0ea1f05b",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -595,11 +594,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6070-73c9-a98f-69fc0ea1f05b",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-6080-7958-bd9b-9839ff3320c0",
-      "eventId": "01a0d1ab-6070-73c9-a98f-69fc0ea1f05b",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -633,11 +632,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6070-73c9-a98f-69fc0ea1f05b",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-61c0-7487-94be-e14d95f7e088",
-      "eventId": "01a0d1ab-61b0-7b21-a48e-404b88bb3abb",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -666,11 +665,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-61b0-7b21-a48e-404b88bb3abb",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-61c4-71b1-bb17-1e4d7eb4e4e7",
-      "eventId": "01a0d1ab-61b0-7b21-a48e-404b88bb3abb",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -699,11 +698,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-61b0-7b21-a48e-404b88bb3abb",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-624c-72ac-857c-3e1523c13de2",
-      "eventId": "01a0d1ab-6247-74aa-8b8c-7e8ccbf32a3f",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -732,11 +731,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6247-74aa-8b8c-7e8ccbf32a3f",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-6390-7be6-9765-b979becf27b5",
-      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -765,11 +764,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-63ff-72da-91de-54a72db6dfc0",
-      "eventId": "01a0d1ab-63fb-7ac8-9a9a-5ad20113a2d7",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -801,11 +800,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-63fb-7ac8-9a9a-5ad20113a2d7",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-645f-7e14-aa09-e805c5019975",
-      "eventId": "01a0d1ab-6455-71b4-ade5-ce473505753f",
       "predicate": "victims",
       "claimType": "numeric",
       "current": {
@@ -834,11 +833,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6455-71b4-ade5-ce473505753f",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d1ab-6463-74d5-9056-6c7b0606d570",
-      "eventId": "01a0d1ab-6455-71b4-ade5-ce473505753f",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -867,11 +866,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6455-71b4-ade5-ce473505753f",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3a6-f6f7-7348-b84f-1bbbf80c20b4",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -900,11 +899,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3a6-f701-7ca5-a325-524066024e05",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "interest_rate",
       "claimType": "numeric",
       "current": {
@@ -935,11 +934,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3a9-e388-746e-8c30-a70861452faa",
-      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "predicate": "interest_rate",
       "claimType": "numeric",
       "current": {
@@ -970,11 +969,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3a9-e6fb-7838-82bc-2063f32c50d5",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -1005,11 +1004,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3a9-e6ff-73e0-9044-693373aa0d88",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -1043,11 +1042,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3a9-e704-7dff-a84d-f6d9513c78f8",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "injured",
       "claimType": "numeric",
       "current": {
@@ -1076,11 +1075,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3a9-f921-7b3a-85e5-03c71edf7f3b",
-      "eventId": "01a0d188-533f-7167-a050-354368c4c025",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -1109,11 +1108,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-533f-7167-a050-354368c4c025",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3a9-fc6d-7eaf-9f81-5a903f309caf",
-      "eventId": "01a0d3a9-fa8d-70fd-bcd0-f9a121a440ad",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -1142,11 +1141,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-fa8d-70fd-bcd0-f9a121a440ad",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3a9-fc75-72c8-a31a-a287e5986b6a",
-      "eventId": "01a0d3a9-fa8d-70fd-bcd0-f9a121a440ad",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -1180,11 +1179,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-fa8d-70fd-bcd0-f9a121a440ad",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-0461-7f70-af57-4070c9bc60aa",
-      "eventId": "01a0d3aa-0342-7c33-a0fc-6f181c7b5fce",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -1218,11 +1217,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-0342-7c33-a0fc-6f181c7b5fce",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-08bf-72b3-9e12-afa84530d128",
-      "eventId": "01a0d3aa-0791-74aa-8dd1-00405f12170e",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -1251,11 +1250,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-0791-74aa-8dd1-00405f12170e",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-19aa-7968-9b7d-fcff021a19f9",
-      "eventId": "01a0d176-5af1-785f-98a9-ea4ea5930c39",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -1284,11 +1283,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5af1-785f-98a9-ea4ea5930c39",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-1efb-7f27-b645-9f18608047d0",
-      "eventId": "01a0d3aa-1e1f-7fa2-be33-1af697eaec0a",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -1317,11 +1316,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-1e1f-7fa2-be33-1af697eaec0a",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-289d-7320-85e0-591faf38aebe",
-      "eventId": "01a0d3aa-2777-7052-9468-683a9c734b76",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -1355,11 +1354,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d3aa-2777-7052-9468-683a9c734b76",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-2d7f-7670-a98b-a00fbf887f3b",
-      "eventId": "01a0d3aa-2cae-7b89-92df-e8ac0c906d83",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -1388,11 +1387,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-2cae-7b89-92df-e8ac0c906d83",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-2d84-775c-8b1a-97ecdc271c19",
-      "eventId": "01a0d3aa-2cae-7b89-92df-e8ac0c906d83",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -1421,11 +1420,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-2cae-7b89-92df-e8ac0c906d83",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-2d8a-771b-952f-edbd9a3818b9",
-      "eventId": "01a0d3aa-2cae-7b89-92df-e8ac0c906d83",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -1454,11 +1453,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d3aa-2cae-7b89-92df-e8ac0c906d83",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-376e-7e0c-b0cc-342321c06f63",
-      "eventId": "01a0d3aa-36a7-736c-863b-9a90d956950a",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -1489,11 +1488,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-36a7-736c-863b-9a90d956950a",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-425f-731e-9720-c1286e670a4d",
-      "eventId": "01a0d176-5b5d-7c6f-a212-90a74dcb225b",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -1522,11 +1521,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b5d-7c6f-a212-90a74dcb225b",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-4882-704a-bdc5-719a8acfe077",
-      "eventId": "01a0d3aa-47e5-7e97-8db3-5a40e1255ad1",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -1560,11 +1559,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-47e5-7e97-8db3-5a40e1255ad1",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-4bb8-7618-92f9-f4f5930d4809",
-      "eventId": "01a0d3aa-4b01-7480-b3d6-d9a0bd1f3f64",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -1593,11 +1592,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-4b01-7480-b3d6-d9a0bd1f3f64",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3aa-5887-7203-b987-87c0d1eb0ea5",
-      "eventId": "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -1626,11 +1625,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ab-13ef-79ae-a8dc-60a9aaa5d056",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -1659,11 +1658,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ab-141a-73ae-9774-22ebe6e4fed5",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "destination",
       "claimType": "fact",
       "current": {
@@ -1694,11 +1693,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ab-141f-7608-81c3-3f996e3a74a5",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "departure_date",
       "claimType": "fact",
       "current": {
@@ -1729,11 +1728,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ab-1426-7ce5-94f7-2b06080e250e",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "arrival_location",
       "claimType": "fact",
       "current": {
@@ -1764,11 +1763,11 @@
         "derivedDocuments": 1,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ab-142a-7a2d-864a-76712caf1312",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "meeting_location",
       "claimType": "fact",
       "current": {
@@ -1799,11 +1798,11 @@
         "derivedDocuments": 1,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ab-142f-7dbf-969e-15098da01567",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "meeting_date",
       "claimType": "fact",
       "current": {
@@ -1834,11 +1833,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ab-1434-755d-a240-9de5d27b2c31",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "participating_companies",
       "claimType": "fact",
       "current": {
@@ -1869,11 +1868,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ab-1438-72f0-a654-17b507127ec6",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "participating_countries",
       "claimType": "fact",
       "current": {
@@ -1904,11 +1903,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ab-143d-7280-af46-1e8377923b1b",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "display_area",
       "claimType": "fact",
       "current": {
@@ -1939,11 +1938,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ac-02be-714f-8054-c00d44056d4e",
-      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -1972,11 +1971,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3ad-b194-7bd2-bd70-bfa6b717f1e3",
-      "eventId": "01a0d3ad-b0ca-7dcf-aa6a-5cd00825e1c3",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -2010,11 +2009,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3ad-b0ca-7dcf-aa6a-5cd00825e1c3",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3b0-2fa9-74dd-8b99-4e68efe04017",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -2048,11 +2047,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3b0-a90d-78ac-865e-c0a44ceacbd0",
-      "eventId": "01a0d188-86b6-7a5c-8554-4df6767b71c8",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -2081,11 +2080,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-86b6-7a5c-8554-4df6767b71c8",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3cf-309d-7dbb-b52c-998e44c16df1",
-      "eventId": "01a0d3a9-e829-75b5-9413-2e7fa85939e4",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -2114,11 +2113,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e829-75b5-9413-2e7fa85939e4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3e3-4ef0-7891-ae7a-802fdd369aca",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -2152,11 +2151,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d3f1-e9b8-766b-9e57-bbae4e87e60f",
-      "eventId": "01a0d3a9-fa8d-70fd-bcd0-f9a121a440ad",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -2185,11 +2184,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-fa8d-70fd-bcd0-f9a121a440ad",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d447-0e2d-79a6-9734-b2ccfde31385",
-      "eventId": "01a0d3aa-386c-7f64-9d71-85b9c59df1d4",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -2223,11 +2222,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-386c-7f64-9d71-85b9c59df1d4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d447-0e3a-7e53-9f7e-2c9565345062",
-      "eventId": "01a0d3aa-386c-7f64-9d71-85b9c59df1d4",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -2261,11 +2260,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-386c-7f64-9d71-85b9c59df1d4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d44e-65d5-77f9-9be1-43062be63f9b",
-      "eventId": "01a0d44e-6160-737b-8629-c78eb5d3da52",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -2299,11 +2298,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 4
       },
+      "eventId": "01a0d44e-6160-737b-8629-c78eb5d3da52",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d44e-65df-7794-baef-9e8f76767cd4",
-      "eventId": "01a0d44e-6160-737b-8629-c78eb5d3da52",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -2337,11 +2336,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 3
       },
+      "eventId": "01a0d44e-6160-737b-8629-c78eb5d3da52",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d44e-6612-7a27-ac40-430151b08b3f",
-      "eventId": "01a0d44e-6160-737b-8629-c78eb5d3da52",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -2370,11 +2369,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d44e-6160-737b-8629-c78eb5d3da52",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d44e-665e-7bf6-a283-c75d6fa336fa",
-      "eventId": "01a0d44e-6160-737b-8629-c78eb5d3da52",
       "predicate": "sentence_years",
       "claimType": "numeric",
       "current": {
@@ -2403,11 +2402,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d44e-6160-737b-8629-c78eb5d3da52",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d45b-3304-7463-a2d5-ce37fa52f072",
-      "eventId": "01a0d45b-31f3-75a7-9095-fe6d4d20eff6",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -2436,11 +2435,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d45b-31f3-75a7-9095-fe6d4d20eff6",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d470-961d-776d-960f-efeece77a14e",
-      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -2474,11 +2473,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d478-7fe0-7b54-9254-e35b82096eda",
-      "eventId": "01a0d412-dd75-7057-bbe7-a90a27e18f01",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -2512,11 +2511,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d412-dd75-7057-bbe7-a90a27e18f01",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d478-7fe5-7ee8-82eb-1a483efefc57",
-      "eventId": "01a0d412-dd75-7057-bbe7-a90a27e18f01",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -2545,11 +2544,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d412-dd75-7057-bbe7-a90a27e18f01",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d478-7ff8-7ddc-9d15-c4108b2979be",
-      "eventId": "01a0d412-dd75-7057-bbe7-a90a27e18f01",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -2578,11 +2577,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d412-dd75-7057-bbe7-a90a27e18f01",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4be-1eaf-7722-9ae2-1992554f6434",
-      "eventId": "01a0d3aa-1e1f-7fa2-be33-1af697eaec0a",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -2611,11 +2610,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-1e1f-7fa2-be33-1af697eaec0a",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4be-35e8-7b88-a360-7dfe06425478",
-      "eventId": "01a0d176-5de4-7ebb-9961-a40bdf4f0bb7",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -2644,11 +2643,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d176-5de4-7ebb-9961-a40bdf4f0bb7",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4be-35ec-7b8e-a9f7-024015221e8d",
-      "eventId": "01a0d176-5de4-7ebb-9961-a40bdf4f0bb7",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -2682,11 +2681,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5de4-7ebb-9961-a40bdf4f0bb7",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4bf-00cf-7281-b1b6-d87b161c8a8e",
-      "eventId": "01a0d4be-fffa-7ba6-a1fd-330f237ea4ff",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -2720,11 +2719,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4be-fffa-7ba6-a1fd-330f237ea4ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4bf-00d4-70b1-a1e1-c5e1e96dafdd",
-      "eventId": "01a0d4be-fffa-7ba6-a1fd-330f237ea4ff",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -2758,11 +2757,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4be-fffa-7ba6-a1fd-330f237ea4ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4bf-7236-7fe6-b2cf-cc4d256eb292",
-      "eventId": "01a0d3aa-1fe2-7a84-829a-7b0ad8f3b2a1",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -2791,11 +2790,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-1fe2-7a84-829a-7b0ad8f3b2a1",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4bf-93ae-79c9-81be-79ba28168af9",
-      "eventId": "01a0d3aa-32af-78fb-bb3a-50b269a0e647",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -2824,11 +2823,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-32af-78fb-bb3a-50b269a0e647",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4bf-f8ab-7dde-b0c8-347be535e776",
-      "eventId": "01a0d4bf-f75c-759b-90ea-18d99d93b7c2",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -2857,11 +2856,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4bf-f75c-759b-90ea-18d99d93b7c2",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4bf-f8b3-731f-81c7-e565212a97ac",
-      "eventId": "01a0d4bf-f75c-759b-90ea-18d99d93b7c2",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -2890,11 +2889,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d4bf-f75c-759b-90ea-18d99d93b7c2",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4c0-6484-7816-857e-cab6f1747e1a",
-      "eventId": "01a0d4c0-63e3-738d-b2bc-43970b05f10e",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -2923,11 +2922,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4c0-63e3-738d-b2bc-43970b05f10e",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4c0-709b-7cdf-b68c-ccc2e8907053",
-      "eventId": "01a0d3aa-386c-7f64-9d71-85b9c59df1d4",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -2956,11 +2955,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-386c-7f64-9d71-85b9c59df1d4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4c1-01b7-75fa-a997-90a164abc651",
-      "eventId": "01a0d4c1-011c-7790-8538-6826b1d5e83e",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -2989,11 +2988,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4c1-011c-7790-8538-6826b1d5e83e",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4c1-31ff-791e-b401-31eab310b9b0",
-      "eventId": "01a0d412-dd75-7057-bbe7-a90a27e18f01",
       "predicate": "sentence_years",
       "claimType": "numeric",
       "current": {
@@ -3022,11 +3021,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d412-dd75-7057-bbe7-a90a27e18f01",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4c1-bb85-7ee4-8c92-202ea9058921",
-      "eventId": "01a0d4c1-ba7b-755d-a8de-6a8239bfbdbc",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -3055,11 +3054,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4c1-ba7b-755d-a8de-6a8239bfbdbc",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4d6-6c2b-7afe-9728-c7d0fa247385",
-      "eventId": "01a0d3a9-fdb8-7f39-be4c-f1880d6ddd8e",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -3093,11 +3092,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-fdb8-7f39-be4c-f1880d6ddd8e",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4e2-2e46-7f6d-b958-8b0e5e60bf89",
-      "eventId": "01a0d4e2-2c71-79b1-a91c-272aa23cf23b",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -3126,11 +3125,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4e2-2c71-79b1-a91c-272aa23cf23b",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4ed-05c1-76d6-9e1d-ea287c5cc16e",
-      "eventId": "01a0d4ed-04de-781c-9ac9-b48e8ec8bef2",
       "predicate": "money_usd",
       "claimType": "numeric",
       "current": {
@@ -3159,11 +3158,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4ed-04de-781c-9ac9-b48e8ec8bef2",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4ed-2e9b-790c-8bc4-689480abc407",
-      "eventId": "01a0d4ed-2df6-7e36-b5ae-cb3a3def2fd1",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -3192,11 +3191,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4ed-2df6-7e36-b5ae-cb3a3def2fd1",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4f1-b4ca-7ba5-9e88-1dee62a0136b",
-      "eventId": "01a0d4e4-c880-701f-9601-35420fb7dfe3",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -3225,11 +3224,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4e4-c880-701f-9601-35420fb7dfe3",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4f5-799c-7748-8b24-4a15b1cec295",
-      "eventId": "01a0d4f5-78d0-7269-a71e-b2ffc09d126c",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -3258,11 +3257,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d4f5-78d0-7269-a71e-b2ffc09d126c",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4f5-94a3-7016-bebc-fb654afb673b",
-      "eventId": "01a0d4f5-93f0-7bca-9c03-8993f4b142f4",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -3291,11 +3290,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4f5-93f0-7bca-9c03-8993f4b142f4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4f5-94a7-78ce-b77f-2624056c787c",
-      "eventId": "01a0d4f5-93f0-7bca-9c03-8993f4b142f4",
       "predicate": "victims",
       "claimType": "numeric",
       "current": {
@@ -3324,11 +3323,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4f5-93f0-7bca-9c03-8993f4b142f4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4f5-96c9-702b-8029-12ded05ef2c7",
-      "eventId": "01a0d4f5-9610-7540-bb68-587f042b042d",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -3357,11 +3356,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d4f5-9610-7540-bb68-587f042b042d",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d4fd-1f51-7e29-96a9-985e7d5a313a",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "interest_rate",
       "claimType": "numeric",
       "current": {
@@ -3390,11 +3389,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d51b-68ac-72e1-af1d-4709c9ec0f4b",
-      "eventId": "01a0d3a9-e829-75b5-9413-2e7fa85939e4",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -3423,11 +3422,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e829-75b5-9413-2e7fa85939e4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d538-7e18-76c8-93b9-98861d021c76",
-      "eventId": "01a0d3aa-5025-79a5-84b1-d30b845ee1c7",
       "predicate": "troop_deployment",
       "claimType": "fact",
       "current": {
@@ -3458,11 +3457,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-5025-79a5-84b1-d30b845ee1c7",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d538-7e1d-7134-a070-0a8b82fb8532",
-      "eventId": "01a0d3aa-5025-79a5-84b1-d30b845ee1c7",
       "predicate": "speech_location",
       "claimType": "fact",
       "current": {
@@ -3498,11 +3497,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-5025-79a5-84b1-d30b845ee1c7",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d538-7e28-774a-b6cb-1e862cd8affc",
-      "eventId": "01a0d3aa-5025-79a5-84b1-d30b845ee1c7",
       "predicate": "arrest",
       "claimType": "fact",
       "current": {
@@ -3533,11 +3532,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-5025-79a5-84b1-d30b845ee1c7",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d556-0f1a-727d-b438-be51b90959ab",
-      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "predicate": "interest_rate",
       "claimType": "numeric",
       "current": {
@@ -3566,11 +3565,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d556-8db8-7af7-86d0-4ebe374ef6cf",
-      "eventId": "01a0d176-5e1f-7671-a188-dd99a8f0449b",
       "predicate": "interest_rate",
       "claimType": "numeric",
       "current": {
@@ -3604,11 +3603,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5e1f-7671-a188-dd99a8f0449b",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d573-f960-72b4-b6ac-cf7bd7c42232",
-      "eventId": "01a0d3aa-4c85-75a8-becd-c5dde0283dd4",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -3637,11 +3636,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-4c85-75a8-becd-c5dde0283dd4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f2-a7d8-7188-a1ec-6ccd6a958a32",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "missile_attack",
       "claimType": "fact",
       "current": {
@@ -3672,11 +3671,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f2-a7dc-7ec1-9cdc-f47cd19db471",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "deaths",
       "claimType": "fact",
       "current": {
@@ -3707,11 +3706,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f2-a7e1-7c62-a2fa-2c8329016543",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "debt_to_gdp",
       "claimType": "fact",
       "current": {
@@ -3742,11 +3741,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f2-a7e6-7cc9-89d6-6e6788c88f4f",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "military_deployment",
       "claimType": "fact",
       "current": {
@@ -3777,11 +3776,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f3-54e1-727c-b395-daa4eaa22569",
-      "eventId": "01a0d51b-6dee-76b9-81db-7b36bfa0c072",
       "predicate": "arrests",
       "claimType": "numeric",
       "current": {
@@ -3810,11 +3809,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d51b-6dee-76b9-81db-7b36bfa0c072",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f3-7917-7f95-9777-94bd58faa51b",
-      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -3843,11 +3842,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f3-9ea5-7420-aca0-b5c728f0eda7",
-      "eventId": "01a0d6f3-9dc5-7181-9937-7615325a9e6c",
       "predicate": "sentence_years",
       "claimType": "numeric",
       "current": {
@@ -3876,11 +3875,11 @@
         "derivedDocuments": 1,
         "rawSourceCount": 5
       },
+      "eventId": "01a0d6f3-9dc5-7181-9937-7615325a9e6c",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f3-b2ba-72a5-b386-51644328e019",
-      "eventId": "01a0d6f3-b1c5-756a-ab7e-c61190f22290",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -3909,11 +3908,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 2
       },
+      "eventId": "01a0d6f3-b1c5-756a-ab7e-c61190f22290",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f3-b2c7-7ea9-a15f-bac212d224a6",
-      "eventId": "01a0d6f3-b1c5-756a-ab7e-c61190f22290",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -3942,11 +3941,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d6f3-b1c5-756a-ab7e-c61190f22290",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f3-ceef-78a0-9efd-245d31d03f0d",
-      "eventId": "01a0d6f3-ce47-71df-85ff-e0ed8aeac83c",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -3975,11 +3974,11 @@
         "derivedDocuments": 1,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d6f3-ce47-71df-85ff-e0ed8aeac83c",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d6f3-d0ac-7ebb-91bf-d41bbde3e995",
-      "eventId": "01a0d574-053b-78ed-8fe3-c50f6eb3a5ef",
       "predicate": "sentence_years",
       "claimType": "numeric",
       "current": {
@@ -4008,11 +4007,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d574-053b-78ed-8fe3-c50f6eb3a5ef",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d704-de1a-7ca1-a261-91980aa462a2",
-      "eventId": "01a0d3aa-1e1f-7fa2-be33-1af697eaec0a",
       "predicate": "arrests",
       "claimType": "numeric",
       "current": {
@@ -4041,11 +4040,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3aa-1e1f-7fa2-be33-1af697eaec0a",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d787-6140-7682-85a6-d624e2e611b8",
-      "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
       "predicate": "interest_rate",
       "claimType": "numeric",
       "current": {
@@ -4074,11 +4073,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d787-6155-7f8b-a80e-c8dd4f0b9a85",
-      "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -4107,11 +4106,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d787-615b-7b88-8dfd-4cd15abcc418",
-      "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
       "predicate": "greeting_location",
       "claimType": "fact",
       "current": {
@@ -4147,11 +4146,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d787-617b-7b24-8b75-3d69123ca7a1",
-      "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
       "predicate": "clothing",
       "claimType": "fact",
       "current": {
@@ -4182,11 +4181,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-2197-7570-b6c4-52886ddb0119",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "outfit_color",
       "claimType": "fact",
       "current": {
@@ -4217,11 +4216,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-219c-7aa3-bff9-3bdd29f779a8",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "price",
       "claimType": "fact",
       "current": {
@@ -4252,11 +4251,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-21a1-71e9-a300-c7d3167fa8b8",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "product_launch",
       "claimType": "fact",
       "current": {
@@ -4287,11 +4286,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-21a6-7784-9a1b-37d917a9c713",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "emergency_declaration",
       "claimType": "fact",
       "current": {
@@ -4322,11 +4321,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-21ad-730e-ab50-3dbfbe2bb08a",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "national_guard_mobilized",
       "claimType": "fact",
       "current": {
@@ -4357,11 +4356,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-21b0-7c31-b515-3ff6bcd67e0f",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "trade_agreement_extension",
       "claimType": "fact",
       "current": {
@@ -4392,11 +4391,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-21b5-75d1-a83c-c22b81fbfe41",
-      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "predicate": "trade_agreement_extension",
       "claimType": "fact",
       "current": {
@@ -4427,11 +4426,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-3b25-784b-9a9a-c874951bd4a6",
-      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -4465,11 +4464,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-3b28-7c59-9180-368574143fd8",
-      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "predicate": "deaths",
       "claimType": "numeric",
       "current": {
@@ -4498,11 +4497,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-3b3f-7816-9de2-ab4ae58880d5",
-      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "predicate": "medal",
       "claimType": "fact",
       "current": {
@@ -4533,11 +4532,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-3b41-7c84-9383-c038693d07f4",
-      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "predicate": "medal",
       "claimType": "fact",
       "current": {
@@ -4568,11 +4567,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-3b43-776c-9dfd-7bf5ef71b4d8",
-      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "predicate": "smuggle_goods",
       "claimType": "fact",
       "current": {
@@ -4603,11 +4602,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-3b45-7505-a33b-85b1547aba47",
-      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "predicate": "arrest",
       "claimType": "fact",
       "current": {
@@ -4638,11 +4637,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-83c8-7a57-95d0-34cffbc69249",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "casualties",
       "claimType": "fact",
       "current": {
@@ -4673,11 +4672,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-83cd-70af-b434-e25339d5929f",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "meeting_date",
       "claimType": "fact",
       "current": {
@@ -4708,11 +4707,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-83d1-7592-8830-c8189c9b84f0",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "meeting",
       "claimType": "fact",
       "current": {
@@ -4743,11 +4742,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-83d4-7bed-984e-fa46c1fcb007",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "outbreak_year",
       "claimType": "fact",
       "current": {
@@ -4778,11 +4777,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-83d8-7d47-905b-686a6ca3b304",
-      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "predicate": "ceasefire_readiness",
       "claimType": "fact",
       "current": {
@@ -4813,11 +4812,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-e437-7aa8-b698-90dd1a1675b7",
-      "eventId": "01a0d706-0ef7-7b5b-855f-ac89c2aefaf7",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -4846,11 +4845,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d706-0ef7-7b5b-855f-ac89c2aefaf7",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-e725-778e-8513-b4d01cb71d3b",
-      "eventId": "01a0d6f3-9dc5-7181-9937-7615325a9e6c",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -4879,11 +4878,11 @@
         "derivedDocuments": 1,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d6f3-9dc5-7181-9937-7615325a9e6c",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-eb80-776a-8680-f2304a963c60",
-      "eventId": "01a0d788-eadb-7296-b53a-524f815ce349",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -4912,11 +4911,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d788-eadb-7296-b53a-524f815ce349",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-eb82-71cf-a666-ae2454c08a38",
-      "eventId": "01a0d788-eadb-7296-b53a-524f815ce349",
       "predicate": "area_ha",
       "claimType": "numeric",
       "current": {
@@ -4945,11 +4944,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d788-eadb-7296-b53a-524f815ce349",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d788-fb43-7161-a66a-cb886f2528ce",
-      "eventId": "01a0d788-fa78-7d20-b18e-65f6bf4ede9d",
       "predicate": "interest_rate",
       "claimType": "numeric",
       "current": {
@@ -4980,11 +4979,11 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d788-fa78-7d20-b18e-65f6bf4ede9d",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d789-c7a9-7b62-95ad-093c339c2c45",
-      "eventId": "01a0d789-c615-7ceb-b11d-bc45fdc75486",
       "predicate": "growth_pct",
       "claimType": "numeric",
       "current": {
@@ -5013,11 +5012,11 @@
         "derivedDocuments": 1,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d789-c615-7ceb-b11d-bc45fdc75486",
       "sourceSet": "holdout"
     },
     {
       "claimId": "01a0d789-c7af-7553-b3a6-f7f230f5d962",
-      "eventId": "01a0d789-c615-7ceb-b11d-bc45fdc75486",
       "predicate": "money_vnd",
       "claimType": "numeric",
       "current": {
@@ -5051,6 +5050,7 @@
         "derivedDocuments": 0,
         "rawSourceCount": 1
       },
+      "eventId": "01a0d789-c615-7ceb-b11d-bc45fdc75486",
       "sourceSet": "holdout"
     }
   ]

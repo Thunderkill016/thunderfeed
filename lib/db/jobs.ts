@@ -193,3 +193,63 @@ export async function markDirtyDone(
   );
   return (rowCount ?? 0) > 0;
 }
+
+/* ── dirty_claims — generation-safe claim queue (R7.1c) ──────────────
+ *
+ * Same contract as dirty_events but generation exists from day one:
+ * re-enqueue bumps generation, so a consumer's generation-bound ack can
+ * never retire a unit of work it never saw. Producers enqueue INSIDE the
+ * transaction that dirtied the claim — the hand-off commits atomically
+ * with the work. */
+export async function enqueueDirtyClaim(
+  client: pg.PoolClient | pg.Pool,
+  claimId: string,
+  job: string,
+  reason: string,
+): Promise<void> {
+  await client.query(
+    `INSERT INTO dirty_claims (claim_id, job, reason, generation)
+     VALUES ($1, $2, $3, 1)
+     ON CONFLICT (claim_id, job)
+     DO UPDATE SET processed_at = NULL, reason = $3, queued_at = now(),
+                   generation = dirty_claims.generation + 1`,
+    [claimId, job, reason],
+  );
+}
+
+/** One pending unit of claim work — the ack token is (claimId, generation). */
+export interface DirtyClaimWork {
+  claimId: string;
+  generation: number;
+}
+
+export async function pendingDirtyClaims(
+  job: string,
+): Promise<DirtyClaimWork[]> {
+  const { rows } = await getPool().query<{
+    claim_id: string;
+    generation: number;
+  }>(
+    `SELECT claim_id, generation::int AS generation FROM dirty_claims
+      WHERE job = $1 AND processed_at IS NULL
+      ORDER BY queued_at`,
+    [job],
+  );
+  return rows.map((r) => ({ claimId: r.claim_id, generation: r.generation }));
+}
+
+/** Acknowledge the EXACT unit read — false when a newer generation
+ *  exists (the pending row survives for the next drain). */
+export async function markDirtyClaimDone(
+  claimId: string,
+  job: string,
+  generation: number,
+): Promise<boolean> {
+  const { rowCount } = await getPool().query(
+    `UPDATE dirty_claims SET processed_at = now()
+      WHERE claim_id = $1 AND job = $2 AND generation = $3
+        AND processed_at IS NULL`,
+    [claimId, job, generation],
+  );
+  return (rowCount ?? 0) > 0;
+}

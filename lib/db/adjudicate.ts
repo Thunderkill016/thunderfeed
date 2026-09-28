@@ -34,6 +34,7 @@
  */
 import type pg from "pg";
 import { getPool, toJsonb } from "./pool";
+import { enqueueDirtyClaim } from "./jobs";
 import { contentHash } from "./writer";
 import { latestLineage } from "./read";
 import {
@@ -352,7 +353,13 @@ export async function adjudicateEvents(
   try {
     await client.query("BEGIN");
     for (const d of decisions) {
-      if (await mintClaimState(client, d, nowMs)) landed.push(d);
+      if (await mintClaimState(client, d, nowMs)) {
+        landed.push(d);
+        /* a landed truth-state version changes the claim's materiality
+         * input — dirty it inside the same transaction so the hand-off
+         * is atomic with the mint */
+        await enqueueDirtyClaim(client, d.claimId, "materiality", "adjudicate");
+      }
     }
     await client.query("COMMIT");
   } catch (err) {

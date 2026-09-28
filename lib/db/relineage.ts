@@ -25,7 +25,7 @@
  * failedEventIds so the caller's job cursor can freeze before it. */
 import type pg from "pg";
 import { getPool, toJsonb } from "./pool";
-import { enqueueDirty } from "./jobs";
+import { enqueueDirty, enqueueDirtyClaim } from "./jobs";
 import {
   classifyLineage,
   resolveOrigins,
@@ -350,6 +350,21 @@ export async function relineageEvents(
        * events.last_seen_at is untouched */
       for (const de of dirtiedEvents)
         await enqueueDirty(c, de, "adjudicate", "relineage");
+      /* claim-grain hand-off: the docs whose lineage changed may back
+       * claims on ANY event — map changed doc → claim_evidence across
+       * all claim_versions → logical claim, and dirty exactly those
+       * (never enqueue the whole claims table) */
+      const { rows: touchedClaims } = await c.query<{ claim_id: string }>(
+        `SELECT DISTINCT cv.claim_id FROM claim_evidence ce
+           JOIN claim_versions cv ON cv.id = ce.claim_version_id
+           JOIN evidence_versions ev ON ev.id = ce.evidence_version_id
+          WHERE ev.document_id IN (${mintedDocIds
+            .map((_, i) => `$${i + 1}`)
+            .join(",")})`,
+        mintedDocIds,
+      );
+      for (const r of touchedClaims)
+        await enqueueDirtyClaim(c, r.claim_id, "materiality", "relineage");
       await c.query("COMMIT");
       result.changedEventIds.push(...dirtiedEvents);
     } catch (err) {
