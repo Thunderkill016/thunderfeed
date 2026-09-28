@@ -42,6 +42,7 @@ import {
   positionsFromVotes,
   posKey,
   rankWinner,
+  type Position,
   type Vote,
 } from "./positions";
 
@@ -65,6 +66,28 @@ const CHANGE_RECORD: Record<string, string> = {
  *  live evidence graph. 'confirmed'/'corrected'/'retracted' are
  *  authority-protected; 'unresolved' is reserved for manual flagging. */
 export const MUTABLE_STATES = ["reported", "supported", "disputed"] as const;
+
+/**
+ * The single "which position currently stands" rule — shared by the
+ * batch adjudicator and any downstream provenance reader (R7 claim
+ * materiality) so they can never disagree:
+ *
+ *   mutable truth  (reported/supported/disputed)
+ *     → canonical rankWinner over live positions
+ *   protected truth (confirmed/corrected/retracted/unresolved)
+ *     → the current version's own position. Authority-protected truth
+ *       is NOT re-adjudicated: an old publisher majority cannot re-root
+ *       a corrected/confirmed standing value.
+ */
+export function standingClaimPos(opts: {
+  positions: Position[];
+  currentPos: string;
+  currentState: string;
+}): string | null {
+  if (!(MUTABLE_STATES as readonly string[]).includes(opts.currentState))
+    return opts.currentPos;
+  return rankWinner([...opts.positions])?.pos ?? null;
+}
 
 interface ClaimRow {
   claim_id: string;

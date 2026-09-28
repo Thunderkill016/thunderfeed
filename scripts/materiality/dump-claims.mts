@@ -26,12 +26,14 @@ try {
 
 import { getPool } from "../../lib/db/pool.ts";
 import { effectiveRoots, latestLineage } from "../../lib/db/read.ts";
-import { resolveOriginSources } from "../../lib/db/adjudicate.ts";
+import {
+  resolveOriginSources,
+  standingClaimPos,
+} from "../../lib/db/adjudicate.ts";
 import {
   latestVotes,
   positionsFromVotes,
   posKey,
-  rankWinner,
   type Vote,
 } from "../../lib/db/positions.ts";
 import { toJsonb } from "../../lib/db/pool.ts";
@@ -121,10 +123,16 @@ interface ClaimEvidenceStats {
  *   → live standing docs = docs behind votes on the winning position
  *   → latestLineage closure + effectiveRoots over those docs */
 async function getClaimEvidenceStats(
-  claimIds: string[],
+  claims: {
+    claimId: string;
+    currentValue: unknown;
+    currentUnit: string | null;
+    currentState: string;
+  }[],
 ): Promise<Map<string, ClaimEvidenceStats>> {
   const db = getPool();
   const out = new Map<string, ClaimEvidenceStats>();
+  const claimIds = claims.map((c) => c.claimId);
   if (!claimIds.length) return out;
 
   const { rows: versions } = await db.query<{
@@ -151,11 +159,13 @@ async function getClaimEvidenceStats(
     version_no: number;
     value: unknown;
     unit: string | null;
+    strength: string | null;
     doc_id: string;
     source_id: string;
     vote_at: string;
   }>(
     `SELECT cv.claim_id, cv.version_no, cv.value, cv.unit,
+            ce.evidence_strength AS strength,
             ed.id AS doc_id, ed.source_id,
             COALESCE(ed.published_at, ev.observed_at) AS vote_at
        FROM claim_evidence ce
@@ -212,7 +222,9 @@ async function getClaimEvidenceStats(
       unit: r.unit,
       versionNo: r.version_no,
       state: "supported",
-      primary: false,
+      /* same flag as the batch adjudicator — a 'direct' evidence row is
+       * what lets a lone primary beat a publisher majority */
+      primary: r.strength === "direct",
       at: Date.parse(r.vote_at),
       docId: r.doc_id,
     };
@@ -222,7 +234,8 @@ async function getClaimEvidenceStats(
     ).push(vote);
   }
 
-  for (const claimId of claimIds) {
+  for (const c of claims) {
+    const claimId = c.claimId;
     const vers = (versByClaim.get(claimId) ?? []).map((v) => ({
       id: v.id,
       version_no: v.version_no,
@@ -234,14 +247,22 @@ async function getClaimEvidenceStats(
       string,
       Evote
     >;
-    const winner = rankWinner([...positionsFromVotes(latest, vers).values()]);
+    /* Authority-protected truth (confirmed/corrected/retracted/
+     * unresolved) is NOT re-ranked — an old publisher majority cannot
+     * re-root a corrected value. Mutable states take canonical
+     * rankWinner. Shared helper keeps R6/R7 on one rule. */
+    const standingPos = standingClaimPos({
+      positions: [...positionsFromVotes(latest, vers).values()],
+      currentPos: posKey(c.currentValue, c.currentUnit),
+      currentState: c.currentState,
+    });
     // live standing docs = the docs behind each voter's latest vote,
-    // restricted to votes standing on the winning position — a source
+    // restricted to votes standing on the standing position — a source
     // whose latest assertion moved elsewhere no longer counts here
     const standingDocs = [
       ...new Set(
         [...latest.values()]
-          .filter((v) => winner && v.pos === winner.pos)
+          .filter((v) => v.pos === standingPos)
           .map((v) => v.docId),
       ),
     ]
@@ -308,7 +329,14 @@ ORDER BY c.id`;
     NEGATIVE_SAMPLE,
   ]);
 
-  const statsMap = await getClaimEvidenceStats(rows.map((r) => r.claim_id));
+  const statsMap = await getClaimEvidenceStats(
+    rows.map((r) => ({
+      claimId: r.claim_id,
+      currentValue: r.value,
+      currentUnit: r.unit,
+      currentState: r.state,
+    })),
+  );
 
   const items = rows.map((r) => {
     const ev = statsMap.get(r.claim_id);

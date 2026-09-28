@@ -18,6 +18,14 @@ import {
   type ClaimMaterialityInput,
 } from "../lib/materiality-claims";
 import { effectiveRoots } from "../lib/db/read";
+import { standingClaimPos } from "../lib/db/adjudicate";
+import {
+  latestVotes,
+  positionsFromVotes,
+  posKey,
+  rankWinner,
+  type Vote,
+} from "../lib/db/positions";
 
 function claim(
   over: Partial<ClaimMaterialityInput> = {},
@@ -475,6 +483,130 @@ describe("claim evidence stats — canonical effectiveRoots semantics", () => {
     );
     assert.equal(s.unresolvedOrigins, 1);
     assert.equal(s.confirmedIndependentOrigins, 0);
+  });
+});
+
+/* ── R7.1b.2 — standing-position parity with R6 truth ── */
+
+const vote = (
+  voter: string,
+  value: number,
+  over: Partial<Vote> = {},
+): Vote => ({
+  voter,
+  pos: posKey(value, "%"),
+  valueJson: JSON.stringify(value),
+  unit: "%",
+  versionNo: 1,
+  state: "supported",
+  primary: false,
+  at: 1000,
+  ...over,
+});
+const vers = (values: number[]) =>
+  values.map((v, i) => ({
+    id: `v${i + 1}`,
+    version_no: i + 1,
+    pos: posKey(v, "%"),
+    valueJson: JSON.stringify(v),
+  }));
+
+describe("standingClaimPos — R6/R7 parity", () => {
+  it("primary beats publisher majority — R7 standing == R6 winner", () => {
+    // A: Reuters+BBC publishers stand on 20; B: one Fed DIRECT primary on 25
+    const votes = [
+      vote("reuters", 20, { at: 2000 }),
+      vote("bbc", 20, { at: 2000 }),
+      vote("fed", 25, { at: 1000, primary: true }),
+    ];
+    const positions = [
+      ...positionsFromVotes(latestVotes(votes), vers([20, 25])).values(),
+    ];
+    const r6Winner = rankWinner(positions)!.pos;
+    const r7Standing = standingClaimPos({
+      positions,
+      currentPos: posKey(25, "%"),
+      currentState: "disputed",
+    });
+    assert.equal(r6Winner, posKey(25, "%")); // primary wins, not majority
+    assert.equal(r7Standing, r6Winner);
+  });
+
+  it("corrected current value beats the old majority position", () => {
+    // 10 publishers said 100; authority correction stands on 80
+    const votes = Array.from({ length: 10 }, (_, i) =>
+      vote(`outlet${i}`, 100, { at: 1000 }),
+    );
+    const positions = [
+      ...positionsFromVotes(latestVotes(votes), vers([100, 80])).values(),
+    ];
+    const standing = standingClaimPos({
+      positions,
+      currentPos: posKey(80, "%"),
+      currentState: "corrected",
+    });
+    // R6 keeps corrected truth; provenance must follow the corrected
+    // position — never re-adjudicate back to the outvoted 100
+    assert.equal(standing, posKey(80, "%"));
+    assert.equal(rankWinner(positions)!.pos, posKey(100, "%")); // what a raw
+    // rankWinner would wrongly pick — the protected guard is load-bearing
+  });
+
+  it("confirmed position: later publisher disagreement cannot re-root", () => {
+    const votes = [
+      vote("fed", 25, { at: 1000, primary: true }),
+      vote("reuters", 30, { at: 3000 }), // later disagreement
+      vote("bbc", 30, { at: 3000 }),
+    ];
+    const positions = [
+      ...positionsFromVotes(latestVotes(votes), vers([25, 30])).values(),
+    ];
+    const standing = standingClaimPos({
+      positions,
+      currentPos: posKey(25, "%"),
+      currentState: "confirmed",
+    });
+    assert.equal(standing, posKey(25, "%")); // protected
+  });
+
+  it("mutable disputed/supported still follows canonical rankWinner", () => {
+    const votes = [
+      vote("reuters", 20),
+      vote("bbc", 20),
+      vote("vne", 35, { at: 2000 }),
+    ];
+    const positions = [
+      ...positionsFromVotes(latestVotes(votes), vers([20, 35])).values(),
+    ];
+    for (const st of ["reported", "supported", "disputed"]) {
+      const standing = standingClaimPos({
+        positions,
+        currentPos: posKey(35, "%"), // current version could be either
+        currentState: st,
+      });
+      assert.equal(standing, rankWinner(positions)!.pos); // majority pos 20
+    }
+  });
+
+  it("invariant: same fixture → R6 rankWinner == R7 standing for mutable states", () => {
+    // parity test: any mutable claim must land on exactly what R6's
+    // canonical ranking produces, byte-identical pos
+    const votes = [
+      vote("a", 1),
+      vote("b", 1),
+      vote("c", 2, { at: 3000, primary: true }),
+    ];
+    const positions = [
+      ...positionsFromVotes(latestVotes(votes), vers([1, 2])).values(),
+    ];
+    assert.equal(
+      standingClaimPos({
+        positions,
+        currentPos: posKey(1, "%"),
+        currentState: "supported",
+      }),
+      rankWinner(positions)!.pos,
+    );
   });
 });
 
