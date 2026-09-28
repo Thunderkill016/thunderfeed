@@ -10,6 +10,7 @@ import {
   scoreEventMateriality,
   scoreMacroDelta,
   scoreMarketMove,
+  transformSeries,
 } from "../lib/materiality";
 
 const ev = (
@@ -18,8 +19,7 @@ const ev = (
 ) =>
   scoreEventMateriality({
     predicates,
-    entityTypes: [],
-    entitySlugs: [],
+    entities: [],
     topic: "world",
     ...extra,
   });
@@ -81,7 +81,7 @@ test("a real discounting channel escapes the war cap", () => {
 
 test("lone-company event is issuer-scoped", () => {
   const a = ev(["foreign_direct_investment"], {
-    entityTypes: ["company"],
+    entities: [{ slug: "vinfast", type: "company" }],
     topic: "vietnam",
   });
   assert.equal(a.scope, "issuer");
@@ -139,15 +139,31 @@ test("abnormal core print (|z|≥2.5) → major", () => {
   assert.deepEqual(a.channels, ["discounting"]);
 });
 
-test("discrete policy-rate step → major decision", () => {
+test("official decision instrument step (ECBDFR) → major decision", () => {
   const a = macro({
-    seriesCode: "FEDFUNDS",
+    seriesCode: "ECBDFR",
     value: 4.0,
     prevValue: 3.75,
     history: hist(3.5),
   });
   assert.equal(a.materiality, "major");
   assert.equal(a.directness, "direct");
+  assert.match(a.reason, /policy rate step/);
+});
+
+test("FEDFUNDS is an effective rate — a step is abnormal, not a 'decision'", () => {
+  assert.equal(classifyMacroSeries("fred", "FEDFUNDS").role, "effective");
+  assert.equal(classifyMacroSeries("fred", "ECBDFR").role, "decision");
+  const a = macro({
+    seriesCode: "FEDFUNDS",
+    value: 4.0,
+    prevValue: 3.75,
+    history: hist(3.5),
+  });
+  /* a 25bp jump in the effective rate IS abnormal — but the reason must
+   * never call it a policy decision without a decision instrument */
+  assert.equal(a.materiality, "major");
+  assert.doesNotMatch(a.reason, /policy rate step/);
 });
 
 test("insufficient history → limited + insufficient_history caution", () => {
@@ -182,6 +198,8 @@ const ca = (amt: number, extra = {}) =>
     cashAmount: amt,
     currency: "VND",
     referencePrice: 100,
+    priceBasis: "pre_ex",
+    exDate: "2026-03-01T00:00:00Z",
     splitFactor: null,
     ...extra,
   });
@@ -192,9 +210,21 @@ test("tiny dividend → limited; big yield → meaningful", () => {
 });
 
 test("no price context → limited + caution", () => {
-  const a = ca(5, { referencePrice: null });
+  const a = ca(5, { referencePrice: null, priceBasis: "none" });
   assert.equal(a.materiality, "limited");
   assert.ok(a.cautions.includes("no_price_context"));
+});
+
+test("look-ahead price basis → yield unverifiable, flagged", () => {
+  const a = ca(6, { priceBasis: "latest" });
+  assert.equal(a.materiality, "limited");
+  assert.ok(a.cautions.includes("lookahead_price"));
+});
+
+test("provider-magnitude anomaly ($567 'dividend') → flagged + limited", () => {
+  const a = ca(567.97, { referencePrice: 90 });
+  assert.equal(a.materiality, "limited");
+  assert.ok(a.cautions.includes("provider_magnitude_unverified"));
 });
 
 test("split is mechanical — no channel, limited", () => {
@@ -204,6 +234,8 @@ test("split is mechanical — no channel, limited", () => {
     cashAmount: null,
     currency: null,
     referencePrice: 341,
+    priceBasis: "pre_ex",
+    exDate: "2020-08-31T00:00:00Z",
     splitFactor: 4,
   });
   assert.equal(a.materiality, "limited");
@@ -243,8 +275,7 @@ test("index move carries wider scope", () => {
 test("wire-copy count cannot inflate — scorer has no such input", () => {
   const base = {
     predicates: ["sanctions", "interest_rate"],
-    entityTypes: [] as string[],
-    entitySlugs: [] as string[],
+    entities: [] as { slug: string; type: string }[],
     topic: "world",
   };
   const bare = scoreEventMateriality(base);
@@ -267,4 +298,85 @@ test("series classification separates VN scope from global", () => {
     classifyMacroSeries("worldbank", "VNM:NY.GDP.MKTP.KD.ZG").salience,
     "baseline",
   );
+  assert.equal(classifyMacroSeries("fred", "CPIAUCSL").measure, "level_index");
+  assert.equal(classifyMacroSeries("fred", "PAYEMS").measure, "stock");
+  assert.equal(classifyMacroSeries("fred", "DGS10").measure, "rate_pct");
+});
+
+/* ── R7.0b semantics hardening ─────────────────────────────── */
+
+test("transform semantics: rates diff in pp, indexes/levels pct-change", () => {
+  const rate = transformSeries("rate_pct", 4.5, [4.0, 4.25]);
+  assert.equal(rate!.transform, "diff");
+  assert.equal(rate!.observed, 0.25);
+  assert.deepEqual(rate!.basis, [0.25]);
+  const cpi = transformSeries("level_index", 104, [100, 102]);
+  assert.equal(cpi!.transform, "pct_change");
+  assert.ok(Math.abs(cpi!.observed - (2 / 102) * 100) < 1e-9);
+  assert.ok(Math.abs(cpi!.basis[0] - 2) < 1e-9);
+});
+
+test("a trending LEVEL is not abnormal — CPI 21→334 trend ≠ surprise", () => {
+  /* 40 noisy rising CPI levels: value continues the same trend. Raw
+   * level z would be enormous; change-space z is ~0. */
+  const trend = Array.from(
+    { length: 40 },
+    (_, i) => 300 + i * 0.85 + Math.sin(i * 2.3) * 0.9,
+  );
+  const a = macro({
+    seriesCode: "CPIAUCSL",
+    value: 300 + 40 * 0.85 + Math.sin(40 * 2.3) * 0.9, // on-trend print
+    prevValue: trend[39],
+    history: trend,
+  });
+  assert.equal(a.materiality, "limited");
+});
+
+test("a genuinely abnormal CPI change still fires", () => {
+  const trend = Array.from(
+    { length: 40 },
+    (_, i) => 300 + i * 0.85 + Math.sin(i * 2.3) * 0.9,
+  );
+  const a = macro({
+    seriesCode: "CPIAUCSL",
+    value: 300 + 40 * 0.85 + 9, // +2.7% MoM vs ~0.3% prints
+    prevValue: trend[39],
+    history: trend,
+  });
+  assert.equal(a.materiality, "major");
+});
+
+test("payroll LEVEL (159M) is not abnormal — only the Δ is measured", () => {
+  const trend = Array.from(
+    { length: 40 },
+    (_, i) => 155000 + i * 200 + Math.sin(i * 1.7) * 900,
+  );
+  const a = macro({
+    seriesCode: "PAYEMS",
+    value: trend[39] + 210,
+    prevValue: trend[39],
+    history: trend,
+  });
+  assert.equal(a.materiality, "limited");
+});
+
+test("typed targets: country entity → country_exposure, never bare slug", () => {
+  const a = ev(["sanctions", "tariff_cut"], {
+    entities: [
+      { slug: "us", type: "country" },
+      { slug: "vietnam", type: "country" },
+      { slug: "vinfast", type: "company" },
+    ],
+  });
+  assert.deepEqual(a.affectedTargets, [
+    { type: "country_exposure", key: "us" },
+    { type: "country_exposure", key: "vietnam" },
+  ]);
+});
+
+test("no channels → no targets (mention ≠ exposure)", () => {
+  const a = ev(["money_usd", "meeting"], {
+    entities: [{ slug: "us", type: "country" }],
+  });
+  assert.deepEqual(a.affectedTargets, []);
 });

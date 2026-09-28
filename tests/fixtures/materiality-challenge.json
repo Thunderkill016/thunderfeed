@@ -1,0 +1,477 @@
+{
+  "purpose": "R7.0b challenge set — curated historical/synthetic cases covering the major/systemic classes the 48h live holdout lacks. sourceSet='challenge' on every item; never mixed into the live holdout metrics.",
+  "labeled_by": "pm-curated-v1",
+  "reviewed": true,
+  "items": [
+    {
+      "kind": "macro_release",
+      "id": "ch:ecb-hike-2022-09",
+      "title": "ECB deposit facility +75bp step",
+      "sourceSet": "challenge",
+      "subject": {
+        "provider": "fred",
+        "seriesCode": "ECBDFR",
+        "frequency": "M",
+        "value": 1.5,
+        "prevValue": 0.75,
+        "history": [
+          0.0, 0.0, 0.0, 0.25, 0.5, 0.5, 0.5, 0.5, 0.75, 0.75, 0.75, 0.75
+        ]
+      }
+    },
+    {
+      "kind": "macro_release",
+      "id": "ch:dgs10-spike",
+      "title": "10Y UST yield jumps 60bp in one print",
+      "sourceSet": "challenge",
+      "subject": {
+        "provider": "fred",
+        "seriesCode": "DGS10",
+        "frequency": "D",
+        "value": 4.5,
+        "prevValue": 3.9,
+        "history": [
+          3.8, 3.85, 3.82, 3.88, 3.9, 3.87, 3.91, 3.89, 3.9, 3.92, 3.9, 3.9
+        ]
+      }
+    },
+    {
+      "kind": "macro_release",
+      "id": "ch:fedfunds-creep",
+      "title": "FEDFUNDS drifts 2bp inside the corridor",
+      "sourceSet": "challenge",
+      "subject": {
+        "provider": "fred",
+        "seriesCode": "FEDFUNDS",
+        "frequency": "M",
+        "value": 5.38,
+        "prevValue": 5.36,
+        "history": [
+          5.25, 5.3, 5.27, 5.33, 5.29, 5.34, 5.3, 5.36, 5.31, 5.35, 5.32, 5.36
+        ]
+      }
+    },
+    {
+      "kind": "macro_release",
+      "id": "ch:cpi-trend-level",
+      "title": "CPI index prints a new all-time high on trend",
+      "sourceSet": "challenge",
+      "subject": {
+        "provider": "fred",
+        "seriesCode": "CPIAUCSL",
+        "frequency": "M",
+        "value": 334.13,
+        "prevValue": 333.2,
+        "history": [
+          318.0, 318.9, 320.2, 321.0, 322.4, 323.2, 324.6, 325.5, 326.9, 328.1,
+          329.3, 330.4, 331.6, 332.7, 333.2
+        ]
+      }
+    },
+    {
+      "kind": "macro_release",
+      "id": "ch:payems-collapse",
+      "title": "Nonfarm payrolls drop 700k (recession-scale print)",
+      "sourceSet": "challenge",
+      "subject": {
+        "provider": "fred",
+        "seriesCode": "PAYEMS",
+        "frequency": "M",
+        "value": 150000,
+        "prevValue": 150700,
+        "history": [
+          149800, 149950, 150050, 150150, 150260, 150380, 150490, 150560,
+          150620, 150680, 150720, 150700
+        ]
+      }
+    },
+    {
+      "kind": "event",
+      "id": "ch:vn-tariff-46",
+      "title": "US imposes 46% reciprocal tariff on Vietnam exports",
+      "sourceSet": "challenge",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": [
+          "tariff_imposition",
+          "tariff_rate",
+          "export_regulation_change",
+          "trade_negotiation"
+        ],
+        "entities": [
+          { "slug": "us", "type": "country" },
+          { "slug": "vietnam", "type": "country" },
+          { "slug": "the_white_house", "type": "government_body" }
+        ]
+      }
+    },
+    {
+      "kind": "event",
+      "id": "ch:fed-svb-btfp",
+      "title": "Fed creates Bank Term Funding Program after SVB collapse",
+      "sourceSet": "challenge",
+      "subject": {
+        "topic": "world",
+        "predicates": [
+          "interest_rate",
+          "fund_disbursement",
+          "policy_approved",
+          "bank_failure",
+          "deposit_guarantee"
+        ],
+        "entities": [
+          { "slug": "federal_reserve", "type": "central_bank" },
+          { "slug": "us", "type": "country" }
+        ]
+      }
+    },
+    {
+      "kind": "event",
+      "id": "ch:covid-lockdown",
+      "title": "Global lockdowns halt economic activity (Mar 2020)",
+      "sourceSet": "challenge",
+      "subject": {
+        "topic": "world",
+        "predicates": [
+          "lockdown",
+          "economic_shutdown",
+          "deaths",
+          "policy_approved",
+          "supply_chain_disruption"
+        ],
+        "entities": [{ "slug": "who", "type": "multilateral_organization" }]
+      }
+    },
+    {
+      "kind": "event",
+      "id": "ch:celeb-death",
+      "title": "Famous musician dies aged 79",
+      "sourceSet": "challenge",
+      "subject": {
+        "topic": "world",
+        "predicates": ["deaths"],
+        "entities": [{ "slug": "uk", "type": "country" }]
+      }
+    },
+    {
+      "kind": "event",
+      "id": "ch:small-dividend",
+      "title": "Mid-cap declares routine 1.2% dividend",
+      "sourceSet": "challenge",
+      "subject": {
+        "topic": "world",
+        "predicates": ["dividend_declaration", "net_profit"],
+        "entities": [{ "slug": "some_company", "type": "company" }]
+      }
+    },
+    {
+      "kind": "corporate_action",
+      "id": "ch:googl-2014-anomaly",
+      "title": "GOOGL 'cash dividend' $567.97 (2014) — provider artifact",
+      "sourceSet": "challenge",
+      "subject": {
+        "actionType": "cash_dividend",
+        "instrumentKey": "equity:NGS:GOOGL",
+        "cashAmount": 567.97,
+        "currency": null,
+        "referencePrice": 90.0,
+        "priceBasis": "pre_ex",
+        "exDate": "2014-04-02T17:00:00Z",
+        "splitFactor": null
+      }
+    },
+    {
+      "kind": "corporate_action",
+      "id": "ch:aapl-2020-split",
+      "title": "AAPL 4:1 split",
+      "sourceSet": "challenge",
+      "subject": {
+        "actionType": "stock_split",
+        "instrumentKey": "equity:NGS:AAPL",
+        "cashAmount": null,
+        "currency": null,
+        "referencePrice": 124.8,
+        "priceBasis": "pre_ex",
+        "exDate": "2020-08-31T00:00:00Z",
+        "splitFactor": 4
+      }
+    },
+    {
+      "kind": "corporate_action",
+      "id": "ch:big-special-dividend",
+      "title": "One-off special dividend ≈ 8% yield",
+      "sourceSet": "challenge",
+      "subject": {
+        "actionType": "cash_dividend",
+        "instrumentKey": "equity:NYSE:XYZ",
+        "cashAmount": 8.0,
+        "currency": "USD",
+        "referencePrice": 100.0,
+        "priceBasis": "pre_ex",
+        "exDate": "2021-06-10T00:00:00Z",
+        "splitFactor": null
+      }
+    },
+    {
+      "kind": "corporate_action",
+      "id": "ch:dividend-lookahead",
+      "title": "Historical dividend scored against today's price",
+      "sourceSet": "challenge",
+      "subject": {
+        "actionType": "cash_dividend",
+        "instrumentKey": "equity:NGS:AAPL",
+        "cashAmount": 2.65,
+        "currency": "USD",
+        "referencePrice": 341.07,
+        "priceBasis": "latest",
+        "exDate": "2012-08-09T00:00:00Z",
+        "splitFactor": null
+      }
+    },
+    {
+      "kind": "market_move",
+      "id": "ch:vix-crash-equity",
+      "title": "VN-Index -6.8% single session",
+      "sourceSet": "challenge",
+      "subject": {
+        "instrumentKey": "index:HOSE:VNINDEX",
+        "assetClass": "index",
+        "pctChange": -6.8,
+        "trailingVol": 0.9,
+        "sessionDate": "2020-03-16"
+      }
+    },
+    {
+      "kind": "market_move",
+      "id": "ch:routine-move",
+      "title": "Blue-chip drifts +0.4%",
+      "sourceSet": "challenge",
+      "subject": {
+        "instrumentKey": "equity:HOSE:VNM",
+        "assetClass": "equity",
+        "pctChange": 0.4,
+        "trailingVol": 1.5,
+        "sessionDate": "2026-09-25"
+      }
+    },
+    {
+      "kind": "market_move",
+      "id": "ch:insample-vol",
+      "title": "Move that would inflate its own baseline",
+      "sourceSet": "challenge",
+      "subject": {
+        "instrumentKey": "crypto:BINANCE:BTCUSDT",
+        "assetClass": "crypto",
+        "pctChange": -12.0,
+        "trailingVol": 3.0,
+        "sessionDate": "2020-03-12"
+      }
+    },
+    {
+      "kind": "event",
+      "id": "ch:hormuz-threat",
+      "title": "Iran threatens to close Hormuz strait",
+      "sourceSet": "challenge",
+      "subject": {
+        "topic": "world",
+        "predicates": [
+          "sanctions",
+          "oil_supply_disruption",
+          "missile",
+          "military_threat"
+        ],
+        "entities": [
+          { "slug": "iran", "type": "country" },
+          { "slug": "us", "type": "country" }
+        ]
+      }
+    },
+    {
+      "kind": "event",
+      "id": "ch:sbv-rate-cut",
+      "title": "SBV cuts refinancing rate 50bp",
+      "sourceSet": "challenge",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["interest_rate", "policy_rate", "rate_cut"],
+        "entities": [
+          { "slug": "state_bank_of_vietnam", "type": "central_bank" },
+          { "slug": "vietnam", "type": "country" }
+        ]
+      }
+    },
+    {
+      "kind": "event",
+      "id": "ch:gold-local-loss",
+      "title": "SJC gold falls, buyers lose 6M VND/lượng in a week",
+      "sourceSet": "challenge",
+      "subject": {
+        "topic": "vietnam",
+        "predicates": ["gold_price", "price_drop"],
+        "entities": [{ "slug": "vietnam", "type": "country" }]
+      }
+    }
+  ],
+  "labels": {
+    "macro_release:ch:ecb-hike-2022-09": {
+      "intrinsicMateriality": "major",
+      "channels": ["discounting", "funding_liquidity"],
+      "affectedTargets": ["macro_factor:fred:ECBDFR"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "official decision instrument +75bp step"
+    },
+    "macro_release:ch:dgs10-spike": {
+      "intrinsicMateriality": "major",
+      "channels": ["discounting"],
+      "affectedTargets": ["macro_factor:fred:DGS10"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "60bp single-print move is far outside change-space distribution"
+    },
+    "macro_release:ch:fedfunds-creep": {
+      "intrinsicMateriality": "limited",
+      "channels": ["discounting"],
+      "affectedTargets": ["macro_factor:fred:FEDFUNDS"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "effective-rate drift inside corridor is not a policy decision"
+    },
+    "macro_release:ch:cpi-trend-level": {
+      "intrinsicMateriality": "limited",
+      "channels": ["discounting", "fundamental"],
+      "affectedTargets": ["macro_factor:fred:CPIAUCSL"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "new all-time-high LEVEL on trend is not abnormal — the MoM change is ordinary"
+    },
+    "macro_release:ch:payems-collapse": {
+      "intrinsicMateriality": "major",
+      "channels": ["fundamental", "discounting"],
+      "affectedTargets": ["macro_factor:fred:PAYEMS"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "-700k payrolls is a recession-scale change-space outlier"
+    },
+    "event:ch:vn-tariff-46": {
+      "intrinsicMateriality": "major",
+      "channels": ["policy_regulatory", "external", "fundamental"],
+      "affectedTargets": ["country_exposure:vietnam", "country_exposure:us"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "direct trade-policy instrument on Vietnam exports"
+    },
+    "event:ch:fed-svb-btfp": {
+      "intrinsicMateriality": "major",
+      "channels": ["funding_liquidity", "discounting"],
+      "affectedTargets": ["country_exposure:us"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "emergency liquidity facility — systemic banking stress response"
+    },
+    "event:ch:covid-lockdown": {
+      "intrinsicMateriality": "systemic",
+      "channels": ["fundamental", "policy_regulatory"],
+      "affectedTargets": ["country_exposure:us"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "global multi-channel economic shutdown — the only systemic positive; baseline has no systemic path, gap must be visible"
+    },
+    "event:ch:celeb-death": {
+      "intrinsicMateriality": "none",
+      "channels": [],
+      "affectedTargets": [],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "negative control: dramatic headline, zero economic content"
+    },
+    "event:ch:small-dividend": {
+      "intrinsicMateriality": "limited",
+      "channels": ["fundamental"],
+      "affectedTargets": ["entity:some_company"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "issuer-scoped routine dividend"
+    },
+    "corporate_action:ch:googl-2014-anomaly": {
+      "intrinsicMateriality": "limited",
+      "channels": ["fundamental"],
+      "affectedTargets": ["instrument:equity:NGS:GOOGL"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "provider-semantics artifact — must be flagged, never priced as a yield"
+    },
+    "corporate_action:ch:aapl-2020-split": {
+      "intrinsicMateriality": "limited",
+      "channels": [],
+      "affectedTargets": ["instrument:equity:NGS:AAPL"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "mechanical — no value change"
+    },
+    "corporate_action:ch:big-special-dividend": {
+      "intrinsicMateriality": "meaningful",
+      "channels": ["fundamental"],
+      "affectedTargets": ["instrument:equity:NYSE:XYZ"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "~8% yield vs pre-ex price"
+    },
+    "corporate_action:ch:dividend-lookahead": {
+      "intrinsicMateriality": "limited",
+      "channels": ["fundamental"],
+      "affectedTargets": ["instrument:equity:NGS:AAPL"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "with look-ahead price the yield is unverifiable → limited + caution"
+    },
+    "market_move:ch:vix-crash-equity": {
+      "intrinsicMateriality": "meaningful",
+      "channels": [],
+      "affectedTargets": ["instrument:index:HOSE:VNINDEX"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "z≈7.5 index crash — proves reaction, asserts no cause"
+    },
+    "market_move:ch:routine-move": {
+      "intrinsicMateriality": "limited",
+      "channels": [],
+      "affectedTargets": ["instrument:equity:HOSE:VNM"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "sub-vol drift"
+    },
+    "market_move:ch:insample-vol": {
+      "intrinsicMateriality": "meaningful",
+      "channels": [],
+      "affectedTargets": ["instrument:crypto:BINANCE:BTCUSDT"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "-12% vs 3% trailing vol, z=4 — out-of-sample baseline still flags it"
+    },
+    "event:ch:hormuz-threat": {
+      "intrinsicMateriality": "meaningful",
+      "channels": ["external", "policy_regulatory"],
+      "affectedTargets": ["country_exposure:iran", "country_exposure:us"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "threat rhetoric under war context — capped meaningful, not major"
+    },
+    "event:ch:sbv-rate-cut": {
+      "intrinsicMateriality": "major",
+      "channels": ["discounting", "funding_liquidity"],
+      "affectedTargets": ["country_exposure:vietnam"],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "real policy-rate decision — discounting channel escapes war-free cap"
+    },
+    "event:ch:gold-local-loss": {
+      "intrinsicMateriality": "limited",
+      "channels": [],
+      "affectedTargets": [],
+      "labeled_by": "pm-curated-v1",
+      "reviewed": true,
+      "note": "retail price complaint — no instrument predicate, observation only"
+    }
+  }
+}

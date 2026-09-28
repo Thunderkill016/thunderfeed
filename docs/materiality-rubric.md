@@ -77,12 +77,44 @@ Quy tắc chống inflate:
   `speculative`
 - **persistence**: `transient` → `cyclical` → `structural`
 - **horizon**: `immediate` / `weeks` / `months` / `long_term`
-- **affectedTargets**: canonical keys — instrument listings
-  (`equity:HOSE:VNM`), macro series (`macro:fred:FEDFUNDS`), hoặc factor
-  names (`USDVND`, `gold:world`, `vn:rates`) — theo catalog trong corpus.
+- **affectedTargets**: typed keys, KHÔNG phải bare entity slug — entity
+  xuất hiện trong story ≠ tài sản chịu exposure. Các loại:
+  `instrument:<asset>:<venue>:<ticker>` (equity:HOSE:VNM),
+  `macro_factor:<provider>:<series>` (macro_factor:fred:FEDFUNDS),
+  `country_exposure:<slug>` (country_exposure:vietnam),
+  `entity:<slug>` (mention-only hint, chưa phải exposure),
+  `sector:<slug>`. Trong label/bench, target so sánh theo dạng
+  `type:key` stringified.
 - **evidenceConfidence**: lấy nguyên từ R6 claim state — không tính lại.
 - **transmissionConfidence**: mức chắc của suy luận tác động — RIÊNG với
   evidence truth. `low/medium/high`.
+
+## Financial semantics (R7.0b hardening)
+
+- **Series-measure registry**: mỗi macro series có `measure`
+  (`level_index`, `rate_pct`, `price`, `stock`, `flow`,
+  `sentiment_index`) và `role` (`decision` vs `effective` vs `market` vs
+  `release`). Abnormality đo trên observation ĐÃ transform:
+  `rate_pct/sentiment_index` → Δ (pp/points); `level_index/price/stock/
+flow` → pct change. Z-score raw level của trending series (CPI index,
+  PAYEMS, M2, S&P) là bị cấm — nó sản xuất abnormality giả.
+- **Effective rate ≠ policy decision**: `FEDFUNDS` là effective market
+  rate trong corridor — một step của nó là observation bất thường, không
+  phải "Fed decision". Chỉ series `role=decision` (ví dụ `ECBDFR`) được
+  mint reason "policy rate step".
+- **Dividend yield cần price time-consistent**: `priceBasis='pre_ex'`
+  (last close trước ex-date). `priceBasis='latest'` → caution
+  `lookahead_price`, yield không dùng được → `limited`. `cash_amount ≥
+referencePrice` → caution `provider_magnitude_unverified` (artifact
+  kiểu GOOGL 2014 "$567.97 dividend") → `limited`.
+- **Market-vol baseline out-of-sample**: `trailingVol` = stdev của các
+  phiên TRƯỚC signal session — không gồm chính return đang test (in-
+  sample sẽ tự phình baseline, tự giảm z).
+- **Canonical provider policy**: dedupe theo instrument chọn provider
+  theo priority cố định (`vndirect > tiingo > alphavantage` cho equity,
+  `vietcombank > er_api > fawaz > binance > derived` cho FX, `giavang >
+derived` cho commodity, `binance` cho crypto) — KHÔNG chọn provider có
+  |z| lớn nhất (đó là cherry-picking anomaly).
 
 ## `unknown` là label hợp lệ
 
@@ -94,21 +126,41 @@ thực của v1 — tốt hơn suy đoán sai.
 ## Labeling protocol
 
 1. Label `intrinsicMateriality`, `scope`, `channels`, `directness`,
-   `horizon`, `affectedTargets` — field names chính xác như trên.
+   `horizon`, `affectedTargets` — field names chính xác như trên;
+   `affectedTargets` dùng typed `type:key` strings.
 2. Không label theo persona. Personal relevance là layer khác (R7 sau).
 3. Mỗi label cần `labels.note` 1 dòng: lý do ngắn.
-4. `labeled_by`: `agent-draft-v1` cho draft, `pm` khi PM đã review.
+4. `labeled_by`: `agent-draft-v1` cho draft pass đầu. `reviewed` +
+   `reviewed_by` BẮT BUỘC cho mọi label `meaningful|major|systemic`
+   trước khi label đó được dùng làm acceptance gate.
 
 ## Benchmark metrics (bench.mts)
 
-- `materiality accuracy` — exact match trên 5 mức + off-by-one.
-- `systemic false-positive rate` — predicted `major|systemic` nhưng
-  labeled ≤ `limited`. (Hướng sai nguy hiểm nhất: inflating noise.)
-- `channel accuracy` — Jaccard overlap của channel sets.
-- `affected-target precision` — predicted targets ∩ labeled targets /
-  predicted targets.
-- `unsupported-causality rate` — dự đoán assert hướng/cause không có
-  evidence ref. Baseline deterministic phải = 0.
+- `coverage` / `abstention` — tỉ lệ engine trả `unknown`. Báo cáo rõ
+  ràng, không giấu vào accuracy.
+- `accuracy` — `overall` (mọi labeled item), `within-1` rank, và
+  `classified-only` (chỉ items không abstain).
+- `confusion matrix` — label × prediction.
+- `'material' flag P/R/F1` — boundary `meaningful+`.
+- `high-impact FP rate` — predicted `major|systemic` nhưng labeled <
+  `major`. Đo riêng trên holdout và challenge.
+- `channel IoU` — Jaccard, **per-kind lẫn overall** (aggregate che được
+  gap: events ~0.12 vs macro ~0.9).
+- `target P/R/F1` — typed targets; recall bắt buộc (engine không được
+  game bằng cách dự đoán ít).
+- `unsupported-causality rate` — channels asserted nơi label nói không
+  có; market_move phải luôn channels=[].
+- `label provenance` — số labels đã second-review; số labels
+  `meaningful+` chưa review (phải = 0 trước khi gate).
+
+## Challenge set
+
+`tests/fixtures/materiality-challenge.json` — curated historical/
+synthetic cases (Fed/ECB steps, 46% VN tariff, SVB/BTFP, COVID lockdown,
+GOOGL-2014 provider artifact, look-ahead dividend, routine negatives).
+Mọi item có `sourceSet="challenge"` — bench báo riêng, KHÔNG BAO GIỜ
+trộn vào holdout. Tập này tồn tại vì holdout 48h không chứa đủ
+`major|systemic` để làm safety gate.
 
 Dev corpus R1–R6 KHÔNG phải test duy nhất cho R7 — corpus này đo materiality,
 riêng biệt.

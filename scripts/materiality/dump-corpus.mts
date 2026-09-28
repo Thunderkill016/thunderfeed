@@ -7,7 +7,17 @@
  * baseline assessment attached (lib/materiality.ts). Labels start NULL;
  * the benchmark only reads items whose `labels` were filled in later.
  * The corpus is a fixture — re-dump only deliberately, never in CI. */
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
+
+try {
+  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
+    const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
+  }
+} catch {
+  /* env may already be populated */
+}
+
 import { getPool } from "../../lib/db/pool.ts";
 import {
   scoreCorporateAction,
@@ -61,7 +71,8 @@ const items: Item[] = [];
         entity_type: string;
         slug: string;
       }>(
-        `SELECT DISTINCT ee.event_id, e.entity_type, ee.entity_slug AS slug
+        `SELECT DISTINCT ee.event_id, e.entity_type,
+                COALESCE(ee.entity_slug, e.canonical_key) AS slug
            FROM event_entities ee JOIN entities e ON e.id = ee.entity_id
           WHERE ee.event_id IN (${ph})`,
         ids,
@@ -89,13 +100,14 @@ const items: Item[] = [];
   const stByEv = byEv(states);
 
   for (const e of events) {
+    const entities = (entByEv.get(e.id) ?? []).map((x) => ({
+      slug: x.slug,
+      type: x.entity_type,
+    }));
     const subject = {
       topic: e.topic,
       predicates: (predByEv.get(e.id) ?? []).map((p) => p.predicate),
-      entityTypes: [
-        ...new Set((entByEv.get(e.id) ?? []).map((x) => x.entity_type)),
-      ],
-      entitySlugs: (entByEv.get(e.id) ?? []).map((x) => x.slug),
+      entities,
       claimStates: Object.fromEntries(
         (stByEv.get(e.id) ?? []).map((s) => [s.state, Number(s.n)]),
       ),
@@ -108,10 +120,10 @@ const items: Item[] = [];
       subject,
       baseline: scoreEventMateriality({
         predicates: subject.predicates as string[],
-        entityTypes: subject.entityTypes as string[],
-        entitySlugs: subject.entitySlugs as string[],
+        entities,
         topic: e.topic,
       }),
+      sourceSet: "holdout",
       labels: null,
     });
   }
@@ -213,6 +225,7 @@ const items: Item[] = [];
         prevValue: d.prev == null ? null : Number(d.prev),
         history: history.slice(0, -1), // exclude the released value itself
       }),
+      sourceSet: "holdout",
       labels: null,
     });
   }
@@ -232,12 +245,13 @@ const items: Item[] = [];
     ticker: string | null;
     venue: string | null;
     close: string | null;
+    price_date: string | null;
   }>(
     `SELECT ca.id, ca.canonical_key, ca.action_type,
             cav.ex_date, cav.cash_amount::text, cav.currency,
             cav.split_factor::text,
             iv.name, lv.ticker, tv.acronym AS venue,
-            mpv.close::text
+            mpv.close::text, mpv.session_date::text AS price_date
        FROM corporate_actions ca
        JOIN corporate_action_versions cav ON cav.id = ca.current_version_id
        JOIN financial_instruments fi ON fi.id = ca.instrument_id
@@ -246,11 +260,15 @@ const items: Item[] = [];
        LEFT JOIN listing_versions lv ON lv.id = il.current_version_id
        LEFT JOIN trading_venues t ON t.id = il.venue_id
        LEFT JOIN trading_venue_versions tv ON tv.id = t.current_version_id
+       /* reference price must be time-consistent with the action —
+        * last close strictly BEFORE ex-date. Latest close is look-ahead. */
        LEFT JOIN LATERAL (
-         SELECT mpv2.close FROM market_series ms
+         SELECT mpv2.close, mp2.session_date FROM market_series ms
            JOIN market_points mp2 ON mp2.series_id = ms.id
            JOIN market_point_versions mpv2 ON mpv2.id = mp2.current_version_id
           WHERE ms.listing_id = il.id
+            AND cav.ex_date IS NOT NULL
+            AND mp2.session_date < cav.ex_date::date
           ORDER BY mp2.session_date DESC LIMIT 1
        ) mpv ON true
       ORDER BY cav.ex_date DESC NULLS LAST
@@ -273,27 +291,24 @@ const items: Item[] = [];
   }
   for (const c of cas) {
     const key = `equity:${c.venue ?? "?"}:${c.ticker ?? c.name}`;
+    const priceBasis = c.close == null ? "none" : "pre_ex";
+    const input = {
+      actionType: c.action_type as "cash_dividend" | "stock_split",
+      instrumentKey: key,
+      cashAmount: c.cash_amount == null ? null : Number(c.cash_amount),
+      currency: c.currency,
+      referencePrice: c.close == null ? null : Number(c.close),
+      priceBasis: priceBasis as "pre_ex" | "none",
+      exDate: c.ex_date,
+      splitFactor: c.split_factor == null ? null : Number(c.split_factor),
+    };
     items.push({
       kind: "corporate_action",
       id: c.id,
       title: `${c.ticker ?? c.name} — ${c.action_type}`,
-      subject: {
-        actionType: c.action_type,
-        instrumentKey: key,
-        cashAmount: c.cash_amount == null ? null : Number(c.cash_amount),
-        currency: c.currency,
-        splitFactor: c.split_factor == null ? null : Number(c.split_factor),
-        exDate: c.ex_date,
-        referencePrice: c.close == null ? null : Number(c.close),
-      },
-      baseline: scoreCorporateAction({
-        actionType: c.action_type as "cash_dividend" | "stock_split",
-        instrumentKey: key,
-        cashAmount: c.cash_amount == null ? null : Number(c.cash_amount),
-        currency: c.currency,
-        referencePrice: c.close == null ? null : Number(c.close),
-        splitFactor: c.split_factor == null ? null : Number(c.split_factor),
-      }),
+      subject: { ...input, priceDate: c.price_date },
+      baseline: scoreCorporateAction(input),
+      sourceSet: "holdout",
       labels: null,
     });
   }
@@ -303,12 +318,13 @@ const items: Item[] = [];
 {
   const { rows: series } = await db.query<{
     series_id: string;
+    provider: string;
     name: string;
     asset_class: string;
     ticker: string | null;
     venue: string | null;
   }>(
-    `SELECT ms.id AS series_id, iv.name, iv.asset_class,
+    `SELECT ms.id AS series_id, ms.provider, iv.name, iv.asset_class,
             lv.ticker, tv.acronym AS venue
        FROM market_series ms
        JOIN instrument_listings il ON il.id = ms.listing_id
@@ -319,8 +335,19 @@ const items: Item[] = [];
        LEFT JOIN trading_venue_versions tv ON tv.id = t.current_version_id
       WHERE ms.status = 'active'`,
   );
+  /* canonical provider policy per asset class — the SAME instrument must
+   * not enter the corpus through whichever provider happens to report the
+   * most extreme z (cherry-picking anomaly). Priority is fixed. */
+  const CANONICAL_PROVIDER: Record<string, string[]> = {
+    equity: ["vndirect", "tiingo", "alphavantage"],
+    index: ["vndirect", "tiingo", "alphavantage"],
+    fx: ["vietcombank", "er_api", "fawaz", "binance", "derived"],
+    commodity: ["giavang", "derived"],
+    crypto: ["binance"],
+  };
   const moves: {
     seriesId: string;
+    provider: string;
     name: string;
     key: string;
     assetClass: string;
@@ -347,14 +374,19 @@ const items: Item[] = [];
     for (let k = 1; k < asc.length; k++)
       rets.push(((asc[k].close - asc[k - 1].close) / asc[k - 1].close) * 100);
     if (rets.length < 8) continue;
-    const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+    /* out-of-sample: the signal return (rets.at(-1)) is EXCLUDED from the
+     * volatility baseline — including it lets a big move inflate its own
+     * denominator and suppress its own z. */
+    const baseline = rets.slice(0, -1);
+    const mean = baseline.reduce((a, b) => a + b, 0) / baseline.length;
     const sd = Math.sqrt(
-      rets.reduce((a, b) => a + (b - mean) ** 2, 0) / (rets.length - 1),
+      baseline.reduce((a, b) => a + (b - mean) ** 2, 0) / (baseline.length - 1),
     );
     const last = rets[rets.length - 1];
     const key = `${s.asset_class}:${s.venue ?? "?"}:${s.ticker ?? s.name}`;
     moves.push({
       seriesId: s.series_id,
+      provider: s.provider,
       name: s.name,
       key,
       assetClass: s.asset_class,
@@ -364,14 +396,18 @@ const items: Item[] = [];
       z: sd > 0 ? last / sd : null,
     });
   }
-  /* dedupe by instrument key — the same listing can have parallel
-   * provider series (alphavantage/tiingo) reporting the identical move */
+  /* dedupe by instrument key via fixed provider priority — never by
+   * which series shows the bigger anomaly */
   {
     const byKey = new Map<string, (typeof moves)[number]>();
     for (const m of moves) {
       const cur = byKey.get(m.key);
-      if (!cur || Math.abs(m.z ?? 0) > Math.abs(cur.z ?? 0))
-        byKey.set(m.key, m);
+      const rank = (p: string) => {
+        const order = CANONICAL_PROVIDER[m.assetClass] ?? [];
+        const i = order.indexOf(p);
+        return i === -1 ? order.length : i;
+      };
+      if (!cur || rank(m.provider) < rank(cur.provider)) byKey.set(m.key, m);
     }
     moves.length = 0;
     moves.push(...byKey.values());
@@ -384,6 +420,7 @@ const items: Item[] = [];
     ...moves.slice(-Math.floor(N_MOVES * 0.3)),
   ];
   for (const m of picked) {
+    const trailingVol = m.z != null ? Math.abs(m.pct / m.z) : null;
     items.push({
       kind: "market_move",
       id: `${m.seriesId}:${m.date}`,
@@ -392,7 +429,9 @@ const items: Item[] = [];
         instrumentKey: m.key,
         assetClass: m.assetClass,
         pctChange: m.pct,
+        trailingVol,
         z: m.z,
+        provider: m.provider,
         sessionDate: m.date,
       },
       baseline: scoreMarketMove({
@@ -400,9 +439,10 @@ const items: Item[] = [];
         assetClass: (m.assetClass === "index" ? "index" : m.assetClass) as
           "equity" | "commodity" | "crypto" | "fx" | "index",
         pctChange: m.pct,
-        trailingVol: m.z != null ? Math.abs(m.pct / m.z) : null,
+        trailingVol,
         isIndex: m.isIndex,
       }),
+      sourceSet: "holdout",
       labels: null,
     });
   }

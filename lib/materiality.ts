@@ -21,6 +21,19 @@ export type Directness =
 export type Persistence = "transient" | "cyclical" | "structural";
 export type Horizon = "immediate" | "weeks" | "months" | "long_term";
 
+/* Typed exposure targets — an entity mentioned in a story is NOT an
+ * asset exposure. Targets must declare what kind of exposure they are. */
+export type TargetType =
+  | "entity" /* a tracked entity — weak hint, not an asset */
+  | "instrument" /* canonical instrument key, e.g. equity:HOSE:VNM */
+  | "macro_factor" /* a macro series, e.g. fred:DGS10 */
+  | "sector" /* a sector basket, e.g. vn:real_estate */
+  | "country_exposure"; /* a country's broad asset complex */
+export interface Target {
+  type: TargetType;
+  key: string;
+}
+
 export interface MaterialityAssessment {
   materiality: MaterialityLevel | "unknown";
   scope: Scope | null;
@@ -28,7 +41,7 @@ export interface MaterialityAssessment {
   directness: Directness | null;
   persistence: Persistence | null;
   horizon: Horizon | null;
-  affectedTargets: string[];
+  affectedTargets: Target[];
   transmissionConfidence: "low" | "medium" | "high" | null;
   /** which rule path produced this — audit, not display copy */
   reason: string;
@@ -70,67 +83,241 @@ export type MacroClass =
   | "demographics"
   | "other";
 
+/* What a macro observation IS, physically — determines the lawful
+ * transform before any abnormality claim. Z-scoring a trending level
+ * (CPI index, payrolls, M2, S&P) manufactures fake "abnormality". */
+export type SeriesMeasure =
+  | "level_index" /* CPI/PCE index, IP index — transform to growth */
+  | "rate_pct" /* yields, policy rates, spreads, unemployment — Δ in pp */
+  | "price" /* FX, index level, commodity — log/pct return */
+  | "stock" /* payrolls, M2, GDP level — Δ or %Δ */
+  | "flow" /* retail sales, housing starts — %Δ */
+  | "sentiment_index"; /* survey levels — Δ in points */
+
+export type SeriesRole =
+  | "decision" /* official policy rate the board sets (ECBDFR) */
+  | "effective" /* market-determined within a corridor (FEDFUNDS) */
+  | "market" /* yields, spreads, spot prices */
+  | "release"; /* statistical releases */
+
 interface MacroMeta {
   cls: MacroClass;
   /** 'core' series move broad asset prices; 'context' informs but rarely
    * reprices on a single print; 'baseline' is annual forecast/census data */
   salience: "core" | "context" | "baseline";
   scope: Scope;
+  measure: SeriesMeasure;
+  role: SeriesRole;
 }
 
 const FRED_MAP: Record<string, MacroMeta> = {
-  FEDFUNDS: { cls: "policy_rate", salience: "core", scope: "global_systemic" },
-  ECBDFR: { cls: "policy_rate", salience: "core", scope: "global_systemic" },
+  /* FEDFUNDS is the EFFECTIVE overnight rate — a monthly average of a
+   * market rate inside the corridor, not the FOMC target decision. A
+   * step in it is an observation, never a "Fed decision" on its own. */
+  FEDFUNDS: {
+    cls: "policy_rate",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "rate_pct",
+    role: "effective",
+  },
+  ECBDFR: {
+    cls: "policy_rate",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "rate_pct",
+    role: "decision",
+  },
   DGS2: {
     cls: "sovereign_yield",
     salience: "core",
     scope: "global_systemic",
+    measure: "rate_pct",
+    role: "market",
   },
   DGS10: {
     cls: "sovereign_yield",
     salience: "core",
     scope: "global_systemic",
+    measure: "rate_pct",
+    role: "market",
   },
   T10Y2Y: {
     cls: "sovereign_yield",
     salience: "core",
     scope: "global_systemic",
+    measure: "rate_pct",
+    role: "market",
   },
-  T10YIE: { cls: "inflation", salience: "core", scope: "global_systemic" },
-  CPIAUCSL: { cls: "inflation", salience: "core", scope: "global_systemic" },
-  UNRATE: { cls: "labor", salience: "core", scope: "global_systemic" },
-  PAYEMS: { cls: "labor", salience: "core", scope: "global_systemic" },
-  GDPC1: { cls: "growth", salience: "core", scope: "global_systemic" },
-  INDPRO: { cls: "growth", salience: "context", scope: "global_systemic" },
-  RSAFS: { cls: "growth", salience: "context", scope: "global_systemic" },
-  HOUST: { cls: "growth", salience: "context", scope: "global_systemic" },
-  UMCSENT: { cls: "sentiment", salience: "context", scope: "global_systemic" },
+  T10YIE: {
+    cls: "inflation",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "rate_pct",
+    role: "market",
+  },
+  CPIAUCSL: {
+    cls: "inflation",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "level_index",
+    role: "release",
+  },
+  UNRATE: {
+    cls: "labor",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "rate_pct",
+    role: "release",
+  },
+  PAYEMS: {
+    cls: "labor",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "stock",
+    role: "release",
+  },
+  GDPC1: {
+    cls: "growth",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "stock",
+    role: "release",
+  },
+  INDPRO: {
+    cls: "growth",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "level_index",
+    role: "release",
+  },
+  RSAFS: {
+    cls: "growth",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "flow",
+    role: "release",
+  },
+  HOUST: {
+    cls: "growth",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "flow",
+    role: "release",
+  },
+  UMCSENT: {
+    cls: "sentiment",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "sentiment_index",
+    role: "release",
+  },
   M2SL: {
     cls: "money_supply",
     salience: "context",
     scope: "global_systemic",
+    measure: "stock",
+    role: "release",
   },
   WALCL: {
     cls: "money_supply",
     salience: "context",
     scope: "global_systemic",
+    measure: "stock",
+    role: "release",
   },
   BAMLH0A0HYM2: {
     cls: "credit",
     salience: "core",
     scope: "global_systemic",
+    measure: "rate_pct",
+    role: "market",
   },
-  VIXCLS: { cls: "risk_premium", salience: "core", scope: "global_systemic" },
-  SP500: { cls: "risk_premium", salience: "core", scope: "global_systemic" },
-  DCOILWTICO: { cls: "commodity", salience: "core", scope: "global_systemic" },
-  DTWEXBGS: { cls: "fx", salience: "context", scope: "global_systemic" },
-  DEXUSEU: { cls: "fx", salience: "context", scope: "global_systemic" },
-  DEXJPUS: { cls: "fx", salience: "context", scope: "global_systemic" },
-  DEXCHUS: { cls: "fx", salience: "context", scope: "global_systemic" },
+  VIXCLS: {
+    cls: "risk_premium",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "level_index",
+    role: "market",
+  },
+  SP500: {
+    cls: "risk_premium",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "price",
+    role: "market",
+  },
+  DCOILWTICO: {
+    cls: "commodity",
+    salience: "core",
+    scope: "global_systemic",
+    measure: "price",
+    role: "market",
+  },
+  DTWEXBGS: {
+    cls: "fx",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "price",
+    role: "market",
+  },
+  DEXUSEU: {
+    cls: "fx",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "price",
+    role: "market",
+  },
+  DEXJPUS: {
+    cls: "fx",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "price",
+    role: "market",
+  },
+  DEXCHUS: {
+    cls: "fx",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "price",
+    role: "market",
+  },
   MORTGAGE30US: {
     cls: "policy_rate",
     salience: "context",
     scope: "global_systemic",
+    measure: "rate_pct",
+    role: "market",
+  },
+  /* FRED annual CPI forecast series (FPCPITOTLZG<CC>) — annual levels of
+   * the rate itself; still 'baseline' in practice via frequency='A' */
+  FPCPITOTLZGGBR: {
+    cls: "inflation",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "rate_pct",
+    role: "release",
+  },
+  FPCPITOTLZGDEU: {
+    cls: "inflation",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "rate_pct",
+    role: "release",
+  },
+  FPCPITOTLZGJPN: {
+    cls: "inflation",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "rate_pct",
+    role: "release",
+  },
+  FPCPITOTLZGCHN: {
+    cls: "inflation",
+    salience: "context",
+    scope: "global_systemic",
+    measure: "rate_pct",
+    role: "release",
   },
 };
 
@@ -185,6 +372,8 @@ export function classifyMacroSeries(
         cls: "other",
         salience: "context",
         scope: "global_systemic",
+        measure: "level_index",
+        role: "release",
       }
     );
   /* 'VNM:NGDP_RPCH' / 'VNM:NY.GDP.MKTP.KD.ZG' — split country prefix */
@@ -193,7 +382,65 @@ export function classifyMacroSeries(
   const scope: Scope = country === "VNM" ? "vietnam" : "global_systemic";
   const cls =
     (provider === "imf" ? IMF_INDICATOR[code] : WB_INDICATOR[code]) ?? "other";
-  return { cls, salience: "baseline", scope };
+  /* annual IMF/WB values are rates/growth percents or levels; they never
+   * reach the abnormality path (salience='baseline' short-circuits) */
+  return {
+    cls,
+    salience: "baseline",
+    scope,
+    measure: "rate_pct",
+    role: "release",
+  };
+}
+
+/* ── lawful transforms ──────────────────────────────────────── */
+
+type Transform = "diff" | "pct_change" | "none";
+
+export function transformFor(m: SeriesMeasure): Transform {
+  switch (m) {
+    case "rate_pct":
+    case "sentiment_index":
+      return "diff"; /* pp change for rates, point change for surveys */
+    case "level_index":
+    case "price":
+    case "stock":
+    case "flow":
+      return "pct_change";
+  }
+}
+
+interface TransformedObs {
+  /** the current observation expressed in change-space */
+  observed: number;
+  /** trailing changes the observation is measured against */
+  basis: number[];
+  transform: Transform;
+}
+
+export function transformSeries(
+  measure: SeriesMeasure,
+  value: number,
+  history: number[], // oldest → newest, EXCLUDING value
+): TransformedObs | null {
+  const t = transformFor(measure);
+  if (t === "none" || history.length < 2) return null;
+  const last = history[history.length - 1];
+  let observed: number;
+  const basis: number[] = [];
+  if (t === "diff") {
+    observed = value - last;
+    for (let i = 1; i < history.length; i++)
+      basis.push(history[i] - history[i - 1]);
+  } else {
+    if (last === 0) return null;
+    observed = ((value - last) / last) * 100;
+    for (let i = 1; i < history.length; i++) {
+      if (history[i - 1] === 0) continue;
+      basis.push(((history[i] - history[i - 1]) / history[i - 1]) * 100);
+    }
+  }
+  return { observed, basis, transform: t };
 }
 
 /* ── macro release/delta scoring ────────────────────────────── */
@@ -213,12 +460,18 @@ export function scoreMacroDelta(i: MacroDeltaInput): MaterialityAssessment {
   const meta = classifyMacroSeries(i.provider, i.seriesCode);
   const channels = CHANNEL_BY_CLASS[meta.cls];
   const cautions: string[] = [];
-  const target = `macro:${i.provider}:${i.seriesCode}`;
+  const target: Target = {
+    type: "macro_factor",
+    key: `${i.provider}:${i.seriesCode}`,
+  };
 
   /* the required distinction: this release is an observation change.
-   * abnormality is measured against the series' own history; consensus
-   * surprise is IMPOSSIBLE — no expectations data exists. */
-  const az = absZ(i.value, i.history);
+   * abnormality is measured against the series' own history IN
+   * CHANGE-SPACE — z-scoring a trending level (CPI index, payrolls, M2)
+   * manufactures fake abnormality. consensus surprise remains IMPOSSIBLE
+   * — no expectations data exists. */
+  const tr = transformSeries(meta.measure, i.value, i.history);
+  const az = tr ? absZ(tr.observed, tr.basis) : null;
   const absMove = i.prevValue == null ? null : Math.abs(i.value - i.prevValue);
 
   if (meta.salience === "baseline" || i.frequency === "A") {
@@ -237,13 +490,15 @@ export function scoreMacroDelta(i: MacroDeltaInput): MaterialityAssessment {
     };
   }
 
-  /* discrete policy-rate steps: any nontrivial step is a decision, not
-   * drift — FEDFUNDS/ECBDFR moves are stepwise so |Δ| ≥ 10bp is 'major' */
+  /* discrete policy-rate steps: only a series that IS the official
+   * decision instrument can mint a "policy decision" — ECBDFR is set by
+   * the governing council; FEDFUNDS is an effective market average and a
+   * step in it is an observation, not a decision. */
   if (
-    meta.cls === "policy_rate" &&
+    meta.role === "decision" &&
     absMove != null &&
     absMove >= 0.1 &&
-    i.frequency !== "D" /* daily effective-rate noise is not a decision */
+    i.frequency !== "D" /* daily prints can't carry a decision */
   ) {
     return {
       materiality: "major",
@@ -305,9 +560,9 @@ export function scoreMacroDelta(i: MacroDeltaInput): MaterialityAssessment {
     transmissionConfidence:
       level === "major" ? "high" : level === "meaningful" ? "medium" : "low",
     reason:
-      az == null
+      az == null || tr == null
         ? "release, no history baseline"
-        : `|z|=${az.toFixed(2)} vs own history`,
+        : `${tr.transform === "diff" ? "Δ" : "pct"} ${tr.observed >= 0 ? "+" : ""}${tr.observed.toFixed(2)}${tr.transform === "pct_change" ? "%" : "pp"} — |z|=${az.toFixed(2)} of own changes`,
     cautions,
   };
 }
@@ -329,14 +584,33 @@ export interface CorporateActionInput {
   instrumentKey: string; // e.g. 'equity:HOSE:VNM'
   cashAmount: number | null;
   currency: string | null;
-  referencePrice: number | null; // latest close, same currency
+  /* dividend yield is only meaningful against a price that existed when
+   * the action did — 'pre_ex' = last close strictly before ex-date.
+   * 'latest' is a look-ahead mismatch and must be flagged, never used
+   * silently. */
+  referencePrice: number | null;
+  priceBasis: "pre_ex" | "latest" | "none";
+  exDate: string | null;
   splitFactor: number | null; // split_to / split_from
 }
 
 export function scoreCorporateAction(
   i: CorporateActionInput,
 ): MaterialityAssessment {
-  const targets = [i.instrumentKey];
+  const targets: Target[] = [{ type: "instrument", key: i.instrumentKey }];
+  const cautions: string[] = [];
+  if (i.priceBasis === "latest") cautions.push("lookahead_price");
+  if (i.priceBasis === "none") cautions.push("no_price_context");
+
+  /* provider semantics guard: a per-share 'cash' amount at/above the
+   * share price is not a dividend — it's a misrecorded distribution
+   * (e.g. share-class spinoff value). Magnitude unusable → limited. */
+  const absurdAmount =
+    i.cashAmount != null &&
+    i.referencePrice != null &&
+    i.referencePrice > 0 &&
+    i.cashAmount >= i.referencePrice;
+  if (absurdAmount) cautions.push("provider_magnitude_unverified");
   if (i.actionType === "stock_split") {
     const extreme =
       i.splitFactor != null && (i.splitFactor >= 5 || i.splitFactor <= 0.2);
@@ -350,17 +624,21 @@ export function scoreCorporateAction(
       affectedTargets: targets,
       transmissionConfidence: "high",
       reason: "split changes units, not value",
-      cautions: ["mechanical_no_value_change"],
+      cautions: ["mechanical_no_value_change", ...cautions],
     };
   }
-  const cautions: string[] = [];
   let level: MaterialityLevel;
-  if (i.cashAmount == null) {
+  if (absurdAmount) {
+    level = "limited";
+  } else if (i.cashAmount == null) {
     level = "limited";
     cautions.push("no_cash_amount");
   } else if (i.referencePrice == null || i.referencePrice <= 0) {
     level = "limited";
     cautions.push("no_price_context");
+  } else if (i.priceBasis !== "pre_ex") {
+    /* without a time-consistent price the yield is unverifiable */
+    level = "limited";
   } else {
     const y = (i.cashAmount / i.referencePrice) * 100;
     level = y >= 5 ? "meaningful" : y >= 2 ? "meaningful" : "limited";
@@ -375,8 +653,8 @@ export function scoreCorporateAction(
     affectedTargets: targets,
     transmissionConfidence: "high",
     reason:
-      i.cashAmount != null && i.referencePrice
-        ? `dividend yield ~${((i.cashAmount / i.referencePrice) * 100).toFixed(1)}%`
+      i.cashAmount != null && i.referencePrice && i.priceBasis === "pre_ex"
+        ? `dividend yield ~${((i.cashAmount / i.referencePrice) * 100).toFixed(1)}% vs pre-ex close`
         : "dividend, magnitude unpriced",
     cautions,
   };
@@ -425,7 +703,7 @@ export function scoreMarketMove(i: MarketMoveInput): MaterialityAssessment {
     directness: "direct",
     persistence: "transient",
     horizon: "immediate",
-    affectedTargets: [i.instrumentKey],
+    affectedTargets: [{ type: "instrument", key: i.instrumentKey }],
     transmissionConfidence: null,
     reason:
       z == null
@@ -442,7 +720,14 @@ export function scoreMarketMove(i: MarketMoveInput): MaterialityAssessment {
  * predicate vocabulary. */
 const PREDICATE_CHANNELS: Record<string, Channel[]> = {
   interest_rate: ["discounting", "funding_liquidity"],
+  policy_rate: ["discounting", "funding_liquidity"],
+  rate_cut: ["discounting", "funding_liquidity"],
+  rate_hike: ["discounting", "funding_liquidity"],
   sanctions: ["policy_regulatory", "external"],
+  tariff_imposition: ["policy_regulatory", "external"],
+  tariff_rate: ["policy_regulatory", "external"],
+  tariff_increase: ["policy_regulatory", "external"],
+  tariff_hike: ["policy_regulatory", "external"],
   tariff_reduction: ["policy_regulatory", "external"],
   tariff_reduction_value: ["policy_regulatory", "external"],
   tariff_cut: ["policy_regulatory", "external"],
@@ -467,6 +752,13 @@ const PREDICATE_CHANNELS: Record<string, Channel[]> = {
   foreign_direct_investment: ["external", "fundamental"],
   debt_to_gdp: ["policy_regulatory", "funding_liquidity"],
   net_profit: ["fundamental"],
+  dividend_declaration: ["fundamental"],
+  bank_failure: ["funding_liquidity"],
+  deposit_guarantee: ["funding_liquidity"],
+  supply_chain_disruption: ["fundamental", "external"],
+  oil_supply_disruption: ["external", "fundamental"],
+  lockdown: ["policy_regulatory"],
+  economic_shutdown: ["fundamental", "policy_regulatory"],
   stock_index: [],
   stock_index_change: [],
   price_change: [],
@@ -535,12 +827,16 @@ const NONECONOMIC_PREDICATES = new Set([
   "area_ha",
 ]);
 
+export interface EventEntity {
+  slug: string;
+  /** ontology type: country|company|central_bank|person|… */
+  type: string;
+}
+
 export interface EventMaterialityInput {
   predicates: string[];
-  /** entity types attached to the event, e.g. 'company','country' */
-  entityTypes: string[];
-  /** canonical entity slugs — used for target hints only */
-  entitySlugs: string[];
+  /** entities attached to the event with their ontology types */
+  entities: EventEntity[];
   /** 'vietnam'|'world'|… */
   topic: string;
   /* R6 evidence stats are intentionally NOT inputs — a wire copy count
@@ -550,6 +846,7 @@ export interface EventMaterialityInput {
 export function scoreEventMateriality(
   i: EventMaterialityInput,
 ): MaterialityAssessment {
+  const entityTypes = [...new Set(i.entities.map((e) => e.type))];
   const channels = new Set<Channel>();
   const hits: string[] = [];
   for (const p of i.predicates) {
@@ -599,13 +896,13 @@ export function scoreEventMateriality(
   /* scope = the broadest jurisdiction that a lifting entity implies;
    * a lone-company event stays issuer-scoped */
   let scope: Scope = i.topic === "vietnam" ? "vietnam" : "global_systemic";
-  for (const t of i.entityTypes) {
+  for (const t of entityTypes) {
     const lift = SCOPE_LIFTING[t];
     if (lift && scopeRank(lift) > scopeRank(scope)) scope = lift;
   }
   if (
-    i.entityTypes.includes("company") &&
-    !i.entityTypes.some((t) => t in SCOPE_LIFTING || t === "country")
+    entityTypes.includes("company") &&
+    !entityTypes.some((t) => t in SCOPE_LIFTING || t === "country")
   )
     scope = "issuer";
 
@@ -615,17 +912,31 @@ export function scoreEventMateriality(
    * are not), or ≥1 instrument hitting a discounting/funding channel.
    * Disbursement-family hits inside war/conflict context are aid
    * accounting, not credit conditions — capped 'limited'. */
+  /* each real instrument is its own family — 'sanctions' and
+   * 'interest_rate' are different levers; 5 spellings of one tariff are
+   * not. */
   const family = (p: string) =>
     p.startsWith("tariff") ||
     p === "trade_agreement" ||
-    p === "export_regulation_change"
+    p === "export_regulation_change" ||
+    p === "trade_truce_extension"
       ? "trade"
-      : "other";
+      : p.startsWith("sanction")
+        ? "sanctions"
+        : p.startsWith("interest_rate") || p === "policy_rate"
+          ? "rate"
+          : p === "foreign_direct_investment"
+            ? "fdi"
+            : p === "policy_approved"
+              ? "policy"
+              : p === "net_profit"
+                ? "earnings"
+                : p;
   const hard = hits.filter((p) => !SOFT_FAMILY.has(p));
   const hardFamilies = new Set(hard.map(family));
   const hardCh = new Set(hard.flatMap((p) => PREDICATE_CHANNELS[p]));
   const warCtx = i.predicates.some((p) => WAR_CONTEXT.test(p));
-  const lifted = i.entityTypes.some((t) => t in SCOPE_LIFTING);
+  const lifted = entityTypes.some((t) => t in SCOPE_LIFTING);
   const big =
     hardFamilies.size >= 2 ||
     /* a discounting hit IS the decision (rate/yield) — no corroboration
@@ -646,10 +957,20 @@ export function scoreEventMateriality(
     directness: "first_order",
     persistence: "cyclical",
     horizon: "weeks",
-    affectedTargets: i.entitySlugs,
+    /* mention ≠ exposure: emit typed targets only where a channel exists,
+     * and only country entities become country_exposure. Companies and
+     * people stay 'entity' hints — resolving them to instruments is the
+     * exposure graph's job (R7.2), not this baseline's. */
+    affectedTargets:
+      channels.size === 0
+        ? []
+        : i.entities
+            .filter((e) => e.type === "country")
+            .slice(0, 4)
+            .map((e) => ({ type: "country_exposure" as const, key: e.slug })),
     transmissionConfidence: "low",
     reason: `predicate signal: ${hits.join(",")}`,
-    cautions: ["predicate_baseline_only"],
+    cautions: ["predicate_baseline_only", "entity_mentions_not_exposure"],
   };
 }
 
