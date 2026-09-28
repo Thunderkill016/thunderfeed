@@ -59,6 +59,16 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
         run: npx tsx scripts/radar/adjudicate.mts --events 40
+      # R7.1c: the claim-materiality queue is durable but not
+      # self-draining — writer/relineage/adjudicate producers above all
+      # enqueue into dirty_claims; this consumer must run every cycle or
+      # projections silently go stale while the workflow stays green.
+      # drain-claims exits non-zero on failed>0 or pendingRemaining>0 so
+      # a wedged queue fails the run instead of masking it.
+      - name: Drain claim materiality
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/materiality/drain-claims.mts
       # Telegram alerts disabled — every-30-min pushes were spam. The
       # alerts:telegram script stays; re-enable by restoring this step
       # when delivery is redesigned as an interruption-budgeted digest.

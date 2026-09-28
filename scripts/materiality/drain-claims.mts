@@ -27,3 +27,7 @@ console.log(
     `pending=${r.pendingRemaining} run=${r.runId}`,
 );
 await getPool().end();
+/* fail-closed: a durable queue means a nonzero exit never loses work —
+ * the next run retries — but a green workflow with failed/pending rows
+ * would mask stale projections */
+if (r.failed > 0 || r.pendingRemaining > 0) process.exitCode = 1;
