@@ -314,10 +314,11 @@ export async function adjudicateEvents(
   if (opts.dryRun || decisions.length === 0) return decisions;
 
   const client = await pool.connect();
+  const landed: typeof decisions = [];
   try {
     await client.query("BEGIN");
     for (const d of decisions) {
-      await mintClaimState(client, d, nowMs);
+      if (await mintClaimState(client, d, nowMs)) landed.push(d);
     }
     await client.query("COMMIT");
   } catch (err) {
@@ -326,11 +327,14 @@ export async function adjudicateEvents(
   } finally {
     client.release();
   }
-  return decisions;
+  return landed;
 }
 
 /* Mint version_no+1 carrying the new state; identical value, so the diff
  * readers see is purely the truth-state move. */
+/* Returns false when a concurrent ingest already took the version slot —
+ * that mint superseded ours; the claim's truth converges on the next
+ * recompute instead of the whole event failing on a unique violation. */
 async function mintClaimState(
   client: pg.PoolClient,
   d: {
@@ -341,7 +345,7 @@ async function mintClaimState(
     reason: string;
   },
   nowMs: number,
-): Promise<void> {
+): Promise<boolean> {
   const cur = await client.query<{
     id: string;
     version_no: number;
@@ -361,7 +365,7 @@ async function mintClaimState(
     [d.claimId],
   );
   const cv = cur.rows[0];
-  if (!cv) return;
+  if (!cv) return false;
 
   const newVn = cv.version_no + 1;
   const { rows: minted } = await client.query<{ id: string }>(
@@ -370,6 +374,7 @@ async function mintClaimState(
         valid_from, observed_at, previous_version_id, change_type,
         content_hash)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+     ON CONFLICT (claim_id, version_no) DO NOTHING
      RETURNING id`,
     [
       d.claimId,
@@ -389,6 +394,10 @@ async function mintClaimState(
       contentHash(d.claimId, `adjudicate:${d.to}:${newVn}`),
     ],
   );
+  /* ON CONFLICT: another writer minted this version_no concurrently —
+   * its truth supersedes our stale-snapshot decision; do NOT repoint
+   * current_version_id or write an audit row for a version we lost. */
+  if (!minted.length) return false;
   await client.query(
     `UPDATE claims SET current_version_id = $2, last_seen_at = now()
      WHERE id = $1`,
@@ -415,4 +424,5 @@ async function mintClaimState(
       new Date(nowMs).toISOString(),
     ],
   );
+  return true;
 }

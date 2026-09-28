@@ -25,6 +25,7 @@
  * failedEventIds so the caller's job cursor can freeze before it. */
 import type pg from "pg";
 import { getPool, toJsonb } from "./pool";
+import { enqueueDirty } from "./jobs";
 import {
   classifyLineage,
   resolveOrigins,
@@ -49,9 +50,20 @@ const REEVALUATABLE = new Set(["unknown", "original"]);
 export async function relineageEvents(
   eventIds: string[],
   opts: { dryRun?: boolean } = {},
-): Promise<{ minted: number; resolved: number; failedEventIds: string[] }> {
+): Promise<{
+  minted: number;
+  resolved: number;
+  failedEventIds: string[];
+  /** events whose lineage actually changed — hand-off to adjudication */
+  changedEventIds: string[];
+}> {
   const db = getPool();
-  const result = { minted: 0, resolved: 0, failedEventIds: [] as string[] };
+  const result = {
+    minted: 0,
+    resolved: 0,
+    failedEventIds: [] as string[],
+    changedEventIds: [] as string[],
+  };
   if (!eventIds.length) return result;
 
   /* every attached doc of the events — classification pool */
@@ -75,6 +87,43 @@ export async function relineageEvents(
       WHERE ee.event_id IN (${eventIds.map((_, i) => `$${i + 1}`).join(",")})`,
     eventIds,
   );
+  /* A doc may be attached to events OUTSIDE this sweep — its union pool
+   * must include those siblings (otherwise a wire parent living only on
+   * a non-swept event is invisible and the doc can never be corrected).
+   * Expand: find every event any pool doc touches, then load those
+   * events' docs as pool context (they never become targets). */
+  const sweptEventIds = new Set(eventIds);
+  const sweptDocIds = [...new Set(docs.map((d) => d.id))];
+  const extraEventIds = sweptDocIds.length
+    ? (
+        await db.query<{ event_id: string }>(
+          `SELECT DISTINCT ee.event_id FROM event_evidence ee
+             JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
+            WHERE ev.document_id IN (${sweptDocIds
+              .map((_, i) => `$${i + 1}`)
+              .join(",")})`,
+          sweptDocIds,
+        )
+      ).rows
+        .map((r) => r.event_id)
+        .filter((id) => !sweptEventIds.has(id))
+    : [];
+  if (extraEventIds.length) {
+    const { rows: extraDocs } = await db.query<(typeof docs)[number]>(
+      `SELECT DISTINCT ee.event_id, d.id, s.name AS source, s.kind::text AS kind,
+              v.title, v.summary, d.published_at, d.canonical_url, s.language
+         FROM event_evidence ee
+         JOIN evidence_versions v ON v.id = ee.evidence_version_id
+         JOIN evidence_documents d ON d.id = v.document_id
+         JOIN sources s ON s.id = d.source_id
+        WHERE ee.event_id IN (${extraEventIds
+          .map((_, i) => `$${i + 1}`)
+          .join(",")})`,
+      extraEventIds,
+    );
+    docs.push(...extraDocs);
+  }
+
   const docsByEvent = new Map<string, LineageDoc[]>();
   const docPool = new Map<string, LineageDoc>();
   for (const d of docs) {
@@ -252,6 +301,7 @@ export async function relineageEvents(
     const c = await db.connect();
     try {
       await c.query("BEGIN");
+      const dirtiedEvents = new Set<string>();
       for (const w of writes) {
         const origin = resolveOrigins(assertionMap).get(w.docId) ?? w.docId;
         await c.query(
@@ -275,8 +325,33 @@ export async function relineageEvents(
         );
         result.minted++;
         if (w.asrt.relation !== "unknown") result.resolved++;
+        /* a re-minted doc affects EVERY event it is attached to — the
+         * claim truth on a sibling event may reference this doc's
+         * evidence. Collect the full attachment set, not just the
+         * current sweep event. */
+        for (const eid2 of docEvents.get(w.docId) ?? [])
+          dirtiedEvents.add(eid2);
       }
+      /* also cover attachments OUTSIDE this sweep's event pool — a doc
+       * shared with an event not in the current batch still needs
+       * re-adjudication */
+      const mintedDocIds = writes.map((w) => w.docId);
+      const { rows: attached } = await c.query<{ event_id: string }>(
+        `SELECT DISTINCT ee.event_id FROM event_evidence ee
+           JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
+          WHERE ev.document_id IN (${mintedDocIds
+            .map((_, i) => `$${i + 1}`)
+            .join(",")})`,
+        mintedDocIds,
+      );
+      for (const r of attached) dirtiedEvents.add(r.event_id);
+      /* atomic hand-off: the dirty marker commits WITH the lineage
+       * write — adjudication cannot miss the correction even though
+       * events.last_seen_at is untouched */
+      for (const de of dirtiedEvents)
+        await enqueueDirty(c, de, "adjudicate", "relineage");
       await c.query("COMMIT");
+      result.changedEventIds.push(...dirtiedEvents);
     } catch (err) {
       await c.query("ROLLBACK").catch(() => {});
       result.failedEventIds.push(eid);

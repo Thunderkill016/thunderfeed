@@ -16,6 +16,8 @@ import {
   checkpointCursor,
   finishJob,
   lastDoneCursor,
+  markDirtyDone,
+  pendingDirtyEvents,
   startJob,
   updateJob,
 } from "../../lib/db/jobs.ts";
@@ -76,6 +78,39 @@ for (const e of rows) {
     });
   }
 }
+
+/* durable queue drain — events dirtied by producers (relineage etc.)
+ * whose last_seen_at is BEHIND the cursor. Timestamp discovery alone
+ * can never see them; the queue is the only correct hand-off. A dirty
+ * event is acknowledged only after its adjudication commits. */
+const dirty = await pendingDirtyEvents("adjudicate");
+let dirtyDone = 0;
+for (const id of dirty) {
+  /* already adjudicated by this run's sweep — ack it so the queue
+   * drains instead of re-processing forever (only on success) */
+  if (rows.some((r) => r.id === id)) {
+    if (!DRY && !failedIds.has(id)) {
+      await markDirtyDone(id, "adjudicate");
+      dirtyDone++;
+    }
+    continue;
+  }
+  try {
+    const decisions = await adjudicateEvents([id], { dryRun: DRY });
+    for (const d of decisions) {
+      console.log(`  [dirty] ${d.from} → ${d.to}  (${d.reason})`);
+      tally.set(d.to, (tally.get(d.to) ?? 0) + 1);
+      minted++;
+    }
+    if (!DRY) await markDirtyDone(id, "adjudicate");
+    dirtyDone++;
+  } catch (err) {
+    console.error(`dirty event ${id} failed:`, (err as Error).message);
+    /* left pending — retried next run; does not move the time cursor */
+  }
+}
+if (dirty.length)
+  console.log(`dirty queue: ${dirty.length} pending, ${dirtyDone} adjudicated`);
 
 console.log(
   `\ntotal: ${minted} claims moved — ` +

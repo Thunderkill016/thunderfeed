@@ -21,6 +21,8 @@ import {
   checkpointCursor,
   finishJob,
   lastDoneCursor,
+  markDirtyDone,
+  pendingDirtyEvents,
   startJob,
 } from "../lib/db/jobs";
 import type { Article, StoryCluster } from "../lib/model";
@@ -96,6 +98,14 @@ async function claimStates(eventId: string) {
     [eventId],
   );
   return rows;
+}
+
+async function countClaimVersions(claimId: string) {
+  const { rows } = await getPool().query<{ n: number }>(
+    `SELECT count(*)::int AS n FROM claim_versions WHERE claim_id = $1`,
+    [claimId],
+  );
+  return rows[0].n;
 }
 
 async function auditTypes(eventId: string) {
@@ -409,4 +419,122 @@ test("cursor: stale 'running' job recovered when the next run starts", async () 
   }>(`SELECT status, error FROM job_runs WHERE id = $1`, [dead.id]);
   assert.equal(rows[0].status, "failed");
   assert.match(rows[0].error ?? "", /stale/);
+});
+
+/* ── H. the orchestration gap: relineage on an OLD event ────────────
+ * events.last_seen_at does not move when batch lineage rewrites
+ * provenance, so a time-cursor adjudicate sweep would skip it forever.
+ * The dirty_events queue is the hand-off: relineage enqueues inside its
+ * mint transaction; adjudication drains regardless of timestamps. */
+test("orchestration: relineage dirties an event the time-cursor already passed", async () => {
+  setupDb();
+  const a = cluster([reutersArt(0)]);
+  const r1 = await persistCluster(a, extractClaims(a));
+  const b = cluster([bbcArt(2)]);
+  const r2 = await persistCluster(b, extractClaims(b));
+  assert.equal(r2.eventId, r1.eventId);
+  await adjudicateEvents([r1.eventId]);
+  const claim = (await claimStates(r1.eventId)).find(
+    (c) => Number(c.value) === 20,
+  )!;
+  assert.equal(claim.state, "supported");
+  const versionsBefore = await countClaimVersions(claim.claim_id);
+
+  /* The wire parent lived on ANOTHER event all along — cross-event doc
+   * sharing the ingest path never saw. Raw SQL because the resolver
+   * would merge this doc into X (same claim fingerprint). */
+  const { rows: evRows } = await getPool().query<{
+    event_id: string;
+    bbc_doc: string;
+    bbc_version: string;
+  }>(
+    `SELECT $1::uuid AS event_id, d.id AS bbc_doc, ee.evidence_version_id AS bbc_version
+       FROM event_evidence ee
+       JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
+       JOIN evidence_documents d ON d.id = ev.document_id
+       JOIN sources s ON s.id = d.source_id
+      WHERE ee.event_id = $1 AND s.name = 'BBC World News'`,
+    [r1.eventId],
+  );
+  const bbc = evRows[0];
+  const { rows: yRows } = await getPool().query<{ id: string }>(
+    `INSERT INTO events (event_type, topic, status, first_seen_at, last_seen_at)
+     VALUES ('other', 'world', 'emerging', '2020-01-01', '2020-01-01')
+     RETURNING id`,
+  );
+  const eventY = yRows[0].id;
+  const { rows: srcRows } = await getPool().query<{ id: string }>(
+    `SELECT id FROM sources WHERE name = 'Reuters'`,
+  );
+  const { rows: dRows } = await getPool().query<{ id: string }>(
+    `INSERT INTO evidence_documents
+       (source_id, canonical_url, published_at, first_seen_at,
+        last_seen_at, discovered_via)
+     VALUES ($1, 'https://reuters.example/wire-parent',
+             $2::timestamptz, now(), now(), 'rss')
+     RETURNING id`,
+    [srcRows[0].id, at(1)],
+  );
+  const { rows: vRows } = await getPool().query<{ id: string }>(
+    `INSERT INTO evidence_versions
+       (document_id, version_no, title, summary, content_hash, observed_at)
+     VALUES ($1, 1, $2, $3, 'h-wire-parent', now())
+     RETURNING id`,
+    [dRows[0].id, BBC_TITLE, "Wire copy of the storm travel disruption."],
+  );
+  const p = { doc: dRows[0].id, ver: vRows[0].id };
+  await getPool().query(
+    `UPDATE evidence_documents SET current_version_id = $1 WHERE id = $2`,
+    [p.ver, p.doc],
+  );
+  await getPool().query(
+    `INSERT INTO event_evidence
+       (event_id, evidence_version_id, attached_by)
+     VALUES ($1, $2, 'manual'), ($1, $3, 'manual')`,
+    [eventY, p.ver, bbc.bbc_version],
+  );
+
+  /* batch relineage on X alone must still see P (union pool across the
+   * doc's full attachment set) and dirty BOTH events it touches */
+  const rl = await relineageEvents([r1.eventId]);
+  assert.deepEqual(
+    [...rl.changedEventIds].sort(),
+    [r1.eventId, eventY].sort(),
+    "every event sharing a re-minted doc must be handed to adjudication",
+  );
+
+  /* simulate the gap exactly: the event looks OLD to the time cursor
+   * (as if the correction landed without ingest touching last_seen_at) */
+  await getPool().query(
+    `UPDATE events SET last_seen_at = '2020-01-01T00:00:00Z' WHERE id = $1`,
+    [r1.eventId],
+  );
+
+  /* the queue — not the timestamp — carries the work */
+  const pending = await pendingDirtyEvents("adjudicate");
+  assert.ok(
+    pending.includes(r1.eventId) && pending.includes(eventY),
+    "relineage must dirty every event whose docs were re-minted",
+  );
+
+  await adjudicateEvents(pending);
+  /* per-item ack: finishing X leaves Y retryable — acknowledgement is
+   * never implicit in the batch */
+  await markDirtyDone(r1.eventId, "adjudicate");
+  assert.deepEqual(await pendingDirtyEvents("adjudicate"), [eventY]);
+  await markDirtyDone(eventY, "adjudicate");
+  const after = (await claimStates(r1.eventId)).find(
+    (c) => c.claim_id === claim.claim_id,
+  )!;
+  assert.equal(
+    after.state,
+    "reported",
+    "provenance shrink must reach claim truth even when the event " +
+      "is behind the adjudicate cursor",
+  );
+  assert.equal((await pendingDirtyEvents("adjudicate")).length, 0);
+
+  /* idempotent: draining again mints no further versions */
+  await adjudicateEvents([r1.eventId, eventY]);
+  assert.equal(await countClaimVersions(claim.claim_id), versionsBefore + 1);
 });

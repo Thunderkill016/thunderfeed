@@ -69,7 +69,7 @@ if (run)
   });
 
 console.log(
-  `relineage: ${events.length - failedIds.size} events, ${res.minted} lineage versions minted, ${res.resolved} resolved, ${failedIds.size} failed${DRY ? " (dry)" : ""}`,
+  `relineage: ${events.length - failedIds.size} events, ${res.minted} lineage versions minted, ${res.resolved} resolved, ${failedIds.size} failed → ${new Set(res.changedEventIds).size} events dirtied for adjudication${DRY ? " (dry)" : ""}`,
 );
 if (run)
   await finishJob(run.id, {

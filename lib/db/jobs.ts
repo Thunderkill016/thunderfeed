@@ -16,6 +16,7 @@
  *   ... per-event work; on failure: failedIds.add(e.id)
  *   await finishJob(run.id, { processed, failed, cursorTs: checkpointCursor(...) });
  */
+import type pg from "pg";
 import { getPool } from "./pool";
 
 /** a 'running' row older than this was abandoned by a dead process */
@@ -125,5 +126,53 @@ export async function finishJob(
       result.cursorTs ?? null,
       result.error ?? null,
     ],
+  );
+}
+
+/* ── dirty_events — durable producer→consumer hand-off ────────────────
+ *
+ * A producer (e.g. relineage) that mutates evidence for an OLD event must
+ * not rely on the consumer's timestamp cursor to rediscover it. Enqueue
+ * inside the SAME transaction as the dirtying write — the hand-off then
+ * commits atomically with the work, and a re-enqueue resets
+ * processed_at so a later consumer run retries it.
+ */
+export async function enqueueDirty(
+  client: pg.PoolClient | pg.Pool,
+  eventId: string,
+  job: string,
+  reason: string,
+): Promise<void> {
+  await client.query(
+    `INSERT INTO dirty_events (event_id, job, reason)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (event_id, job)
+     DO UPDATE SET processed_at = NULL, reason = $3, queued_at = now()`,
+    [eventId, job, reason],
+  );
+}
+
+/** Pending event ids for a consumer job — live events only. */
+export async function pendingDirtyEvents(job: string): Promise<string[]> {
+  const { rows } = await getPool().query<{ event_id: string }>(
+    `SELECT d.event_id FROM dirty_events d
+       JOIN events e ON e.id = d.event_id
+      WHERE d.job = $1 AND d.processed_at IS NULL
+        AND e.status NOT IN ('merged','archived')
+      ORDER BY d.queued_at`,
+    [job],
+  );
+  return rows.map((r) => r.event_id);
+}
+
+/** Acknowledge — only call after the event's unit of work committed. */
+export async function markDirtyDone(
+  eventId: string,
+  job: string,
+): Promise<void> {
+  await getPool().query(
+    `UPDATE dirty_events SET processed_at = now()
+      WHERE event_id = $1 AND job = $2 AND processed_at IS NULL`,
+    [eventId, job],
   );
 }

@@ -50,6 +50,7 @@ import {
   type LineageDoc,
 } from "../lineage";
 import type { Article, StoryCluster } from "../model";
+import { enqueueDirty } from "./jobs";
 
 /* ------------------------------- inputs ---------------------------------- */
 
@@ -2212,6 +2213,23 @@ export async function persistCluster(
           asrt.relation === "original"
         )
           confirmedUpgrades.push({ docId, source: child.source });
+        /* cross-event hand-off: if this doc is also attached to OTHER
+         * events, their claim truth just changed — enqueue them for
+         * re-adjudication (the current event is already covered by the
+         * last_seen_at bump). Atomic with the lineage mint. */
+        const { rows: shared } = await client.query<{ event_id: string }>(
+          `SELECT DISTINCT ee.event_id FROM event_evidence ee
+             JOIN evidence_versions ev ON ev.id = ee.evidence_version_id
+            WHERE ev.document_id = $1 AND ee.event_id <> $2`,
+          [docId, eventId],
+        );
+        for (const s of shared)
+          await enqueueDirty(
+            client,
+            s.event_id,
+            "adjudicate",
+            "ingest_relineage",
+          );
       }
       // final relation per attached article (two articles can share a doc)
       for (const a of attachedArticles) {
