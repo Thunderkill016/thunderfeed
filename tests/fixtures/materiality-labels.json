@@ -1,0 +1,1851 @@
+{
+  "labeledAt": "2026-09-28T00:00:00.000Z",
+  "rubric": "docs/materiality-rubric.md",
+  "labeler": "analyst (first pass, single labeler)",
+  "note": "keys are '<kind>:<id>' matching materiality-corpus.json items. Personal relevance intentionally absent — intrinsic dimensions only.",
+  "labels": {
+    "event:01a0d4ed-0a02-7cc4-af0e-1deec3aad21d": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["policy_regulatory"],
+      "directness": "speculative",
+      "horizon": "immediate",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "White House press-pool access — domestic media policy, negligible econ channel"
+    },
+    "event:01a0d3ad-b0ca-7dcf-aa6a-5cd00825e1c3": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "immediate",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "routine Ukraine strike interception — background war noise"
+    },
+    "event:01a0dc5d-fb67-77eb-97c7-067b659fd8b7": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "UN walkout optics"
+    },
+    "event:01a0e1f7-6006-7e18-a679-08728f895c5f": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "crime"
+    },
+    "event:01a0d850-d474-7064-a2d4-96e5fa81ddf5": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "single-employee fraud at SJC — crime, not a gold supply event"
+    },
+    "event:01a0d3a9-e534-7981-90d2-b204e1f75ea4": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "immediate",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "ballistic strike on Kiev — routine escalation"
+    },
+    "event:01a0e67e-3094-7caa-8fe0-c1fc8f59f9c9": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "crime blotter"
+    },
+    "event:01a0e2aa-dc8e-7647-b6e2-42844c27e366": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": ["commodity:?:XAUUSD"],
+      "transmissionConfidence": "low",
+      "note": "Iran/US trust collapse → Hormuz risk premium on commodities"
+    },
+    "event:01a0d6f3-8843-7b91-9c17-1d1ce9a583d0": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "France troop pledge to KSA — geopolitical"
+    },
+    "event:01a0e2df-7c68-72b1-8a89-d8fd4a8c9367": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0d9fa-e457-73cb-babd-4d0517c3a23c": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "UN speech theatrics"
+    },
+    "event:01a0d3aa-33dd-771d-9f98-8b83048ca6a5": {
+      "intrinsicMateriality": "major",
+      "scope": "global_systemic",
+      "channels": ["policy_regulatory", "external"],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": ["us", "china", "vietnam"],
+      "transmissionConfidence": "medium",
+      "note": "US-China trade truce extension — tariff path directly reprices VN export expectations"
+    },
+    "event:01a0ddae-c404-7f13-ba5c-326b8031694f": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "traffic accident"
+    },
+    "event:01a0e688-570d-700b-a9ca-3114adf88222": {
+      "intrinsicMateriality": "limited",
+      "scope": "vietnam",
+      "channels": ["fundamental"],
+      "directness": "speculative",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Đà Lạt project intent — pre-approval, unpriced"
+    },
+    "event:01a0e261-002f-71fb-a4c6-12a5c1c1d45f": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0d7ec-cac4-7478-bbdd-b7ddd60dc0d3": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": ["commodity:?:XAUUSD"],
+      "transmissionConfidence": "low",
+      "note": "Iran de-escalation signal — reverses part of Hormuz premium"
+    },
+    "event:01a0d91d-b74c-7ea3-af1e-ec579c30dbbc": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0d176-5a20-722f-a77b-4850e91ead78": {
+      "intrinsicMateriality": "major",
+      "scope": "global_systemic",
+      "channels": ["policy_regulatory", "external"],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": ["us", "china", "vietnam"],
+      "transmissionConfidence": "medium",
+      "note": "Xi state visit + truce extension — same underlying macro event"
+    },
+    "event:01a0d84e-573b-719c-8cff-0236ae45f541": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Mecca pact meeting — diplomatic"
+    },
+    "event:01a0e69c-f343-7fab-8f54-e929e2f6cdb5": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports ceremony gesture"
+    },
+    "event:01a0d176-5d58-771d-811d-3201b483f2d9": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "second_order",
+      "horizon": "immediate",
+      "affectedTargets": ["commodity:?:XAUUSD"],
+      "transmissionConfidence": "low",
+      "note": "Hormuz ultimatum — oil/commodity risk channel"
+    },
+    "event:01a0d188-7dc2-7886-866d-ef42359284ff": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "vietnam",
+      "channels": ["policy_regulatory", "external"],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": ["vietnam"],
+      "transmissionConfidence": "medium",
+      "note": "VN rejects transshipment label — tariff/trade policy stance affects exporters"
+    },
+    "event:01a0e33f-d55a-7bd0-a9be-9e0a13364ef7": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "immediate",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Yemen escalation — routine"
+    },
+    "event:01a0dfee-a294-7fb1-9acc-b5059ff4ce71": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "weather"
+    },
+    "event:01a0dd43-6c45-7eba-a8b2-636d04bfa1f9": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0dc36-a173-7df9-a692-0b1fafe97ca7": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external", "policy_regulatory"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "US aviation embargo on Iran delegation — diplomatic signal"
+    },
+    "event:01a0d705-3297-788d-8cef-837eac649a7a": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "vietnam",
+      "channels": ["external"],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": ["vietnam", "canada"],
+      "transmissionConfidence": "medium",
+      "note": "VN-Canada trade expansion — export channel"
+    },
+    "event:01a0d176-5a45-7db6-bd9d-a116caf76918": {
+      "intrinsicMateriality": "limited",
+      "scope": "vietnam",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "diplomatic meeting, no policy output yet"
+    },
+    "event:01a0e335-42c9-7cc7-9184-6588ec172c91": {
+      "intrinsicMateriality": "limited",
+      "scope": "vietnam",
+      "channels": [],
+      "directness": "speculative",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "security cooperation framing — no economic instrument"
+    },
+    "event:01a0dc10-2dd3-7268-9926-68bc0251d560": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "human-interest flight story"
+    },
+    "event:01a0d905-4143-7802-a5fa-764f39def80c": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["policy_regulatory", "external"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Colombia-Iran diplomatic break — symbolic"
+    },
+    "event:01a0d3aa-57fc-74d7-8b27-9184a62c670e": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "entertainment — stray 'sanctions' predicate is classifier noise, must not inflate"
+    },
+    "event:01a0e25c-a5c6-7caf-803b-0b09f0b70b83": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Swiss neutrality referendum — rejected, status quo"
+    },
+    "event:01a0d789-cf7b-7121-adac-2a88a65aec1b": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["external", "fundamental"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": ["us", "vietnam"],
+      "transmissionConfidence": "medium",
+      "note": "US diesel export ban consideration → VN fuel import cost channel"
+    },
+    "event:01a0e6de-58c9-7096-a928-de75463a6ec8": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Middle East tension commentary"
+    },
+    "event:01a0e6f5-e15d-7c26-bb93-5d9e804b3802": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "explainer on China army anti-corruption"
+    },
+    "event:01a0e6f5-a939-7581-ae77-5e16f20a0bdd": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Swiss neutrality vote — status quo preserved"
+    },
+    "event:01a0dc5d-b17a-7a2b-b50f-d9f0572a9fad": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Khamenei health — succession tail risk only"
+    },
+    "event:01a0dce8-3e01-7c8c-bd43-ca33d205def2": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "bank branch relocation — operational trivia"
+    },
+    "event:01a0e4e8-a172-7374-b041-4edae60faba1": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["policy_regulatory"],
+      "directness": "speculative",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Serbia resignation — regional politics"
+    },
+    "event:01a0e6f4-a5bd-7934-9a55-f04eac98a2b6": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["discounting", "fundamental"],
+      "directness": "first_order",
+      "horizon": "weeks",
+      "affectedTargets": ["us"],
+      "transmissionConfidence": "medium",
+      "note": "US yield surge pressuring AI capex — discount-rate channel is the product's core signal"
+    },
+    "event:01a0d82c-b3d0-7de2-8416-667505cb9b47": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "papal visit"
+    },
+    "event:01a0da07-c418-7a03-9d8f-775fa3ffe2b9": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "NA chairman education comment"
+    },
+    "event:01a0e68b-ada4-7360-beee-aaf71cf28773": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "traffic fine"
+    },
+    "event:01a0e6ac-4000-7f8a-979d-8a89feb9ae33": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0e6f3-77a5-7439-88e8-7b27a5ac7b68": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["policy_regulatory"],
+      "directness": "speculative",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "French far-right Senate gain — political signal"
+    },
+    "event:01a0da03-c51a-7df0-a40d-6a73e6ceef90": {
+      "intrinsicMateriality": "limited",
+      "scope": "sector",
+      "channels": ["policy_regulatory"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Anthropic blacklist upheld — US AI/policy sector"
+    },
+    "event:01a0d176-5de4-7ebb-9961-a40bdf4f0bb7": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "UNSC reform proposal — perennial, no action"
+    },
+    "event:01a0e68a-06d4-7b9c-bfc6-922629540956": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "HCMC press-admin instruction"
+    },
+    "event:01a0ddf2-f1ed-7dfe-a3c4-f3f08d8dae10": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "provincial party meeting"
+    },
+    "event:01a0e6af-9764-70a8-951b-ec25810f0355": {
+      "intrinsicMateriality": "limited",
+      "scope": "sector",
+      "channels": ["fundamental"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "open-model mentions surge — sector trend signal"
+    },
+    "event:01a0e197-2d60-7b10-a67e-80ccfa90e74d": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "routine diplomacy"
+    },
+    "event:01a0e6f0-c3bb-7db3-a2d8-820dc3ad9906": {
+      "intrinsicMateriality": "limited",
+      "scope": "vietnam",
+      "channels": ["fundamental"],
+      "directness": "speculative",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "VN real-estate market stress anecdote — color, not data"
+    },
+    "event:01a0dbfd-0aa0-75af-9359-b8fa163eccf2": {
+      "intrinsicMateriality": "limited",
+      "scope": "sector",
+      "channels": ["fundamental"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "VN agentic AI adoption — trend story"
+    },
+    "event:01a0d176-5aac-7048-9097-d2ee08f32068": {
+      "intrinsicMateriality": "limited",
+      "scope": "sector",
+      "channels": ["policy_regulatory"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "AI agent security incident — policy response expected"
+    },
+    "event:01a0e6ef-7ac1-7da7-8901-58be413247c7": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "single store opening"
+    },
+    "event:01a0e2e4-3d35-761a-92c0-ae77b1107850": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "vietnam",
+      "channels": ["external", "fundamental"],
+      "directness": "first_order",
+      "horizon": "immediate",
+      "affectedTargets": ["commodity:?:SJC9999"],
+      "transmissionConfidence": "high",
+      "note": "VN gold -6tr/lượng in a week — direct portfolio hit for VN savers"
+    },
+    "event:01a0d176-5cad-7606-b2ca-42622f3edfb7": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "UNGA speech orientations"
+    },
+    "event:01a0e0c0-ca89-701e-a86e-68dd330a5f90": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["external", "fundamental"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Nord Stream reopening speculation — European gas supply repricing"
+    },
+    "event:01a0e184-c961-79b9-9d0b-90e3d7bfd3e4": {
+      "intrinsicMateriality": "limited",
+      "scope": "vietnam",
+      "channels": ["fundamental"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Russian tourist inflow — tourism receipts color"
+    },
+    "event:01a0d176-5d96-798f-80ec-95741c2f726f": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["policy_regulatory", "external"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": ["us", "china"],
+      "transmissionConfidence": "low",
+      "note": "Xi visit prep — anticipatory, outcome pending"
+    },
+    "event:01a0e689-d0ca-7e30-aefb-0a40a384af8f": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0e6eb-f537-7745-8b6d-fffb7ec2502e": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "drainage repair"
+    },
+    "event:01a0e681-fecd-7881-bed6-352be19ce52a": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "drug seizure"
+    },
+    "event:01a0e35d-8cce-7bb5-a12e-4213f34759a3": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0e6e9-2e09-771c-901b-a77e1bfb391e": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "insurance marketing explainer"
+    },
+    "event:01a0ddb1-212f-75b2-94db-dc448bad6076": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "football politics"
+    },
+    "event:01a0e430-bf2b-7b60-8966-6abd71184b73": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "party speech on project quality"
+    },
+    "event:01a0dede-2efb-7cd5-af3f-05f87cf95e64": {
+      "intrinsicMateriality": "limited",
+      "scope": "sector",
+      "channels": ["policy_regulatory"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "OpenAI agent hitting US gov sites — AI policy/regulatory tail"
+    },
+    "event:01a0e359-8435-7d89-8e9d-23e4063000ac": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "marathon"
+    },
+    "event:01a0e402-c6e1-7c8c-b43e-a9b4120f750e": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0e2fe-9cb4-7055-9280-b3a34750458a": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "bridge signage maintenance"
+    },
+    "event:01a0e6e1-8abf-7cf8-b5e2-8ea6ddfb5dbc": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "second_order",
+      "horizon": "immediate",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Gaza death-toll milestone — humanitarian, marginal econ"
+    },
+    "event:01a0e17a-e530-7bef-b6d6-5fa6d6bfd0f2": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "image promotion"
+    },
+    "event:01a0e67a-be1e-7c01-a1d2-884ab75eed7f": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "news digest roundup"
+    },
+    "event:01a0e675-3001-7a38-bf2e-edf8d0fc2c50": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "peacekeeper homecoming"
+    },
+    "event:01a0d188-8261-7022-9b2f-3ebdc95ceb55": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "weeks",
+      "affectedTargets": ["us", "china"],
+      "transmissionConfidence": "low",
+      "note": "CEO attendance speculation — anticipatory"
+    },
+    "event:01a0e688-eb3d-7020-983b-350693d8d3f7": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "fireworks seizure"
+    },
+    "event:01a0e6ab-d107-7d5a-aeb2-bdf0b10a95a9": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0e0a6-d387-76be-bb4a-f1bb231fa53f": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "Costa Rica FM dismissal"
+    },
+    "event:01a0e685-7f4a-73d8-8dec-aa4892510a64": {
+      "intrinsicMateriality": "limited",
+      "scope": "vietnam",
+      "channels": ["fundamental"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Phú Quốc airport planning adjustment — infrastructure"
+    },
+    "event:01a0e0e8-5829-7176-9db5-feb8fe356835": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Russia-Germany FM first contact — thaw signal"
+    },
+    "event:01a0e6a8-89e9-7c7e-87a1-85f48927c984": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "news digest"
+    },
+    "event:01a0e373-d996-728d-aec4-d7b790f1d69a": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "news digest"
+    },
+    "event:01a0e683-6f68-74fa-9ccd-b50d90c55cc1": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "mid-autumn festival"
+    },
+    "event:01a0e682-4589-715d-9e6d-64303e3a6713": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "Korea-Ukraine diplomatic spat"
+    },
+    "event:01a0e67b-8e99-7cb6-9bc1-a6f9c9599352": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "weather"
+    },
+    "event:01a0e191-b770-7657-b0d7-366db194cb98": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "car launch"
+    },
+    "event:01a0e572-0057-7c2c-acbc-642717deac97": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["fundamental"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": ["us"],
+      "transmissionConfidence": "low",
+      "note": "US poverty/income data — context, backward-looking"
+    },
+    "event:01a0e68a-3bec-7501-9b7f-fc7f8879a889": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "award"
+    },
+    "event:01a0e687-3a24-7850-93b8-2e88d2eaa5b1": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "school lunch complaint"
+    },
+    "event:01a0e682-8350-774e-95a8-c2be98418d05": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "speculative",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "EU arctic militarization — long-tail geopolitical"
+    },
+    "event:01a0e45c-26ac-7690-ba46-d70cef6d0d5e": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "sports"
+    },
+    "event:01a0e340-0ced-76ed-a1bb-e6493b576f90": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external", "policy_regulatory"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Israeli annexation call — escalation risk"
+    },
+    "event:01a0e1fa-84a5-74b2-a23c-34a1ccda7b30": {
+      "intrinsicMateriality": "limited",
+      "scope": "sector",
+      "channels": ["fundamental"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": ["china"],
+      "transmissionConfidence": "low",
+      "note": "China robot adoption — sector trend"
+    },
+    "event:01a0e4e2-80c7-72ea-9174-2c6e1ed614c7": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "joint drill"
+    },
+    "event:01a0d789-101b-70b2-bad9-a1da266ee752": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "vietnam",
+      "channels": ["external"],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": ["vietnam"],
+      "transmissionConfidence": "medium",
+      "note": "VN-Malaysia $20B trade target — export channel"
+    },
+    "event:01a0dcff-cd20-7fda-b508-f9eaf827f956": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "bridge photo essay"
+    },
+    "event:01a0e4e5-cea3-71e1-a799-887a76a01b8c": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "crime"
+    },
+    "event:01a0e37e-9526-7b1e-b866-8918735042b4": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "vietnam",
+      "channels": ["external", "fundamental"],
+      "directness": "first_order",
+      "horizon": "months",
+      "affectedTargets": ["vietnam"],
+      "transmissionConfidence": "medium",
+      "note": "VN instant-coffee exports overtake Brazil — share shift in a real export line"
+    },
+    "event:01a0e29a-605f-70bb-912f-7634457386da": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "vocational-ed admin guidance"
+    },
+    "event:01a0e040-44ae-7f6d-a8bc-45e28d28fcdd": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "heritage branding"
+    },
+    "event:01a0e1fd-39a7-729e-b245-23a621880c40": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "traffic fatality"
+    },
+    "event:01a0d887-c9f0-7d9e-a575-ef43c00fde90": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "hospital visit"
+    },
+    "event:01a0d4f7-645f-746f-8d41-f904606ef9af": {
+      "intrinsicMateriality": "limited",
+      "scope": "vietnam",
+      "channels": ["policy_regulatory"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "internet cutoffs for unpaid fines — regulatory enforcement"
+    },
+    "event:01a0ddcf-2e62-7459-8d89-e8cf75c96b0c": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "Ukraine Patriot missile agreement"
+    },
+    "event:01a0e571-32fc-7c3f-af6e-fa8ee9d39b23": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "education program update"
+    },
+    "event:01a0dd05-d345-7aef-b5bd-e54ffd210f94": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "NK POW story"
+    },
+    "event:01a0dc3c-a3e1-759d-9053-3b46d41e8def": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "UK Labour politics"
+    },
+    "event:01a0e56e-0c86-7c6b-b068-a3a7fedfba58": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["policy_regulatory"],
+      "directness": "speculative",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "US-Russia weakening AI weapons pact — long-tail"
+    },
+    "event:01a0dd45-6ebd-748c-8ed5-07378337d2ee": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "UNGA positioning"
+    },
+
+    "macro_release:01a0e124-e5f4-7181-8ed5-f1f7886e0f5b": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["fundamental", "discounting"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["macro:fred:GDPC1"],
+      "transmissionConfidence": "medium",
+      "note": "US real GDP quarterly — core growth print; |z|=1.74 unusual but not extreme"
+    },
+    "macro_release:01a0e124-e69d-76bd-ab72-7f3e137feee2": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["discounting"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": ["macro:fred:FPCPITOTLZGDEU"],
+      "transmissionConfidence": "low",
+      "note": "annual CPI level series — baseline context"
+    },
+    "macro_release:01a0e124-e695-7975-a7ea-b7da002294ee": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["discounting", "funding_liquidity"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["macro:fred:ECBDFR"],
+      "transmissionConfidence": "medium",
+      "note": "ECB deposit rate — policy channel"
+    },
+    "macro_release:01a0e124-e683-7361-8285-8fa768cd97fa": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["discounting", "funding_liquidity"],
+      "directness": "direct",
+      "horizon": "months",
+      "affectedTargets": ["macro:fred:MORTGAGE30US"],
+      "transmissionConfidence": "medium",
+      "note": "30Y mortgage 7.03% — housing credit channel, |z| 2.6"
+    },
+    "macro_release:01a0e124-e670-76fd-baae-3c844ff599ec": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["funding_liquidity"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["macro:fred:BAMLH0A0HYM2"],
+      "transmissionConfidence": "medium",
+      "note": "HY OAS 2.8 — credit-spread level/abnormality matters"
+    },
+    "macro_release:01a0e124-e654-7565-9051-2b554c4b7036": {
+      "intrinsicMateriality": "major",
+      "scope": "global_systemic",
+      "channels": ["discounting"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["macro:fred:DGS10"],
+      "transmissionConfidence": "medium",
+      "note": "10Y at 5.18%, |z|≈3 — global discount-rate repricing; still no direction claim"
+    },
+    "macro_release:01a0e124-e64f-7fcf-846f-c4adedc9b987": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["discounting"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["macro:fred:DGS2"],
+      "transmissionConfidence": "medium",
+      "note": "2Y 4.87 |z| 2.35"
+    },
+    "macro_release:01a0e124-e64a-7f8a-9abc-6b32466a2435": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["discounting", "funding_liquidity"],
+      "directness": "second_order",
+      "horizon": "weeks",
+      "affectedTargets": ["macro:fred:FEDFUNDS"],
+      "transmissionConfidence": "low",
+      "note": "monthly effective-rate average — no discrete step, observation only"
+    },
+    "macro_release:01a0e124-e63b-7b22-b750-bd394096d689": {
+      "intrinsicMateriality": "meaningful",
+      "scope": "global_systemic",
+      "channels": ["discounting", "fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["macro:fred:CPIAUCSL"],
+      "transmissionConfidence": "medium",
+      "note": "CPI print |z| 1.87 — observation, NOT a beat/miss (no consensus data)"
+    },
+    "macro_release:01a0e124-e66e-777b-b79d-6c39e8d68bdc": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["discounting", "external"],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["macro:fred:VIXCLS"],
+      "transmissionConfidence": "low",
+      "note": "VIX 14.21 — calm, routine observation"
+    },
+    "macro_release:01a0e124-e676-7c5e-883b-f33343bc8c32": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external", "fundamental"],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["macro:fred:DCOILWTICO"],
+      "transmissionConfidence": "low",
+      "note": "WTI 96.41, |z|<1 — routine print"
+    },
+    "macro_release:01a0e124-e68b-74d5-9dda-c0f9c3ab8263": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["macro:fred:DEXJPUS"],
+      "transmissionConfidence": "low",
+      "note": "JPY 156.87 routine"
+    },
+    "macro_release:01a0e124-e67f-7a46-b20f-ff49fa305162": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["fundamental"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": ["macro:fred:UMCSENT"],
+      "transmissionConfidence": "low",
+      "note": "sentiment survey — context"
+    },
+    "macro_release:01a0e1b1-633c-7c32-bcc9-0dc090274032": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "IMF annual forecast — baseline context, not breaking"
+    },
+    "macro_release:01a0e1b1-633c-796b-ba34-58c04174577d": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["fundamental", "discounting"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "IMF annual US GDP forecast — baseline"
+    },
+    "macro_release:01a0e1b1-633b-7950-8cff-a72ba364ce9c": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["fundamental"],
+      "directness": "second_order",
+      "horizon": "long_term",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "annual GDP/capita — structural baseline"
+    },
+    "macro_release:01a0e186-3442-7957-ae89-f1e5243f5821": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["external"],
+      "directness": "second_order",
+      "horizon": "months",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "WB FDI annual — baseline"
+    },
+    "macro_release:01a0e186-3457-7f25-8a6c-dee560a78a6a": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["fundamental"],
+      "directness": "second_order",
+      "horizon": "long_term",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "WB annual GDP level — baseline"
+    },
+    "macro_release:01a0e186-345e-7365-9410-0a40a573ccba": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["discounting"],
+      "directness": "second_order",
+      "horizon": "long_term",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "WB annual CPI Singapore — baseline"
+    },
+    "macro_release:01a0e186-343d-76a4-a8be-b7d11386c2b5": {
+      "intrinsicMateriality": "limited",
+      "scope": "global_systemic",
+      "channels": ["discounting", "fundamental"],
+      "directness": "second_order",
+      "horizon": "long_term",
+      "affectedTargets": [],
+      "transmissionConfidence": "low",
+      "note": "WB annual CPI Korea — baseline"
+    },
+
+    "corporate_action:01a0df17-74a1-7d47-9e57-73785ef512fa": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:META"],
+      "transmissionConfidence": "high",
+      "note": "0.1% dividend — routine"
+    },
+    "corporate_action:01a0df19-26b8-76e7-92ea-abaa08168673": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:NVDA"],
+      "transmissionConfidence": "high",
+      "note": "0.1% dividend"
+    },
+    "corporate_action:01a0df0d-c648-7e3b-984e-b7d4c47f0873": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:GOOGL"],
+      "transmissionConfidence": "high",
+      "note": "0.1% dividend"
+    },
+    "corporate_action:01a0df0e-0c7a-77ba-9610-2c8c6d8af7f9": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:GOOG"],
+      "transmissionConfidence": "high",
+      "note": "0.1% dividend"
+    },
+    "corporate_action:01a0df18-4dc3-7ec0-97aa-f9db767140d9": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:MSFT"],
+      "transmissionConfidence": "high",
+      "note": "0.2% dividend"
+    },
+    "corporate_action:01a0df0c-3259-72be-a3d2-40904f85dd7e": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:AAPL"],
+      "transmissionConfidence": "high",
+      "note": "0.1% dividend"
+    },
+    "corporate_action:01a0df1a-0312-77e2-b9e8-c5fd33965d21": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NYSE:ORCL"],
+      "transmissionConfidence": "high",
+      "note": "0.4% dividend"
+    },
+    "corporate_action:01a0df17-7278-75ba-b61c-148a7e5733cd": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:META"],
+      "transmissionConfidence": "high",
+      "note": "same-series dividend re-detection"
+    },
+    "corporate_action:01a0df0e-0ea4-72b5-a796-4ff556357e2a": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:GOOG"],
+      "transmissionConfidence": "high",
+      "note": "repeat dividend"
+    },
+    "corporate_action:01a0df0d-c879-72f0-beea-37b6b2b99e30": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:GOOGL"],
+      "transmissionConfidence": "high",
+      "note": "repeat dividend"
+    },
+    "corporate_action:01a0df19-2494-7dca-bc19-d8af8e035a6c": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:NVDA"],
+      "transmissionConfidence": "high",
+      "note": "repeat dividend"
+    },
+    "corporate_action:01a0df18-4ba7-785a-87ed-1a172240081f": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:MSFT"],
+      "transmissionConfidence": "high",
+      "note": "repeat dividend"
+    },
+    "corporate_action:01a0df0c-3479-7129-89c6-abefe1d09c67": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:AAPL"],
+      "transmissionConfidence": "high",
+      "note": "repeat dividend"
+    },
+    "corporate_action:01a0df1a-00f8-71a0-8f84-ef2d24b69eee": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NYSE:ORCL"],
+      "transmissionConfidence": "high",
+      "note": "repeat dividend"
+    },
+    "corporate_action:01a0df0d-caa8-7331-875f-f9533010ac1b": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:GOOGL"],
+      "transmissionConfidence": "high",
+      "note": "repeat dividend"
+    },
+    "corporate_action:01a0df0e-10ce-77fb-b4bf-081eee7ef29d": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:GOOG"],
+      "transmissionConfidence": "high",
+      "note": "repeat dividend"
+    },
+    "corporate_action:01a0df0c-369b-77e8-8957-8d41901e05b1": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": ["fundamental"],
+      "directness": "direct",
+      "horizon": "weeks",
+      "affectedTargets": ["equity:NGS:AAPL"],
+      "transmissionConfidence": "high",
+      "note": "repeat dividend"
+    },
+    "corporate_action:01a0df0d-f45c-796b-95ef-7f92383e2086": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:NGS:GOOGL"],
+      "transmissionConfidence": "high",
+      "note": "20:1 split — mechanical unit change; retail-access effect minor"
+    },
+    "corporate_action:01a0df0e-3a16-7363-a2a2-3b2340720eac": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:NGS:GOOG"],
+      "transmissionConfidence": "high",
+      "note": "20:1 split — mechanical"
+    },
+    "corporate_action:01a0df0c-c1e4-7e40-9727-65651238eebe": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:NGS:AAPL"],
+      "transmissionConfidence": "high",
+      "note": "split — mechanical"
+    },
+    "corporate_action:01a0df0c-c3ee-7742-b951-9164f1f4901a": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:NGS:AAPL"],
+      "transmissionConfidence": "high",
+      "note": "split — mechanical"
+    },
+    "corporate_action:01a0df0c-c5f9-7e0e-854f-8c411c814b11": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:NGS:AAPL"],
+      "transmissionConfidence": "high",
+      "note": "split — mechanical"
+    },
+    "corporate_action:01a0df0c-c81e-7997-8c61-2cf1c2d8b75f": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:NGS:AAPL"],
+      "transmissionConfidence": "high",
+      "note": "split — mechanical"
+    },
+
+    "market_move:01a0e254-fd42-789d-98d8-248f89a60e8e:2026-09-25": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:HOSE:VPB"],
+      "transmissionConfidence": null,
+      "note": "+4% single-name move — reaction proven, cause not"
+    },
+    "market_move:01a0e24f-f6dd-701c-a0a1-465c8e7550c8:2026-09-25": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:HOSE:VHM"],
+      "transmissionConfidence": null,
+      "note": "+5.7% VHM — notable single-name move"
+    },
+    "market_move:01a0df17-b8e3-7d88-b3c6-6525d45aafe1:2026-09-25": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:NGS:MSFT"],
+      "transmissionConfidence": null,
+      "note": "+3.7% MSFT"
+    },
+    "market_move:01a0e28d-46c5-762e-b3d6-fb34538013cd:2026-09-25": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:UPCOM:MSR"],
+      "transmissionConfidence": null,
+      "note": "-3.6% small-cap"
+    },
+    "market_move:01a0e28f-c65a-74c3-8051-0917319c34cc:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "UPCoM index -0.5% — routine"
+    },
+    "market_move:01a0e28d-c5a9-7722-b35a-84c889658666:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "-0.6% routine"
+    },
+    "market_move:01a0ded7-e0d5-7a35-8eff-245dbc5f6feb:2026-09-25": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:NGS:META"],
+      "transmissionConfidence": null,
+      "note": "-3.3% META"
+    },
+    "market_move:01a0df08-0bee-7cb6-a71f-1c0ec3561982:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "+1.5% routine"
+    },
+    "market_move:01a0e288-9730-7978-87ff-8373929cd2ef:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "-2.6% illiquid small-cap"
+    },
+    "market_move:01a0e24d-57ea-70ae-a026-6bf3a01230cd:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "-1.3% routine"
+    },
+    "market_move:01a0e287-7647-7516-8c7a-a21f35ed0fee:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "-2.2% routine"
+    },
+    "market_move:01a0ded7-7484-71d5-9fb5-32d23ddd8f81:2026-09-25": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:NGS:INTC"],
+      "transmissionConfidence": null,
+      "note": "-3.5% INTC"
+    },
+    "market_move:01a0e28e-4589-7f69-bdb0-11ca3a890aaf:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "+0.5% routine"
+    },
+    "market_move:01a0e28f-44de-7cd1-b1fd-04ad71c1a5b4:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "HNX30 -0.9% routine"
+    },
+    "market_move:01a0e256-af75-7bde-a203-1f439ff593f8:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "-1.8% routine"
+    },
+    "market_move:01a0e250-7c48-7bf0-99e9-354eaa70948f:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "-1% routine"
+    },
+    "market_move:01a0e257-3fb1-7ed3-9c3b-fc7770f1ec94:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "+1.5% routine"
+    },
+    "market_move:01a0e28b-42eb-7dec-85c3-198861298a9c:2026-09-25": {
+      "intrinsicMateriality": "limited",
+      "scope": "issuer",
+      "channels": [],
+      "directness": "direct",
+      "horizon": "immediate",
+      "affectedTargets": ["equity:HNX:THD"],
+      "transmissionConfidence": null,
+      "note": "+2.8% small-cap"
+    },
+    "market_move:01a0e28a-c34a-7f07-8bdc-7fca12ce0ac3:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "-1.5% routine"
+    },
+    "market_move:01a0e288-074f-720c-9cc6-d9d254535068:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "-1.4% routine"
+    },
+    "market_move:01a0df19-6af5-7a5d-af75-5118e8511ec3:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "-1.8% routine"
+    },
+    "market_move:01a0e2ce-9cfb-7689-8dbf-787b943c0eb7:2026-09-27": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "BTC flat"
+    },
+    "market_move:01a0e254-6cf0-7f2c-b3dc-9a205a1fac3d:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "flat"
+    },
+    "market_move:01a0e256-1f1e-7b16-8e80-3352ec47a66a:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "flat"
+    },
+    "market_move:01a0e289-b724-73b3-a166-b04878350bd8:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "flat"
+    },
+    "market_move:01a0e28b-c92a-70a4-8215-4809b3921868:2026-09-25": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "flat"
+    },
+    "market_move:01a0e2cd-d3c5-70d8-9eed-fdd516ae187c:2026-09-27": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "SJC flat"
+    },
+    "market_move:01a0e2ce-755c-72e3-8995-2f639f49cb2c:2026-09-27": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "world gold flat"
+    },
+    "market_move:01a0e2cd-fc7f-7e8b-84a6-7b7b01f3c68c:2026-09-27": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "DOJI flat"
+    },
+    "market_move:01a0e2ce-2495-71dc-857d-8d13feb89d4e:2026-09-27": {
+      "intrinsicMateriality": "none",
+      "scope": null,
+      "channels": [],
+      "directness": null,
+      "horizon": null,
+      "affectedTargets": [],
+      "transmissionConfidence": null,
+      "note": "PNJ flat"
+    }
+  }
+}
