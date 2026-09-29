@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-29T05:14:50.176Z",
+  "generatedAt": "2026-09-29T06:26:24.394Z",
   "methodVersion": "r7.1d.1d",
   "selectionVersion": "events-v1",
   "corpusHash": "e665f9961cd6ea51",
@@ -538,17 +538,15 @@
         "country_exposure:vn"
       ],
       "driverClaimIds": [
-        "01a0e0f3-c983-7cc9-9215-e50d6d4a7034",
-        "01a0e352-5f78-72a0-87f0-130140dd62ba",
-        "01a0e352-63aa-777a-951c-1df7a79be056",
-        "01a0e352-67dc-7e61-80b0-312d6a1f062b"
+        "01a0d938-074c-7a80-9a9b-41bd4bd13adb",
+        "01a0dba8-0517-737f-b886-c3fdf64579b4"
       ],
       "fpCause": null,
       "driversReviewed": true,
       "channelsReviewed": true,
       "targetsReviewed": true,
       "reviewed": true,
-      "note": "VN-Canada trade stats"
+      "note": "VN-Canada trade; R7.1d.3a fix — prior drivers were HCMC-FDI claims off misattached docs"
     },
     {
       "eventId": "01a0d788-fa78-7d20-b18e-65f6bf4ede9d",
@@ -560,15 +558,13 @@
         "discounting"
       ],
       "affectedTargets": [],
-      "driverClaimIds": [
-        "01a0d788-fb43-7161-a66a-cb886f2528ce"
-      ],
+      "driverClaimIds": [],
       "fpCause": null,
       "driversReviewed": true,
       "channelsReviewed": true,
       "targetsReviewed": true,
       "reviewed": true,
-      "note": "gold one-week low on rate expectations"
+      "note": "gold one-week low on rate expectations; R7.1d.3a fix — interest_rate claim is a foreign bank-liquidity doc; no gold claim extracted → extraction gap"
     },
     {
       "eventId": "01a0d789-101b-70b2-bad9-a1da266ee752",
@@ -738,15 +734,13 @@
       "affectedTargets": [
         "country_exposure:ir"
       ],
-      "driverClaimIds": [
-        "01a0e26c-c013-7cda-98a7-a6c702631410"
-      ],
-      "fpCause": "claim_scorer",
+      "driverClaimIds": [],
+      "fpCause": "upstream_miscluster",
       "driversReviewed": true,
       "channelsReviewed": true,
       "targetsReviewed": true,
       "reviewed": true,
-      "note": "diplomatic break + banking disruption; claim-layer over-elevation"
+      "note": "diplomatic break; R7.1d.3a fix — sanctions claim is foreign (Iran banking doc); on-story docs attached but produced no claim → extraction gap"
     },
     {
       "eventId": "01a0d91d-b74c-7ea3-af1e-ec579c30dbbc",
@@ -1056,15 +1050,14 @@
       ],
       "affectedTargets": [],
       "driverClaimIds": [
-        "01a0e058-d902-748e-bf02-93bb621dc88b",
-        "01a0e066-d38f-71e8-b7fc-836344040f54"
+        "01a0e058-d33d-7e48-8a62-e19b0feff18b"
       ],
       "fpCause": null,
       "driversReviewed": true,
       "channelsReviewed": true,
       "targetsReviewed": true,
       "reviewed": true,
-      "note": "US-Iraq military→economic shift; entity-blacklist claims are the economic content"
+      "note": "US-Iraq military→economic shift; R7.1d.3a fix — blacklist claims are a UN-settlements story"
     },
     {
       "eventId": "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
@@ -1445,15 +1438,13 @@
       "affectedTargets": [
         "country_exposure:vn"
       ],
-      "driverClaimIds": [
-        "01a0e8c4-90b2-7f30-8b17-2db3d2225f00"
-      ],
+      "driverClaimIds": [],
       "fpCause": null,
       "driversReviewed": true,
       "channelsReviewed": true,
       "targetsReviewed": true,
       "reviewed": true,
-      "note": "PM socio-economic committee"
+      "note": "PM socio-economic committee; R7.1d.3a fix — growth_pct 14.5% is a foreign tourism claim; on-story docs produced no claim → extraction gap"
     },
     {
       "eventId": "01a0e805-3079-7f62-983a-200e90f350d8",
@@ -1481,15 +1472,13 @@
         "fundamental"
       ],
       "affectedTargets": [],
-      "driverClaimIds": [
-        "01a0e94d-d18f-7bd7-8d52-4fd022d2ece9"
-      ],
+      "driverClaimIds": [],
       "fpCause": null,
       "driversReviewed": true,
       "channelsReviewed": true,
       "targetsReviewed": true,
       "reviewed": true,
-      "note": "SHB import-export finance; issuer"
+      "note": "SHB import-export finance; R7.1d.3a fix — growth_pct 55.4% is a foreign property-market claim; on-story doc produced no claim → extraction gap"
     }
   ]
 }

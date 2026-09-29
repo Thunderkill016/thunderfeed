@@ -115,11 +115,11 @@ const L: Record<string, Dec> = {
     m: "limited",
     s: "global_systemic",
     rv: true,
-    d: ["01a0e26c-c013-7cda-98a7-a6c702631410"], // sanctions — on-topic, over-scored meaningful
+    d: [],
     ch: ["policy_regulatory"],
     t: ["country_exposure:ir"],
-    fp: "claim_scorer",
-    note: "diplomatic break + banking disruption; claim-layer over-elevation",
+    fp: "upstream_miscluster",
+    note: "diplomatic break; R7.1d.3a fix — sanctions claim is foreign (Iran banking doc); on-story docs attached but produced no claim → extraction gap",
   },
   "01a0dd9e|Tiêu điểm 26/9": {
     m: "limited",
@@ -249,14 +249,12 @@ const L: Record<string, Dec> = {
     s: "vietnam",
     rv: true,
     d: [
-      "01a0e0f3-c983-7cc9-9215-e50d6d4a7034", // growth_pct 29.13
-      "01a0e352-67dc-7e61-80b0-312d6a1f062b", // fdi_growth_rate 29,13%
-      "01a0e352-63aa-777a-951c-1df7a79be056", // foreign_direct_investment 5,7 tỷ
-      "01a0e352-5f78-72a0-87f0-130140dd62ba", // financial_agreement_value 325tr
+      "01a0d938-074c-7a80-9a9b-41bd4bd13adb", // relation_upgrade → Đối tác Chiến lược
+      "01a0dba8-0517-737f-b886-c3fdf64579b4", // money_usd 14–15 tỷ
     ],
     ch: ["external"],
     t: ["country_exposure:vn"],
-    note: "VN-Canada trade stats",
+    note: "VN-Canada trade; R7.1d.3a fix — prior drivers were HCMC-FDI claims off misattached docs",
   },
   "01a0d3aa|Tô Lâm bắt đầu": {
     m: "limited",
@@ -324,13 +322,10 @@ const L: Record<string, Dec> = {
     m: "limited",
     s: "global_systemic",
     rv: true,
-    d: [
-      "01a0e058-d902-748e-bf02-93bb621dc88b", // blacklist 61 công ty
-      "01a0e066-d38f-71e8-b7fc-836344040f54",
-    ],
+    d: ["01a0e058-d33d-7e48-8a62-e19b0feff18b"], // chuyen_trong_tam_hop_tac
     ch: ["policy_regulatory"],
     t: [],
-    note: "US-Iraq military→economic shift; entity-blacklist claims are the economic content",
+    note: "US-Iraq military→economic shift; R7.1d.3a fix — blacklist claims are a UN-settlements story",
   },
   "01a0dede|OpenAI": {
     m: "limited",
@@ -345,10 +340,10 @@ const L: Record<string, Dec> = {
     m: "limited",
     s: "issuer",
     rv: true,
-    d: ["01a0e94d-d18f-7bd7-8d52-4fd022d2ece9"], // growth_pct 55.4 — export-finance growth
+    d: [],
     ch: ["fundamental"],
     t: [],
-    note: "SHB import-export finance; issuer",
+    note: "SHB import-export finance; R7.1d.3a fix — growth_pct 55.4% is a foreign property-market claim; on-story doc produced no claim → extraction gap",
   },
   "01a0e182|5,7 tỷ USD": {
     m: "limited",
@@ -368,10 +363,10 @@ const L: Record<string, Dec> = {
     m: "limited",
     s: "vietnam",
     rv: true,
-    d: ["01a0e8c4-90b2-7f30-8b17-2db3d2225f00"], // growth_pct 14.5 growth target
+    d: [],
     ch: ["policy_regulatory"],
     t: ["country_exposure:vn"],
-    note: "PM socio-economic committee",
+    note: "PM socio-economic committee; R7.1d.3a fix — growth_pct 14.5% is a foreign tourism claim; on-story docs produced no claim → extraction gap",
   },
   "01a0d188|dioxin": {
     m: "limited",
@@ -413,10 +408,10 @@ const L: Record<string, Dec> = {
     m: "limited",
     s: "global_systemic",
     rv: true,
-    d: ["01a0d788-fb43-7161-a66a-cb886f2528ce"], // interest_rate — stated driver of gold drop
+    d: [],
     ch: ["discounting"],
     t: [],
-    note: "gold one-week low on rate expectations",
+    note: "gold one-week low on rate expectations; R7.1d.3a fix — interest_rate claim is a foreign bank-liquidity doc; no gold claim extracted → extraction gap",
   },
   "01a0d828|Giá dầu tăng vọt": {
     m: "limited",
