@@ -123,8 +123,21 @@ async function main() {
     }))
     .sort((a, b) => a.eventId.localeCompare(b.eventId));
 
-  const idsHash = createHash("sha256")
-    .update(items.map((i) => i.eventId).join("\n"))
+  /* corpusHash pins the SEMANTIC snapshot — event ids alone would stay
+   * identical across re-dumps even when underlying claim assessments
+   * changed, silently moving the labeled benchmark onto a different input.
+   * generatedAt is excluded: same semantic input → same hash. */
+  const canonical = items.map((e) => ({
+    eventId: e.eventId,
+    topic: e.topic,
+    predicates: e.predicates,
+    entities: e.entities,
+    claims: e.claims
+      .map((c) => ({ claimId: c.claimId, assessmentId: c.assessmentId }))
+      .sort((a, b) => a.claimId.localeCompare(b.claimId)),
+  }));
+  const corpusHash = createHash("sha256")
+    .update(JSON.stringify(canonical))
     .digest("hex")
     .slice(0, 16);
 
@@ -134,7 +147,7 @@ async function main() {
     selectionVersion: SELECTION_VERSION,
     eventCount: items.length,
     claimCount: rows.length,
-    idsHash,
+    corpusHash,
     items,
   };
   writeFileSync(
@@ -149,7 +162,7 @@ async function main() {
       1;
   }
   console.log(
-    `events=${items.length} claims=${rows.length} idsHash=${idsHash}`,
+    `events=${items.length} claims=${rows.length} corpusHash=${corpusHash}`,
     dist,
   );
   await db.end();

@@ -8,8 +8,9 @@
  *      × materiality-events-labels.json — ~80 reviewed labels
  *
  * Metrics vs labels: exact + within-one accuracy, per-level P/R/F1,
- * high-materiality false positives, channel IoU, target P/R, driver P/R,
- * unsupported-causality proxy, coverage audit. Legacy R7.0 baseline
+ * high-materiality false positives (+annotated cause), channel IoU,
+ * typed-target P/R, driver P/R, scope accuracy/over-under-broad,
+ * weak-evidence over-elevation, coverage audit. Legacy R7.0 baseline
  * (scoreEventMateriality predicate bag) runs on the same events for a
  * direct before/after comparison.
  *
@@ -29,6 +30,14 @@ import {
 const LEVELS = ["none", "limited", "meaningful", "major", "systemic"];
 const rank = (m: string) => (m === "unknown" ? -1 : LEVELS.indexOf(m));
 const HIGH = new Set(["meaningful", "major", "systemic"]);
+/* issuer < sector < vietnam < global_systemic — same lattice the
+ * aggregator uses; over/under-broad measured against it */
+const SCOPE_RANK: Record<string, number> = {
+  issuer: 0,
+  sector: 1,
+  vietnam: 2,
+  global_systemic: 3,
+};
 
 /* deterministic shuffle — same seed everywhere so the run is byte-stable */
 function shuffle<T>(xs: T[], seed: number): T[] {
@@ -120,20 +129,24 @@ interface EventLabel {
   eventId: string;
   title: string;
   materiality: string;
+  /** reviewed scope — null is a reviewed conclusion, not "unlabeled" */
   scope: string | null;
+  scopeReviewed: boolean;
   channels: string[];
-  /** flattened "type:key" strings */
+  /** typed targets as "type:key" strings */
   affectedTargets: string[];
   driverClaimIds: string[];
+  /** high-FP cause: upstream_miscluster | claim_scorer | aggregation | label_abstention | other */
+  fpCause: string | null;
   reviewed: boolean;
   note: string;
 }
 const labels = JSON.parse(
   readFileSync("tests/fixtures/materiality-events-labels.json", "utf8"),
-) as { corpusIdsHash: string; labels: EventLabel[] };
-if (labels.corpusIdsHash !== corpus.idsHash) {
+) as { corpusHash: string; labels: EventLabel[] };
+if (labels.corpusHash !== corpus.corpusHash) {
   console.error(
-    `label/corpus hash mismatch: ${labels.corpusIdsHash} vs ${corpus.idsHash} — re-dump`,
+    `label/corpus hash mismatch: ${labels.corpusHash} vs ${corpus.corpusHash} — re-dump`,
   );
   process.exit(1);
 }
@@ -155,7 +168,12 @@ let tgTP = 0,
   tgP = 0,
   tgR = 0,
   tgN = 0;
-let unsupported = 0;
+let weakEvidenceElev = 0;
+let scopeN = 0,
+  scopeExact = 0,
+  scopeOver = 0,
+  scopeUnder = 0;
+const fpCauses: Record<string, number> = {};
 const covSum = { total: 0, unknown: 0, excluded: 0, material: 0 };
 const legacy = { exact: 0, within1: 0, hiFP: 0, n: 0 };
 const divergences: string[] = [];
@@ -179,10 +197,16 @@ for (const it of corpus.items) {
   if (p === g) exact++;
   if (rank(p) !== -1 && rank(g) !== -1 && Math.abs(rank(p) - rank(g)) <= 1)
     within1++;
-  if (HIGH.has(p) && !HIGH.has(g)) hiFP++;
+  if (HIGH.has(p) && !HIGH.has(g)) {
+    hiFP++;
+    fpCauses[gold.fpCause ?? "unannotated"] =
+      (fpCauses[gold.fpCause ?? "unannotated"] ?? 0) + 1;
+  }
   if (!HIGH.has(p) && HIGH.has(g)) hiFN++;
-  /* unsupported-causality proxy: event elevated ≥2 levels above gold while
-   * every driver rests on weak evidence (reported/disputed only) */
+  /* weak-evidence over-elevation: event lands ≥2 levels above gold AND
+   * every driver rests on reported/disputed/unresolved truth states.
+   * (Named precisely: a perfectly-evidenced claim mis-clustered onto the
+   * wrong event is upstream contamination, captured by fpCause instead.) */
   if (rank(p) - rank(g) >= 2) {
     const drv = new Set(out.driverClaimIds);
     const allWeak = claims
@@ -190,7 +214,20 @@ for (const it of corpus.items) {
       .every((c) =>
         ["reported", "disputed", "unresolved"].includes(c.evidenceState),
       );
-    if (allWeak) unsupported++;
+    if (allWeak) weakEvidenceElev++;
+  }
+  /* scope accuracy on reviewed labels only — null scope is a reviewed
+   * "no economic scope" conclusion, compared as-is */
+  if (gold.scopeReviewed) {
+    scopeN++;
+    const gs = gold.scope,
+      ps = out.scope;
+    if (gs === ps) scopeExact++;
+    else if (gs !== null && ps !== null) {
+      if (SCOPE_RANK[ps] > SCOPE_RANK[gs]) scopeOver++;
+      else scopeUnder++;
+    } else if (gs === null && ps !== null) scopeOver++;
+    else scopeUnder++;
   }
   if (gold.channels && gold.channels.length + out.channels.length > 0) {
     const gs = new Set<string>(gold.channels),
@@ -215,7 +252,7 @@ for (const it of corpus.items) {
     (gold.affectedTargets.length || out.affectedTargets.length)
   ) {
     const gk = new Set(gold.affectedTargets),
-      pk = new Set(out.affectedTargets.map((t) => t.key));
+      pk = new Set(out.affectedTargets.map((t) => `${t.type}:${t.key}`));
     tgTP += [...gk].filter((x) => pk.has(x)).length;
     tgP += pk.size;
     tgR += gk.size;
@@ -254,7 +291,7 @@ console.log(
 console.log(`hi-material FP  ${hiFP}   (pred ≥meaningful, gold <meaningful)`);
 console.log(`hi-material FN  ${hiFN}   (gold ≥meaningful, pred <meaningful)`);
 console.log(
-  `unsupported-elev ${unsupported}  (≥2-level over gold, weak evidence only)`,
+  `weak-evidence-elev ${weakEvidenceElev}  (≥2-level over gold, weak evidence only)`,
 );
 console.log(
   `channel IoU     ${chN ? (chIouSum / chN).toFixed(3) : "-"} over ${chN}`,
@@ -264,6 +301,16 @@ console.log(
 );
 console.log(
   `target P/R      ${tgR ? (tgTP / tgP).toFixed(3) : "-"}/${tgR ? (tgTP / tgR).toFixed(3) : "-"} over ${tgN}`,
+);
+console.log(
+  `scope           exact=${scopeN ? (scopeExact / scopeN).toFixed(3) : "-"} over-broad=${scopeOver} under-broad=${scopeUnder} on ${scopeN} reviewed`,
+);
+console.log(
+  `hi-FP causes    ${
+    Object.entries(fpCauses)
+      .map(([k, v]) => `${k}=${v}`)
+      .join(" · ") || "-"
+  }`,
 );
 console.log(
   `coverage totals claims=${covSum.total} unknown=${covSum.unknown} excluded=${covSum.excluded} material=${covSum.material}`,
