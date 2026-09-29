@@ -46,7 +46,14 @@ const results: ReplayRecord[] = records.map((r) =>
   ),
 );
 
-import { docEdgesOf, goldEffectiveness, pct } from "./poisoning-metrics.ts";
+import {
+  coverageByEra,
+  docEdgesOf,
+  goldEffectiveness,
+  goldSampling,
+  pct,
+  promotionGateInputs,
+} from "./poisoning-metrics.ts";
 const cnt = (xs: unknown[], p: (x: never) => boolean) =>
   xs.filter(p as never).length;
 
@@ -239,6 +246,11 @@ const out = {
     },
   },
   goldEffectiveness: gold,
+  /* 3b.2a — coverage maturation: legacy debt vs post-0044 telemetry,
+   * sample-sufficiency gate inputs, and the next gold review sample */
+  coverageByEra: coverageByEra(results),
+  promotionGate: promotionGateInputs(results, docEdges, edgeGold),
+  goldSampling: goldSampling(results),
   breakdowns: {
     byActualPath: breakdown((r) => r.actualPath),
     byStablePath: breakdown((r) => r.stablePath ?? "none"),

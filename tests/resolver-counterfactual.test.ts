@@ -25,8 +25,12 @@ import {
 } from "../scripts/resolver/replay-corpus";
 import { buildEdgeGold } from "../scripts/resolver/poisoning-gold";
 import {
+  coverageByEra,
   docEdgesOf,
+  eraOf,
   goldEffectiveness,
+  goldSampling,
+  promotionGateInputs,
 } from "../scripts/resolver/poisoning-metrics";
 
 /* -------------------------------- helpers --------------------------------- */
@@ -678,6 +682,93 @@ test("decide() and decideWithFeatures() share one evaluator", () => {
   const d = decide(inc, cand);
   assert.equal(d.decision, "merge"); // entity corroborated
   assert.equal(d.path, "entity");
+});
+
+/* ------------------- 3b.2a coverage maturation -------------------- */
+
+test("era: NULL incoming set = legacy; [] or populated = post_0044", () => {
+  assert.equal(eraOf({ incomingEntities: null }), "legacy_or_unlinked");
+  assert.equal(eraOf({ incomingEntities: [] }), "post_0044");
+  assert.equal(eraOf({ incomingEntities: [NONHUB_A] }), "post_0044");
+});
+
+test("coverageByEra isolates closed world from legacy-candidate debt", () => {
+  // post-0044 merge into a post-0044 candidate (anchor known) → closed world
+  const closedMerge = mkRec();
+  assert.equal(closedMerge.classification, "same_decision");
+  // post-0044 merge into a legacy candidate (anchor NULL) → not closed world
+  const legacyCand = mkRec({
+    incomingEntities: [NONHUB_B],
+    incomingCoreEntities: [NONHUB_B],
+    anchorEntities: null,
+    anchorCoreEntities: null,
+  });
+  assert.equal(legacyCand.indeterminateReason, "missing_founder_anchor");
+  // pre-0044 row entirely: no incoming sets at all
+  const legacy = mkRec({ incomingEntities: null, incomingCoreEntities: null });
+  const era = coverageByEra([closedMerge, legacyCand, legacy]);
+  assert.equal(era.post_0044.decisions, 2);
+  assert.equal(era.legacy_or_unlinked.decisions, 1);
+  assert.equal(era.closed_world.winnerMerges, 1);
+  assert.equal(era.closed_world.winnerMergeReplayableRate, 100);
+});
+
+test("promotion gate denominators come only from reviewed replayable edges", () => {
+  const enabled = mkRec({
+    chosenEventId: "E1",
+    candidateEntitiesBefore: [NONHUB_A, NONHUB_B],
+    candidateCoreEntitiesBefore: [NONHUB_A, NONHUB_B],
+    candidateSignatureHashBefore: repHash(
+      [NONHUB_A, NONHUB_B].sort().join(" "),
+    ),
+    incomingEntities: [NONHUB_B],
+    incomingCoreEntities: [NONHUB_B],
+    attachedEvidenceVersionIds: ["evM", "evO"],
+  });
+  const edges = docEdgesOf([enabled]);
+  const gold = new Map([
+    ["E1|evM", "misclustered" as const],
+    ["E1|evO", "on_topic" as const],
+  ]);
+  const g = promotionGateInputs([enabled], edges, gold);
+  assert.equal(g.replayableWinnerMerges, 1);
+  assert.equal(g.reviewedReplayableEdges, 2);
+  assert.equal(g.falseSplitDenominator, 1);
+  assert.equal(g.poisoningCaptureDenominator, 1);
+  assert.equal(g.closedWorldWinnerMergeReplayableRate, 100);
+});
+
+test("goldSampling ranks post-0044 events by non-founder growth and depth", () => {
+  // event E1: anchor {A}, candidate grew to {A,B,C} → growth 2
+  const m1 = mkRec({
+    chosenEventId: "E1",
+    candidateEventId: "E1",
+    candidateEntitiesBefore: [NONHUB_A, NONHUB_B, NONHUB_C],
+    candidateCoreEntitiesBefore: [NONHUB_A, NONHUB_B, NONHUB_C],
+    candidateSignatureHashBefore: repHash(
+      [NONHUB_A, NONHUB_B, NONHUB_C].sort().join(" "),
+    ),
+    incomingEntities: [NONHUB_C],
+    incomingCoreEntities: [NONHUB_C],
+    anchorEntities: [NONHUB_A],
+    anchorCoreEntities: [NONHUB_A],
+    crossLanguage: true,
+  });
+  // event E2: anchor {A}, candidate stayed {A} → growth 0, fewer merges
+  const m2 = mkRec({
+    chosenEventId: "E2",
+    candidateEventId: "E2",
+    incomingEntities: [NONHUB_A],
+    incomingCoreEntities: [NONHUB_A],
+  });
+  // legacy event must never be sampled
+  const m3 = mkRec({ chosenEventId: "E3", incomingEntities: null });
+  const sample = goldSampling([m1, m2, m3]);
+  assert.equal(sample.length, 2);
+  assert.equal(sample[0].eventId, "E1");
+  assert.equal(sample[0].nonFounderEntityGrowth, 2);
+  assert.equal(sample[0].xlangMerges, 1);
+  assert.equal(sample[1].eventId, "E2");
 });
 
 test("withCandidateEntities replaces only entity fields", () => {
