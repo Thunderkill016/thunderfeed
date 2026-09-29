@@ -607,26 +607,77 @@ export function decide(
   cand: CandidateSide,
 ): ResolverDecision {
   const f = computeFeatures(inc, cand);
+  const candCoreSig = cand.entitySignatureCore || cand.entitySignature;
+  return decideWithFeatures(
+    f,
+    {
+      incCoreCount: inc.entCoreTokens.size,
+      incCoreList: [...inc.entCoreTokens].join(","),
+      candCoreCount: candCoreSig.split(" ").filter(Boolean).length,
+      candCoreSig,
+      incEntCount: inc.entTokens.size,
+      candEntCount: cand.entitySignature.split(" ").filter(Boolean).length,
+      incDistinctiveCount: inc.distinctiveKeys.size,
+      incGenericCount: inc.genericFps.size,
+      incGenericAllIncident: [...inc.genericFps].every((g) =>
+        INCIDENT_SCOPED.has(g.split("|")[0]),
+      ),
+      topicWindowHours: eventTimeWindow(inc.topic),
+      candPublishedAt: cand.publishedAt,
+    },
+    RESOLVER_THRESHOLDS,
+  );
+}
+
+/**
+ * Everything decide() reads off the raw sides that is NOT already inside
+ * PairFeatures — the 3b.2 counterfactual replay reconstructs this from
+ * frozen provenance entity sets instead of live StoryCluster/Event rows,
+ * so both paths share one evaluator.
+ */
+export interface DecideSideCtx {
+  incCoreCount: number;
+  incCoreList: string;
+  candCoreCount: number;
+  candCoreSig: string;
+  incEntCount: number;
+  candEntCount: number;
+  incDistinctiveCount: number;
+  incGenericCount: number;
+  incGenericAllIncident: boolean;
+  /** eventTimeWindow(inc.topic); null = the gate was already evaluated
+   *  historically (entity-independent — replays inherit the verdict) */
+  topicWindowHours: number | null;
+  candPublishedAt?: number;
+}
+
+// numeric (not the `as const` literals) — provenance snapshots are data,
+// a frozen snapshot may legitimately differ from today's constants
+export type ResolverThresholds = {
+  [K in keyof typeof RESOLVER_THRESHOLDS]: number;
+};
+
+export function decideWithFeatures(
+  f: PairFeatures,
+  side: DecideSideCtx,
+  t: ResolverThresholds = RESOLVER_THRESHOLDS,
+): ResolverDecision {
   const reasons: string[] = [];
   const hardBlocks: string[] = [];
   const sigSim = f.lexicalSimilarity;
   const coreShared = f.sharedCoreEntities;
   const entityEvidence =
     f.nonHubSharedCore.length > 0 ||
-    sigSim >= (coreShared.length >= 2 ? HUB_SIG_FLOOR : HUB_SINGLE_SIG_FLOOR);
+    sigSim >= (coreShared.length >= 2 ? t.hubSigFloor : t.hubSingleSigFloor);
   const personShared = coreShared.some((e) => PERSON_ENTITIES.has(e));
   const entityBlocked =
-    inc.entCoreTokens.size > 0 &&
-    (cand.entitySignatureCore || cand.entitySignature)
-      .split(" ")
-      .filter(Boolean).length > 0 &&
-    coreShared.length === 0;
+    side.incCoreCount > 0 && side.candCoreCount > 0 && coreShared.length === 0;
   const strictNumConflict = f.numberConflict;
   const semantic = f.semanticSimilarity;
 
   if (entityBlocked)
     hardBlocks.push(
-      `entity_blocked: core entities share nothing (${[...inc.entCoreTokens]} vs ${cand.entitySignatureCore})`,
+      `entity_blocked: core entities share nothing (${side.incCoreList} vs ${side.candCoreSig})`,
     );
   if (strictNumConflict)
     reasons.push(
@@ -635,10 +686,13 @@ export function decide(
 
   // time gate — different domains cool at different rates; only armed
   // when the candidate's own publication clock is known
-  const window = eventTimeWindow(inc.topic);
-  if (cand.publishedAt !== undefined && f.timeDeltaHours > window) {
+  if (
+    side.topicWindowHours !== null &&
+    side.candPublishedAt !== undefined &&
+    f.timeDeltaHours > side.topicWindowHours
+  ) {
     hardBlocks.push(
-      `time_window: ${f.timeDeltaHours.toFixed(0)}h > ${window}h for ${inc.topic}`,
+      `time_window: ${f.timeDeltaHours.toFixed(0)}h > ${side.topicWindowHours}h`,
     );
     return {
       decision: "split",
@@ -675,19 +729,19 @@ export function decide(
   });
 
   // — identity paths (immune to entity contradiction + numeric veto) —
-  if (sigSim >= MERGE_JACCARD)
+  if (sigSim >= t.mergeJaccard)
     return merge(
       "headline",
       sigSim,
-      `headline jaccard ${sigSim.toFixed(2)} ≥ ${MERGE_JACCARD}`,
+      `headline jaccard ${sigSim.toFixed(2)} ≥ ${t.mergeJaccard}`,
     );
-  if (f.sharedRareTokens.length > 0 && sigSim >= RARE_SIG_FLOOR)
+  if (f.sharedRareTokens.length > 0 && sigSim >= t.rareSigFloor)
     return merge(
       "rare_token",
       sigSim,
       `rare token ${f.sharedRareTokens[0]} + sig ${sigSim.toFixed(2)}`,
     );
-  if (personShared && sigSim >= PERSON_SIG_FLOOR)
+  if (personShared && sigSim >= t.personSigFloor)
     return merge("person", sigSim, `person anchor + sig ${sigSim.toFixed(2)}`);
   if (
     sigSim >= 0.1 &&
@@ -720,8 +774,8 @@ export function decide(
     );
 
   if (
-    inc.distinctiveKeys.size > 0 &&
-    f.distinctiveClaimOverlap >= MERGE_CLAIM_OVERLAP
+    side.incDistinctiveCount > 0 &&
+    f.distinctiveClaimOverlap >= t.mergeClaimOverlap
   )
     return merge(
       "distinctive_claim",
@@ -732,15 +786,15 @@ export function decide(
   // — semantic path: a strong cosine alone merges; a medium cosine needs
   //   an entity/claim anchor (dense+sparse+entity > any one signal) —
   if (semantic !== undefined && !entityBlocked && !strictNumConflict) {
-    if (semantic >= SEMANTIC_STRONG)
+    if (semantic >= t.semanticStrong)
       return merge(
         "semantic_strong",
         semantic,
-        `cosine ${semantic.toFixed(2)} ≥ ${SEMANTIC_STRONG}, no contradiction`,
+        `cosine ${semantic.toFixed(2)} ≥ ${t.semanticStrong}, no contradiction`,
       );
     if (
       !f.sameLanguage &&
-      semantic >= SEMANTIC_XLANG &&
+      semantic >= t.semanticXlang &&
       f.sharedEntities.length >= 1
     )
       return merge(
@@ -749,10 +803,10 @@ export function decide(
         `cosine ${semantic.toFixed(2)} cross-language + shared entity`,
       );
     if (
-      semantic >= SEMANTIC_ANCHORED &&
+      semantic >= t.semanticAnchored &&
       (f.nonHubSharedCore.length > 0 ||
         personShared ||
-        f.distinctiveClaimOverlap >= MERGE_CLAIM_OVERLAP ||
+        f.distinctiveClaimOverlap >= t.mergeClaimOverlap ||
         (f.numberAgreement && coreShared.length >= 2))
     )
       return merge(
@@ -768,7 +822,7 @@ export function decide(
     // storyline. Diff ceiling for bigram+core pairs is 0.727 — floor
     // keeps a margin below the ambiguous band's merge examples.
     if (
-      semantic >= SEMANTIC_FACET &&
+      semantic >= t.semanticFacet &&
       f.sharedBigrams.length > 0 &&
       coreShared.length > 0
     )
@@ -795,10 +849,10 @@ export function decide(
     if (
       numOk &&
       ((f.coreEntitySimilarity >= 0.5 &&
-        sigSim >= ENTITY_SIG_FLOOR &&
+        sigSim >= t.entitySigFloor &&
         entityEvidence) ||
-        (coreShared.length >= ENTITY_STRONG_SHARED &&
-          f.coreEntitySimilarity >= ENTITY_STRONG_SIM &&
+        (coreShared.length >= t.entityStrongShared &&
+          f.coreEntitySimilarity >= t.entityStrongSim &&
           entityEvidence))
     )
       return merge(
@@ -807,15 +861,13 @@ export function decide(
         `entity corroborated sig=${sigSim.toFixed(2)} core=${f.coreEntitySimilarity.toFixed(2)}`,
       );
     if (
-      inc.genericFps.size > 0 &&
-      f.genericClaimOverlap >= MERGE_CLAIM_OVERLAP &&
+      side.incGenericCount > 0 &&
+      f.genericClaimOverlap >= t.mergeClaimOverlap &&
       (f.entitySimilarity > 0 ||
-        sigSim >= GENERIC_SIG_FLOOR ||
-        (inc.entTokens.size === 0 &&
-          new Set(cand.entitySignature.split(" ").filter(Boolean)).size === 0 &&
-          [...inc.genericFps].every((g) =>
-            INCIDENT_SCOPED.has(g.split("|")[0]),
-          )))
+        sigSim >= t.genericSigFloor ||
+        (side.incEntCount === 0 &&
+          side.candEntCount === 0 &&
+          side.incGenericAllIncident))
     )
       return merge(
         "generic_claim",
@@ -826,7 +878,7 @@ export function decide(
 
   // — ambiguous band: real signal present but below merge bars —
   const borderline =
-    semantic !== undefined && semantic >= SEMANTIC_ANCHORED && !entityBlocked;
+    semantic !== undefined && semantic >= t.semanticAnchored && !entityBlocked;
   if (borderline)
     return {
       decision: "ambiguous",
