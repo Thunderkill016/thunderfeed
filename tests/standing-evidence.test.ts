@@ -248,6 +248,35 @@ test("voter is the lineage-root source — syndicated reprint collapses into the
   );
 });
 
+test("accessor never escapes to the global pool when a client is passed", async () => {
+  /* audit R7.1d.3a.2: lineage reads inside resolveOriginSources used to
+   * call getPool() — a REPEATABLE READ corpus snapshot would silently
+   * read lineage outside the transaction. Fixture lives on db1; the
+   * global pool is swapped to an EMPTY db2 — any leaked getPool() call
+   * throws on missing tables instead of returning db1 rows. */
+  setupDb();
+  const populated = getPool();
+  const eventId = await mkEvent();
+  const src = await mkSource("wire-iso");
+  const { evId } = await mkDoc(src, at(1));
+  const claimId = await mkClaim(eventId);
+  const v1 = await mkClaimVersion(claimId, 1, 5);
+  await linkEvidence(v1, evId, "direct");
+
+  // swap the global pool to a bare db — leaked reads must explode
+  const empty = newDb();
+  injectPool(new (empty.adapters.createPg().Pool)() as unknown as Pool);
+
+  const client = await populated.connect();
+  try {
+    const se = (await standingEvidenceByClaim(client, [claimId])).get(claimId)!;
+    assert.equal(se.standing.length, 1);
+    assert.equal(se.standing[0].evidenceVersionId, evId);
+  } finally {
+    client.release();
+  }
+});
+
 test("protected state keeps the current position — votes standing elsewhere back nothing", async () => {
   setupDb();
   const eventId = await mkEvent();

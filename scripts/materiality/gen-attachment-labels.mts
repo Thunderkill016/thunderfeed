@@ -6,18 +6,19 @@
  * content names a foreign story. `driver` ids come from the reviewed
  * R7.1d.1d gold (driverClaimIds).
  *
- * Every misclustered claim also carries a `causeProxy` +
- * `causeConfidence`. PROXIES ONLY — resolver telemetry is
- * cluster→event grain, so nothing here proves doc-level causality:
- *   doc_cluster_contamination   every foreign doc attached ONLY to this
- *                               event (strong_proxy — doc-level signal)
- *   broad_event_reuse           ≥1 foreign doc attached to other live
- *                               events too (strong_proxy — doc-level)
- *   multilingual_merge          foreign docs are cross-language AND the
- *                               event shows an xlang merge path
- *                               (weak_proxy — needs event-level path)
- *   extraction_wrong_grain      claim has no standing doc at all —
- *                               nothing currently backs it (weak_proxy)
+ * Every misclustered claim carries INDEPENDENT dimensions (not one
+ * exclusive cause — the signals overlap: most xlang claims are also
+ * sprayed). All are PROXIES — resolver telemetry is cluster→event
+ * grain, so nothing here proves doc-level causality (needs 3b.1):
+ *   topology — computed over ALL standing docs (a claim labeled foreign
+ *              via NF content review uses its full standing set):
+ *     broad_event_reuse       ≥1 standing doc attached to >1 live event
+ *     single_event_attachment every standing doc attached only here
+ *     no_standing_evidence    nothing currently backs the claim
+ *   xlangCorrelate — every standing doc is cross-language vs the event
+ *              title (orthogonal flag, coexists with any topology)
+ *   contentOverride — claim judged foreign by NF content review while
+ *              its docs' titles don't match the foreign patterns
  *
  * Event-level `extraction_gap` requires BOTH (audit-frozen invariant):
  *   1. ≥1 reviewed on-story event doc — ONSTORY[event] doc-id prefixes,
@@ -463,7 +464,9 @@ const XLANG_PATHS = new Set(["cross_lingual", "semantic_xlang"]);
 
 const events: any[] = [];
 const counts = { driver: 0, on_topic_non_driver: 0, misclustered: 0 };
-const causeCounts: Record<string, number> = {};
+const topoCounts: Record<string, number> = {};
+let xlangCount = 0;
+let overrideCount = 0;
 const gapEvents: string[] = [];
 const fullyForeign: string[] = [];
 for (const e of corpus.events as any[]) {
@@ -478,19 +481,20 @@ for (const e of corpus.events as any[]) {
     pats.some((p) => title.toLowerCase().includes(p.toLowerCase()));
   const drivers = goldDrivers.get(e.eventId) ?? new Set<string>();
   const claims: Record<string, string> = {};
-  const causeProxies: Record<string, string> = {};
-  const causeConfidence: Record<string, string> = {};
+  const topology: Record<string, string> = {};
+  const xlang: string[] = [];
+  const contentOverride: string[] = [];
   for (const cl of e.claims) {
     /* standing evidence only — docs behind latest-per-origin votes on
      * the standing position (all claim_versions, shared accessor). A
      * voter that moved off the standing position no longer backs it. */
     const docs = cl.standingEvidence as any[];
-    const noDocForeign = (keyFor(NF, e.eventId) ?? []).some((p) =>
+    const nfHit = (keyFor(NF, e.eventId) ?? []).some((p) =>
       cl.claimId.startsWith(p),
     );
     const foreign =
       allForeign ||
-      noDocForeign ||
+      nfHit ||
       (docs.length > 0 && docs.every((d) => isForeign(d.title)));
     if (!foreign) {
       if (drivers.has(cl.claimId)) {
@@ -504,31 +508,30 @@ for (const e of corpus.events as any[]) {
     }
     claims[cl.claimId] = "misclustered";
     counts.misclustered++;
-    // cause PROXY derives from the foreign docs backing the claim.
-    // Doc-level signals (fanout, single-attach) are strong proxies;
-    // anything needing event-level merge-path telemetry is weak —
-    // nothing here proves doc-level causality (needs R7.1d.3b.1).
-    const foreignDocs = docs.filter((d) => isForeign(d.title));
-    const xlang =
-      foreignDocs.length > 0 &&
-      foreignDocs.every((d) => lang(d.title) !== lang(e.title));
-    const hasXlangPath = Object.keys(e.mergePaths ?? {}).some((p) =>
-      XLANG_PATHS.has(p),
-    );
-    const multiAttached = foreignDocs.some(
-      (d) => (d.activeEvents as string[]).length > 1,
-    );
-    const [proxy, conf] =
+    /* INDEPENDENT dimensions, not an exclusive cause:
+     *   topology — over ALL standing docs. A claim is only here when
+     *     every standing doc is foreign (title patterns) OR the claim
+     *     itself is NF-reviewed foreign; in the NF case its docs are
+     *     foreign by review, so the full standing set still measures
+     *     spray vs single-attach correctly.
+     *   xlangCorrelate — orthogonal language signal.
+     *   contentOverride — NF-flagged, doc titles inconclusive. */
+    topology[cl.claimId] =
       docs.length === 0
-        ? (["extraction_wrong_grain", "weak_proxy"] as const)
-        : xlang && hasXlangPath
-          ? (["multilingual_merge", "weak_proxy"] as const)
-          : multiAttached
-            ? (["broad_event_reuse", "strong_proxy"] as const)
-            : (["doc_cluster_contamination", "strong_proxy"] as const);
-    causeProxies[cl.claimId] = proxy;
-    causeConfidence[cl.claimId] = conf;
-    causeCounts[proxy] = (causeCounts[proxy] ?? 0) + 1;
+        ? "no_standing_evidence"
+        : docs.some((d) => (d.activeEvents as string[]).length > 1)
+          ? "broad_event_reuse"
+          : "single_event_attachment";
+    topoCounts[topology[cl.claimId]] =
+      (topoCounts[topology[cl.claimId]] ?? 0) + 1;
+    if (docs.length > 0 && docs.every((d) => lang(d.title) !== lang(e.title))) {
+      xlang.push(cl.claimId);
+      xlangCount++;
+    }
+    if (nfHit) {
+      contentOverride.push(cl.claimId);
+      overrideCount++;
+    }
   }
   /* extraction_gap invariant — BOTH sides must hold:
    *   1. ≥1 reviewed on-story event doc, verified live in eventEvidence
@@ -574,25 +577,29 @@ for (const e of corpus.events as any[]) {
       title: d.title,
     })),
     claims,
-    causeProxies,
-    causeConfidence,
+    topology,
+    xlang,
+    contentOverride,
   });
 }
 const out = {
   generatedAt: new Date().toISOString(),
   corpusHash: corpus.corpusHash,
   classes: ["driver", "on_topic_non_driver", "misclustered"],
-  causeProxies: [
-    "doc_cluster_contamination",
+  /* misclustered dimensions — independent, not mutually exclusive.
+   * Proxies only: doc-level fanout is measurable; resolver-path
+   * causality needs doc-level telemetry (R7.1d.3b.1). */
+  topologies: [
     "broad_event_reuse",
-    "multilingual_merge",
-    "extraction_wrong_grain",
+    "single_event_attachment",
+    "no_standing_evidence",
   ],
-  causeConfidences: ["strong_proxy", "weak_proxy"],
   eventFlag: "extraction_gap",
   labelCount: Object.values(counts).reduce((a, b) => a + b, 0),
   counts,
-  causeCounts,
+  topologyCounts: topoCounts,
+  xlangCount,
+  contentOverrideCount: overrideCount,
   extractionGapEvents: gapEvents,
   fullyForeignEvents: fullyForeign,
   events,

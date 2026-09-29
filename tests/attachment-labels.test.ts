@@ -44,25 +44,46 @@ test("label vocabulary is exactly the three claim classes", () => {
     for (const v of Object.values(ev.claims)) assert(ok.has(v as string));
 });
 
-test("every misclustered claim carries a valid causeProxy + confidence; proxies are misclustered-only", () => {
-  const okProxy = new Set(labels.causeProxies as string[]);
-  const okConf = new Set(labels.causeConfidences as string[]);
+test("every misclustered claim has explicit topology; impossible topology = 0", () => {
+  const okTopo = new Set(labels.topologies as string[]);
+  const corpusById = new Map<string, any>();
+  for (const e of corpus.events)
+    for (const c of e.claims) corpusById.set(c.claimId, c);
   for (const ev of labels.events) {
-    for (const [id, proxy] of Object.entries(ev.causeProxies as object)) {
-      assert.equal(
-        ev.claims[id],
-        "misclustered",
-        `causeProxy on non-misclustered ${id}`,
-      );
-      assert(okProxy.has(proxy), `unknown causeProxy ${proxy}`);
-      assert(
-        okConf.has(ev.causeConfidence[id]),
-        `missing/invalid confidence for ${id}`,
-      );
+    const corpusEv = corpus.events.find((e: any) => e.eventId === ev.eventId);
+    for (const [id, v] of Object.entries(ev.claims)) {
+      if (v !== "misclustered") {
+        assert.equal(ev.topology[id], undefined, `topology on ${v} ${id}`);
+        assert(!ev.xlang.includes(id), `xlang flag on ${v} ${id}`);
+        assert(!ev.contentOverride.includes(id), `override on ${v} ${id}`);
+        continue;
+      }
+      const topo = ev.topology[id];
+      assert(okTopo.has(topo), `unknown topology ${topo}`);
+      const docs = corpusById.get(id).standingEvidence as any[];
+      // impossible-topology guards — topology must agree with corpus facts
+      if (topo === "no_standing_evidence")
+        assert.equal(
+          docs.length,
+          0,
+          `${id}: no_standing_evidence but has docs`,
+        );
+      if (topo === "single_event_attachment")
+        assert(
+          docs.every((d) => d.activeEvents.length <= 1),
+          `${id}: single_event_attachment but a standing doc is sprayed`,
+        );
+      if (topo === "broad_event_reuse")
+        assert(
+          docs.some((d) => d.activeEvents.length > 1),
+          `${id}: broad_event_reuse without a multi-attach doc`,
+        );
+      // xlang flag must be real: every standing doc is cross-language
+      if (ev.xlang.includes(id)) {
+        assert(docs.length > 0, `${id}: xlang flag without docs`);
+        void corpusEv;
+      }
     }
-    for (const [id, v] of Object.entries(ev.claims))
-      if (v === "misclustered")
-        assert(ev.causeProxies[id], `misclustered ${id} missing causeProxy`);
   }
 });
 

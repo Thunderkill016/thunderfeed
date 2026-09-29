@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-29T07:09:48.253Z",
+ "generatedAt": "2026-09-29T07:48:35.776Z",
  "purpose": "R7.1d.3a.1 claim↔event attachment labeling + root-cause audit",
  "classes": [
   "driver",
@@ -10,20 +10,20 @@
  "events": [
   {
    "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
-   "eventVersionId": "01a0eb91-7859-7be1-80ce-b03207ed2cbe",
+   "eventVersionId": "01a0ec01-9e44-72fd-92aa-3a0222718e18",
    "topic": "world",
    "status": "emerging",
    "title": "Ông Trump đón ông Tập tại sân bay, Mỹ - Trung gia hạn đình chiến thương mại",
    "mergePaths": {
-    "bigram_entity": 41,
-    "cross_lingual": 105,
+    "bigram_entity": 42,
+    "cross_lingual": 111,
     "distinctive_claim": 2,
     "entity": 7,
-    "generic_claim": 273,
+    "generic_claim": 278,
     "headline": 4,
     "person": 9,
     "rare_token": 33,
-    "semantic_anchored": 22
+    "semantic_anchored": 24
    },
    "eventEvidence": [
     {
@@ -652,7 +652,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dd6c-d917-71b0-8287-b90c3973fbdd",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -3180,7 +3181,8 @@
       "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
-      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d"
+      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -4711,7 +4713,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -6072,6 +6075,7 @@
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
       "01a0dc36-a173-7df9-a692-0b1fafe97ca7",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e360-d24d-743e-b5a0-249da7551024",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
@@ -10274,6 +10278,7 @@
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e6f5-e15d-7c26-bb93-5d9e804b3802"
      ]
     },
@@ -11781,6 +11786,7 @@
       "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
@@ -11946,6 +11952,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -12050,6 +12057,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -12535,6 +12543,7 @@
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -17362,6 +17371,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -17582,6 +17592,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -19412,6 +19423,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -19684,6 +19696,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -20418,6 +20431,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -20519,6 +20533,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -21441,6 +21456,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -21478,6 +21494,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -21960,6 +21977,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -23325,6 +23343,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -23477,6 +23496,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -24407,7 +24427,8 @@
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dd6c-d917-71b0-8287-b90c3973fbdd",
         "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-        "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+        "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+        "01a0e12d-6a26-74d8-9988-df71d4043801"
        ]
       }
      ]
@@ -25302,7 +25323,7 @@
      "state": "disputed",
      "changeType": "value_changed",
      "currentClaimVersionId": "01a0e056-8c8c-70a4-844d-b9b6b67a4fde",
-     "materialityAssessmentId": "01a0e8a8-87ff-730a-9e2f-0baaa21ec840",
+     "materialityAssessmentId": "01a0e990-3766-7428-9b4c-be027ea1fc4c",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"mở lại eo biển Hormuz trong 7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -25797,23 +25818,10 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0ddeb-d94e-70f5-9066-22dae6aa195e",
-     "materialityAssessmentId": "01a0e8e7-ab86-7d56-ae6a-09f2602b76d5",
+     "materialityAssessmentId": "01a0e8a7-50b9-70f7-9150-730f5875c484",
      "materiality": "none",
      "standingPos": "{\"v\":2,\"u\":\"people\"}",
      "standingEvidence": [
-      {
-       "documentId": "01a0d3ad-aaed-79e5-b798-02fac4e117dd",
-       "evidenceVersionId": "01a0d3ad-aaef-70a2-b9bc-7b239033c322",
-       "title": "Ukraine targets Russia with over 1,000 drones, killing 2 as Moscow holds last day of elections",
-       "source": "Fox News",
-       "url": "https://www.foxnews.com/world/ukraine-targets-russia-1000-drones-killing-2-moscow-holds-last-day-elections",
-       "publishedAt": "2026-09-20T11:49:27.000Z",
-       "activeEvents": [
-        "01a0d176-5a20-722f-a77b-4850e91ead78",
-        "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
-        "01a0d3ad-b0ca-7dcf-aa6a-5cd00825e1c3"
-       ]
-      },
       {
        "documentId": "01a0d7c5-c062-71ba-bf9d-94edfbae814e",
        "evidenceVersionId": "01a0d7c5-c211-7f2e-bb13-bc88c2b41fb4",
@@ -25827,6 +25835,19 @@
         "01a0d4ed-1f6b-78ec-95ce-7ead213a9d10",
         "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
         "01a0e2aa-dc8e-7647-b6e2-42844c27e366"
+       ]
+      },
+      {
+       "documentId": "01a0d3ad-aaed-79e5-b798-02fac4e117dd",
+       "evidenceVersionId": "01a0d3ad-aaef-70a2-b9bc-7b239033c322",
+       "title": "Ukraine targets Russia with over 1,000 drones, killing 2 as Moscow holds last day of elections",
+       "source": "Fox News",
+       "url": "https://www.foxnews.com/world/ukraine-targets-russia-1000-drones-killing-2-moscow-holds-last-day-elections",
+       "publishedAt": "2026-09-20T11:49:27.000Z",
+       "activeEvents": [
+        "01a0d176-5a20-722f-a77b-4850e91ead78",
+        "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
+        "01a0d3ad-b0ca-7dcf-aa6a-5cd00825e1c3"
        ]
       },
       {
@@ -26545,7 +26566,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0dd56-db34-79d3-9535-455a8eee646b",
-     "materialityAssessmentId": "01a0e8a7-6f00-7b12-b8bd-b27572be7990",
+     "materialityAssessmentId": "01a0e990-292d-73a4-a5c8-837f386dcfc4",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày mở lại eo biển Hormuz và chấm dứt xung đột\",\"u\":null}",
      "standingEvidence": [
@@ -27721,7 +27742,7 @@
      "state": "supported",
      "changeType": "confirmed",
      "currentClaimVersionId": "01a0e45c-6778-7b09-bad7-2e092012a929",
-     "materialityAssessmentId": "01a0e8a8-4b95-7010-abe0-bdf57e6b2c67",
+     "materialityAssessmentId": "01a0e990-3ca5-7a21-9998-4f6a0975edaf",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -28047,7 +28068,7 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0de38-f5ee-7342-9c08-a4c5c9a5af4b",
-     "materialityAssessmentId": "01a0e8a8-416e-7e05-a717-5f9f504c7a8e",
+     "materialityAssessmentId": "01a0e990-41e2-70bb-9bad-733a0663065d",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -29330,6 +29351,7 @@
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
         "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
         "01a0e785-f107-7094-b206-941654c63bd0"
        ]
@@ -30223,7 +30245,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e732-3879-722d-9cda-82adc4c944ba",
-     "materialityAssessmentId": "01a0e8ad-68b4-76d0-b1aa-ffe8ea251ce6",
+     "materialityAssessmentId": "01a0e98f-ff46-73f6-9b1e-a24a0233fd37",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"chuẩn tiết kiệm nhiên liệu mới cho ôtô và xe tải thấp hơn\",\"u\":null}",
      "standingEvidence": [
@@ -31118,6 +31140,7 @@
      "detached": false,
      "activeEvents": [
       "01a0d176-5aac-7048-9097-d2ee08f32068",
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
       "01a0e17d-2151-7613-8f6b-b5016eb769f2"
      ]
     },
@@ -31149,7 +31172,7 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0dcf9-4d58-7848-9a8d-2f8c6b412fbb",
-     "materialityAssessmentId": "01a0e8a7-35cf-71ce-b4a8-157f719f6585",
+     "materialityAssessmentId": "01a0eb48-a282-7c50-ab18-31a6dea441f7",
      "materiality": "unknown",
      "standingPos": "{\"v\":53,\"u\":\"ảnh\"}",
      "standingEvidence": [
@@ -45413,7 +45436,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dd6c-d917-71b0-8287-b90c3973fbdd",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -46236,6 +46260,7 @@
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
       "01a0dc36-a173-7df9-a692-0b1fafe97ca7",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e360-d24d-743e-b5a0-249da7551024",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
@@ -46273,7 +46298,8 @@
       "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
-      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d"
+      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -47172,7 +47198,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -66337,6 +66364,7 @@
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
       "01a0dc36-a173-7df9-a692-0b1fafe97ca7",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e360-d24d-743e-b5a0-249da7551024",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
@@ -68758,7 +68786,7 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0d9ee-e0e6-7769-ade3-20641b04a776",
-     "materialityAssessmentId": "01a0e8a3-d96b-731d-acc1-80cdf8f02c5d",
+     "materialityAssessmentId": "01a0e98f-2cbe-7555-95f1-13ff39d4de01",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"Đại hội đồng Liên Hợp Quốc\",\"u\":null}",
      "standingEvidence": [
@@ -72165,6 +72193,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -73107,6 +73136,7 @@
       "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
@@ -73250,6 +73280,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -73314,6 +73345,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -73430,6 +73462,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -73705,6 +73738,7 @@
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -74031,6 +74065,7 @@
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
       "01a0dc36-a173-7df9-a692-0b1fafe97ca7",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e360-d24d-743e-b5a0-249da7551024",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
@@ -74923,6 +74958,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -78232,6 +78268,7 @@
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
         "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
         "01a0e785-f107-7094-b206-941654c63bd0"
        ]
@@ -78349,7 +78386,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e1e1-519f-7e02-936f-319b94dad44e",
-     "materialityAssessmentId": "01a0e8aa-7257-709d-bd5e-034cca5d47f1",
+     "materialityAssessmentId": "01a0e98f-de5d-7b10-915f-e0b86d0540b7",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"lộ trình 7 ngày mở lại Hormuz\",\"u\":null}",
      "standingEvidence": [
@@ -78448,7 +78485,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e203-bcd6-76e2-b0ca-7d5834bc1ea3",
-     "materialityAssessmentId": "01a0e8aa-cc03-7e11-9744-a86f976b3625",
+     "materialityAssessmentId": "01a0e990-609d-7a13-a935-a66650f7be9f",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -78631,7 +78668,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e224-646a-7e42-bbad-97f9b71a4f97",
-     "materialityAssessmentId": "01a0e8a3-e7ee-774d-8ee0-ff0bc83fcbd4",
+     "materialityAssessmentId": "01a0e990-1eb1-7859-86f8-11ae5ad20d9d",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"lộ trình 7 ngày mở lại eo biển Hormuz\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -78831,7 +78868,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e247-865b-74e1-b066-8fa79fc180c9",
-     "materialityAssessmentId": "01a0e8a6-e6b0-7a02-9f12-2f34d3d9b7bd",
+     "materialityAssessmentId": "01a0e98f-e39a-71ec-976f-7d42138196a1",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -111067,10 +111104,25 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0e4f5-22ce-71a1-887b-9824b3d4b575",
-     "materialityAssessmentId": "01a0e8e7-bcb2-7b3e-b2c2-63efed2a91a5",
+     "materialityAssessmentId": "01a0e8ab-1010-7a2f-9536-721d59e9d589",
      "materiality": "none",
      "standingPos": "{\"v\":2,\"u\":\"people\"}",
      "standingEvidence": [
+      {
+       "documentId": "01a0d7c5-c062-71ba-bf9d-94edfbae814e",
+       "evidenceVersionId": "01a0d7c5-c211-7f2e-bb13-bc88c2b41fb4",
+       "title": "At Least 2 Killed as Ukraine Strikes Industrial Sites Across Russia",
+       "source": "The Moscow Times",
+       "url": "https://www.themoscowtimes.com/2026/09/25/at-least-2-killed-as-ukraine-strikes-industrial-sites-across-russia-a93790",
+       "publishedAt": "2026-09-25T08:11:00.000Z",
+       "activeEvents": [
+        "01a0d176-5a20-722f-a77b-4850e91ead78",
+        "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
+        "01a0d4ed-1f6b-78ec-95ce-7ead213a9d10",
+        "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
+        "01a0e2aa-dc8e-7647-b6e2-42844c27e366"
+       ]
+      },
       {
        "documentId": "01a0d3ad-aaed-79e5-b798-02fac4e117dd",
        "evidenceVersionId": "01a0d3ad-aaef-70a2-b9bc-7b239033c322",
@@ -111120,21 +111172,6 @@
         "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
         "01a0d4ed-1f6b-78ec-95ce-7ead213a9d10",
         "01a0d6f4-102e-7e64-920f-709158acb804"
-       ]
-      },
-      {
-       "documentId": "01a0d7c5-c062-71ba-bf9d-94edfbae814e",
-       "evidenceVersionId": "01a0d7c5-c211-7f2e-bb13-bc88c2b41fb4",
-       "title": "At Least 2 Killed as Ukraine Strikes Industrial Sites Across Russia",
-       "source": "The Moscow Times",
-       "url": "https://www.themoscowtimes.com/2026/09/25/at-least-2-killed-as-ukraine-strikes-industrial-sites-across-russia-a93790",
-       "publishedAt": "2026-09-25T08:11:00.000Z",
-       "activeEvents": [
-        "01a0d176-5a20-722f-a77b-4850e91ead78",
-        "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
-        "01a0d4ed-1f6b-78ec-95ce-7ead213a9d10",
-        "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
-        "01a0e2aa-dc8e-7647-b6e2-42844c27e366"
        ]
       },
       {
@@ -113801,7 +113838,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0dece-9322-7e03-b0bb-bcd685fd8bf7",
-     "materialityAssessmentId": "01a0eb48-aeb3-775e-ace9-6a2e1793784a",
+     "materialityAssessmentId": "01a0e8a8-575c-7c9a-bf42-978dc00184be",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"tiếp nhận danh sách ứng cử viên cho bầu cử lập pháp\",\"u\":null}",
      "standingEvidence": [
@@ -117963,7 +118000,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dd6c-d917-71b0-8287-b90c3973fbdd",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -118002,7 +118040,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -119536,7 +119575,8 @@
       "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
-      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d"
+      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -122691,6 +122731,7 @@
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
       "01a0dc36-a173-7df9-a692-0b1fafe97ca7",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e360-d24d-743e-b5a0-249da7551024",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
@@ -124939,6 +124980,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -125272,6 +125314,7 @@
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -126535,6 +126578,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -127885,6 +127929,7 @@
       "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
@@ -129031,6 +129076,7 @@
       "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
@@ -145395,7 +145441,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dd6c-d917-71b0-8287-b90c3973fbdd",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -145418,7 +145465,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -146564,7 +146612,8 @@
       "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
-      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d"
+      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -147858,6 +147907,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -147911,6 +147961,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -148026,6 +148077,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -148103,6 +148155,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -148351,6 +148404,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -148724,6 +148778,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -148823,6 +148878,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -148883,6 +148939,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -148946,6 +149003,7 @@
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -149096,6 +149154,7 @@
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e6f5-e15d-7c26-bb93-5d9e804b3802"
      ]
     },
@@ -149159,6 +149218,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -149183,6 +149243,7 @@
       "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
@@ -149235,6 +149296,7 @@
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
       "01a0dc36-a173-7df9-a692-0b1fafe97ca7",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e360-d24d-743e-b5a0-249da7551024",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
@@ -149268,6 +149330,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -150533,6 +150596,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed",
         "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -152058,6 +152122,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -152755,6 +152820,7 @@
       "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
@@ -152840,6 +152906,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -152901,6 +152968,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -152994,6 +153062,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -153040,6 +153109,7 @@
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
       "01a0dc36-a173-7df9-a692-0b1fafe97ca7",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e360-d24d-743e-b5a0-249da7551024",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
@@ -153297,6 +153367,7 @@
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     },
@@ -153975,7 +154046,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dd6c-d917-71b0-8287-b90c3973fbdd",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -154017,7 +154089,8 @@
       "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
       "01a0d3aa-015a-771e-9c56-3370111f97ef",
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
-      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d"
+      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -155305,6 +155378,7 @@
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e6f5-e15d-7c26-bb93-5d9e804b3802"
      ]
     },
@@ -155539,6 +155613,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -155564,7 +155639,8 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
-      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f"
+      "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801"
      ]
     },
     {
@@ -155620,6 +155696,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -155660,6 +155737,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -155697,6 +155775,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -155840,6 +155919,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -156098,6 +156178,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -157549,6 +157630,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -162307,6 +162389,7 @@
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
         "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
         "01a0e785-f107-7094-b206-941654c63bd0"
        ]
@@ -163008,6 +163091,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -163787,6 +163871,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -163939,6 +164024,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -164271,6 +164357,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -164361,6 +164448,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -164474,6 +164562,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -164565,6 +164654,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -164597,6 +164687,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -179420,6 +179511,7 @@
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
       "01a0dc36-a173-7df9-a692-0b1fafe97ca7",
       "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e360-d24d-743e-b5a0-249da7551024",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
@@ -180251,6 +180343,7 @@
       "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0d851-8d2d-722b-b960-8b17e38d64a0",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
       "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
@@ -180608,7 +180701,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e01d-be31-7005-bc7e-9e069082f79e",
-     "materialityAssessmentId": "01a0e8a9-3895-7c03-9da5-dc9241f5e7d3",
+     "materialityAssessmentId": "01a0e98f-d91f-7125-b78a-cdc191f2bcc8",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -181125,7 +181218,7 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0e059-fe49-7142-9537-15be1cd9638d",
-     "materialityAssessmentId": "01a0e8a9-d1f5-7e13-8587-c9286dab724c",
+     "materialityAssessmentId": "01a0e990-4ba4-7ef5-834e-0eafb375278d",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -181317,7 +181410,7 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0e067-a3a9-75a2-a61c-8b98eb176868",
-     "materialityAssessmentId": "01a0e8a9-a6c7-741b-b1b4-ecc9e29d1220",
+     "materialityAssessmentId": "01a0e990-50e1-717f-8f39-f3422f75649d",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -181443,7 +181536,7 @@
      "state": "supported",
      "changeType": "supported",
      "currentClaimVersionId": "01a0e668-b018-79d5-8947-d7e879831ff2",
-     "materialityAssessmentId": "01a0e8a9-fcc5-7cc2-80d2-533e1a95fdd6",
+     "materialityAssessmentId": "01a0e990-561f-7814-9e13-f2d0a4d94953",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -181617,7 +181710,7 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0e092-8173-72cc-bc47-473e1e899b4a",
-     "materialityAssessmentId": "01a0e8aa-1f0e-7c61-a04b-e642350e3c34",
+     "materialityAssessmentId": "01a0e990-5b5e-72db-a66b-e8c93e8cd8af",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"7 ngày\",\"u\":\"ngày\"}",
      "standingEvidence": [
@@ -186781,7 +186874,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e26c-cbc9-7aac-8321-63096f5747da",
-     "materialityAssessmentId": "01a0e8a9-d6de-7638-9530-29d73f7117e0",
+     "materialityAssessmentId": "01a0e98e-c3ba-7888-98a2-f8b55886273e",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"hai lần thoát khỏi cuộc không kích của Mỹ\",\"u\":\"lần\"}",
      "standingEvidence": [
@@ -187160,7 +187253,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e4d3-5d6a-711f-9c04-d282969d5cb9",
-     "materialityAssessmentId": "01a0e8ac-466e-7152-bf59-b5dfc858c82d",
+     "materialityAssessmentId": "01a0e98e-c8fc-7fb4-b9ec-27f17017feb8",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"hai lần thoát nạn trong các cuộc không kích\",\"u\":\"lần\"}",
      "standingEvidence": [
@@ -192247,6 +192340,7 @@
      "detached": false,
      "activeEvents": [
       "01a0dc10-2dd3-7268-9926-68bc0251d560",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
       "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
       "01a0e120-ef0d-7b1a-a5eb-1b8713bd0fb2",
@@ -193908,14 +194002,15 @@
   },
   {
    "eventId": "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
-   "eventVersionId": "01a0ebef-949b-73bd-8e2c-bb2eb8fdccbd",
+   "eventVersionId": "01a0ec17-fd98-7578-9e12-f1a42c025e73",
    "topic": "world",
    "status": "emerging",
    "title": "The tricky tests awaiting Andy Burnham after Labour conference",
    "mergePaths": {
     "bigram_entity": 3,
-    "cross_lingual": 13,
-    "generic_claim": 26,
+    "cross_lingual": 14,
+    "entity": 1,
+    "generic_claim": 31,
     "person": 3,
     "rare_token": 11
    },
@@ -199083,6 +199178,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -199648,6 +199744,7 @@
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0e785-f107-7094-b206-941654c63bd0"
      ]
@@ -201007,6 +201104,7 @@
      "detached": false,
      "activeEvents": [
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0ebd2-bcf5-7672-a7e1-ab91c9aad3cd"
      ]
     },
@@ -201815,6 +201913,7 @@
      "detached": false,
      "activeEvents": [
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0ebd2-bcf5-7672-a7e1-ab91c9aad3cd"
      ]
     },
@@ -202176,6 +202275,7 @@
      "detached": false,
      "activeEvents": [
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
       "01a0ebd2-bcf5-7672-a7e1-ab91c9aad3cd"
      ]
     },
@@ -202260,6 +202360,7 @@
       "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
       "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e6f5-e15d-7c26-bb93-5d9e804b3802"
      ]
     },
@@ -202284,6 +202385,236 @@
       "01a0e335-42c9-7cc7-9184-6588ec172c91",
       "01a0e377-663e-733e-8a94-c628afdcb743",
       "01a0e4de-5225-769c-b5bd-75dea2ab9bc7"
+     ]
+    },
+    {
+     "documentId": "01a0e19f-768e-7916-9c10-3e4c1f0eece4",
+     "evidenceVersionId": "01a0e19f-7852-7121-b9a6-83531e130da0",
+     "title": "Russia backs India’s candidature for UNSC permanent seat",
+     "source": "The Hindu",
+     "url": "https://www.thehindu.com/news/international/russia-backs-indias-candidature-for-unsc-permanent-seat/article71515381.ece",
+     "publishedAt": "2026-09-27T06:18:52.000Z",
+     "observedAt": "2026-09-27T06:48:39.189Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc10-2dd3-7268-9926-68bc0251d560",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+      "01a0e120-ef0d-7b1a-a5eb-1b8713bd0fb2",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
+      "01a0e17a-e530-7bef-b6d6-5fa6d6bfd0f2",
+      "01a0e1f3-3c33-7ea9-bc7e-bd981232a39b",
+      "01a0e335-42c9-7cc7-9184-6588ec172c91",
+      "01a0e6a8-89e9-7c7e-87a1-85f48927c984",
+      "01a0e6e9-2e09-771c-901b-a77e1bfb391e",
+      "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
+      "01a0e785-f107-7094-b206-941654c63bd0",
+      "01a0e7bf-b4f0-720b-8393-a56335f3b217"
+     ]
+    },
+    {
+     "documentId": "01a0ec03-2d0c-77c4-9f70-c52a6373c2fa",
+     "evidenceVersionId": "01a0ec03-2ed2-77cb-8ba5-0f7332714353",
+     "title": "Lack of understanding about cross-border terror concerns impacts bilateral ties: Jaishankar on India-U.S. relations",
+     "source": "The Hindu",
+     "url": "https://www.thehindu.com/news/national/lack-of-understanding-about-cross-border-terror-concerns-impacts-bilateral-ties-jaishankar-on-india-us-relations/article71522626.ece",
+     "publishedAt": "2026-09-29T05:49:13.000Z",
+     "observedAt": "2026-09-29T07:13:46.149Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0e72f-2945-7acf-ae3d-d1387c73d7c9"
+     ]
+    },
+    {
+     "documentId": "01a0ec03-3c10-7071-9080-bb03a2437ea1",
+     "evidenceVersionId": "01a0ec03-3dd2-7378-a1db-e9718bc4128d",
+     "title": "SCO national coordinators’ meeting begins in Pakistan; India among participants",
+     "source": "The Hindu",
+     "url": "https://www.thehindu.com/news/international/sco-national-coordinators-meeting-pakistan/article71522336.ece",
+     "publishedAt": "2026-09-29T01:54:06.000Z",
+     "observedAt": "2026-09-29T07:13:49.993Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def"
+     ]
+    },
+    {
+     "documentId": "01a0eb6f-ab2c-7d41-8d81-2b4ad00418c3",
+     "evidenceVersionId": "01a0ebc2-bdd0-7de5-9ec9-cc57ef9b0a1e",
+     "title": "India's Essar Group to invest $15 billion in 'largest' US steel plant, Trump announces",
+     "source": "The Times of India",
+     "url": "https://timesofindia.indiatimes.com/business/international-business/indias-essar-group-to-invest-18-billion-in-largest-us-steel-plant-trump-announces/articleshow/134553656.cms",
+     "publishedAt": "2026-09-29T01:34:48.000Z",
+     "observedAt": "2026-09-29T06:03:23.042Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0e72f-2945-7acf-ae3d-d1387c73d7c9"
+     ]
+    },
+    {
+     "documentId": "01a0ebe5-cfcd-76af-9e28-992cf19db0f1",
+     "evidenceVersionId": "01a0ebe5-d19e-74b1-a025-def9be34f22a",
+     "title": "Tổng thống Mỹ Donald Trump bác bỏ tin đề nghị nới lỏng trừng phạt Iran",
+     "source": "VietnamPlus",
+     "url": "https://www.vietnamplus.vn/tong-thong-my-donald-trump-bac-bo-tin-de-nghi-noi-long-trung-phat-iran-post1138947.vnp",
+     "publishedAt": "2026-09-29T05:46:53.000Z",
+     "observedAt": "2026-09-29T06:41:41.765Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0ebd2-bcf5-7672-a7e1-ab91c9aad3cd"
+     ]
+    },
+    {
+     "documentId": "01a0ec15-24b0-7f09-99fc-eab208b57f3d",
+     "evidenceVersionId": "01a0ec15-2671-7882-a92c-0a44693dda06",
+     "title": "Mỹ: Giá nhiên liệu tăng vọt, bang Texas ban bố tình trạng thảm họa",
+     "source": "Tiền Phong",
+     "url": "https://tienphong.vn/my-gia-nhien-lieu-tang-vot-bang-texas-ban-bo-tinh-trang-tham-hoa-post1880642.tpo",
+     "publishedAt": "2026-09-29T06:47:49.000Z",
+     "observedAt": "2026-09-29T07:33:23.647Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def"
+     ]
+    },
+    {
+     "documentId": "01a0ebe5-e9bf-7476-9781-b99a1bfd6a2b",
+     "evidenceVersionId": "01a0ebe5-eb85-7882-8da7-536410624dd0",
+     "title": "Iran bi quan về khả năng đạt được thỏa thuận trước cuộc bầu cử Mỹ",
+     "source": "Tiền Phong",
+     "url": "https://tienphong.vn/iran-bi-quan-ve-kha-nang-dat-duoc-thoa-thuan-truoc-cuoc-bau-cu-my-post1880625.tpo",
+     "publishedAt": "2026-09-29T05:51:52.000Z",
+     "observedAt": "2026-09-29T06:41:48.407Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0ebd2-bcf5-7672-a7e1-ab91c9aad3cd"
+     ]
+    },
+    {
+     "documentId": "01a0e945-062f-79ce-89ff-3506dfb9cd13",
+     "evidenceVersionId": "01a0ebc7-d2c1-7ce2-a1df-001bff74a936",
+     "title": "Trump announces US$15 billion Iowa steel plant, claiming it will be largest in US",
+     "source": "South China Morning Post",
+     "url": "https://www.scmp.com/news/world/united-states-canada/article/3369110/trump-announcing-new-iowa-steel-plant-white-house-says-will-be-biggest-us",
+     "publishedAt": "2026-09-28T18:02:58.000Z",
+     "observedAt": "2026-09-29T06:08:56.078Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
+      "01a0e785-f107-7094-b206-941654c63bd0",
+      "01a0eb88-2bf6-7fff-8cf6-54fb2576bd56"
+     ]
+    },
+    {
+     "documentId": "01a0e917-228b-77a1-99c2-9866bcc8a21e",
+     "evidenceVersionId": "01a0eb87-f37b-7783-b89e-4fb6b2484591",
+     "title": "FBI deputy chief announces resignation after just over a year in job",
+     "source": "South China Morning Post",
+     "url": "https://www.scmp.com/news/world/united-states-canada/article/3369109/fbi-deputy-chief-andrew-bailey-resign-after-little-more-year-agency",
+     "publishedAt": "2026-09-28T17:26:11.000Z",
+     "observedAt": "2026-09-29T04:59:10.043Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
+      "01a0e785-f107-7094-b206-941654c63bd0",
+      "01a0eb88-2bf6-7fff-8cf6-54fb2576bd56"
+     ]
+    },
+    {
+     "documentId": "01a0ea81-871a-7d2b-8d73-a5189148ecb0",
+     "evidenceVersionId": "01a0eb87-f8ec-790e-b3a1-5b6a9a02745e",
+     "title": "Pope Leo says AI doom concerns not ‘fake news’ in apparent rebuke of Trump",
+     "source": "South China Morning Post",
+     "url": "https://www.scmp.com/news/world/europe/article/3369117/pope-leo-says-concerns-about-ai-doom-scenarios-are-not-fake-news",
+     "publishedAt": "2026-09-28T21:45:41.000Z",
+     "observedAt": "2026-09-29T04:59:11.438Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0eb88-2bf6-7fff-8cf6-54fb2576bd56"
+     ]
+    },
+    {
+     "documentId": "01a0ea81-9a47-7e9d-a281-ac138925effd",
+     "evidenceVersionId": "01a0ec16-1583-7a38-b345-80911db013f0",
+     "title": "US revokes visas of Latin American officials and others",
+     "source": "South China Morning Post",
+     "url": "https://www.scmp.com/news/world/united-states-canada/article/3369114/us-revokes-visas-latin-american-officials-and-families-over-accusations-corruption",
+     "publishedAt": "2026-09-28T20:50:12.000Z",
+     "observedAt": "2026-09-29T07:34:24.867Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def"
+     ]
+    },
+    {
+     "documentId": "01a0eb88-1979-717f-8b25-f3ea2e16de91",
+     "evidenceVersionId": "01a0eb88-1b49-776b-b123-6520b618db22",
+     "title": "'I don't think that is fake news as some have said,' says Leo XIV contradicting Trump on need for AI safety",
+     "source": "Euronews",
+     "url": "https://www.euronews.com/2026/09/29/i-dont-think-that-is-fake-news-as-some-have-said-says-leo-xiv-contradicting-trump-on-need-",
+     "publishedAt": "2026-09-29T03:51:23.000Z",
+     "observedAt": "2026-09-29T04:59:20.236Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0eb88-2bf6-7fff-8cf6-54fb2576bd56"
+     ]
+    },
+    {
+     "documentId": "01a0dbe7-a95c-76c4-8b3d-64346f9ae99f",
+     "evidenceVersionId": "01a0dcc6-e0e4-77c9-bdbb-7701c9dbad07",
+     "title": "Trump preparing to bomb Iran after midterms – WSJ",
+     "source": "RT",
+     "url": "https://www.rt.com/news/646264-trump-renew-iran-bombing/",
+     "publishedAt": "2026-09-26T03:11:41.000Z",
+     "observedAt": "2026-09-26T08:13:35.835Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0d176-5a20-722f-a77b-4850e91ead78",
+      "01a0d176-5c60-7612-b069-d735340422c8",
+      "01a0d176-5d58-771d-811d-3201b483f2d9",
+      "01a0d3aa-015a-771e-9c56-3370111f97ef",
+      "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
+      "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
+      "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "01a0d851-8d2d-722b-b960-8b17e38d64a0",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "01a0e67f-d6fb-7cd6-8a3f-d1c9306d9c68",
+      "01a0e711-0660-7107-9fe1-76c895a0c281"
      ]
     }
    ],
@@ -202495,8 +202826,8 @@
      "unit": "ty_usd",
      "state": "disputed",
      "changeType": "disputed",
-     "currentClaimVersionId": "01a0eb71-cf9f-7fbd-af3c-d844f320f8d5",
-     "materialityAssessmentId": "01a0ebde-82d6-7815-8579-d00905aa3d2e",
+     "currentClaimVersionId": "01a0ec04-5813-7d03-ba1a-f56de7ac5fc4",
+     "materialityAssessmentId": "01a0ec12-8145-79fe-8daf-dd87fcb6d07c",
      "materiality": "unknown",
      "standingPos": "{\"v\":15,\"u\":\"ty_usd\"}",
      "standingEvidence": [
@@ -202515,8 +202846,8 @@
       },
       {
        "documentId": "01a0e945-062f-79ce-89ff-3506dfb9cd13",
-       "evidenceVersionId": "01a0ea81-9714-79c5-8d52-43fe499467f5",
-       "title": "Trump unveils US$15 billion Iowa steel project the White House says will be biggest in US",
+       "evidenceVersionId": "01a0ebc7-d2c1-7ce2-a1df-001bff74a936",
+       "title": "Trump announces US$15 billion Iowa steel plant, claiming it will be largest in US",
        "source": "South China Morning Post",
        "url": "https://www.scmp.com/news/world/united-states-canada/article/3369110/trump-announcing-new-iowa-steel-plant-white-house-says-will-be-biggest-us",
        "publishedAt": "2026-09-28T18:02:58.000Z",
@@ -202548,6 +202879,18 @@
        "activeEvents": [
         "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
         "01a0ebd2-bcf5-7672-a7e1-ab91c9aad3cd"
+       ]
+      },
+      {
+       "documentId": "01a0eb6f-ab2c-7d41-8d81-2b4ad00418c3",
+       "evidenceVersionId": "01a0ebc2-bdd0-7de5-9ec9-cc57ef9b0a1e",
+       "title": "India's Essar Group to invest $15 billion in 'largest' US steel plant, Trump announces",
+       "source": "The Times of India",
+       "url": "https://timesofindia.indiatimes.com/business/international-business/indias-essar-group-to-invest-18-billion-in-largest-us-steel-plant-trump-announces/articleshow/134553656.cms",
+       "publishedAt": "2026-09-29T01:34:48.000Z",
+       "activeEvents": [
+        "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+        "01a0e72f-2945-7acf-ae3d-d1387c73d7c9"
        ]
       },
       {
@@ -202736,7 +203079,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e751-3014-7799-8235-fe678c51ff51",
-     "materialityAssessmentId": "01a0e8ad-8fa1-73f2-8b13-34a99f25cba5",
+     "materialityAssessmentId": "01a0e990-89cc-7804-b99a-c6115f7b521a",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"hàng không Iran\",\"u\":null}",
      "standingEvidence": [
@@ -202774,7 +203117,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e751-33df-7c3f-800e-2b8c501fc13c",
-     "materialityAssessmentId": "01a0e8ad-9145-75d8-8737-902785d22001",
+     "materialityAssessmentId": "01a0e990-8f08-72b1-a276-9801b487b96c",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"vũ khí mới\",\"u\":null}",
      "standingEvidence": [
@@ -202916,7 +203259,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e77d-1153-727d-b63e-85cb0ccbc0d1",
-     "materialityAssessmentId": "01a0e8ad-acdb-77e9-be21-950707bbc911",
+     "materialityAssessmentId": "01a0e990-998a-76d3-afd6-0a394a98ab06",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"tìm kiếm giải pháp ngoại giao\",\"u\":null}",
      "standingEvidence": [
@@ -203085,6 +203428,7 @@
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
         "01a0ddcf-2e62-7459-8d89-e8cf75c96b0c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
         "01a0e785-f107-7094-b206-941654c63bd0"
        ]
@@ -203287,7 +203631,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e7d3-b551-7d48-b5de-53223d90b0b6",
-     "materialityAssessmentId": "01a0e8ae-2398-73fc-a05c-5f14934f1beb",
+     "materialityAssessmentId": "01a0e990-a347-7c20-bb1d-0edd63bd9ccb",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"chỉ có ngoại giao mới giải quyết được xung đột\",\"u\":null}",
      "standingEvidence": [
@@ -203492,14 +203836,14 @@
      "claimKey": "donald_trump|reject_ceasefire",
      "predicate": "reject_ceasefire",
      "subjectKey": null,
-     "value": "Iran",
+     "value": "bác đề xuất ngừng bắn từ Iran",
      "unit": null,
-     "state": "reported",
-     "changeType": "initial",
-     "currentClaimVersionId": "01a0ea85-667c-7c9a-9dd6-36fe2d5bdb76",
+     "state": "corrected",
+     "changeType": "corrected",
+     "currentClaimVersionId": "01a0ec17-e444-7a79-bb7d-bbbcf0544c9b",
      "materialityAssessmentId": "01a0eb48-2945-71ac-89c7-9e3635d28113",
      "materiality": "unknown",
-     "standingPos": "{\"v\":\"Iran\",\"u\":null}",
+     "standingPos": "{\"v\":\"bác đề xuất ngừng bắn từ Iran\",\"u\":null}",
      "standingEvidence": [
       {
        "documentId": "01a0e677-5e6f-7a55-8894-92a206e41c51",
@@ -203989,8 +204333,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebef-740e-7d59-b761-9e68bb7f13f3",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-6c23-7488-a7d4-30730ad4ad9f",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"15 tỷ USD\",\"u\":\"USD\"}",
      "standingEvidence": [
       {
@@ -204016,8 +204360,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebef-7956-79d4-831e-b9aaf68d5911",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-7643-7256-b050-7d5ed0ed9138",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"bán 48 siêu tiêm kích F-35 cho Ảrập Xêút\",\"u\":null}",
      "standingEvidence": [
       {
@@ -204049,8 +204393,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebef-7e9c-738a-89d4-61ea596f2f83",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-8065-70e4-ab95-555cbe141fc3",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"Phó giám đốc FBI\",\"u\":null}",
      "standingEvidence": [
       {
@@ -204087,8 +204431,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebef-83e6-7754-896c-e2f79de36f55",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec12-53ba-7c99-b66f-fdad9da49c12",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"thấp hơn đáng kể so với chính sách thời Tổng thống Biden\",\"u\":null}",
      "standingEvidence": [
       {
@@ -204120,8 +204464,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebef-892b-7713-8864-5a66faa2bc4b",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-8a88-75f6-ad49-8d496305421a",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"Iowa\",\"u\":null}",
      "standingEvidence": [
       {
@@ -204131,6 +204475,119 @@
        "source": "VietnamPlus",
        "url": "https://www.vietnamplus.vn/bau-cu-giua-ky-my-tong-thong-trump-dat-cuoc-vao-du-an-thep-15-ty-usd-post1138906.vnp",
        "publishedAt": "2026-09-29T03:38:19.000Z",
+       "activeEvents": [
+        "01a0dc3c-a3e1-759d-9053-3b46d41e8def"
+       ]
+      }
+     ]
+    },
+    {
+     "claimId": "01a0ec17-e884-7f97-9004-2cd0b88c189f",
+     "claimKey": "iran|readiness_war",
+     "predicate": "readiness_war",
+     "subjectKey": null,
+     "value": "chiến tranh tận thế",
+     "unit": null,
+     "state": "reported",
+     "changeType": "initial",
+     "currentClaimVersionId": "01a0ec17-e95d-7435-afdb-87a47b38a19b",
+     "materialityAssessmentId": null,
+     "materiality": null,
+     "standingPos": "{\"v\":\"chiến tranh tận thế\",\"u\":null}",
+     "standingEvidence": [
+      {
+       "documentId": "01a0e677-5e6f-7a55-8894-92a206e41c51",
+       "evidenceVersionId": "01a0e677-6037-77bd-86d8-58aa97421ee8",
+       "title": "Ván cược của ông Trump khi bác đề xuất ngừng bắn từ Iran",
+       "source": "VnExpress",
+       "url": "https://vnexpress.net/van-cuoc-cua-ong-trump-khi-bac-de-xuat-ngung-ban-tu-iran-5125479.html",
+       "publishedAt": "2026-09-28T04:55:05.000Z",
+       "activeEvents": [
+        "01a0d176-5d58-771d-811d-3201b483f2d9",
+        "01a0d3aa-57fc-74d7-8b27-9184a62c670e",
+        "01a0d9fa-e457-73cb-babd-4d0517c3a23c",
+        "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+        "01a0e785-f107-7094-b206-941654c63bd0"
+       ]
+      }
+     ]
+    },
+    {
+     "claimId": "01a0ec17-ed99-78a0-88ae-bfa624f71ab6",
+     "claimKey": "donald_trump|reject_sanctions_relief_rumor",
+     "predicate": "reject_sanctions_relief_rumor",
+     "subjectKey": null,
+     "value": "bác bỏ tin đề nghị nới lỏng trừng phạt Iran",
+     "unit": null,
+     "state": "reported",
+     "changeType": "initial",
+     "currentClaimVersionId": "01a0ec17-ee70-7cc0-bbea-5b030852c9b1",
+     "materialityAssessmentId": null,
+     "materiality": null,
+     "standingPos": "{\"v\":\"bác bỏ tin đề nghị nới lỏng trừng phạt Iran\",\"u\":null}",
+     "standingEvidence": [
+      {
+       "documentId": "01a0ebe5-cfcd-76af-9e28-992cf19db0f1",
+       "evidenceVersionId": "01a0ebe5-d19e-74b1-a025-def9be34f22a",
+       "title": "Tổng thống Mỹ Donald Trump bác bỏ tin đề nghị nới lỏng trừng phạt Iran",
+       "source": "VietnamPlus",
+       "url": "https://www.vietnamplus.vn/tong-thong-my-donald-trump-bac-bo-tin-de-nghi-noi-long-trung-phat-iran-post1138947.vnp",
+       "publishedAt": "2026-09-29T05:46:53.000Z",
+       "activeEvents": [
+        "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+        "01a0ebd2-bcf5-7672-a7e1-ab91c9aad3cd"
+       ]
+      }
+     ]
+    },
+    {
+     "claimId": "01a0ec17-f2a5-73e6-9b63-844388593e23",
+     "claimKey": "donald_trump|announce_steel_project",
+     "predicate": "announce_steel_project",
+     "subjectKey": null,
+     "value": "15 tỷ USD",
+     "unit": "USD",
+     "state": "reported",
+     "changeType": "initial",
+     "currentClaimVersionId": "01a0ec17-f37d-764f-b9d0-0ea2e3c7a2b0",
+     "materialityAssessmentId": null,
+     "materiality": null,
+     "standingPos": "{\"v\":\"15 tỷ USD\",\"u\":\"USD\"}",
+     "standingEvidence": [
+      {
+       "documentId": "01a0eb6d-816e-7f23-a7e9-d2d5be20e06e",
+       "evidenceVersionId": "01a0eb6d-8353-7a3d-aaeb-079f7409779c",
+       "title": "Bầu cử giữa kỳ Mỹ: Tổng thống Trump đặt cược vào dự án thép 15 tỷ USD",
+       "source": "VietnamPlus",
+       "url": "https://www.vietnamplus.vn/bau-cu-giua-ky-my-tong-thong-trump-dat-cuoc-vao-du-an-thep-15-ty-usd-post1138906.vnp",
+       "publishedAt": "2026-09-29T03:38:19.000Z",
+       "activeEvents": [
+        "01a0dc3c-a3e1-759d-9053-3b46d41e8def"
+       ]
+      }
+     ]
+    },
+    {
+     "claimId": "01a0ec17-f7b0-7d1c-814b-0b51785c4fae",
+     "claimKey": "texas|disaster_declaration",
+     "predicate": "disaster_declaration",
+     "subjectKey": null,
+     "value": "tình trạng thảm họa do giá dầu tăng",
+     "unit": null,
+     "state": "reported",
+     "changeType": "initial",
+     "currentClaimVersionId": "01a0ec17-f888-77f6-b5fb-360ca2079f6a",
+     "materialityAssessmentId": null,
+     "materiality": null,
+     "standingPos": "{\"v\":\"tình trạng thảm họa do giá dầu tăng\",\"u\":null}",
+     "standingEvidence": [
+      {
+       "documentId": "01a0ec15-24b0-7f09-99fc-eab208b57f3d",
+       "evidenceVersionId": "01a0ec15-2671-7882-a92c-0a44693dda06",
+       "title": "Mỹ: Giá nhiên liệu tăng vọt, bang Texas ban bố tình trạng thảm họa",
+       "source": "Tiền Phong",
+       "url": "https://tienphong.vn/my-gia-nhien-lieu-tang-vot-bang-texas-ban-bo-tinh-trang-tham-hoa-post1880642.tpo",
+       "publishedAt": "2026-09-29T06:47:49.000Z",
        "activeEvents": [
         "01a0dc3c-a3e1-759d-9053-3b46d41e8def"
        ]
@@ -207164,6 +207621,7 @@
      "detached": false,
      "activeEvents": [
       "01a0dc10-2dd3-7268-9926-68bc0251d560",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
       "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
       "01a0e120-ef0d-7b1a-a5eb-1b8713bd0fb2",
@@ -207464,7 +207922,7 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0e34f-70c1-7c1d-ac07-af9a95b860ac",
-     "materialityAssessmentId": "01a0e8e7-ad28-7f33-874a-153e8a396bdb",
+     "materialityAssessmentId": "01a0e8a8-1292-7cc8-85a6-c00ab2339452",
      "materiality": "none",
      "standingPos": "{\"v\":2,\"u\":\"people\"}",
      "standingEvidence": [
@@ -207831,7 +208289,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0df99-b389-7575-ab08-3de27d23b00e",
-     "materialityAssessmentId": "01a0eb48-b03c-7ee6-aaa4-e03cc001b9c5",
+     "materialityAssessmentId": "01a0e8a8-ae99-71dc-9b50-5a2318ac424a",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"tiếp nhận danh sách ứng cử viên bầu cử lập pháp\",\"u\":null}",
      "standingEvidence": [
@@ -209781,17 +210239,17 @@
   },
   {
    "eventId": "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
-   "eventVersionId": "01a0ebf0-9f0f-76d7-b571-3b6c564524bb",
+   "eventVersionId": "01a0ec1a-cc29-7eec-bdb0-cf1027fe2b7d",
    "topic": "world",
    "status": "emerging",
    "title": "Mô hình của OpenAI tấn công cả trang web chính phủ Mỹ",
    "mergePaths": {
-    "bigram_entity": 14,
-    "cross_lingual": 42,
+    "bigram_entity": 15,
+    "cross_lingual": 43,
     "generic_claim": 9,
     "headline": 16,
     "rare_token": 2,
-    "semantic_anchored": 33,
+    "semantic_anchored": 36,
     "semantic_xlang": 1
    },
    "eventEvidence": [
@@ -210634,6 +211092,7 @@
      "detached": false,
      "activeEvents": [
       "01a0dc10-2dd3-7268-9926-68bc0251d560",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
       "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
       "01a0e120-ef0d-7b1a-a5eb-1b8713bd0fb2",
@@ -211899,6 +212358,149 @@
       "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
       "01a0e17d-2151-7613-8f6b-b5016eb769f2"
      ]
+    },
+    {
+     "documentId": "01a0eb82-7aca-791c-86c0-bc02520bdc05",
+     "evidenceVersionId": "01a0eb82-7c9b-74c1-920a-b87a29265185",
+     "title": "OpenAI scraps rollout of new model over safety concerns",
+     "source": "BBC News",
+     "url": "https://www.bbc.co.uk/news/articles/cm5y5nynl75ko?at_medium=RSS&at_campaign=rss",
+     "publishedAt": "2026-09-29T02:29:25.000Z",
+     "observedAt": "2026-09-29T04:53:11.922Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+      "01a0e17d-2151-7613-8f6b-b5016eb769f2"
+     ]
+    },
+    {
+     "documentId": "01a0ebc4-b73c-73df-8689-eff122f9a28e",
+     "evidenceVersionId": "01a0ebc4-b8ab-763e-ade5-a435a553a30e",
+     "title": "OpenAI Cancels Release Of Latest Model 'GPT-6.1 Astra' Over Safety Concerns",
+     "source": "New Delhi Television (NDTV)",
+     "url": "https://www.ndtv.com/world-news/openai-cancels-release-of-latest-model-gpt-6-1-astra-over-safety-concerns-12112409",
+     "publishedAt": "2026-09-29T03:35:59.000Z",
+     "observedAt": "2026-09-29T06:05:32.802Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+      "01a0e17d-2151-7613-8f6b-b5016eb769f2"
+     ]
+    },
+    {
+     "documentId": "01a0ebc4-c358-715c-b1a5-28451f2fdb18",
+     "evidenceVersionId": "01a0ebc4-c4cf-7fb2-8a82-2a2acc76fc35",
+     "title": "OpenAI scraps new model rollout after safety concerns",
+     "source": "The Independent",
+     "url": "https://www.independent.co.uk/bulletin/news/openai-gpt-6-astra-model-release-b3057958.html",
+     "publishedAt": "2026-09-29T05:24:00.000Z",
+     "observedAt": "2026-09-29T06:05:35.901Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+      "01a0e17d-2151-7613-8f6b-b5016eb769f2"
+     ]
+    },
+    {
+     "documentId": "01a0eb8e-0421-7230-a102-411f766bb07c",
+     "evidenceVersionId": "01a0eb8e-05f2-77e0-8626-1d2fbdfeb080",
+     "title": "'Can at times evade human oversight': OpenAI scraps release of latest ChatGPT model",
+     "source": "The Times of India",
+     "url": "https://timesofindia.indiatimes.com/technology/tech-news/didnt-quite-meet-the-bar-why-openai-scrapped-release-of-its-latest-ai-model/articleshow/134553926.cms",
+     "publishedAt": "2026-09-29T02:06:45.000Z",
+     "observedAt": "2026-09-29T05:05:47.995Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+      "01a0e17d-2151-7613-8f6b-b5016eb769f2"
+     ]
+    },
+    {
+     "documentId": "01a0ec19-fe3a-74df-80bd-e4e85319d4b2",
+     "evidenceVersionId": "01a0ec19-ffe9-70c9-baf7-dc56d52d2f0b",
+     "title": "OpenAI thừa nhận tác nhân truy cập trái phép hệ thống chính phủ",
+     "source": "VnExpress",
+     "url": "https://vnexpress.net/openai-thua-nhan-tac-nhan-truy-cap-trai-phep-he-thong-chinh-phu-5126135.html",
+     "publishedAt": "2026-09-29T06:48:21.000Z",
+     "observedAt": "2026-09-29T07:38:41.494Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64"
+     ]
+    },
+    {
+     "documentId": "01a0ea99-37d3-7a23-b1fd-902c932d965e",
+     "evidenceVersionId": "01a0ea99-396d-76e8-b8bd-e0552de3005f",
+     "title": "OpenAI scraps plans to publicly launch a model dubbed GPT-6.1 Astra, saying it didn't quite meet its safety bar; it had been targeting an October release (Maxwell Zeff/Wall Street Journal)",
+     "source": "Techmeme",
+     "url": "https://www.techmeme.com/260928/p37",
+     "publishedAt": "2026-09-28T22:29:14.000Z",
+     "observedAt": "2026-09-29T00:38:24.920Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+      "01a0e17d-2151-7613-8f6b-b5016eb769f2"
+     ]
+    },
+    {
+     "documentId": "01a0e969-87fd-78ef-93c6-9b9854c925dc",
+     "evidenceVersionId": "01a0e969-89e8-723a-930b-384d48ce2069",
+     "title": "Florida seeks a ban on ChatGPT acting like a person",
+     "source": "The Verge",
+     "url": "https://www.theverge.com/ai-artificial-intelligence/1001527/chatgpt-florida-ban-first-person-human-attributes-kids",
+     "publishedAt": "2026-09-28T17:00:23.000Z",
+     "observedAt": "2026-09-28T19:06:42.480Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0d176-5aac-7048-9097-d2ee08f32068",
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+      "01a0e17d-2151-7613-8f6b-b5016eb769f2"
+     ]
+    },
+    {
+     "documentId": "01a0ea99-463b-718a-97c3-8fb254521f33",
+     "evidenceVersionId": "01a0ec1a-1bb6-7269-baf8-08c9499da5da",
+     "title": "OpenAI scraps release of new model over safety concerns in internal testing",
+     "source": "The Guardian",
+     "url": "https://www.theguardian.com/technology/2026/sep/28/openai-new-model-astra-release-scrapped",
+     "publishedAt": "2026-09-28T23:02:28.000Z",
+     "observedAt": "2026-09-29T07:38:48.612Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+      "01a0e17d-2151-7613-8f6b-b5016eb769f2"
+     ]
+    },
+    {
+     "documentId": "01a0eb77-c4d7-7efd-8f49-e17cbc82fa6d",
+     "evidenceVersionId": "01a0ec1a-219e-77e3-b681-93864546a56d",
+     "title": "OpenAI cancels release of new artificial intelligence model over safety concerns",
+     "source": "France 24",
+     "url": "https://www.france24.com/en/americas/20260929-openai-cancels-release-new-ai-model-safety-concerns",
+     "publishedAt": "2026-09-29T02:54:49.000Z",
+     "observedAt": "2026-09-29T07:38:50.121Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0dede-2efb-7cd5-af3f-05f87cf95e64"
+     ]
     }
    ],
    "claims": [
@@ -212146,7 +212748,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e313-b44d-7b77-a408-67ca9a649603",
-     "materialityAssessmentId": "01a0e8ab-3a43-7f01-9aec-0d9d3833b5c4",
+     "materialityAssessmentId": "01a0eb48-a40d-75f4-97ac-ac241d0b654c",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"các mô hình mạnh nhất\",\"u\":null}",
      "standingEvidence": [
@@ -212294,15 +212896,27 @@
      "currentClaimVersionId": "01a0eb78-5f94-7e6c-9e00-d871636cf688",
      "materialityAssessmentId": "01a0ebae-30c1-7cb1-862d-f9728671f1d0",
      "materiality": "unknown",
-     "standingPos": "{\"v\":\"Astra 6.1\",\"u\":null}",
+     "standingPos": "{\"v\":\"GPT-6.1 Astra\",\"u\":null}",
      "standingEvidence": [
       {
-       "documentId": "01a0eb77-c4d7-7efd-8f49-e17cbc82fa6d",
-       "evidenceVersionId": "01a0eb77-c6a1-7181-b91d-29748d609a1f",
-       "title": "OpenAI cancels release of new AI model over safety concerns",
-       "source": "France 24",
-       "url": "https://www.france24.com/en/americas/20260929-openai-cancels-release-new-ai-model-safety-concerns",
-       "publishedAt": "2026-09-29T02:54:49.000Z",
+       "documentId": "01a0eb77-cb1c-7e76-b710-885b6ee364e8",
+       "evidenceVersionId": "01a0eb77-cce7-7f97-9ad5-b1830fd5d980",
+       "title": "OpenAI scraps release of new AI model over safety concerns",
+       "source": "CBC News",
+       "url": "https://www.cbc.ca/news/world/openai-scraps-planned-release-gpt-6-1-astra-9.7361910?cmp=rss",
+       "publishedAt": "2026-09-29T01:35:51.000Z",
+       "activeEvents": [
+        "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+        "01a0e17d-2151-7613-8f6b-b5016eb769f2"
+       ]
+      },
+      {
+       "documentId": "01a0eb77-abc4-7abb-ad2b-8f761f09efdf",
+       "evidenceVersionId": "01a0eb77-ad8e-7913-aae7-e238f724056e",
+       "title": "OpenAI hoãn phát hành mô hình AI mới do lo ngại về an toàn",
+       "source": "VOV",
+       "url": "https://vov.vn/the-gioi/openai-hoan-phat-hanh-mo-hinh-ai-moi-do-lo-ngai-ve-an-toan-post1336873.vov",
+       "publishedAt": "2026-09-29T03:39:08.000Z",
        "activeEvents": [
         "01a0dede-2efb-7cd5-af3f-05f87cf95e64"
        ]
@@ -212314,24 +212928,25 @@
      "claimKey": "openai|apology",
      "predicate": "apology",
      "subjectKey": null,
-     "value": "website chính phủ Úc",
+     "value": "AI models breaching Australian government websites",
      "unit": null,
-     "state": "reported",
-     "changeType": "initial",
-     "currentClaimVersionId": "01a0eb78-513e-7d3e-b5d7-f54b591ed159",
+     "state": "disputed",
+     "changeType": "disputed",
+     "currentClaimVersionId": "01a0ec1a-bb58-740c-ae7b-2e7aaf542a9b",
      "materialityAssessmentId": "01a0ebae-2ded-7e81-8d7e-c71265221892",
      "materiality": "unknown",
-     "standingPos": "{\"v\":\"website chính phủ Úc\",\"u\":null}",
+     "standingPos": "{\"v\":\"AI models breaching Australian government websites\",\"u\":null}",
      "standingEvidence": [
       {
-       "documentId": "01a0eb77-b684-7a39-aa91-fe84b9c45dc4",
-       "evidenceVersionId": "01a0eb77-b84e-762d-97db-9a30d74a3b45",
-       "title": "OpenAI xin lỗi vì mô hình AI xâm nhập hàng loạt website chính phủ Úc",
-       "source": "Thanh Niên",
-       "url": "https://thanhnien.vn/openai-xin-loi-vi-mo-hinh-ai-xam-nhap-hang-loat-website-chinh-phu-uc-185260929092114957.htm",
-       "publishedAt": "2026-09-29T02:51:00.000Z",
+       "documentId": "01a0ebc3-6b8e-759f-ab91-df5c7773995b",
+       "evidenceVersionId": "01a0ebc3-6dd4-75ab-a1d3-9f6096baf38a",
+       "title": "OpenAI apologizes for its AI models breaching Australian government websites, pledges cyber defense funding, and plans to form a task force as part of reforms (Bloomberg)",
+       "source": "Techmeme",
+       "url": "https://www.techmeme.com/260929/p1",
+       "publishedAt": "2026-09-29T04:50:00.000Z",
        "activeEvents": [
-        "01a0dede-2efb-7cd5-af3f-05f87cf95e64"
+        "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+        "01a0e17d-2151-7613-8f6b-b5016eb769f2"
        ]
       }
      ]
@@ -212341,22 +212956,34 @@
      "claimKey": "openai|model_release_cancelled",
      "predicate": "model_release_cancelled",
      "subjectKey": null,
-     "value": "Astra 6.1",
+     "value": "GPT-6.1 Astra",
      "unit": null,
      "state": "disputed",
      "changeType": "disputed",
-     "currentClaimVersionId": "01a0ebf0-8679-7de0-98a9-890954553d6c",
-     "materialityAssessmentId": null,
-     "materiality": null,
-     "standingPos": "{\"v\":\"Astra 6.1\",\"u\":null}",
+     "currentClaimVersionId": "01a0ec1a-a8c8-702c-8b35-784767a12aad",
+     "materialityAssessmentId": "01a0ec0f-b4c6-729d-8232-12362bf4d773",
+     "materiality": "unknown",
+     "standingPos": "{\"v\":\"GPT-6.1 Astra\",\"u\":null}",
      "standingEvidence": [
       {
-       "documentId": "01a0eb77-c4d7-7efd-8f49-e17cbc82fa6d",
-       "evidenceVersionId": "01a0eb77-c6a1-7181-b91d-29748d609a1f",
-       "title": "OpenAI cancels release of new AI model over safety concerns",
-       "source": "France 24",
-       "url": "https://www.france24.com/en/americas/20260929-openai-cancels-release-new-ai-model-safety-concerns",
-       "publishedAt": "2026-09-29T02:54:49.000Z",
+       "documentId": "01a0ea99-37d3-7a23-b1fd-902c932d965e",
+       "evidenceVersionId": "01a0ea99-396d-76e8-b8bd-e0552de3005f",
+       "title": "OpenAI scraps plans to publicly launch a model dubbed GPT-6.1 Astra, saying it didn't quite meet its safety bar; it had been targeting an October release (Maxwell Zeff/Wall Street Journal)",
+       "source": "Techmeme",
+       "url": "https://www.techmeme.com/260928/p37",
+       "publishedAt": "2026-09-28T22:29:14.000Z",
+       "activeEvents": [
+        "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+        "01a0e17d-2151-7613-8f6b-b5016eb769f2"
+       ]
+      },
+      {
+       "documentId": "01a0eb77-abc4-7abb-ad2b-8f761f09efdf",
+       "evidenceVersionId": "01a0eb77-ad8e-7913-aae7-e238f724056e",
+       "title": "OpenAI hoãn phát hành mô hình AI mới do lo ngại về an toàn",
+       "source": "VOV",
+       "url": "https://vov.vn/the-gioi/openai-hoan-phat-hanh-mo-hinh-ai-moi-do-lo-ngai-ve-an-toan-post1336873.vov",
+       "publishedAt": "2026-09-29T03:39:08.000Z",
        "activeEvents": [
         "01a0dede-2efb-7cd5-af3f-05f87cf95e64"
        ]
@@ -212373,8 +213000,8 @@
      "state": "disputed",
      "changeType": "disputed",
      "currentClaimVersionId": "01a0ebf0-8e60-7d76-b788-0c6a5b9400fc",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-bee5-76ae-ad66-f4bc06e210c9",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"GPT-6.1 Astra\",\"u\":null}",
      "standingEvidence": [
       {
@@ -212400,8 +213027,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebf0-7a2e-7631-b8fb-d18194ddbe27",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-c905-7de5-a9a6-1766e0dc4e05",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"Sự cố an ninh liên quan đến website chính phủ Úc\",\"u\":null}",
      "standingEvidence": [
       {
@@ -212427,8 +213054,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebf0-7f72-7a26-823b-cf71fd91f608",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-d325-75af-b60b-651e0648e6e8",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"GPT-6.1 Astra\",\"u\":null}",
      "standingEvidence": [
       {
@@ -212455,8 +213082,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebf0-99ca-7fe5-ab89-d6ad9c25b331",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-dd43-7ad9-bad5-d9b8f3c1d272",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"Latest model\",\"u\":null}",
      "standingEvidence": [
       {
@@ -212466,6 +213093,33 @@
        "source": "The Independent",
        "url": "https://www.independent.co.uk/news/openai-donald-trump-wall-street-journal-washington-san-francisco-b3057922.html",
        "publishedAt": "2026-09-29T01:45:15.000Z",
+       "activeEvents": [
+        "01a0dede-2efb-7cd5-af3f-05f87cf95e64"
+       ]
+      }
+     ]
+    },
+    {
+     "claimId": "01a0ec1a-b3c3-7aa0-bb71-77df19ec02ea",
+     "claimKey": "openai|unauthorized_access",
+     "predicate": "unauthorized_access",
+     "subjectKey": null,
+     "value": "trang web và hệ thống của chính phủ Australia",
+     "unit": null,
+     "state": "reported",
+     "changeType": "initial",
+     "currentClaimVersionId": "01a0ec1a-b49b-7e5a-a13b-781cf20781c8",
+     "materialityAssessmentId": null,
+     "materiality": null,
+     "standingPos": "{\"v\":\"trang web và hệ thống của chính phủ Australia\",\"u\":null}",
+     "standingEvidence": [
+      {
+       "documentId": "01a0ec19-fe3a-74df-80bd-e4e85319d4b2",
+       "evidenceVersionId": "01a0ec19-ffe9-70c9-baf7-dc56d52d2f0b",
+       "title": "OpenAI thừa nhận tác nhân truy cập trái phép hệ thống chính phủ",
+       "source": "VnExpress",
+       "url": "https://vnexpress.net/openai-thua-nhan-tac-nhan-truy-cap-trai-phep-he-thong-chinh-phu-5126135.html",
+       "publishedAt": "2026-09-29T06:48:21.000Z",
        "activeEvents": [
         "01a0dede-2efb-7cd5-af3f-05f87cf95e64"
        ]
@@ -215761,6 +216415,7 @@
      "activeEvents": [
       "01a0e1ab-f2b6-7f55-92f4-acd72e137419",
       "01a0e769-b127-76f7-a595-c270c6d9b100",
+      "01a0e7be-683e-7433-a550-177d8b9ea9bd",
       "01a0e8f8-6fbb-7964-be32-cc5eda9fabb3",
       "01a0ea9a-dfda-7673-a116-8f05b55aef5f"
      ]
@@ -215942,13 +216597,13 @@
   },
   {
    "eventId": "01a0e257-82a7-7221-94ce-6f38cf80692a",
-   "eventVersionId": "01a0ebea-cdf7-7212-85e0-6dddf16636a8",
+   "eventVersionId": "01a0ec19-df9d-7d06-80b9-4f35a433830e",
    "topic": "vietnam",
    "status": "emerging",
    "title": "FPT hiến kế đào tạo nhân tài cho các công nghệ chiến lược",
    "mergePaths": {
     "headline": 7,
-    "rare_token": 25
+    "rare_token": 28
    },
    "eventEvidence": [
     {
@@ -216642,6 +217297,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -216729,6 +217385,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -216790,6 +217447,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -216832,6 +217490,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -217123,6 +217782,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -217602,6 +218262,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -218447,6 +219108,21 @@
      "activeEvents": [
       "01a0e257-82a7-7221-94ce-6f38cf80692a"
      ]
+    },
+    {
+     "documentId": "01a0ec18-45e6-7460-a8a7-c234b5a68c30",
+     "evidenceVersionId": "01a0ec18-4799-7a48-80a8-4e422dbeaa00",
+     "title": "Học viện Kỹ thuật quân sự sắp mở hệ đào tạo 'tinh hoa'",
+     "source": "VnExpress",
+     "url": "https://vnexpress.net/hoc-vien-ky-thuat-quan-su-sap-mo-he-dao-tao-tinh-hoa-5126106.html",
+     "publishedAt": "2026-09-29T06:44:33.000Z",
+     "observedAt": "2026-09-29T07:36:48.762Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0e257-82a7-7221-94ce-6f38cf80692a"
+     ]
     }
    ],
    "claims": [
@@ -218492,6 +219168,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -218763,7 +219440,7 @@
      "state": "corrected",
      "changeType": "corrected",
      "currentClaimVersionId": "01a0ebea-be1e-7f67-b18c-ecc349ed5274",
-     "materialityAssessmentId": "01a0e8ae-5a36-70a5-a8a2-773bef1f117c",
+     "materialityAssessmentId": "01a0ec0e-e77e-7e5b-932d-015320e713ac",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"Trung Quốc\",\"u\":null}",
      "standingEvidence": [
@@ -219043,14 +219720,14 @@
      "claimKey": "vuon_thu_atlanta|receive_pandas",
      "predicate": "receive_pandas",
      "subjectKey": null,
-     "value": "2 chú gấu trúc (Bình Bình và Phúc Song)",
+     "value": "Bình Bình và Phúc Song",
      "unit": null,
-     "state": "reported",
-     "changeType": "initial",
-     "currentClaimVersionId": "01a0eb74-983c-7210-bc06-9ed30c1c2ae0",
+     "state": "corrected",
+     "changeType": "corrected",
+     "currentClaimVersionId": "01a0ec19-c810-77f3-a1aa-914f448aa137",
      "materialityAssessmentId": "01a0ebad-bc4b-7cba-8635-b4aa27f32203",
      "materiality": "unknown",
-     "standingPos": "{\"v\":\"2 chú gấu trúc (Bình Bình và Phúc Song)\",\"u\":null}",
+     "standingPos": "{\"v\":\"Bình Bình và Phúc Song\",\"u\":null}",
      "standingEvidence": [
       {
        "documentId": "01a0eb72-62d0-7f78-bd80-1c24b65fb527",
@@ -219075,7 +219752,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0eb74-a5ae-7c5c-a23d-b028100ed4c9",
-     "materialityAssessmentId": "01a0ebe0-e448-7a9c-a268-99d9a7201d63",
+     "materialityAssessmentId": "01a0ebad-b697-7a82-ad5c-37fe7956fde2",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"phủ nhận thông tin ông Trump đề nghị bán vũ khí\",\"u\":null}",
      "standingEvidence": [
@@ -219331,8 +220008,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebea-a642-79ab-965d-174e98837d28",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0e-a08a-7608-88d5-b74daf2ad53b",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"Khai thác khoáng sản thiết yếu, công nghệ bán dẫn và công nghệ mới nổi\",\"u\":null}",
      "standingEvidence": [
       {
@@ -219361,8 +220038,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebea-ab8a-7f3f-b79f-543bc59f30e2",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0e-dd5b-7300-b73e-8d1e1edb3736",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"giảm từ 33% xuống 15%\",\"u\":\"%\"}",
      "standingEvidence": [
       {
@@ -219388,8 +220065,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebea-c368-7ae1-97da-a5e0590dae23",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0e-b16e-723a-b23a-ff35f4814565",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"2 chú gấu trúc (Bình Bình và Phúc Song)\",\"u\":\"chú\"}",
      "standingEvidence": [
       {
@@ -219415,8 +220092,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebea-c8ae-7ba4-b512-3113bea805ed",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0e-bb8f-71a4-a771-eb1ae61aeefb",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"Trung Quốc\",\"u\":null}",
      "standingEvidence": [
       {
@@ -219426,6 +220103,113 @@
        "source": "Thanh Niên",
        "url": "https://thanhnien.vn/ong-trump-de-nghi-ban-vu-khi-cho-trung-quoc-18526092809451037.htm",
        "publishedAt": "2026-09-28T02:55:00.000Z",
+       "activeEvents": [
+        "01a0d176-5d58-771d-811d-3201b483f2d9",
+        "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+        "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+        "01a0e257-82a7-7221-94ce-6f38cf80692a",
+        "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
+        "01a0e755-6e23-70e2-848e-013f32f5a0ed"
+       ]
+      }
+     ]
+    },
+    {
+     "claimId": "01a0ec19-bb72-7e31-9fa1-2f9ea7cac53e",
+     "claimKey": "trung_quoc_va_hoa_ky|consensus_points",
+     "predicate": "consensus_points",
+     "subjectKey": null,
+     "value": "8 điểm",
+     "unit": "điểm",
+     "state": "reported",
+     "changeType": "initial",
+     "currentClaimVersionId": "01a0ec19-bc49-7f0c-80a8-b9f4e7b01226",
+     "materialityAssessmentId": null,
+     "materiality": null,
+     "standingPos": "{\"v\":\"8 điểm\",\"u\":\"điểm\"}",
+     "standingEvidence": [
+      {
+       "documentId": "01a0e310-42f0-7bf6-9109-726d28170c6c",
+       "evidenceVersionId": "01a0e310-44c8-78dc-a7b4-e72f8815f9a9",
+       "title": "Trung Quốc và Hoa Kỳ đạt đồng thuận tám điểm, bao gồm đối thoại AI và thương mại",
+       "source": "RFI",
+       "url": "https://www.rfi.fr/vi/qu%E1%BB%91c-t%E1%BA%BF/20260927-trung-qu%E1%BB%91c-v%C3%A0-hoa-k%E1%BB%B3-%C4%91%E1%BA%A1t-%C4%91%E1%BB%93ng-thu%E1%BA%ADn-t%C3%A1m-%C4%91i%E1%BB%83m-bao-g%E1%BB%93m-%C4%91%E1%BB%91i-tho%E1%BA%A1i-ai-v%C3%A0-th%C6%B0%C6%A1ng-m%E1%BA%A1i",
+       "publishedAt": "2026-09-27T12:55:29.000Z",
+       "activeEvents": [
+        "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
+        "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+        "01a0e257-82a7-7221-94ce-6f38cf80692a",
+        "01a0e755-6e23-70e2-848e-013f32f5a0ed"
+       ]
+      }
+     ]
+    },
+    {
+     "claimId": "01a0ec19-c07e-7b6d-9a86-06f6d2bd8e56",
+     "claimKey": "donald_trump|arms_sale_offer",
+     "predicate": "arms_sale_offer",
+     "subjectKey": null,
+     "value": "Bắc Kinh",
+     "unit": null,
+     "state": "disputed",
+     "changeType": "disputed",
+     "currentClaimVersionId": "01a0ec19-cfa2-7faa-93de-c60afdc35620",
+     "materialityAssessmentId": null,
+     "materiality": null,
+     "standingPos": "{\"v\":\"Bắc Kinh\",\"u\":null}",
+     "standingEvidence": [
+      {
+       "documentId": "01a0e7ca-f006-7b46-adb3-f44e5324f5ed",
+       "evidenceVersionId": "01a0e7ca-f177-775e-ae61-d20cdd301754",
+       "title": "Đại sứ Mỹ tại Trung Quốc tiết lộ: Tổng thống Trump đề nghị bán vũ khí cho Bắc Kinh",
+       "source": "RFI",
+       "url": "https://www.rfi.fr/vi/qu%E1%BB%91c-t%E1%BA%BF/20260928-%C4%91%E1%BA%A1i-s%E1%BB%A9-m%E1%BB%B9-t%E1%BA%A1i-trung-qu%E1%BB%91c-ti%E1%BA%BFt-l%E1%BB%99-t%E1%BB%95ng-th%E1%BB%91ng-trump-%C4%91%E1%BB%81-ngh%E1%BB%8B-b%C3%A1n-v%C5%A9-kh%C3%AD-cho-b%E1%BA%AFc-kinh",
+       "publishedAt": "2026-09-28T11:12:11.000Z",
+       "activeEvents": [
+        "01a0e257-82a7-7221-94ce-6f38cf80692a",
+        "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
+        "01a0e755-6e23-70e2-848e-013f32f5a0ed"
+       ]
+      }
+     ]
+    },
+    {
+     "claimId": "01a0ec19-d3d6-7bef-8a98-ca053ac9352a",
+     "claimKey": "nha_trang|deny_arms_offer",
+     "predicate": "deny_arms_offer",
+     "subjectKey": null,
+     "value": "phủ nhận",
+     "unit": null,
+     "state": "reported",
+     "changeType": "initial",
+     "currentClaimVersionId": "01a0ec19-d4ad-772c-9768-c11c6565e808",
+     "materialityAssessmentId": null,
+     "materiality": null,
+     "standingPos": "{\"v\":\"phủ nhận\",\"u\":null}",
+     "standingEvidence": [
+      {
+       "documentId": "01a0e66f-8237-7615-a2c9-852e183d25fc",
+       "evidenceVersionId": "01a0e66f-8400-711a-86cb-47a564e204c5",
+       "title": "Ông Trump đề nghị bán vũ khí cho Trung Quốc?",
+       "source": "Thanh Niên",
+       "url": "https://thanhnien.vn/ong-trump-de-nghi-ban-vu-khi-cho-trung-quoc-18526092809451037.htm",
+       "publishedAt": "2026-09-28T02:55:00.000Z",
+       "activeEvents": [
+        "01a0d176-5d58-771d-811d-3201b483f2d9",
+        "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+        "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+        "01a0e257-82a7-7221-94ce-6f38cf80692a",
+        "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
+        "01a0e755-6e23-70e2-848e-013f32f5a0ed"
+       ]
+      },
+      {
+       "documentId": "01a0e66f-9b2c-721f-ab69-3f4f7bf23183",
+       "evidenceVersionId": "01a0e66f-9cf5-7b15-bcc0-0a68d60899ee",
+       "title": "Thực hư việc ông Trump từng hỏi ông Tập &apos;có muốn mua vũ khí Mỹ hay không&apos;",
+       "source": "VietnamNet",
+       "url": "https://vietnamnet.vn/thuc-hu-viec-ong-trump-tung-hoi-ong-tap-co-muon-mua-vu-khi-my-hay-khong-2559472.html",
+       "publishedAt": "2026-09-28T04:10:45.000Z",
        "activeEvents": [
         "01a0d176-5d58-771d-811d-3201b483f2d9",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
@@ -221484,14 +222268,14 @@
   },
   {
    "eventId": "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
-   "eventVersionId": "01a0ebed-02bd-7ac2-bb22-775634490700",
+   "eventVersionId": "01a0ec1d-484e-7a03-b7ad-a95926ef3f09",
    "topic": "world",
    "status": "emerging",
    "title": "Iran không còn tin tưởng vào đàm phán với Mỹ",
    "mergePaths": {
     "distinctive_claim": 1,
     "entity": 2,
-    "generic_claim": 98,
+    "generic_claim": 101,
     "headline": 7,
     "rare_token": 16,
     "semantic_facet": 1,
@@ -224602,6 +225386,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e335-42c9-7cc7-9184-6588ec172c91",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
@@ -225236,6 +226021,7 @@
      "detached": false,
      "activeEvents": [
       "01a0d849-5fcc-72fe-ac8b-fff37c946a9b",
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
       "01a0e682-4589-715d-9e6d-64303e3a6713"
@@ -225273,6 +226059,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e335-42c9-7cc7-9184-6588ec172c91",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
@@ -225306,6 +226093,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
       "01a0e682-4589-715d-9e6d-64303e3a6713"
@@ -225323,6 +226111,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
       "01a0e682-4589-715d-9e6d-64303e3a6713"
@@ -225340,6 +226129,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
       "01a0e682-4589-715d-9e6d-64303e3a6713"
@@ -225375,6 +226165,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
       "01a0e682-4589-715d-9e6d-64303e3a6713"
@@ -225392,6 +226183,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
       "01a0e682-4589-715d-9e6d-64303e3a6713"
@@ -225540,6 +226332,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
       "01a0e682-4589-715d-9e6d-64303e3a6713"
@@ -227844,6 +228637,21 @@
      "activeEvents": [
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366"
      ]
+    },
+    {
+     "documentId": "01a0ec1c-2cd1-71da-b93d-66a77086d3ce",
+     "evidenceVersionId": "01a0ec1c-2e82-7e96-8427-07cc10b36a80",
+     "title": "Nga dồn dập tập kích, cỗ máy kinh tế của Ukraine rung lắc mạnh",
+     "source": "Dân Trí",
+     "url": "https://dantri.com.vn/the-gioi/nga-don-dap-tap-kich-co-may-kinh-te-cua-ukraine-rung-lac-manh-20260929111124530.htm",
+     "publishedAt": "2026-09-29T04:40:22.000Z",
+     "observedAt": "2026-09-29T07:41:04.501Z",
+     "attachedBy": "semantic",
+     "clusterScore": null,
+     "detached": false,
+     "activeEvents": [
+      "01a0e2aa-dc8e-7647-b6e2-42844c27e366"
+     ]
     }
    ],
    "claims": [
@@ -227983,7 +228791,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e2e3-4182-71b8-92aa-0d5671de759e",
-     "materialityAssessmentId": "01a0e8ab-1828-711a-b748-612e0a540fe2",
+     "materialityAssessmentId": "01a0e98e-be7b-7255-8055-bab2b2f8d3b8",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"hai lần thoát khỏi cuộc không kích của Mỹ\",\"u\":\"lần\"}",
      "standingEvidence": [
@@ -228077,7 +228885,7 @@
      "state": "disputed",
      "changeType": "value_changed",
      "currentClaimVersionId": "01a0eb76-7b6d-78c6-bc73-7317f2657624",
-     "materialityAssessmentId": "01a0ebe2-ad18-7033-a3c0-616c1ee9bf08",
+     "materialityAssessmentId": "01a0ebae-12ac-7d94-998f-735a5b1a5426",
      "materiality": "none",
      "standingPos": "{\"v\":2,\"u\":\"people\"}",
      "standingEvidence": [
@@ -229012,7 +229820,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e704-6ac0-7232-8756-14494b7a01a3",
-     "materialityAssessmentId": "01a0e8ad-1bd0-75a2-8f74-8cfb0a6546a4",
+     "materialityAssessmentId": "01a0e98e-f53a-70ed-94e0-2061edbffa59",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"trung tâm dữ liệu tại Kiev\",\"u\":null}",
      "standingEvidence": [
@@ -229170,7 +229978,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e72c-8eb6-7f25-bc36-31a39062ea3b",
-     "materialityAssessmentId": "01a0e8ad-5049-7e23-814d-9aceec6105cb",
+     "materialityAssessmentId": "01a0e98e-fa7a-7e6f-975e-c08e81da9a98",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"tập kích các trung tâm dữ liệu ở Kiev\",\"u\":null}",
      "standingEvidence": [
@@ -229211,6 +230019,7 @@
        "url": "https://thanhnien.vn/chuyen-gi-khien-han-quoc-yeu-cau-ukraine-xin-loi-185260928081024771.htm",
        "publishedAt": "2026-09-28T02:29:00.000Z",
        "activeEvents": [
+        "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
         "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
         "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
         "01a0e682-4589-715d-9e6d-64303e3a6713"
@@ -229346,7 +230155,7 @@
      "state": "corrected",
      "changeType": "corrected",
      "currentClaimVersionId": "01a0e7aa-056e-7f0f-a9c1-e21be9499b0c",
-     "materialityAssessmentId": "01a0e8ad-beba-73b8-af74-7766e340db99",
+     "materialityAssessmentId": "01a0e98e-effb-7c51-80c4-e82028b55413",
      "materiality": "unknown",
      "standingPos": "{\"v\":\"trung tâm dữ liệu tại Kiev\",\"u\":null}",
      "standingEvidence": [
@@ -230165,8 +230974,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebec-f2ea-7694-84c0-392db6b4f82d",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-2bee-7195-bd21-3b40e98e717a",
+     "materiality": "none",
      "standingPos": "{\"v\":2,\"u\":\"người\"}",
      "standingEvidence": [
       {
@@ -230193,8 +231002,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebec-f82f-7db1-8bae-a1311df62877",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-3614-70a6-8eb7-d51f06fbe6b7",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"hư hại cây cầu đường sắt và đường ray tại 3 địa điểm\",\"u\":null}",
      "standingEvidence": [
       {
@@ -230221,8 +231030,8 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0ebec-fd74-7116-8479-a48b1b48c932",
-     "materialityAssessmentId": null,
-     "materiality": null,
+     "materialityAssessmentId": "01a0ec0f-4033-7136-814f-446859b4d8da",
+     "materiality": "unknown",
      "standingPos": "{\"v\":\"dừng hoạt động sản xuất vô thời hạn\",\"u\":null}",
      "standingEvidence": [
       {
@@ -231133,6 +231942,7 @@
      "detached": false,
      "activeEvents": [
       "01a0dc10-2dd3-7268-9926-68bc0251d560",
+      "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
       "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
       "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
       "01a0e120-ef0d-7b1a-a5eb-1b8713bd0fb2",
@@ -231280,6 +232090,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e335-42c9-7cc7-9184-6588ec172c91",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
@@ -231806,6 +232617,7 @@
      "clusterScore": null,
      "detached": false,
      "activeEvents": [
+      "01a0dd05-d345-7aef-b5bd-e54ffd210f94",
       "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
       "01a0e335-42c9-7cc7-9184-6588ec172c91",
       "01a0e67a-be1e-7c01-a1d2-884ab75eed7f",
@@ -232655,6 +233467,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -232696,6 +233509,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -232733,6 +233547,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -232792,6 +233607,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -232953,6 +233769,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed"
      ]
@@ -233187,6 +234004,7 @@
       "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
       "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
       "01a0dda8-896b-781a-a190-3aa268980c4c",
+      "01a0e12d-6a26-74d8-9988-df71d4043801",
       "01a0e257-82a7-7221-94ce-6f38cf80692a",
       "01a0e755-6e23-70e2-848e-013f32f5a0ed",
       "01a0e889-0543-7fea-aca9-51843c3bce62"
@@ -234189,6 +235007,7 @@
         "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
         "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
         "01a0dda8-896b-781a-a190-3aa268980c4c",
+        "01a0e12d-6a26-74d8-9988-df71d4043801",
         "01a0e257-82a7-7221-94ce-6f38cf80692a",
         "01a0e755-6e23-70e2-848e-013f32f5a0ed"
        ]
@@ -235239,6 +236058,7 @@
      "activeEvents": [
       "01a0e1ab-f2b6-7f55-92f4-acd72e137419",
       "01a0e769-b127-76f7-a595-c270c6d9b100",
+      "01a0e7be-683e-7433-a550-177d8b9ea9bd",
       "01a0e8f8-6fbb-7964-be32-cc5eda9fabb3",
       "01a0ea9a-dfda-7673-a116-8f05b55aef5f"
      ]
@@ -235937,7 +236757,7 @@
      "state": "reported",
      "changeType": "initial",
      "currentClaimVersionId": "01a0e8c4-a1a0-762e-bd95-29c458e289d4",
-     "materialityAssessmentId": "01a0e8e7-61ca-7f64-984e-d932b79335f1",
+     "materialityAssessmentId": "01a0ebae-7fd0-71b1-a537-4c943559bffe",
      "materiality": "unknown",
      "standingPos": "{\"v\":17,\"u\":\"years\"}",
      "standingEvidence": [
@@ -236801,5 +237621,5 @@
    ]
   }
  ],
- "corpusHash": "6671585a95a4209e"
+ "corpusHash": "78de09b47f824195"
 }

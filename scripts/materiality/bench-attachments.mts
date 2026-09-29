@@ -4,10 +4,17 @@
  *   tests/fixtures/attachment-labels.json  (reviewed labels + proxies)
  * No impact figure is hand-computed.
  *
- * Metrics:
- *   - label distribution + cause-proxy/confidence distribution
- *   - level inflation: max(all-claim materiality) > max(on-story claims)
- *   - high-level foreign-only: event reaches ≥meaningful ONLY via
+ * Metrics (R7.1d.3a.2 vocabulary):
+ *   - label distribution + topology distribution + xlang overlap
+ *   - inflation split — `unknown` is abstention, NOT a level below
+ *     none, so it never counts as "inflation":
+ *       knownLevelInflation           clean claims have a level AND
+ *                                     foreign claims push max higher
+ *       foreignCreatesLimitedPlus     clean claims all abstain/unknown
+ *                                     but foreign claims score limited+
+ *       abstentionToNone              clean abstain + foreign = none
+ *                                     (reported, never "inflated")
+ *   - highLevelForeignOnly: event reaches ≥meaningful ONLY via
  *     misclustered claims
  *   - doc fanout of misclustered-claim docs (active event attachments):
  *     median / P90 / max
@@ -39,12 +46,15 @@ const corpusEvents = new Map<string, any>(
 
 let claimsTotal = 0;
 const labelDist: Record<string, number> = {};
-const causeDist: Record<string, number> = {};
-const confDist: Record<string, number> = {};
+const topoDist: Record<string, number> = {};
+const xlangByTopo: Record<string, number> = {};
 const fanouts = new Map<string, number>(); // docId → active event count
-let inflated = 0;
+let knownLevelInflation = 0;
+let foreignCreatesLimitedPlus = 0;
+let abstentionToNone = 0;
 let highForeignOnly = 0;
 const inflatedIds: string[] = [];
+const foreignSignalIds: string[] = [];
 const highForeignOnlyIds: string[] = [];
 
 for (const ev of labels.events) {
@@ -62,19 +72,26 @@ for (const ev of labels.events) {
     allMax = Math.max(allMax, r);
     if (lab !== "misclustered") cleanMax = Math.max(cleanMax, r);
     else {
-      const proxy = ev.causeProxies[cl.claimId];
-      const conf = ev.causeConfidence[cl.claimId];
-      if (!proxy)
-        throw new Error(`misclustered claim ${cl.claimId} has no causeProxy`);
-      causeDist[proxy] = (causeDist[proxy] ?? 0) + 1;
-      confDist[conf] = (confDist[conf] ?? 0) + 1;
+      const topo = ev.topology?.[cl.claimId];
+      if (!topo)
+        throw new Error(`misclustered claim ${cl.claimId} has no topology`);
+      topoDist[topo] = (topoDist[topo] ?? 0) + 1;
+      if ((ev.xlang as string[]).includes(cl.claimId))
+        xlangByTopo[topo] = (xlangByTopo[topo] ?? 0) + 1;
       for (const d of cl.standingEvidence)
         fanouts.set(d.documentId, d.activeEvents.length);
     }
   }
-  if (allMax > cleanMax) {
-    inflated++;
+  /* inflation split — `unknown` is abstention, not a level below none.
+   * Only a KNOWN clean max out-ranked by foreign claims is inflation. */
+  if (cleanMax >= 0 && allMax > cleanMax) {
+    knownLevelInflation++;
     inflatedIds.push(ev.eventId);
+  } else if (cleanMax < 0 && allMax >= rank("limited")) {
+    foreignCreatesLimitedPlus++;
+    foreignSignalIds.push(ev.eventId);
+  } else if (cleanMax < 0 && allMax === rank("none")) {
+    abstentionToNone++;
   }
   if (allMax >= rank("meaningful") && cleanMax < rank("meaningful")) {
     highForeignOnly++;
@@ -106,9 +123,13 @@ console.log(
       events: labels.events.length,
       claims: claimsTotal,
       labelDist,
-      causeProxyDist: causeDist,
-      causeConfidenceDist: confDist,
-      inflatedEvents: inflated,
+      topologyDist: topoDist,
+      xlangOverlap: xlangByTopo,
+      xlangTotal: labels.xlangCount,
+      contentOverrideTotal: labels.contentOverrideCount,
+      knownLevelInflation,
+      foreignCreatesLimitedPlus,
+      abstentionToNone,
       highLevelForeignOnly: highForeignOnly,
       misclusteredDocFanout: {
         docs: fanouts.size,
@@ -123,7 +144,14 @@ console.log(
     2,
   ),
 );
-console.log("\ninflated:", inflatedIds.map((s) => s.slice(0, 13)).join(" "));
+console.log(
+  "\nknownLevelInflation:",
+  inflatedIds.map((s) => s.slice(0, 13)).join(" "),
+);
+console.log(
+  "foreignCreatesLimitedPlus:",
+  foreignSignalIds.map((s) => s.slice(0, 13)).join(" "),
+);
 console.log(
   "highForeignOnly:",
   highForeignOnlyIds.map((s) => s.slice(0, 13)).join(" "),

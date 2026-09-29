@@ -4,6 +4,7 @@
  * never computes "what changed" itself — changes arrive pre-computed.
  */
 
+import type pg from "pg";
 import type { Pool } from "pg";
 import { getPool } from "./pool";
 import {
@@ -217,13 +218,16 @@ export function effectiveRoots(
   };
 }
 
-/** Latest lineage edge per child doc — shared by view + batch paths. */
+/** Latest lineage edge per child doc — shared by view + batch paths.
+ *  `db` lets callers inside a transaction keep lineage reads inside the
+ *  same snapshot; default is the global pool. */
 export async function latestLineage(
   docIds: string[],
+  db: Pick<pg.Pool | pg.PoolClient, "query"> = getPool(),
 ): Promise<Map<string, LinEdge>> {
   const latestLin = new Map<string, LinEdge>();
   if (!docIds.length) return latestLin;
-  const linR = await getPool().query<{
+  const linR = await db.query<{
     child_document_id: string;
     parent_document_id: string | null;
     relation: string;

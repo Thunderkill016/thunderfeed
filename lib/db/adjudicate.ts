@@ -143,8 +143,9 @@ export async function resolveOriginSources(
   );
   const srcOf = new Map(docs.map((d) => [d.doc_id, d.source_id]));
   /* lineage closure — roots may sit outside this doc set; fetch their
-   * source ids too so votes resolve to the true origin */
-  const latestLin = await latestLineage(docIds);
+   * source ids too so votes resolve to the true origin. Reads stay on
+   * the caller's client so a transactional snapshot is never violated. */
+  const latestLin = await latestLineage(docIds, client);
   let frontier = [
     ...new Set(
       [...latestLin.values()]
@@ -164,7 +165,7 @@ export async function resolveOriginSources(
     );
     if (!extra.length) break;
     for (const d of extra) srcOf.set(d.doc_id, d.source_id);
-    const next = await latestLineage(frontier);
+    const next = await latestLineage(frontier, client);
     for (const [k, v] of next) if (!latestLin.has(k)) latestLin.set(k, v);
     frontier = [
       ...new Set(

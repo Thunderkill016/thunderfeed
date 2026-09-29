@@ -30,6 +30,14 @@ const pool = new pg.Pool({
  * point the db layer at the same prod pool so every read is consistent */
 injectPool(pool);
 
+/* R7.1d.3a.2 — the whole corpus is ONE point-in-time snapshot. Prod has
+ * scheduled writers; without a REPEATABLE READ tx the corpus could mix
+ * claim pointers at t0, evidence at t1 and resolver telemetry at t2 —
+ * and the semantic hash would certify a state the DB never had. Every
+ * query below runs on this client inside the same snapshot. */
+const client = await pool.connect();
+await client.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
+
 // ── event selection: reviewed ∪ high-FP ∪ giant clusters ∪ clean controls ──
 const labels = JSON.parse(
   readFileSync("tests/fixtures/materiality-events-labels.json", "utf8"),
@@ -42,7 +50,7 @@ const hifp = labels
   .map((e) => e.eventId);
 
 const giants = (
-  await pool.query(
+  await client.query(
     `SELECT c.event_id::text id, count(*)::int n
        FROM claims c JOIN events e ON e.id = c.event_id
       WHERE e.status NOT IN ('merged','archived')
@@ -50,7 +58,7 @@ const giants = (
   )
 ).rows.map((r) => r.id);
 const controls = (
-  await pool.query(
+  await client.query(
     `SELECT c.event_id::text id, count(*)::int n
        FROM claims c JOIN events e ON e.id = c.event_id
       WHERE e.status NOT IN ('merged','archived')
@@ -66,14 +74,14 @@ console.log(
 
 // ── dump ──
 const ph = eventIds.map((_, i) => `$${i + 1}`).join(",");
-const { rows: evs } = await pool.query(
+const { rows: evs } = await client.query(
   `SELECT e.id::text, e.topic, e.status::text,
           e.current_version_id::text AS event_version_id, ev.title
      FROM events e LEFT JOIN event_versions ev ON ev.id = e.current_version_id
     WHERE e.id IN (${ph}) ORDER BY e.id`,
   eventIds,
 );
-const { rows: claims } = await pool.query(
+const { rows: claims } = await client.query(
   `SELECT c.id::text, c.event_id::text, c.claim_key, c.predicate,
           c.subject_entity_id::text, ent.canonical_key AS subject_key,
           c.current_version_id::text AS current_version_id,
@@ -93,7 +101,7 @@ const { rows: claims } = await pool.query(
  * latest-per-origin votes on the standing position across ALL claim
  * versions; votes whose latest assertion moved elsewhere are excluded. */
 const standingByClaim = await standingEvidenceByClaim(
-  pool,
+  client,
   claims.map((c) => c.id),
 );
 const standingEvIds = [
@@ -106,7 +114,7 @@ const standingEvIds = [
 
 // event-level evidence snapshot — every doc attached to a corpus event,
 // detached edges kept visible (detached=true) but never counted active
-const { rows: eventDocs } = await pool.query(
+const { rows: eventDocs } = await client.query(
   `SELECT ee.event_id::text, ee.evidence_version_id::text AS ev_id,
           ev.document_id::text AS doc_id, ev.title AS doc_title,
           s.name AS source, ed.canonical_url, ed.published_at,
@@ -124,7 +132,7 @@ const { rows: eventDocs } = await pool.query(
  * the corpus (standing ∪ event-level). Detached edges never count — a
  * doc detached elsewhere is not "sprayed" there. */
 const { rows: standingDocRows } = standingEvIds.length
-  ? await pool.query(
+  ? await client.query(
       `SELECT DISTINCT ev.document_id::text AS doc_id
          FROM evidence_versions ev
         WHERE ev.id IN (${standingEvIds.map((_, i) => `$${i + 1}`).join(",")})`,
@@ -138,7 +146,7 @@ const allDocIds = [
   ]),
 ];
 const { rows: docMeta } = allDocIds.length
-  ? await pool.query(
+  ? await client.query(
       `SELECT ed.id::text AS doc_id, ev.id::text AS ev_id, ev.title AS doc_title,
               s.name AS source, ed.canonical_url, ed.published_at, ev.observed_at
          FROM evidence_versions ev
@@ -150,7 +158,7 @@ const { rows: docMeta } = allDocIds.length
     )
   : { rows: [] };
 const { rows: fanout } = allDocIds.length
-  ? await pool.query(
+  ? await client.query(
       `SELECT DISTINCT v.document_id::text AS doc_id,
               ee.event_id::text AS event_id
          FROM event_evidence ee
@@ -173,7 +181,7 @@ for (const v of activeEventsByDoc.values()) v.sort();
 const byEvId = new Map<string, (typeof docMeta)[number]>();
 for (const m of docMeta) if (!byEvId.has(m.ev_id)) byEvId.set(m.ev_id, m);
 
-const { rows: mergeRows } = await pool.query(
+const { rows: mergeRows } = await client.query(
   `SELECT chosen_event_id::text AS event_id, path, count(*)::int n
      FROM resolver_decisions
     WHERE chosen_event_id IN (${ph}) AND decision = 'merge'
@@ -278,4 +286,6 @@ console.log(
   `events=${corpus.events.length} claims=${totalClaims} standingDocs=${standingDocs} corpusHash=${corpusHash}`,
 );
 console.log("wrote tests/fixtures/attachment-corpus.json");
+await client.query("COMMIT");
+client.release();
 await pool.end();

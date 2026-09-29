@@ -182,7 +182,7 @@ async function claimEvidenceStats(
   const edges = new Map<string, { parent: string | null; relation: string }>();
   let frontier = evDocIds;
   for (let depth = 0; depth < 8 && frontier.length; depth++) {
-    const lin = await latestLineage(frontier);
+    const lin = await latestLineage(frontier, client);
     const next = new Set<string>();
     for (const [child, e] of lin) {
       edges.set(child, e);
