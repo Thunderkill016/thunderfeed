@@ -31,6 +31,7 @@ import {
   type Vote,
 } from "./positions";
 import { finishJob, pendingDirtyClaims, startJob, updateJob } from "./jobs";
+import { enqueueEventOnClaimAssessmentChange } from "./event-materiality";
 import {
   scoreClaimMateriality,
   type ClaimMaterialityAssessment,
@@ -465,6 +466,18 @@ export async function publishClaimAssessment(
     }
     if (!assessmentId) throw new Error("assessment insert+lookup both failed");
 
+    /* claim → event handoff (R7.1d.2): the parent event's input set is
+     * (claim → current assessment) pairs, so it changes exactly when the
+     * projection's assessment_id moves. Compare before/after INSIDE this
+     * transaction and dirty the event atomically — a generation bump that
+     * replays to the same assessment mints no event work. */
+    const { rows: prevProj } = await c.query<{ a: string }>(
+      `SELECT assessment_id AS a FROM claim_materiality_current
+        WHERE claim_id = $1`,
+      [work.claimId],
+    );
+    const prevAssessmentId = prevProj[0]?.a ?? null;
+
     // 4) CAS projection — a lower generation can never overwrite a
     //    higher one even if it somehow reached this point. The dirty-row
     //    ack above serializes publishers for this claim, so UPDATE-miss
@@ -503,6 +516,24 @@ export async function publishClaimAssessment(
           work.generation,
         ],
       );
+
+    /* event dirty iff the projection's assessment actually moved. The
+     * CAS above may have lost to a newer committed generation — re-read
+     * the row post-write so we enqueue only on a real id transition
+     * (null→A first publish, A→B semantic change; A→A replay: silent). */
+    const { rows: nextProj } = await c.query<{ a: string }>(
+      `SELECT assessment_id AS a FROM claim_materiality_current
+        WHERE claim_id = $1`,
+      [work.claimId],
+    );
+    if (nextProj[0] && nextProj[0].a !== prevAssessmentId) {
+      await enqueueEventOnClaimAssessmentChange(
+        c,
+        work.claimId,
+        prevAssessmentId,
+        nextProj[0].a,
+      );
+    }
 
     await c.query("COMMIT");
     return { status: "published", assessmentId, reused };

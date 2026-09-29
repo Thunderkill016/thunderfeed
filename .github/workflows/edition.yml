@@ -46,6 +46,13 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
         run: npx tsx scripts/materiality/drain-claims.mts
+      # event materiality consumes the claim drain's own output — the
+      # order claim-drain → event-drain is mandatory: the claim drain is
+      # this queue's producer.
+      - name: Drain event materiality (backlog)
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/materiality/drain-events.mts
       - name: Build edition → Postgres
         env:
           DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
@@ -79,6 +86,10 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
         run: npx tsx scripts/materiality/drain-claims.mts
+      - name: Drain event materiality
+        env:
+          DATABASE_URL: ${{ secrets.TF_DATABASE_URL }}
+        run: npx tsx scripts/materiality/drain-events.mts
       # Telegram alerts disabled — every-30-min pushes were spam. The
       # alerts:telegram script stays; re-enable by restoring this step
       # when delivery is redesigned as an interruption-budgeted digest.
