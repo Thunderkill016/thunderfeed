@@ -112,6 +112,13 @@ const ENTITY_SIG_FLOOR = 0.2;
 /** ≥2 shared entities + Jaccard ≥ 0.6 merges even with no shared tokens */
 const ENTITY_STRONG_SHARED = 2;
 const ENTITY_STRONG_SIM = 0.6;
+/** measured bands (semantic-dist.json): diff max 0.861, xlang diff max
+ *  0.675 — a strong cosine alone merges; a medium cosine needs an
+ *  entity/claim anchor; the facet band pins one storyline under a hub */
+const SEMANTIC_STRONG = 0.87;
+const SEMANTIC_XLANG = 0.78;
+const SEMANTIC_ANCHORED = 0.72;
+const SEMANTIC_FACET = 0.77;
 
 /**
  * Geographic entities name a beat, never an event — every VN outlet
@@ -364,6 +371,30 @@ const INCIDENT_SCOPED = new Set([
   "flights_cancelled",
   "magnitude",
 ]);
+
+/**
+ * Frozen snapshot of every merge-path threshold — persisted inside each
+ * attachment's provenance explanation so a later counterfactual replay
+ * knows exactly which bars the decision had to clear. Values mirror the
+ * constants above; changing a constant without updating this record
+ * makes stored explanations lie.
+ */
+export const RESOLVER_THRESHOLDS = {
+  mergeJaccard: MERGE_JACCARD,
+  mergeClaimOverlap: MERGE_CLAIM_OVERLAP,
+  genericSigFloor: GENERIC_SIG_FLOOR,
+  entitySigFloor: ENTITY_SIG_FLOOR,
+  entityStrongShared: ENTITY_STRONG_SHARED,
+  entityStrongSim: ENTITY_STRONG_SIM,
+  rareSigFloor: RARE_SIG_FLOOR,
+  hubSigFloor: HUB_SIG_FLOOR,
+  hubSingleSigFloor: HUB_SINGLE_SIG_FLOOR,
+  personSigFloor: PERSON_SIG_FLOOR,
+  semanticStrong: SEMANTIC_STRONG,
+  semanticXlang: SEMANTIC_XLANG,
+  semanticAnchored: SEMANTIC_ANCHORED,
+  semanticFacet: SEMANTIC_FACET,
+} as const;
 
 /* ------------------------------ primitives -------------------------------- */
 
@@ -701,21 +732,24 @@ export function decide(
   // — semantic path: a strong cosine alone merges; a medium cosine needs
   //   an entity/claim anchor (dense+sparse+entity > any one signal) —
   if (semantic !== undefined && !entityBlocked && !strictNumConflict) {
-    // measured bands (semantic-dist.json): diff max 0.861, xlang diff max 0.675
-    if (semantic >= 0.87)
+    if (semantic >= SEMANTIC_STRONG)
       return merge(
         "semantic_strong",
         semantic,
-        `cosine ${semantic.toFixed(2)} ≥ 0.87, no contradiction`,
+        `cosine ${semantic.toFixed(2)} ≥ ${SEMANTIC_STRONG}, no contradiction`,
       );
-    if (!f.sameLanguage && semantic >= 0.78 && f.sharedEntities.length >= 1)
+    if (
+      !f.sameLanguage &&
+      semantic >= SEMANTIC_XLANG &&
+      f.sharedEntities.length >= 1
+    )
       return merge(
         "semantic_xlang",
         semantic,
         `cosine ${semantic.toFixed(2)} cross-language + shared entity`,
       );
     if (
-      semantic >= 0.72 &&
+      semantic >= SEMANTIC_ANCHORED &&
       (f.nonHubSharedCore.length > 0 ||
         personShared ||
         f.distinctiveClaimOverlap >= MERGE_CLAIM_OVERLAP ||
@@ -733,7 +767,11 @@ export function decide(
     // is a beat, not an event; together + strong cosine they pin one
     // storyline. Diff ceiling for bigram+core pairs is 0.727 — floor
     // keeps a margin below the ambiguous band's merge examples.
-    if (semantic >= 0.77 && f.sharedBigrams.length > 0 && coreShared.length > 0)
+    if (
+      semantic >= SEMANTIC_FACET &&
+      f.sharedBigrams.length > 0 &&
+      coreShared.length > 0
+    )
       return merge(
         "semantic_facet",
         semantic,
@@ -788,7 +826,7 @@ export function decide(
 
   // — ambiguous band: real signal present but below merge bars —
   const borderline =
-    semantic !== undefined && semantic >= 0.72 && !entityBlocked;
+    semantic !== undefined && semantic >= SEMANTIC_ANCHORED && !entityBlocked;
   if (borderline)
     return {
       decision: "ambiguous",

@@ -35,6 +35,7 @@ import {
   eventRepText,
   repHash,
   RESOLVER_MAX_WINDOW_HOURS,
+  RESOLVER_THRESHOLDS,
   eventSignature,
   type CandidateSide,
   type IncomingSide,
@@ -842,6 +843,22 @@ export interface ResolverEval {
   decision: ResolverDecision;
 }
 
+/**
+ * The ONE decision that attached this cluster's docs — every
+ * event_attachment_provenance edge of the cluster points at it. On a
+ * merge this is the winning candidate eval; on event creation the
+ * synthetic 'create' decision. `candidateSignature*` capture the
+ * candidate's entity signature BEFORE the merge accumulated the
+ * incoming signature into it (signature-poisoning forensics).
+ */
+export interface AttachmentDecision {
+  eval: ResolverEval | null;
+  candidateSignature: string | null;
+  candidateSignatureCore: string | null;
+  /** incoming cluster's rep vector was embedded — semantic paths armed */
+  semanticAvailable: boolean;
+}
+
 type CandidateRow = {
   id: string;
   signature: string;
@@ -1042,7 +1059,11 @@ async function resolveEvent(
      *  network call when set */
     incEmbedding?: number[];
   } = {},
-): Promise<{ ref: EventRef; evals: ResolverEval[] }> {
+): Promise<{
+  ref: EventRef;
+  evals: ResolverEval[];
+  attach: AttachmentDecision;
+}> {
   const prepared = await prepareResolve(client, cluster, claims);
   const { inc, sides } = prepared;
   const signature = inc.signature;
@@ -1062,6 +1083,7 @@ async function resolveEvent(
   }
 
   let best: CandidateRow | null = null;
+  let bestEval: ResolverEval | null = null;
   let bestScore = 0;
   for (const { row: c, cand } of sides) {
     const d = decide(inc, cand);
@@ -1081,6 +1103,7 @@ async function resolveEvent(
     ) {
       bestScore = d.score;
       best = c;
+      bestEval = evals[evals.length - 1];
     }
   }
 
@@ -1117,6 +1140,14 @@ async function resolveEvent(
         created: false,
       },
       evals,
+      // best.entity_signature(_core) still holds the PRE-merge value —
+      // the UPDATE above already ran but the in-memory row is untouched
+      attach: {
+        eval: bestEval,
+        candidateSignature: best.entity_signature,
+        candidateSignatureCore: best.entity_signature_core,
+        semanticAvailable: inc.embedding !== undefined,
+      },
     };
   }
   return {
@@ -1131,6 +1162,12 @@ async function resolveEvent(
       importance: cluster.significanceScore,
     }),
     evals,
+    attach: {
+      eval: null,
+      candidateSignature: null,
+      candidateSignatureCore: null,
+      semanticAvailable: inc.embedding !== undefined,
+    },
   };
 }
 
@@ -1178,6 +1215,91 @@ async function attachEvidence(
     ],
   );
   return true;
+}
+
+/* ------------------ step: attachment provenance (R7.1d.3b.1) ---------- */
+
+/**
+ * Doc-level resolver audit edge — one row per (event, evidence_version)
+ * attachment linking to the resolver_decisions row that created it.
+ * Written on the SAME client/tx as the event_evidence edge by
+ * persistCluster; a resurrected edge appends a fresh provenance row
+ * (re-attachment is a new attachment event, the audit keeps both).
+ * Failure policy matches resolver_decisions: telemetry never breaks
+ * persistence.
+ */
+interface AttachProvenanceCtx {
+  decisionId: string | null;
+  decision: string;
+  path: string;
+  incomingCluster: string;
+  candidateEventId: string | null;
+  score: number | null;
+  lexicalScore: number | null;
+  entityScore: number | null;
+  genericClaimOverlap: number | null;
+  rareTokens: string[];
+  sharedEntities: string[];
+  sharedNonhubEntities: string[];
+  crossLanguage: boolean | null;
+  candidateSignatureHashBefore: string | null;
+  candidateEntityCountBefore: number | null;
+  candidateCoreEntityCountBefore: number | null;
+  explanation: Record<string, unknown>;
+}
+
+async function attachProvenanceRow(
+  client: PoolClient,
+  eventId: string,
+  evidenceVersionId: string,
+  p: AttachProvenanceCtx,
+): Promise<void> {
+  // a null decisionId means the resolver_decisions insert itself failed
+  // (telemetry must never break persistence) — no FK target, no edge
+  if (!p.decisionId) return;
+  await client
+    .query(
+      `INSERT INTO event_attachment_provenance
+         (event_id, evidence_version_id, resolver_decision_id, decision,
+          path, incoming_cluster, candidate_event_id, score,
+          lexical_score, entity_score, generic_claim_overlap,
+          rare_token_count, rare_tokens,
+          shared_entity_count, shared_entities,
+          shared_nonhub_entity_count, shared_nonhub_entities,
+          cross_language,
+          candidate_signature_hash_before, candidate_entity_count_before,
+          candidate_core_entity_count_before, explanation)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+               $13::jsonb, $14, $15::jsonb, $16, $17::jsonb, $18,
+               $19, $20, $21, $22::jsonb)
+       ON CONFLICT (event_id, evidence_version_id, resolver_decision_id)
+       DO NOTHING`,
+      [
+        eventId,
+        evidenceVersionId,
+        p.decisionId,
+        p.decision,
+        p.path,
+        p.incomingCluster,
+        p.candidateEventId,
+        p.score,
+        p.lexicalScore,
+        p.entityScore,
+        p.genericClaimOverlap,
+        p.rareTokens.length,
+        toJsonb(p.rareTokens),
+        p.sharedEntities.length,
+        toJsonb(p.sharedEntities),
+        p.sharedNonhubEntities.length,
+        toJsonb(p.sharedNonhubEntities),
+        p.crossLanguage,
+        p.candidateSignatureHashBefore,
+        p.candidateEntityCountBefore,
+        p.candidateCoreEntityCountBefore,
+        toJsonb(p.explanation),
+      ],
+    )
+    .catch(() => {});
 }
 
 /* ------------------------------ step: claims ----------------------------- */
@@ -1935,15 +2057,51 @@ export async function persistCluster(
     }
 
     // 2) event identity — claims join the merge decision (value-aware)
-    const { ref: evRef, evals: resolverEvals } = await resolveEvent(
-      client,
-      cluster,
-      claims,
-      { embedder: opts.embedder, incEmbedding },
-    );
+    const {
+      ref: evRef,
+      evals: resolverEvals,
+      attach: attachDecision,
+    } = await resolveEvent(client, cluster, claims, {
+      embedder: opts.embedder,
+      incEmbedding,
+    });
     const { eventId, created } = evRef;
 
     // 2b) resolver telemetry — auditable pair-level decisions.
+    // The decision that attached this cluster's docs is written FIRST
+    // with RETURNING so every attachment edge can FK to it
+    // (event_attachment_provenance). On a merge that is the winning
+    // candidate eval; on event creation a synthetic decision='create'
+    // row gives founding docs an explicit path=create_new_event anchor
+    // instead of the generic attached_by='semantic'.
+    const attachEval = attachDecision.eval;
+    const attachDecIns = await client
+      .query<{ id: string }>(
+        `INSERT INTO resolver_decisions
+           (incoming_cluster, candidate_event_id, chosen_event_id,
+            decision, path, score, reasons, hard_blocks, features,
+            semantic_available)
+         VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb, $9::jsonb,
+                 $10)
+         RETURNING id`,
+        [
+          cluster.id,
+          attachEval?.candidateId ?? null,
+          eventId,
+          created ? "create" : (attachEval?.decision.decision ?? "split"),
+          created
+            ? "create_new_event"
+            : (attachEval?.decision.path ?? "no_path"),
+          attachEval?.decision.score ?? null,
+          toJsonb(attachEval?.decision.reasons ?? []),
+          toJsonb(attachEval?.decision.hardBlocks ?? []),
+          toJsonb(attachEval?.decision.features ?? {}),
+          attachDecision.semanticAvailable,
+        ],
+      )
+      .catch(() => null);
+    const attachDecisionId = attachDecIns?.rows[0]?.id ?? null;
+
     // Volume control: routine `split` evals are dropped (99.5% of rows,
     // ~650k/day blew the Supabase disk quota and forced the DB read-only).
     // A split's score is max(sigSim, entitySim, claimOverlap, semantic) —
@@ -1952,7 +2110,12 @@ export async function persistCluster(
     // merges, ambiguous calls, splits ≥0.9 (contradictory near-merges),
     // splits ≥0.7 not entity-blocked. Features stripped on splits — the
     // heavy jsonb — merges/ambiguous keep the full audit trail.
-    if (resolverEvals.length) {
+    // The winning eval is already persisted above — the bulk insert
+    // carries the remaining pair evals only.
+    const restEvals = attachEval
+      ? resolverEvals.filter((e) => e.candidateId !== attachEval.candidateId)
+      : resolverEvals;
+    if (restEvals.length) {
       const json = toJsonb;
       await client
         .query(
@@ -1975,20 +2138,54 @@ export async function persistCluster(
           [
             cluster.id,
             eventId,
-            resolverEvals.map((e) => e.candidateId),
-            resolverEvals.map((e) => e.decision.decision),
-            resolverEvals.map((e) => e.decision.path),
-            resolverEvals.map((e) => e.decision.score ?? null),
-            resolverEvals.map((e) => json(e.decision.reasons)),
-            resolverEvals.map((e) => json(e.decision.hardBlocks)),
-            resolverEvals.map((e) => json(e.decision.features ?? {})),
-            resolverEvals.map(
+            restEvals.map((e) => e.candidateId),
+            restEvals.map((e) => e.decision.decision),
+            restEvals.map((e) => e.decision.path),
+            restEvals.map((e) => e.decision.score ?? null),
+            restEvals.map((e) => json(e.decision.reasons)),
+            restEvals.map((e) => json(e.decision.hardBlocks)),
+            restEvals.map((e) => json(e.decision.features ?? {})),
+            restEvals.map(
               (e) => e.decision.features?.semanticSimilarity !== undefined,
             ),
           ],
         )
         .catch(() => {}); // telemetry must never break persistence
     }
+
+    // 2c) doc-level attachment provenance — the same explanation frozen
+    //     for every doc this cluster attaches (spec R7.1d.3b.1)
+    const provFeatures = attachEval?.decision.features ?? null;
+    const attachProvenance = {
+      decisionId: attachDecisionId,
+      decision: created ? "create" : "merge",
+      path: created
+        ? "create_new_event"
+        : (attachEval?.decision.path ?? "no_path"),
+      incomingCluster: cluster.id,
+      candidateEventId: attachEval?.candidateId ?? null,
+      score: attachEval?.decision.score ?? null,
+      lexicalScore: provFeatures?.lexicalSimilarity ?? null,
+      entityScore: provFeatures?.entitySimilarity ?? null,
+      genericClaimOverlap: provFeatures?.genericClaimOverlap ?? null,
+      rareTokens: provFeatures?.sharedRareTokens ?? [],
+      sharedEntities: provFeatures?.sharedEntities ?? [],
+      sharedNonhubEntities: provFeatures?.nonHubSharedCore ?? [],
+      crossLanguage: provFeatures ? !provFeatures.sameLanguage : null,
+      // pre-merge candidate signature — the union UPDATE in resolveEvent
+      // already ran; these are what the resolver actually evaluated
+      candidateSignatureHashBefore: attachDecision.candidateSignature
+        ? repHash(attachDecision.candidateSignature)
+        : null,
+      candidateEntityCountBefore: attachDecision.candidateSignature
+        ? attachDecision.candidateSignature.split(" ").filter(Boolean).length
+        : null,
+      candidateCoreEntityCountBefore: attachDecision.candidateSignatureCore
+        ? attachDecision.candidateSignatureCore.split(" ").filter(Boolean)
+            .length
+        : null,
+      explanation: { ...(provFeatures ?? {}), thresholds: RESOLVER_THRESHOLDS },
+    };
 
     // 3) membership edges — one event_evidence row per DOCUMENT
     const newEvidence: {
@@ -2017,6 +2214,7 @@ export async function persistCluster(
         })
       ) {
         attached++;
+        await attachProvenanceRow(client, eventId, evId, attachProvenance);
         if (!isOrigin)
           newEvidence.push({
             evId,

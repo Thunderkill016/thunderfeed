@@ -26,8 +26,9 @@ const pool = new pg.Pool({
   connectionString: url,
   ssl: { rejectUnauthorized: false },
 });
-/* the shared accessor resolves lineage through getPool() internally —
- * point the db layer at the same prod pool so every read is consistent */
+/* the db layer is pointed at this prod pool so helper reads that DO use
+ * getPool() resolve here; the tx client below is still threaded through
+ * every read explicitly (latestLineage honours the caller's client) */
 injectPool(pool);
 
 /* R7.1d.3a.2 — the whole corpus is ONE point-in-time snapshot. Prod has
