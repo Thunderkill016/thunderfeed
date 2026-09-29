@@ -21,15 +21,9 @@
  */
 import { createHash } from "node:crypto";
 import type pg from "pg";
-import { getPool, toJsonb } from "./pool";
+import { getPool } from "./pool";
 import { effectiveRoots, latestLineage } from "./read";
-import { resolveOriginSources, standingClaimPos } from "./adjudicate";
-import {
-  latestVotes,
-  positionsFromVotes,
-  posKey,
-  type Vote,
-} from "./positions";
+import { standingEvidenceByClaim } from "./adjudicate";
 import { finishJob, pendingDirtyClaims, startJob, updateJob } from "./jobs";
 import { enqueueEventOnClaimAssessmentChange } from "./event-materiality";
 import {
@@ -101,12 +95,7 @@ export async function loadClaimMaterialityInputs(
   if (!rows.length) return out;
 
   const statsMap = await claimEvidenceStats(
-    rows.map((r) => ({
-      claimId: r.claim_id,
-      currentValue: r.value,
-      currentUnit: r.unit,
-      currentState: r.state,
-    })),
+    rows.map((r) => r.claim_id),
     client,
   );
 
@@ -174,64 +163,24 @@ export async function loadClaimMaterialityInputs(
  * same winner rule (standingClaimPos), same primary flag
  * (evidence_strength='direct'). */
 async function claimEvidenceStats(
-  claims: {
-    claimId: string;
-    currentValue: unknown;
-    currentUnit: string | null;
-    currentState: string;
-  }[],
+  claimIds: string[],
   client: pg.Pool | pg.PoolClient,
 ): Promise<Map<string, ClaimEvidenceStats>> {
   const out = new Map<string, ClaimEvidenceStats>();
-  const claimIds = claims.map((c) => c.claimId);
   if (!claimIds.length) return out;
-  const ph = claimIds.map((_, i) => `$${i + 1}`).join(",");
 
-  const { rows: versions } = await client.query<{
-    claim_id: string;
-    id: string;
-    version_no: number;
-    value: unknown;
-    unit: string | null;
-  }>(
-    `SELECT claim_id, id, version_no, value, unit
-       FROM claim_versions WHERE claim_id IN (${ph})`,
-    claimIds,
-  );
-  const versByClaim = new Map<string, typeof versions>();
-  for (const v of versions)
-    (
-      versByClaim.get(v.claim_id) ??
-      versByClaim.set(v.claim_id, []).get(v.claim_id)!
-    ).push(v);
-
-  // every evidence attachment across ALL versions of these claims
-  const { rows: evRows } = await client.query<{
-    claim_id: string;
-    version_no: number;
-    value: unknown;
-    unit: string | null;
-    strength: string | null;
-    doc_id: string;
-    source_id: string;
-    vote_at: string;
-  }>(
-    `SELECT cv.claim_id, cv.version_no, cv.value, cv.unit,
-            ce.evidence_strength::text AS strength,
-            ed.id AS doc_id, ed.source_id,
-            COALESCE(ed.published_at, ev.observed_at) AS vote_at
-       FROM claim_evidence ce
-       JOIN claim_versions cv ON cv.id = ce.claim_version_id
-       JOIN evidence_versions ev ON ev.id = ce.evidence_version_id
-       JOIN evidence_documents ed ON ed.id = ev.document_id
-      WHERE cv.claim_id IN (${ph})`,
-    claimIds,
-  );
+  /* standing evidence = the shared canonical accessor (adjudicate.ts) —
+   * latest vote per origin restricted to the standing position. Same
+   * derivation the batch adjudicator applies. */
+  const standingMap = await standingEvidenceByClaim(client, claimIds);
 
   /* lineage closure over every touched doc AND its ancestors — a root
    * outside the doc set must resolve, not count dangling */
+  const evDocIds = [
+    ...new Set([...standingMap.values()].flatMap((s) => s.allDocIds)),
+  ];
   const edges = new Map<string, { parent: string | null; relation: string }>();
-  let frontier = [...new Set(evRows.map((r) => r.doc_id))];
+  let frontier = evDocIds;
   for (let depth = 0; depth < 8 && frontier.length; depth++) {
     const lin = await latestLineage(frontier);
     const next = new Set<string>();
@@ -241,7 +190,7 @@ async function claimEvidenceStats(
     }
     frontier = [...next];
   }
-  const touchedIds = new Set(evRows.map((r) => r.doc_id));
+  const touchedIds = new Set(evDocIds);
   for (const e of edges.values()) if (e.parent) touchedIds.add(e.parent);
   let docMeta: { doc_id: string; source_id: string; kind: string }[] = [];
   if (touchedIds.size) {
@@ -260,66 +209,15 @@ async function claimEvidenceStats(
   }
   const known = new Map(docMeta.map((d) => [d.doc_id, d]));
 
-  // voter identity = lineage-root source — wire reprints collapse
-  const originOf = await resolveOriginSources(client as pg.Pool, [
-    ...new Set(evRows.map((r) => r.doc_id)),
-  ]);
-
-  interface Evote extends Vote {
-    docId: string;
-  }
-  const evByClaim = new Map<string, Evote[]>();
-  for (const r of evRows) {
-    const vote: Evote = {
-      voter: originOf.get(r.doc_id) ?? r.source_id,
-      pos: posKey(r.value, r.unit),
-      valueJson: toJsonb(r.value),
-      unit: r.unit,
-      versionNo: r.version_no,
-      state: "supported",
-      /* same flag as the batch adjudicator — a 'direct' evidence row is
-       * what lets a lone primary beat a publisher majority */
-      primary: r.strength === "direct",
-      at: Date.parse(r.vote_at),
-      docId: r.doc_id,
-    };
-    (
-      evByClaim.get(r.claim_id) ??
-      evByClaim.set(r.claim_id, []).get(r.claim_id)!
-    ).push(vote);
-  }
-
-  for (const c of claims) {
-    const vers = (versByClaim.get(c.claimId) ?? []).map((v) => ({
-      id: v.id,
-      version_no: v.version_no,
-      pos: posKey(v.value, v.unit),
-      valueJson: toJsonb(v.value),
-    }));
-    // latestVotes preserves our objects (docId survives the Vote type)
-    const latest = latestVotes(evByClaim.get(c.claimId) ?? []) as Map<
-      string,
-      Evote
-    >;
-    const standingPos = standingClaimPos({
-      positions: [...positionsFromVotes(latest, vers).values()],
-      currentPos: posKey(c.currentValue, c.currentUnit),
-      currentState: c.currentState,
-    });
+  for (const [claimId, se] of standingMap) {
     // live standing docs = docs behind each voter's latest vote,
     // restricted to votes standing on the standing position — a source
     // whose latest assertion moved elsewhere no longer counts here
-    const standingDocs = [
-      ...new Set(
-        [...latest.values()]
-          .filter((v) => v.pos === standingPos)
-          .map((v) => v.docId),
-      ),
-    ]
+    const standingDocs = [...new Set(se.standing.map((r) => r.docId))]
       .map((id) => known.get(id))
       .filter((d): d is NonNullable<typeof d> => d != null);
     const stats = effectiveRoots(standingDocs, edges, known);
-    out.set(c.claimId, {
+    out.set(claimId, {
       confirmedIndependentOrigins: stats.confirmedIndependentOrigins,
       primaryOrigins: stats.primaryOrigins,
       unresolvedOrigins: stats.unresolvedOrigins,

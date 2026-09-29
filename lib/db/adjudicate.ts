@@ -195,6 +195,162 @@ export async function resolveOriginSources(
   return out;
 }
 
+/* ── standing evidence (canonical claim↔doc provenance grain) ──────────
+ *
+ * THE accessor for "which documents currently back this claim". Claim
+ * evidence is version-scoped and never carried forward: a superseded
+ * claim_version keeps its evidence, and a synthesized/converged current
+ * version often has none. Reading evidence through current_version_id
+ * alone therefore silently loses provenance — the R7.1d.3a corpus bug.
+ *
+ * Canonical derivation — the SAME composition the batch adjudicator and
+ * claim-materiality stats use, never a parallel implementation:
+ *
+ *   claim_evidence × all claim_versions  → votes
+ *   voter = lineage-root source          (resolveOriginSources)
+ *   latest vote per origin               (latestVotes, evidence time)
+ *   standing position                    (standingClaimPos)
+ *   standing evidence = docs behind the latest votes at standingPos
+ */
+export interface StandingEvidenceRow {
+  docId: string;
+  evidenceVersionId: string;
+}
+
+export interface ClaimStandingEvidence {
+  standingPos: string | null;
+  /** (docId, evidenceVersionId) behind latest-per-origin votes at
+   *  standingPos — deduped by evidence_version */
+  standing: StandingEvidenceRow[];
+  /** every evidence doc id across all versions — lineage frontier */
+  allDocIds: string[];
+}
+
+export async function standingEvidenceByClaim(
+  client: pg.Pool | pg.PoolClient,
+  claimIds: string[],
+): Promise<Map<string, ClaimStandingEvidence>> {
+  const out = new Map<string, ClaimStandingEvidence>();
+  if (!claimIds.length) return out;
+  const ph = claimIds.map((_, i) => `$${i + 1}`).join(",");
+
+  const { rows: claims } = await client.query<{
+    claim_id: string;
+    value: unknown;
+    unit: string | null;
+    state: string;
+  }>(
+    `SELECT c.id AS claim_id, cv.value, cv.unit, cv.state::text AS state
+       FROM claims c
+       JOIN claim_versions cv ON cv.id = c.current_version_id
+      WHERE c.id IN (${ph})`,
+    claimIds,
+  );
+
+  const { rows: versions } = await client.query<{
+    claim_id: string;
+    id: string;
+    version_no: number;
+    value: unknown;
+    unit: string | null;
+  }>(
+    `SELECT claim_id, id, version_no, value, unit
+       FROM claim_versions WHERE claim_id IN (${ph})`,
+    claimIds,
+  );
+  const versByClaim = new Map<string, typeof versions>();
+  for (const v of versions)
+    (
+      versByClaim.get(v.claim_id) ??
+      versByClaim.set(v.claim_id, []).get(v.claim_id)!
+    ).push(v);
+
+  const { rows: evRows } = await client.query<{
+    claim_id: string;
+    version_no: number;
+    value: unknown;
+    unit: string | null;
+    strength: string | null;
+    evidence_version_id: string;
+    doc_id: string;
+    source_id: string;
+    vote_at: string;
+  }>(
+    `SELECT cv.claim_id, cv.version_no, cv.value, cv.unit,
+            ce.evidence_strength::text AS strength,
+            ce.evidence_version_id,
+            ed.id AS doc_id, ed.source_id,
+            COALESCE(ed.published_at, ev.observed_at) AS vote_at
+       FROM claim_evidence ce
+       JOIN claim_versions cv ON cv.id = ce.claim_version_id
+       JOIN evidence_versions ev ON ev.id = ce.evidence_version_id
+       JOIN evidence_documents ed ON ed.id = ev.document_id
+      WHERE cv.claim_id IN (${ph})`,
+    claimIds,
+  );
+
+  interface Evote extends Vote {
+    docId: string;
+    evidenceVersionId: string;
+  }
+  const evByClaim = new Map<string, Evote[]>();
+  const docIds = [...new Set(evRows.map((r) => r.doc_id))];
+  const originOf = await resolveOriginSources(client, docIds);
+  for (const r of evRows) {
+    (
+      evByClaim.get(r.claim_id) ??
+      evByClaim.set(r.claim_id, []).get(r.claim_id)!
+    ).push({
+      voter: originOf.get(r.doc_id) ?? r.source_id,
+      pos: posKey(r.value, r.unit),
+      valueJson: toJsonb(r.value),
+      unit: r.unit,
+      versionNo: r.version_no,
+      state: "supported",
+      primary: r.strength === "direct",
+      at: Date.parse(r.vote_at),
+      docId: r.doc_id,
+      evidenceVersionId: r.evidence_version_id,
+    });
+  }
+
+  for (const c of claims) {
+    const vers = (versByClaim.get(c.claim_id) ?? []).map((v) => ({
+      id: v.id,
+      version_no: v.version_no,
+      pos: posKey(v.value, v.unit),
+      valueJson: toJsonb(v.value),
+    }));
+    const latest = latestVotes(evByClaim.get(c.claim_id) ?? []) as Map<
+      string,
+      Evote
+    >;
+    const standingPos = standingClaimPos({
+      positions: [...positionsFromVotes(latest, vers).values()],
+      currentPos: posKey(c.value, c.unit),
+      currentState: c.state,
+    });
+    const seen = new Set<string>();
+    const standing = [...latest.values()]
+      .filter((v) => v.pos === standingPos)
+      .map((v) => ({
+        docId: v.docId,
+        evidenceVersionId: v.evidenceVersionId,
+      }))
+      .filter(
+        (r) => !seen.has(r.evidenceVersionId) && seen.add(r.evidenceVersionId),
+      );
+    out.set(c.claim_id, {
+      standingPos,
+      standing,
+      allDocIds: [
+        ...new Set((evByClaim.get(c.claim_id) ?? []).map((v) => v.docId)),
+      ],
+    });
+  }
+  return out;
+}
+
 export interface AdjudicateResult {
   /** transitions the engine computed from the observed evidence graph */
   decisions: {

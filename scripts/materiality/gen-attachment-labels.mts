@@ -1,26 +1,31 @@
-/* R7.1d.3a — reviewed attachment labels. Judgment unit = doc×event
- * (misclustering IS a doc-attachment error; the claim is downstream).
- * `foreign` = doc-title substrings whose story is NOT this event's.
- * A claim is `misclustered` iff every backing doc is foreign OR it has
- * no backing doc and its content names a foreign story. `driver` ids
- * come from the reviewed R7.1d.1d gold (driverClaimIds).
+/* R7.1d.3a.1 — reviewed attachment labels on STANDING-EVIDENCE grain.
+ * Judgment unit = doc×event (misclustering IS a doc-attachment error;
+ * the claim is downstream). `foreign` = doc-title substrings whose
+ * story is NOT this event's. A claim is `misclustered` iff every
+ * STANDING-backing doc is foreign OR it has no standing doc and its
+ * content names a foreign story. `driver` ids come from the reviewed
+ * R7.1d.1d gold (driverClaimIds).
  *
- * Every misclustered claim also carries a `cause`, derived from corpus
- * provenance only (doc fan-out + event merge-path telemetry + title
- * language) — the four audit categories:
- *   extraction_wrong_grain      claim has no backing doc (manually
- *                               verified foreign via NF)
- *   multilingual_merge          all foreign docs cross-language and the
+ * Every misclustered claim also carries a `causeProxy` +
+ * `causeConfidence`. PROXIES ONLY — resolver telemetry is
+ * cluster→event grain, so nothing here proves doc-level causality:
+ *   doc_cluster_contamination   every foreign doc attached ONLY to this
+ *                               event (strong_proxy — doc-level signal)
+ *   broad_event_reuse           ≥1 foreign doc attached to other live
+ *                               events too (strong_proxy — doc-level)
+ *   multilingual_merge          foreign docs are cross-language AND the
  *                               event shows an xlang merge path
- *   doc_cluster_contamination   every foreign doc attached ONLY here —
- *                               it rode in via this event's own cluster
- *   broad_event_reuse           at least one foreign doc is attached to
- *                               other events too — the resolver sprayed
- *                               it across umbrella events
- * Event-level `extraction_gap` = no surviving claim backed by an
- * on-story doc (the event's own docs may exist in event_evidence — the
- * gap is at claim extraction, which is why these events' materiality is
- * driven entirely by foreign claims). */
+ *                               (weak_proxy — needs event-level path)
+ *   extraction_wrong_grain      claim has no standing doc at all —
+ *                               nothing currently backs it (weak_proxy)
+ *
+ * Event-level `extraction_gap` requires BOTH (audit-frozen invariant):
+ *   1. ≥1 reviewed on-story event doc — ONSTORY[event] doc-id prefixes,
+ *      verified live (non-detached) in eventEvidence
+ *   2. zero surviving on-story claims — every claim misclustered
+ * An all-misclustered event with no reviewed on-story doc is NOT a gap
+ * (fully-foreign contamination event) — ONSTORY must list it explicitly
+ * (empty array = "reviewed: no on-story doc") or generation aborts. */
 import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 
@@ -358,8 +363,10 @@ const F: Record<string, string[]> = {
 };
 
 // normalized lookup: foreign patterns keyed by event id prefix
-/* No-doc claims judged by content — claimId prefixes that name a
- * foreign story (e.g. Hormuz proposals inside the US-China event). */
+/* Claims whose CONTENT names a foreign story — manually verified.
+ * Overrides doc-provenance when a claim's union evidence includes an
+ * on-story doc but the claim itself is off-story (e.g. "arrests 100"
+ * NY-protest claim inside the Board-of-Peace event). */
 const NF: Record<string, string[]> = {
   "01a0d176-5a20": [
     "01a0d787-6140",
@@ -386,6 +393,60 @@ const NF: Record<string, string[]> = {
   "01a0e2aa-dc8e": ["01a0e35b-e891", "01a0e3c4-8465"],
 };
 
+/* Reviewed on-story eventEvidence doc-id prefixes per all-misclustered
+ * event — the docs that ARE this event's story (they exist in
+ * event_evidence but produced zero surviving claims → extraction gap).
+ * Empty array = "reviewed: event has NO on-story doc" (fully-foreign
+ * contamination event, NOT a gap). Missing key on an all-misclustered
+ * event aborts generation — the review is mandatory, never inferred. */
+const ONSTORY: Record<string, string[]> = {
+  // Tin tức Thế giới digest — its own digest doc attached
+  "01a0d176-5af1": ["01a0d176-5aea"],
+  // F-35 Hong Kong — founding + follow-up docs attached
+  "01a0d176-5b5d": ["01a0d176-5b53", "01a0d176-5b56", "01a0d176-5b59"],
+  // Spain UNSC reform — founding doc attached
+  "01a0d176-5de4": ["01a0d176-5de0"],
+  // Argentina-UN Falklands — founding doc attached
+  "01a0d176-5e1f": ["01a0d176-5e15"],
+  // dioxin Biên Hòa — founding doc attached under 297 sprayed docs
+  "01a0d188-812a": ["01a0d188-7f9c"],
+  // White House CNN access — press-access docs attached
+  "01a0d4ed-0a02": [
+    "01a0d4e6-e903",
+    "01a0d4e6-e908",
+    "01a0d4e6-e912",
+    "01a0d46d-8319",
+    "01a0d3a5-8166",
+    "01a0dc47-8256",
+    "01a0dfb4-2610",
+    "01a0dbe6-9e0c",
+  ],
+  // gold-price 1-week low — founding doc attached
+  "01a0d788-fa78": ["01a0d788-f9c8"],
+  // Colombia-Iran severance — 4 on-story docs among 181 Hormuz docs
+  "01a0d905-4143": [
+    "01a0d846-7d9b",
+    "01a0d704-e052",
+    "01a0d905-35b8",
+    "01a0d704-e102",
+  ],
+  // A330 ferry flight — founding doc attached
+  "01a0dc10-2dd3": ["01a0db1f-1365"],
+  // Burnham Labour — founding doc attached
+  "01a0dc3c-a3e1": ["01a0dc3c-839d"],
+  // Palestine candidate list — founding doc attached
+  "01a0def9-6ee3": ["01a0decc-914a"],
+  // FPT strategic-tech talent — founding doc attached
+  "01a0e257-82a7": ["01a0e18b-a2fe"],
+  // global security cooperation — founding doc attached
+  "01a0e335-42c9": ["01a0e2a4-46fc"],
+  // Ban Chỉ đạo 57 econ-social session — econ-social docs attached
+  // (the committee's sci-tech session docs are a different meeting)
+  "01a0e769-b127": ["01a0e769-9c5a", "01a0e769-a948", "01a0e7e3-456b"],
+  // SHB import-export finance — founding doc attached
+  "01a0e8f9-d4b1": ["01a0e854-a7c1"],
+};
+
 const keyFor = <T,>(m: Record<string, T>, eventId: string): T | undefined => {
   for (const [pfx, v] of Object.entries(m))
     if (eventId.startsWith(pfx)) return v;
@@ -404,6 +465,7 @@ const events: any[] = [];
 const counts = { driver: 0, on_topic_non_driver: 0, misclustered: 0 };
 const causeCounts: Record<string, number> = {};
 const gapEvents: string[] = [];
+const fullyForeign: string[] = [];
 for (const e of corpus.events as any[]) {
   const pats = foreignFor(e.eventId);
   if (pats === undefined) {
@@ -416,16 +478,20 @@ for (const e of corpus.events as any[]) {
     pats.some((p) => title.toLowerCase().includes(p.toLowerCase()));
   const drivers = goldDrivers.get(e.eventId) ?? new Set<string>();
   const claims: Record<string, string> = {};
-  const causes: Record<string, string> = {};
+  const causeProxies: Record<string, string> = {};
+  const causeConfidence: Record<string, string> = {};
   for (const cl of e.claims) {
-    const docs = cl.evidence as any[];
+    /* standing evidence only — docs behind latest-per-origin votes on
+     * the standing position (all claim_versions, shared accessor). A
+     * voter that moved off the standing position no longer backs it. */
+    const docs = cl.standingEvidence as any[];
     const noDocForeign = (keyFor(NF, e.eventId) ?? []).some((p) =>
       cl.claimId.startsWith(p),
     );
     const foreign =
       allForeign ||
       noDocForeign ||
-      (docs.length > 0 && docs.every((d) => isForeign(d.docTitle)));
+      (docs.length > 0 && docs.every((d) => isForeign(d.title)));
     if (!foreign) {
       if (drivers.has(cl.claimId)) {
         claims[cl.claimId] = "driver";
@@ -438,53 +504,97 @@ for (const e of corpus.events as any[]) {
     }
     claims[cl.claimId] = "misclustered";
     counts.misclustered++;
+    // cause PROXY derives from the foreign docs backing the claim.
+    // Doc-level signals (fanout, single-attach) are strong proxies;
+    // anything needing event-level merge-path telemetry is weak —
+    // nothing here proves doc-level causality (needs R7.1d.3b.1).
+    const foreignDocs = docs.filter((d) => isForeign(d.title));
     const xlang =
-      docs.length > 0 && docs.every((d) => lang(d.docTitle) !== lang(e.title));
+      foreignDocs.length > 0 &&
+      foreignDocs.every((d) => lang(d.title) !== lang(e.title));
     const hasXlangPath = Object.keys(e.mergePaths ?? {}).some((p) =>
       XLANG_PATHS.has(p),
     );
-    const multiAttached = docs.some(
-      (d) =>
-        ((d.docEvents as any[]) ?? []).filter((x) => !x.detached).length > 1,
+    const multiAttached = foreignDocs.some(
+      (d) => (d.activeEvents as string[]).length > 1,
     );
-    const cause = noDocForeign
-      ? "extraction_wrong_grain"
-      : xlang && hasXlangPath
-        ? "multilingual_merge"
-        : multiAttached
-          ? "broad_event_reuse"
-          : "doc_cluster_contamination";
-    causes[cl.claimId] = cause;
-    causeCounts[cause] = (causeCounts[cause] ?? 0) + 1;
+    const [proxy, conf] =
+      docs.length === 0
+        ? (["extraction_wrong_grain", "weak_proxy"] as const)
+        : xlang && hasXlangPath
+          ? (["multilingual_merge", "weak_proxy"] as const)
+          : multiAttached
+            ? (["broad_event_reuse", "strong_proxy"] as const)
+            : (["doc_cluster_contamination", "strong_proxy"] as const);
+    causeProxies[cl.claimId] = proxy;
+    causeConfidence[cl.claimId] = conf;
+    causeCounts[proxy] = (causeCounts[proxy] ?? 0) + 1;
   }
-  // extraction gap = the event's story produced zero surviving claims:
-  // every claim is misclustered. Derived, not hand-flagged.
+  /* extraction_gap invariant — BOTH sides must hold:
+   *   1. ≥1 reviewed on-story event doc, verified live in eventEvidence
+   *   2. zero surviving on-story claims (every claim misclustered)
+   * An all-misclustered event without a reviewed on-story doc is
+   * fully-foreign contamination, not an extraction gap. */
   const vals = Object.values(claims);
-  const gap = vals.length > 0 && vals.every((v) => v === "misclustered");
+  const allMis = vals.length > 0 && vals.every((v) => v === "misclustered");
+  let onStoryDocIds: string[] | undefined;
+  if (allMis) {
+    onStoryDocIds = keyFor(ONSTORY, e.eventId);
+    if (onStoryDocIds === undefined) {
+      console.error(
+        "ALL-MISCLUSTERED EVENT WITHOUT ONSTORY REVIEW:",
+        e.eventId,
+        e.title,
+      );
+      process.exit(1);
+    }
+  }
+  const onStoryDocs = (e.eventEvidence as any[]).filter(
+    (d) =>
+      !d.detached &&
+      (onStoryDocIds ?? []).some((p) => d.documentId.startsWith(p)),
+  );
+  // every listed prefix must resolve — a dead prefix means stale review
+  for (const p of onStoryDocIds ?? [])
+    if (!onStoryDocs.some((d) => d.documentId.startsWith(p))) {
+      console.error("ONSTORY prefix unmatched:", e.eventId, p);
+      process.exit(1);
+    }
+  const gap = allMis && onStoryDocs.length > 0;
   if (gap) gapEvents.push(e.eventId);
+  else if (allMis) fullyForeign.push(e.eventId);
   events.push({
     eventId: e.eventId,
     extractionGap: gap,
+    fullyForeign: !gap && allMis,
     mergePaths: e.mergePaths ?? {},
+    onStoryEventEvidence: onStoryDocs.map((d) => ({
+      documentId: d.documentId,
+      evidenceVersionId: d.evidenceVersionId,
+      title: d.title,
+    })),
     claims,
-    causes,
+    causeProxies,
+    causeConfidence,
   });
 }
 const out = {
   generatedAt: new Date().toISOString(),
-  corpusHash: corpus.claimIdsHash,
+  corpusHash: corpus.corpusHash,
   classes: ["driver", "on_topic_non_driver", "misclustered"],
-  causes: [
+  causeProxies: [
     "doc_cluster_contamination",
     "broad_event_reuse",
     "multilingual_merge",
     "extraction_wrong_grain",
   ],
+  causeConfidences: ["strong_proxy", "weak_proxy"],
   eventFlag: "extraction_gap",
   labelCount: Object.values(counts).reduce((a, b) => a + b, 0),
   counts,
   causeCounts,
   extractionGapEvents: gapEvents,
+  fullyForeignEvents: fullyForeign,
   events,
 };
 writeFileSync(

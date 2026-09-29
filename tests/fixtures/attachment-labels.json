@@ -1,33 +1,35 @@
 {
- "generatedAt": "2026-09-29T06:28:26.008Z",
- "corpusHash": "4b613a6a6bf78002",
+ "generatedAt": "2026-09-29T07:15:58.902Z",
+ "corpusHash": "6671585a95a4209e",
  "classes": [
   "driver",
   "on_topic_non_driver",
   "misclustered"
  ],
- "causes": [
+ "causeProxies": [
   "doc_cluster_contamination",
   "broad_event_reuse",
   "multilingual_merge",
   "extraction_wrong_grain"
  ],
+ "causeConfidences": [
+  "strong_proxy",
+  "weak_proxy"
+ ],
  "eventFlag": "extraction_gap",
- "labelCount": 1211,
+ "labelCount": 1228,
  "counts": {
   "driver": 67,
-  "on_topic_non_driver": 429,
-  "misclustered": 715
+  "on_topic_non_driver": 440,
+  "misclustered": 721
  },
  "causeCounts": {
-  "extraction_wrong_grain": 26,
-  "broad_event_reuse": 506,
-  "multilingual_merge": 143,
-  "doc_cluster_contamination": 40
+  "doc_cluster_contamination": 38,
+  "broad_event_reuse": 534,
+  "multilingual_merge": 149
  },
  "extractionGapEvents": [
   "01a0d176-5af1-785f-98a9-ea4ea5930c39",
-  "01a0d176-5b29-7b0a-9fe8-d773a8d2f14a",
   "01a0d176-5b5d-7c6f-a212-90a74dcb225b",
   "01a0d176-5de4-7ebb-9961-a40bdf4f0bb7",
   "01a0d176-5e1f-7671-a188-dd99a8f0449b",
@@ -43,10 +45,12 @@
   "01a0e769-b127-76f7-a595-c270c6d9b100",
   "01a0e8f9-d4b1-7f76-ab50-499917f64d29"
  ],
+ "fullyForeignEvents": [],
  "events": [
   {
    "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "bigram_entity": 41,
     "cross_lingual": 105,
@@ -58,6 +62,7 @@
     "rare_token": 33,
     "semantic_anchored": 22
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d787-6132-7835-959b-70365730bc52": "on_topic_non_driver",
     "01a0d787-6140-7682-85a6-d624e2e611b8": "misclustered",
@@ -129,7 +134,7 @@
     "01a0d9e8-5671-7b54-957e-c560ed66512e": "on_topic_non_driver",
     "01a0d9e8-5b20-7cb1-82c2-557d5c73622f": "misclustered",
     "01a0d9e8-5fd0-7f96-9cf5-b704a4b5a51d": "misclustered",
-    "01a0dcca-f328-7262-88fe-2da333bb7e39": "misclustered",
+    "01a0dcca-f328-7262-88fe-2da333bb7e39": "on_topic_non_driver",
     "01a0dccb-0fef-790c-9005-5a4ebc205108": "misclustered",
     "01a0dccb-144c-7a98-985c-1fcb8b102a1e": "misclustered",
     "01a0dccb-18a8-7a7c-a190-9c110a135ed2": "on_topic_non_driver",
@@ -274,8 +279,8 @@
     "01a0e75a-9056-7e54-ac5a-cfb9cdfc5b7b": "on_topic_non_driver",
     "01a0e75a-9992-7c83-b7c9-2ab02c1955f1": "on_topic_non_driver"
    },
-   "causes": {
-    "01a0d787-6140-7682-85a6-d624e2e611b8": "extraction_wrong_grain",
+   "causeProxies": {
+    "01a0d787-6140-7682-85a6-d624e2e611b8": "doc_cluster_contamination",
     "01a0d787-6155-7f8b-a80e-c8dd4f0b9a85": "broad_event_reuse",
     "01a0d7aa-c687-726c-9aa3-1494b4873ec1": "broad_event_reuse",
     "01a0d7ae-8860-7a24-9c75-f0c6f3374fa1": "broad_event_reuse",
@@ -294,7 +299,7 @@
     "01a0d8ed-6716-71a6-a81d-a8e3abd3c926": "broad_event_reuse",
     "01a0d8f2-9a51-7219-a94e-4372c63bff1c": "broad_event_reuse",
     "01a0d8f2-9f02-74f8-a129-4a81704e293f": "broad_event_reuse",
-    "01a0d8f2-a3af-75ef-901e-ecd82d658032": "extraction_wrong_grain",
+    "01a0d8f2-a3af-75ef-901e-ecd82d658032": "broad_event_reuse",
     "01a0d8f2-a85c-7114-91f6-dc52d10fd737": "broad_event_reuse",
     "01a0d8f2-ad0a-77d6-a92b-49cab5b16eed": "broad_event_reuse",
     "01a0d8f2-b937-7144-befa-1f91af63a032": "broad_event_reuse",
@@ -304,7 +309,7 @@
     "01a0d914-a3b5-717b-9c51-6af3af003321": "broad_event_reuse",
     "01a0d914-ab58-7c98-8faa-90f451f77c0a": "broad_event_reuse",
     "01a0d914-b2fd-7808-b5f9-8a72d5fcca93": "broad_event_reuse",
-    "01a0d914-baa2-78c0-9fc7-4906a50c6e79": "extraction_wrong_grain",
+    "01a0d914-baa2-78c0-9fc7-4906a50c6e79": "broad_event_reuse",
     "01a0d914-c244-7332-acd8-18d01a4af18f": "broad_event_reuse",
     "01a0d914-c9e7-763a-ad82-3b79dda101ea": "broad_event_reuse",
     "01a0d92f-f93a-765d-8229-ee835d4687d8": "broad_event_reuse",
@@ -315,10 +320,9 @@
     "01a0d932-b9d2-73b9-ac3a-cd076555e1c8": "broad_event_reuse",
     "01a0d9e8-5b20-7cb1-82c2-557d5c73622f": "broad_event_reuse",
     "01a0d9e8-5fd0-7f96-9cf5-b704a4b5a51d": "broad_event_reuse",
-    "01a0dcca-f328-7262-88fe-2da333bb7e39": "multilingual_merge",
     "01a0dccb-0fef-790c-9005-5a4ebc205108": "broad_event_reuse",
     "01a0dccb-144c-7a98-985c-1fcb8b102a1e": "broad_event_reuse",
-    "01a0dccb-1d04-7dad-a304-3a25591c3821": "extraction_wrong_grain",
+    "01a0dccb-1d04-7dad-a304-3a25591c3821": "broad_event_reuse",
     "01a0dd2e-5b71-7438-8bef-24e13eb61257": "broad_event_reuse",
     "01a0dd2e-5f81-7e55-a37d-114f9c4bfd96": "broad_event_reuse",
     "01a0dd2e-638f-716e-b921-33c0c102823a": "broad_event_reuse",
@@ -350,20 +354,20 @@
     "01a0dda0-ad5d-79e1-ad5b-873f5479989f": "broad_event_reuse",
     "01a0dda0-b119-7328-a4ce-08b7cdd42303": "broad_event_reuse",
     "01a0ddbe-1d9e-7ad1-bd1e-c6f5db512be1": "broad_event_reuse",
-    "01a0ddbe-21ae-768d-961e-1a124a95d9dd": "extraction_wrong_grain",
+    "01a0ddbe-21ae-768d-961e-1a124a95d9dd": "broad_event_reuse",
     "01a0ddd9-688f-7524-9448-67116b491d6e": "broad_event_reuse",
     "01a0ddd9-6c72-738b-88d0-5930e6a1d599": "broad_event_reuse",
     "01a0ddd9-704e-7685-b958-60dc4b349be9": "broad_event_reuse",
     "01a0ddd9-7999-70b8-a5d4-cc722031f07d": "broad_event_reuse",
-    "01a0dddc-472e-71ea-a25b-d47f9d61295c": "extraction_wrong_grain",
+    "01a0dddc-472e-71ea-a25b-d47f9d61295c": "broad_event_reuse",
     "01a0dde0-4ee0-7f32-99cb-a51f9a93e75c": "broad_event_reuse",
     "01a0dde0-692a-7046-ba3e-2f86e4b4aa37": "multilingual_merge",
     "01a0de34-f387-7d48-a68a-6975c9244fbf": "broad_event_reuse",
-    "01a0de38-e13e-7a1b-8be0-a14401a6a029": "extraction_wrong_grain",
+    "01a0de38-e13e-7a1b-8be0-a14401a6a029": "broad_event_reuse",
     "01a0de38-f9ae-73f7-a861-d25ad098a9a1": "broad_event_reuse",
     "01a0de38-fe5e-7765-8dd7-f422eb9927df": "broad_event_reuse",
     "01a0de40-740d-7604-8da7-515d73e25ca2": "broad_event_reuse",
-    "01a0decc-1291-731e-affc-261baffac7cc": "extraction_wrong_grain",
+    "01a0decc-1291-731e-affc-261baffac7cc": "broad_event_reuse",
     "01a0decc-174f-7634-93d4-b3a01c169cd4": "broad_event_reuse",
     "01a0decc-22b2-7c96-8854-90e81ce34af8": "broad_event_reuse",
     "01a0ded1-8282-71a4-9ee3-875d5785fe76": "broad_event_reuse",
@@ -387,7 +391,7 @@
     "01a0e065-00ed-7f38-be7b-ff6152bcaf14": "broad_event_reuse",
     "01a0e065-01f0-7650-b215-a4ab058567c0": "broad_event_reuse",
     "01a0e065-02eb-733b-9673-1888355c973f": "broad_event_reuse",
-    "01a0e073-ba6e-71ea-90f4-bd0251eaf199": "extraction_wrong_grain",
+    "01a0e073-ba6e-71ea-90f4-bd0251eaf199": "broad_event_reuse",
     "01a0e073-bd17-75a5-807e-74590830968d": "broad_event_reuse",
     "01a0e073-bf0a-7c06-a16e-9aaec1a08824": "broad_event_reuse",
     "01a0e09f-b1ef-7893-b736-8f242c8ef7f5": "broad_event_reuse",
@@ -395,47 +399,184 @@
     "01a0e3f2-ad13-739c-b382-85843ed4b56a": "broad_event_reuse",
     "01a0e3f2-b443-78f0-a96f-66522a480293": "broad_event_reuse",
     "01a0e732-37a6-762a-b555-6136282efd0a": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d787-6140-7682-85a6-d624e2e611b8": "strong_proxy",
+    "01a0d787-6155-7f8b-a80e-c8dd4f0b9a85": "strong_proxy",
+    "01a0d7aa-c687-726c-9aa3-1494b4873ec1": "strong_proxy",
+    "01a0d7ae-8860-7a24-9c75-f0c6f3374fa1": "strong_proxy",
+    "01a0d7ae-8d11-7f50-b5bf-da872d81ff5c": "strong_proxy",
+    "01a0d7ae-91c0-7625-96ce-cb7799704314": "strong_proxy",
+    "01a0d7ae-966f-7570-9de4-cfbb388bf0fe": "strong_proxy",
+    "01a0d7ae-9b20-7848-982c-93f167d8ce26": "strong_proxy",
+    "01a0d7ae-9fd1-773c-8e17-a8988daa42db": "strong_proxy",
+    "01a0d7ae-a486-74c3-8a4e-435bf75387f9": "strong_proxy",
+    "01a0d7ae-a935-709d-9f46-2e7355154036": "strong_proxy",
+    "01a0d7c4-af79-7cc1-9fa3-b4dbc918381d": "strong_proxy",
+    "01a0d7c4-bc20-7e0e-94d4-9a494f957553": "strong_proxy",
+    "01a0d820-2696-7161-ab36-fa737bed781b": "strong_proxy",
+    "01a0d820-2ac8-709f-b991-79d5d464c05b": "strong_proxy",
+    "01a0d85b-f93e-7cac-8b77-df313385867d": "strong_proxy",
+    "01a0d8ed-6716-71a6-a81d-a8e3abd3c926": "strong_proxy",
+    "01a0d8f2-9a51-7219-a94e-4372c63bff1c": "strong_proxy",
+    "01a0d8f2-9f02-74f8-a129-4a81704e293f": "strong_proxy",
+    "01a0d8f2-a3af-75ef-901e-ecd82d658032": "strong_proxy",
+    "01a0d8f2-a85c-7114-91f6-dc52d10fd737": "strong_proxy",
+    "01a0d8f2-ad0a-77d6-a92b-49cab5b16eed": "strong_proxy",
+    "01a0d8f2-b937-7144-befa-1f91af63a032": "strong_proxy",
+    "01a0d910-05be-76c2-8a16-6cb34ddfca51": "strong_proxy",
+    "01a0d910-0a35-7f56-839f-a22b1a9411f5": "strong_proxy",
+    "01a0d914-9c0c-7cf2-9dd9-4b9ddfacc99f": "strong_proxy",
+    "01a0d914-a3b5-717b-9c51-6af3af003321": "strong_proxy",
+    "01a0d914-ab58-7c98-8faa-90f451f77c0a": "strong_proxy",
+    "01a0d914-b2fd-7808-b5f9-8a72d5fcca93": "strong_proxy",
+    "01a0d914-baa2-78c0-9fc7-4906a50c6e79": "strong_proxy",
+    "01a0d914-c244-7332-acd8-18d01a4af18f": "strong_proxy",
+    "01a0d914-c9e7-763a-ad82-3b79dda101ea": "strong_proxy",
+    "01a0d92f-f93a-765d-8229-ee835d4687d8": "strong_proxy",
+    "01a0d932-a075-77fd-8b06-12dfed3bf06d": "strong_proxy",
+    "01a0d932-a529-7c64-b67e-42e63216b804": "strong_proxy",
+    "01a0d932-b069-73c9-8344-8903f0eab43c": "strong_proxy",
+    "01a0d932-b526-7888-85c3-d3f4a1a6f31c": "strong_proxy",
+    "01a0d932-b9d2-73b9-ac3a-cd076555e1c8": "strong_proxy",
+    "01a0d9e8-5b20-7cb1-82c2-557d5c73622f": "strong_proxy",
+    "01a0d9e8-5fd0-7f96-9cf5-b704a4b5a51d": "strong_proxy",
+    "01a0dccb-0fef-790c-9005-5a4ebc205108": "strong_proxy",
+    "01a0dccb-144c-7a98-985c-1fcb8b102a1e": "strong_proxy",
+    "01a0dccb-1d04-7dad-a304-3a25591c3821": "strong_proxy",
+    "01a0dd2e-5b71-7438-8bef-24e13eb61257": "strong_proxy",
+    "01a0dd2e-5f81-7e55-a37d-114f9c4bfd96": "strong_proxy",
+    "01a0dd2e-638f-716e-b921-33c0c102823a": "strong_proxy",
+    "01a0dd2e-679e-7a0d-bcda-164fc93bcf01": "strong_proxy",
+    "01a0dd30-5732-768c-92b8-39a79b336f5b": "strong_proxy",
+    "01a0dd50-1c0f-7daa-901d-60c9bcfbec28": "strong_proxy",
+    "01a0dd50-2052-73d6-b35e-40baa72cf082": "strong_proxy",
+    "01a0dd50-248e-7b68-9999-40f91d15972e": "strong_proxy",
+    "01a0dd50-28ca-7222-81cf-dcff81be3ef9": "strong_proxy",
+    "01a0dd50-2d08-7a62-b2b2-64309305edbb": "strong_proxy",
+    "01a0dd52-927f-7067-a2b0-c48e9e98f2ef": "strong_proxy",
+    "01a0dd52-96c3-7853-899c-6b6a72fab386": "strong_proxy",
+    "01a0dd56-da5b-7315-b4c7-64ae971a9e0b": "strong_proxy",
+    "01a0dd56-de98-70f1-9581-0a51ed2c051b": "strong_proxy",
+    "01a0dd56-e2da-7bb8-991e-513d9a1db4f8": "strong_proxy",
+    "01a0dd56-e717-7d96-b120-b8a8d8d174a5": "strong_proxy",
+    "01a0dd56-eb53-763e-a4fa-216a5d050d36": "strong_proxy",
+    "01a0dd56-ef95-729f-9e4d-9d82cbef17c9": "strong_proxy",
+    "01a0dd56-f3d2-7652-9ca3-91e9589b19b2": "strong_proxy",
+    "01a0dd74-3558-722c-8ebc-aec910f4d2ac": "strong_proxy",
+    "01a0dd74-4d49-74e2-986e-ddaeaeb71a52": "strong_proxy",
+    "01a0dd9b-1d19-7f60-bfbe-0ee10829511b": "strong_proxy",
+    "01a0dd9b-20da-7ad4-8012-2263c641342b": "strong_proxy",
+    "01a0dd9b-249d-7763-b4b0-542043dc2a89": "strong_proxy",
+    "01a0dd9d-5aa8-7d9a-814d-33c6260ea2e5": "strong_proxy",
+    "01a0dda0-97b1-73b1-a87c-5582ec4b24b3": "strong_proxy",
+    "01a0dda0-a5e5-77f7-b7a5-eb5b5ca06afa": "strong_proxy",
+    "01a0dda0-a9a1-765e-ad68-a47839159d7d": "strong_proxy",
+    "01a0dda0-ad5d-79e1-ad5b-873f5479989f": "strong_proxy",
+    "01a0dda0-b119-7328-a4ce-08b7cdd42303": "strong_proxy",
+    "01a0ddbe-1d9e-7ad1-bd1e-c6f5db512be1": "strong_proxy",
+    "01a0ddbe-21ae-768d-961e-1a124a95d9dd": "strong_proxy",
+    "01a0ddd9-688f-7524-9448-67116b491d6e": "strong_proxy",
+    "01a0ddd9-6c72-738b-88d0-5930e6a1d599": "strong_proxy",
+    "01a0ddd9-704e-7685-b958-60dc4b349be9": "strong_proxy",
+    "01a0ddd9-7999-70b8-a5d4-cc722031f07d": "strong_proxy",
+    "01a0dddc-472e-71ea-a25b-d47f9d61295c": "strong_proxy",
+    "01a0dde0-4ee0-7f32-99cb-a51f9a93e75c": "strong_proxy",
+    "01a0dde0-692a-7046-ba3e-2f86e4b4aa37": "weak_proxy",
+    "01a0de34-f387-7d48-a68a-6975c9244fbf": "strong_proxy",
+    "01a0de38-e13e-7a1b-8be0-a14401a6a029": "strong_proxy",
+    "01a0de38-f9ae-73f7-a861-d25ad098a9a1": "strong_proxy",
+    "01a0de38-fe5e-7765-8dd7-f422eb9927df": "strong_proxy",
+    "01a0de40-740d-7604-8da7-515d73e25ca2": "strong_proxy",
+    "01a0decc-1291-731e-affc-261baffac7cc": "strong_proxy",
+    "01a0decc-174f-7634-93d4-b3a01c169cd4": "strong_proxy",
+    "01a0decc-22b2-7c96-8854-90e81ce34af8": "strong_proxy",
+    "01a0ded1-8282-71a4-9ee3-875d5785fe76": "strong_proxy",
+    "01a0deef-d140-75b3-9d71-7ca43ad2ebfc": "strong_proxy",
+    "01a0df53-f883-7b39-9ab2-aec9e0b4c38d": "strong_proxy",
+    "01a0df54-0662-738b-945f-c2b35daeb369": "strong_proxy",
+    "01a0dfa1-7509-7b62-b491-45b1c3a4c619": "strong_proxy",
+    "01a0dfbc-64a2-7797-acc8-cab50ff427a7": "strong_proxy",
+    "01a0dfbc-6875-7eb8-93e3-531df527e319": "strong_proxy",
+    "01a0dfda-6a44-7b54-9c48-30c510b7f957": "strong_proxy",
+    "01a0dff7-e9e7-7049-b8bb-34067f7d95dd": "strong_proxy",
+    "01a0dff7-eb20-73fd-88de-f51c344a96f0": "strong_proxy",
+    "01a0dff8-ea76-7951-9ace-3cae7b319e9a": "strong_proxy",
+    "01a0dff8-ed5d-7c3f-b2f6-b7df1d993708": "strong_proxy",
+    "01a0e01a-ece2-7f12-ad71-bb559532c5c6": "strong_proxy",
+    "01a0e021-7ea8-7869-af3b-b57db44e91a4": "strong_proxy",
+    "01a0e021-816e-7868-aa2b-9fe3687d477c": "strong_proxy",
+    "01a0e030-d645-72d5-a000-93abeb6bb349": "strong_proxy",
+    "01a0e04a-b225-7070-9b6b-f4c47407e43a": "strong_proxy",
+    "01a0e056-875e-7721-b591-169e2da986fa": "weak_proxy",
+    "01a0e065-00ed-7f38-be7b-ff6152bcaf14": "strong_proxy",
+    "01a0e065-01f0-7650-b215-a4ab058567c0": "strong_proxy",
+    "01a0e065-02eb-733b-9673-1888355c973f": "strong_proxy",
+    "01a0e073-ba6e-71ea-90f4-bd0251eaf199": "strong_proxy",
+    "01a0e073-bd17-75a5-807e-74590830968d": "strong_proxy",
+    "01a0e073-bf0a-7c06-a16e-9aaec1a08824": "strong_proxy",
+    "01a0e09f-b1ef-7893-b736-8f242c8ef7f5": "strong_proxy",
+    "01a0e3f2-a979-7362-8bc6-b69761d3daff": "strong_proxy",
+    "01a0e3f2-ad13-739c-b382-85843ed4b56a": "strong_proxy",
+    "01a0e3f2-b443-78f0-a96f-66522a480293": "strong_proxy",
+    "01a0e732-37a6-762a-b555-6136282efd0a": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d176-5aac-7048-9097-d2ee08f32068",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "cross_lingual": 20,
     "entity": 1,
     "rare_token": 5,
     "semantic_anchored": 4
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0dcf9-3e67-7444-82f9-81c079a739f5": "on_topic_non_driver",
     "01a0dcf9-4222-7178-bf63-2cdbeb2d6ed5": "on_topic_non_driver"
    },
-   "causes": {}
+   "causeProxies": {},
+   "causeConfidence": {}
   },
   {
    "eventId": "01a0d176-5af1-785f-98a9-ea4ea5930c39",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0d176-5aea-7909-a203-f5a4580a9441",
+     "evidenceVersionId": "01a0d176-5aeb-70c4-aeac-0f7abd06c6c9",
+     "title": "Tin tức Thế giới 24/9: Nga lên tiếng về thỏa thuận Mỹ - Greenland"
+    }
+   ],
    "claims": {
     "01a0d3aa-19aa-7968-9b7d-fcff021a19f9": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d3aa-19aa-7968-9b7d-fcff021a19f9": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d3aa-19aa-7968-9b7d-fcff021a19f9": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "cross_lingual": 2,
     "person": 2,
     "rare_token": 2
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d188-7f84-7d99-8ba5-62c9a56b7cd7": "misclustered",
     "01a0d3a6-f6f7-7348-b84f-1bbbf80c20b4": "misclustered",
     "01a0d3a6-f701-7ca5-a325-524066024e05": "misclustered",
-    "01a0d3b0-2fa9-74dd-8b99-4e68efe04017": "misclustered",
+    "01a0d3b0-2fa9-74dd-8b99-4e68efe04017": "on_topic_non_driver",
     "01a0d4fd-1f51-7e29-96a9-985e7d5a313a": "misclustered",
     "01a0d788-2197-7570-b6c4-52886ddb0119": "on_topic_non_driver",
     "01a0d788-219c-7aa3-bff9-3bdd29f779a8": "misclustered",
@@ -450,12 +591,11 @@
     "01a0d87a-6bd0-7167-89e5-919cb27adc95": "misclustered",
     "01a0d87a-6ffc-78ba-b673-5f7ff97a87a3": "on_topic_non_driver"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d188-7f84-7d99-8ba5-62c9a56b7cd7": "multilingual_merge",
     "01a0d3a6-f6f7-7348-b84f-1bbbf80c20b4": "broad_event_reuse",
     "01a0d3a6-f701-7ca5-a325-524066024e05": "broad_event_reuse",
-    "01a0d3b0-2fa9-74dd-8b99-4e68efe04017": "multilingual_merge",
-    "01a0d4fd-1f51-7e29-96a9-985e7d5a313a": "extraction_wrong_grain",
+    "01a0d4fd-1f51-7e29-96a9-985e7d5a313a": "doc_cluster_contamination",
     "01a0d788-219c-7aa3-bff9-3bdd29f779a8": "broad_event_reuse",
     "01a0d788-21a1-71e9-a300-c7d3167fa8b8": "broad_event_reuse",
     "01a0d788-21a6-7784-9a1b-37d917a9c713": "broad_event_reuse",
@@ -463,78 +603,132 @@
     "01a0d87a-6376-7a9f-a135-ce2ba27dd5ee": "broad_event_reuse",
     "01a0d87a-67a2-743f-adfd-53142fed59be": "broad_event_reuse",
     "01a0d87a-6bd0-7167-89e5-919cb27adc95": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d188-7f84-7d99-8ba5-62c9a56b7cd7": "weak_proxy",
+    "01a0d3a6-f6f7-7348-b84f-1bbbf80c20b4": "strong_proxy",
+    "01a0d3a6-f701-7ca5-a325-524066024e05": "strong_proxy",
+    "01a0d4fd-1f51-7e29-96a9-985e7d5a313a": "strong_proxy",
+    "01a0d788-219c-7aa3-bff9-3bdd29f779a8": "strong_proxy",
+    "01a0d788-21a1-71e9-a300-c7d3167fa8b8": "strong_proxy",
+    "01a0d788-21a6-7784-9a1b-37d917a9c713": "strong_proxy",
+    "01a0d788-21ad-730e-ab50-3dbfbe2bb08a": "strong_proxy",
+    "01a0d87a-6376-7a9f-a135-ce2ba27dd5ee": "strong_proxy",
+    "01a0d87a-67a2-743f-adfd-53142fed59be": "strong_proxy",
+    "01a0d87a-6bd0-7167-89e5-919cb27adc95": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d176-5b29-7b0a-9fe8-d773a8d2f14a",
-   "extractionGap": true,
+   "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
-    "01a0d17a-99ff-7864-bc04-d009e78eec28": "misclustered",
+    "01a0d17a-99ff-7864-bc04-d009e78eec28": "on_topic_non_driver",
     "01a0d188-861c-7c6b-8591-34196b987998": "misclustered"
    },
-   "causes": {
-    "01a0d17a-99ff-7864-bc04-d009e78eec28": "broad_event_reuse",
-    "01a0d188-861c-7c6b-8591-34196b987998": "extraction_wrong_grain"
+   "causeProxies": {
+    "01a0d188-861c-7c6b-8591-34196b987998": "doc_cluster_contamination"
+   },
+   "causeConfidence": {
+    "01a0d188-861c-7c6b-8591-34196b987998": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d176-5b5d-7c6f-a212-90a74dcb225b",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0d176-5b53-749f-90b9-ef7d888552c6",
+     "evidenceVersionId": "01a0d176-5b54-7da6-8245-969a51e16997",
+     "title": "Australia xác nhận linh kiện tiêm kích F-35 bị chuyển nhầm đến Hong Kong"
+    },
+    {
+     "documentId": "01a0d176-5b56-74a0-b23a-3e4aa9bac598",
+     "evidenceVersionId": "01a0d176-5b57-7bee-8e14-aa4d9bdbfc92",
+     "title": "Australia điều tra vụ linh kiện F-35 thất lạc sang Hong Kong"
+    },
+    {
+     "documentId": "01a0d176-5b59-7d1c-a86d-4dbc7ab0c9dc",
+     "evidenceVersionId": "01a0d176-5b5a-7898-825f-3d7c9591209b",
+     "title": "Mỹ, Úc xác nhận lô linh kiện F-35 bị mất"
+    }
+   ],
    "claims": {
     "01a0d3aa-425f-731e-9720-c1286e670a4d": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d3aa-425f-731e-9720-c1286e670a4d": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d3aa-425f-731e-9720-c1286e670a4d": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d176-5ba4-7c3d-aa94-a4450b3dfffa",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "cross_lingual": 20,
     "entity": 4
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d906-1828-7f31-b0d1-77cb0d00c748": "on_topic_non_driver"
    },
-   "causes": {}
+   "causeProxies": {},
+   "causeConfidence": {}
   },
   {
    "eventId": "01a0d176-5bcd-7c44-bbf9-81b054c39c73",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d17a-9abd-7581-a548-e38fccdc3952": "on_topic_non_driver"
    },
-   "causes": {}
+   "causeProxies": {},
+   "causeConfidence": {}
   },
   {
    "eventId": "01a0d176-5be3-74dd-9c8f-3b933e19a062",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d17a-9ae0-7abc-9477-55d8fcb578fd": "on_topic_non_driver",
     "01a0d17a-9aec-76a7-8300-5fbae3770b91": "misclustered"
    },
-   "causes": {
-    "01a0d17a-9aec-76a7-8300-5fbae3770b91": "extraction_wrong_grain"
+   "causeProxies": {
+    "01a0d17a-9aec-76a7-8300-5fbae3770b91": "doc_cluster_contamination"
+   },
+   "causeConfidence": {
+    "01a0d17a-9aec-76a7-8300-5fbae3770b91": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d176-5c17-74a6-af89-72a5ef7121c3",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d17a-9b40-76de-9aa8-ba21a1bacac9": "on_topic_non_driver"
    },
-   "causes": {}
+   "causeProxies": {},
+   "causeConfidence": {}
   },
   {
    "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d17a-9b9d-71b6-ae83-379c25f456d2": "on_topic_non_driver",
     "01a0d3a9-e388-746e-8c30-a70861452faa": "misclustered",
@@ -592,12 +786,12 @@
     "01a0dd7f-8ff0-7e00-b7f7-45d22e2e3a77": "misclustered",
     "01a0dd7f-9aed-77ce-b31f-eded9aba3a88": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d3a9-e388-746e-8c30-a70861452faa": "broad_event_reuse",
     "01a0d3ac-02be-714f-8054-c00d44056d4e": "broad_event_reuse",
     "01a0d470-961d-776d-960f-efeece77a14e": "broad_event_reuse",
-    "01a0d556-0f1a-727d-b438-be51b90959ab": "extraction_wrong_grain",
-    "01a0d7c9-d1db-7868-b40a-d60af48c93c5": "extraction_wrong_grain",
+    "01a0d556-0f1a-727d-b438-be51b90959ab": "doc_cluster_contamination",
+    "01a0d7c9-d1db-7868-b40a-d60af48c93c5": "broad_event_reuse",
     "01a0d7c9-e389-7c95-8e3d-2d704e4d8273": "broad_event_reuse",
     "01a0d7c9-ebf4-7367-bff6-d544ef35a94f": "broad_event_reuse",
     "01a0d7c9-f02b-704a-8a3e-c006266804d4": "broad_event_reuse",
@@ -640,11 +834,61 @@
     "01a0dd7f-8b5b-7bbf-b13d-b51b27a73a15": "broad_event_reuse",
     "01a0dd7f-8ff0-7e00-b7f7-45d22e2e3a77": "broad_event_reuse",
     "01a0dd7f-9aed-77ce-b31f-eded9aba3a88": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d3a9-e388-746e-8c30-a70861452faa": "strong_proxy",
+    "01a0d3ac-02be-714f-8054-c00d44056d4e": "strong_proxy",
+    "01a0d470-961d-776d-960f-efeece77a14e": "strong_proxy",
+    "01a0d556-0f1a-727d-b438-be51b90959ab": "strong_proxy",
+    "01a0d7c9-d1db-7868-b40a-d60af48c93c5": "strong_proxy",
+    "01a0d7c9-e389-7c95-8e3d-2d704e4d8273": "strong_proxy",
+    "01a0d7c9-ebf4-7367-bff6-d544ef35a94f": "strong_proxy",
+    "01a0d7c9-f02b-704a-8a3e-c006266804d4": "strong_proxy",
+    "01a0d7c9-f461-760d-b314-3b0afb96190f": "strong_proxy",
+    "01a0d7c9-f897-778a-8de9-99ee92444aef": "strong_proxy",
+    "01a0d7fe-4f02-72e8-a2a5-a5d68ffd7193": "strong_proxy",
+    "01a0d7fe-5ffe-7987-b318-4837229d5fa8": "strong_proxy",
+    "01a0d7fe-63b0-7ebb-9274-efa6306167eb": "strong_proxy",
+    "01a0d7fe-6761-714b-b4f4-ad59ce2b50d8": "strong_proxy",
+    "01a0d7fe-6b14-7949-a18f-51fc46e4a7bd": "strong_proxy",
+    "01a0d843-39e0-7e60-a190-855a5d4e55dd": "strong_proxy",
+    "01a0d843-3e3f-7d9f-b400-1a3f232ae178": "strong_proxy",
+    "01a0d843-429e-744f-a02d-3f19b87f660f": "strong_proxy",
+    "01a0d843-46fb-7828-bb06-3e0b2bd9c0a4": "strong_proxy",
+    "01a0d85e-b90c-7129-a79a-df7eb79be3c4": "strong_proxy",
+    "01a0d85e-bcf0-72c0-a50f-65fea871d817": "strong_proxy",
+    "01a0d85e-c0d3-7a49-9335-a2e61eef6aac": "strong_proxy",
+    "01a0d85e-c4b7-7d41-bb90-7ee3398808d1": "strong_proxy",
+    "01a0d85e-c89b-7b4b-b359-938e7e228171": "strong_proxy",
+    "01a0d862-bd7e-7344-ae9a-3403e57fbc29": "strong_proxy",
+    "01a0d862-c161-74ac-b43e-fb66cbc5bae6": "strong_proxy",
+    "01a0d862-c544-7cb5-9e11-f7671d269063": "strong_proxy",
+    "01a0d862-c926-7534-96af-cbdc22a5aea9": "strong_proxy",
+    "01a0d862-cd08-7c04-9e45-210de5dafe46": "strong_proxy",
+    "01a0d8cd-85af-7451-800c-e90d09dda663": "strong_proxy",
+    "01a0d8cd-8a79-7629-8dda-f6ee61f741dd": "strong_proxy",
+    "01a0d8cd-8f3d-7525-bf14-53fcff5477d6": "strong_proxy",
+    "01a0d8f0-2ea5-7d3a-8c17-072cf2e8ea82": "strong_proxy",
+    "01a0d936-7349-7fed-9d5f-7466b7857427": "strong_proxy",
+    "01a0d936-77f6-7897-bf93-5f46ebf8a31e": "strong_proxy",
+    "01a0d936-7ca6-7b0c-b5b0-068ada350cfe": "strong_proxy",
+    "01a0d936-8152-7690-ae81-cb54dae6f05b": "strong_proxy",
+    "01a0d936-85ff-7dcc-9cf1-6d0e8c2d9b8f": "strong_proxy",
+    "01a0d936-8aaa-7740-b543-4373b5808821": "strong_proxy",
+    "01a0d936-8f55-7cde-abcd-4f8a9bda8b74": "strong_proxy",
+    "01a0d936-9401-7de9-b17a-3fe0ddb8543d": "strong_proxy",
+    "01a0d9ee-eb37-75b2-bb1c-0226e361ce44": "strong_proxy",
+    "01a0dd7f-7bc0-765c-b43a-8b0eb561e37a": "strong_proxy",
+    "01a0dd7f-805c-725e-8988-1a7f880dd6fb": "strong_proxy",
+    "01a0dd7f-8b5b-7bbf-b13d-b51b27a73a15": "strong_proxy",
+    "01a0dd7f-8ff0-7e00-b7f7-45d22e2e3a77": "strong_proxy",
+    "01a0dd7f-9aed-77ce-b31f-eded9aba3a88": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d176-5d58-771d-811d-3201b483f2d9",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "cross_lingual": 64,
     "distinctive_claim": 21,
@@ -654,6 +898,7 @@
     "semantic_anchored": 2,
     "semantic_xlang": 2
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0e1bf-ce15-7954-8484-8b36b3bf1d87": "misclustered",
     "01a0e1bf-d3c2-7e6a-a3ef-53a18598721d": "misclustered",
@@ -717,8 +962,8 @@
     "01a0e695-cba6-78ac-93c2-863747639ee4": "on_topic_non_driver",
     "01a0e708-b1b8-7311-a923-f29ff0ff3b8e": "on_topic_non_driver"
    },
-   "causes": {
-    "01a0e1bf-ce15-7954-8484-8b36b3bf1d87": "multilingual_merge",
+   "causeProxies": {
+    "01a0e1bf-ce15-7954-8484-8b36b3bf1d87": "broad_event_reuse",
     "01a0e1bf-d3c2-7e6a-a3ef-53a18598721d": "broad_event_reuse",
     "01a0e1bf-f147-7b6d-ad8c-7a757d2cc7f4": "multilingual_merge",
     "01a0e1c0-123a-72db-92fc-929febf0f45b": "broad_event_reuse",
@@ -743,43 +988,95 @@
     "01a0e66f-2445-70e9-bd49-7fb8b1ac8435": "broad_event_reuse",
     "01a0e66f-28b6-7ce5-b195-a535c7985461": "broad_event_reuse",
     "01a0e695-c09b-7f2a-a396-941f518f0c8d": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e1bf-ce15-7954-8484-8b36b3bf1d87": "strong_proxy",
+    "01a0e1bf-d3c2-7e6a-a3ef-53a18598721d": "strong_proxy",
+    "01a0e1bf-f147-7b6d-ad8c-7a757d2cc7f4": "weak_proxy",
+    "01a0e1c0-123a-72db-92fc-929febf0f45b": "strong_proxy",
+    "01a0e203-cc96-7c90-92bf-1fe1f1b01e13": "strong_proxy",
+    "01a0e203-d0bb-7553-8d62-17338b6d5954": "strong_proxy",
+    "01a0e224-75c3-7d6a-8a8e-c96b0bfcc8f1": "strong_proxy",
+    "01a0e224-7a53-724a-9ae1-7afaceb69409": "strong_proxy",
+    "01a0e247-97b3-7ff2-9d0f-c1297184aff7": "strong_proxy",
+    "01a0e268-04b3-77fd-8858-9a9e76d8b08b": "strong_proxy",
+    "01a0e287-e0fc-77f2-ac1d-7f5a351d8532": "strong_proxy",
+    "01a0e287-e5b3-7721-877e-11ea59808363": "strong_proxy",
+    "01a0e287-ea6b-7620-8d2c-7e2e8220d4ee": "strong_proxy",
+    "01a0e287-ef22-79b9-986e-b32ab045f920": "strong_proxy",
+    "01a0e2f8-bc29-7308-8365-0a64a16223c7": "strong_proxy",
+    "01a0e2f8-c831-7f49-88a0-fa0f35f83353": "strong_proxy",
+    "01a0e34b-908d-7e20-b84b-08caca4e001f": "strong_proxy",
+    "01a0e3c0-dbc5-7aa9-92b3-b26b9b0c1528": "strong_proxy",
+    "01a0e4ce-934d-7f21-8aee-49ac8900d426": "strong_proxy",
+    "01a0e4ce-aa3d-7576-9ab7-285ca3ad9877": "strong_proxy",
+    "01a0e66f-1b5c-74fa-a102-b7fbba58d744": "strong_proxy",
+    "01a0e66f-1fd4-7655-bc28-773ed338a14a": "strong_proxy",
+    "01a0e66f-2445-70e9-bd49-7fb8b1ac8435": "strong_proxy",
+    "01a0e66f-28b6-7ce5-b195-a535c7985461": "strong_proxy",
+    "01a0e695-c09b-7f2a-a396-941f518f0c8d": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d176-5de4-7ebb-9961-a40bdf4f0bb7",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 2,
     "headline": 26,
     "rare_token": 2
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0d176-5de0-762b-a749-365d122246f0",
+     "evidenceVersionId": "01a0d176-5de1-7bda-a63b-a37d8bb7702c",
+     "title": "Tây Ban Nha đề xuất cải tổ Hội đồng Bảo an Liên Hợp Quốc"
+    }
+   ],
    "claims": {
     "01a0d4be-35e8-7b88-a360-7dfe06425478": "misclustered",
     "01a0d4be-35ec-7b8e-a9f7-024015221e8d": "misclustered"
    },
-   "causes": {
-    "01a0d4be-35e8-7b88-a360-7dfe06425478": "extraction_wrong_grain",
+   "causeProxies": {
+    "01a0d4be-35e8-7b88-a360-7dfe06425478": "doc_cluster_contamination",
     "01a0d4be-35ec-7b8e-a9f7-024015221e8d": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d4be-35e8-7b88-a360-7dfe06425478": "strong_proxy",
+    "01a0d4be-35ec-7b8e-a9f7-024015221e8d": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d176-5e1f-7671-a188-dd99a8f0449b",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0d176-5e15-7de8-9b15-f97871f04c22",
+     "evidenceVersionId": "01a0d176-5e16-79c2-968f-4466bae7872d",
+     "title": "Argentina chỉ trích Liên Hiệp Quốc, cảnh báo sẽ ‘tự hành động’ trong tranh chấp Falkland/Malvinas"
+    }
+   ],
    "claims": {
     "01a0d556-8db8-7af7-86d0-4ebe374ef6cf": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d556-8db8-7af7-86d0-4ebe374ef6cf": "doc_cluster_contamination"
+   },
+   "causeConfidence": {
+    "01a0d556-8db8-7af7-86d0-4ebe374ef6cf": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 48,
     "rare_token": 11
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d1ab-592c-7c70-aa02-6450d5235994": "on_topic_non_driver",
     "01a0d3ab-13ef-79ae-a8dc-60a9aaa5d056": "misclustered",
@@ -813,12 +1110,12 @@
     "01a0dfe0-7bc8-77ad-af1b-d476a6fd0470": "on_topic_non_driver",
     "01a0dfe0-807c-7eeb-8471-e4c8edaa7d37": "on_topic_non_driver"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d3ab-13ef-79ae-a8dc-60a9aaa5d056": "broad_event_reuse",
     "01a0d3ab-1434-755d-a240-9de5d27b2c31": "broad_event_reuse",
     "01a0d3ab-1438-72f0-a654-17b507127ec6": "broad_event_reuse",
     "01a0d3ab-143d-7280-af46-1e8377923b1b": "broad_event_reuse",
-    "01a0d3e3-4ef0-7891-ae7a-802fdd369aca": "extraction_wrong_grain",
+    "01a0d3e3-4ef0-7891-ae7a-802fdd369aca": "broad_event_reuse",
     "01a0d6f3-7917-7f95-9777-94bd58faa51b": "broad_event_reuse",
     "01a0d7d5-8f56-7730-a6a7-1290cea553c1": "broad_event_reuse",
     "01a0d7d5-938f-78de-a0a8-ac9f48a1bf56": "broad_event_reuse",
@@ -827,40 +1124,73 @@
     "01a0d7d5-a02e-7814-a6e7-8ae022d608a4": "broad_event_reuse",
     "01a0d7d5-a463-7d6d-a030-76d8613147c5": "doc_cluster_contamination",
     "01a0def9-1207-7b08-9202-f52c6a792cac": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d3ab-13ef-79ae-a8dc-60a9aaa5d056": "strong_proxy",
+    "01a0d3ab-1434-755d-a240-9de5d27b2c31": "strong_proxy",
+    "01a0d3ab-1438-72f0-a654-17b507127ec6": "strong_proxy",
+    "01a0d3ab-143d-7280-af46-1e8377923b1b": "strong_proxy",
+    "01a0d3e3-4ef0-7891-ae7a-802fdd369aca": "strong_proxy",
+    "01a0d6f3-7917-7f95-9777-94bd58faa51b": "strong_proxy",
+    "01a0d7d5-8f56-7730-a6a7-1290cea553c1": "strong_proxy",
+    "01a0d7d5-938f-78de-a0a8-ac9f48a1bf56": "strong_proxy",
+    "01a0d7d5-97c4-7fd8-b0c9-65c4b0f976a7": "strong_proxy",
+    "01a0d7d5-9bf9-7ecc-89dd-32e832e50761": "strong_proxy",
+    "01a0d7d5-a02e-7814-a6e7-8ae022d608a4": "strong_proxy",
+    "01a0d7d5-a463-7d6d-a030-76d8613147c5": "strong_proxy",
+    "01a0def9-1207-7b08-9202-f52c6a792cac": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 2,
     "headline": 1
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0d188-7f9c-7b48-b810-a14cbedb29a4",
+     "evidenceVersionId": "01a0d188-7f9e-772e-81c4-cf48fac31f72",
+     "title": "Mỹ nâng tổng mức vốn cho dự án xử lý dioxin tại sân bay Biên Hòa lên 430 triệu USD"
+    }
+   ],
    "claims": {
     "01a0d188-8147-7329-a5af-3380aa54983b": "misclustered",
     "01a0d188-817f-7290-8789-ffb91890b227": "misclustered",
     "01a0d188-8189-7705-82e9-2bd42441ff94": "misclustered",
     "01a0d188-819c-716d-b3cf-a53c9544aee9": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d188-8147-7329-a5af-3380aa54983b": "broad_event_reuse",
     "01a0d188-817f-7290-8789-ffb91890b227": "broad_event_reuse",
     "01a0d188-8189-7705-82e9-2bd42441ff94": "doc_cluster_contamination",
-    "01a0d188-819c-716d-b3cf-a53c9544aee9": "extraction_wrong_grain"
+    "01a0d188-819c-716d-b3cf-a53c9544aee9": "doc_cluster_contamination"
+   },
+   "causeConfidence": {
+    "01a0d188-8147-7329-a5af-3380aa54983b": "strong_proxy",
+    "01a0d188-817f-7290-8789-ffb91890b227": "strong_proxy",
+    "01a0d188-8189-7705-82e9-2bd42441ff94": "strong_proxy",
+    "01a0d188-819c-716d-b3cf-a53c9544aee9": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d188-895c-7c23-9297-812882b10f63",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d188-8962-7656-9416-adc778311d13": "driver"
    },
-   "causes": {}
+   "causeProxies": {},
+   "causeConfidence": {}
   },
   {
    "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "distinctive_claim": 14,
     "generic_claim": 81,
@@ -868,11 +1198,12 @@
     "rare_token": 88,
     "semantic_facet": 4
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d3a9-e6fb-7838-82bc-2063f32c50d5": "on_topic_non_driver",
     "01a0d3a9-e6ff-73e0-9044-693373aa0d88": "on_topic_non_driver",
     "01a0d3a9-e704-7dff-a84d-f6d9513c78f8": "on_topic_non_driver",
-    "01a0d6f2-a7be-77b9-a9e6-6ec5eaa70d1c": "misclustered",
+    "01a0d6f2-a7be-77b9-a9e6-6ec5eaa70d1c": "on_topic_non_driver",
     "01a0d6f2-a7d8-7188-a1ec-6ccd6a958a32": "on_topic_non_driver",
     "01a0d6f2-a7dc-7ec1-9cdc-f47cd19db471": "on_topic_non_driver",
     "01a0d6f2-a7e1-7c62-a2fa-2c8329016543": "misclustered",
@@ -1006,11 +1337,10 @@
     "01a0e472-cfbc-7440-877a-6ab291dd2f57": "on_topic_non_driver",
     "01a0e4f5-3abd-700d-baff-b37d529f7c10": "on_topic_non_driver"
    },
-   "causes": {
-    "01a0d6f2-a7be-77b9-a9e6-6ec5eaa70d1c": "broad_event_reuse",
+   "causeProxies": {
     "01a0d6f2-a7e1-7c62-a2fa-2c8329016543": "broad_event_reuse",
     "01a0d6f2-a7e6-7cc9-89d6-6e6788c88f4f": "broad_event_reuse",
-    "01a0d7c7-276f-75eb-b81d-77e9236e52c8": "extraction_wrong_grain",
+    "01a0d7c7-276f-75eb-b81d-77e9236e52c8": "doc_cluster_contamination",
     "01a0d7fc-ca94-7cb6-a8ee-2329253e989c": "broad_event_reuse",
     "01a0d7fc-d7e1-729c-bd26-459ba5dcc9a3": "broad_event_reuse",
     "01a0d934-d78b-7107-b406-626028ddca6b": "broad_event_reuse",
@@ -1037,29 +1367,66 @@
     "01a0e1c5-0172-77c2-893d-91562868482f": "broad_event_reuse",
     "01a0e207-4429-7cae-88e2-cbc7fe0cab0c": "broad_event_reuse",
     "01a0e26b-b289-77a9-bba9-f8c055815f01": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d6f2-a7e1-7c62-a2fa-2c8329016543": "strong_proxy",
+    "01a0d6f2-a7e6-7cc9-89d6-6e6788c88f4f": "strong_proxy",
+    "01a0d7c7-276f-75eb-b81d-77e9236e52c8": "strong_proxy",
+    "01a0d7fc-ca94-7cb6-a8ee-2329253e989c": "strong_proxy",
+    "01a0d7fc-d7e1-729c-bd26-459ba5dcc9a3": "strong_proxy",
+    "01a0d934-d78b-7107-b406-626028ddca6b": "strong_proxy",
+    "01a0d934-ea7e-729b-9329-98f2c7b61fc4": "strong_proxy",
+    "01a0d935-0b38-725d-9006-4c1ce36f1992": "strong_proxy",
+    "01a0d935-0fe6-7753-aed4-a8ad39e84a5e": "strong_proxy",
+    "01a0d935-1492-7384-91f5-d4959a920857": "strong_proxy",
+    "01a0d935-193d-7a0e-a407-8c93aadb7942": "strong_proxy",
+    "01a0db1c-34c5-7e20-9414-a318786d71cb": "strong_proxy",
+    "01a0db1c-383c-7692-9fe8-be40b5ae37db": "strong_proxy",
+    "01a0db1c-3bb3-7685-99a3-fa35b7368350": "strong_proxy",
+    "01a0dc09-0dea-76b5-b659-9167895a0ca9": "strong_proxy",
+    "01a0dc55-e019-75e7-b73b-390025445a27": "strong_proxy",
+    "01a0dc55-e4c0-7580-bd83-09631919c715": "strong_proxy",
+    "01a0dc55-e966-79f0-925e-c59da16c0875": "strong_proxy",
+    "01a0dc55-ee0c-78c4-b5f1-a12c586c47a8": "strong_proxy",
+    "01a0dc55-f2b2-738c-b6b6-80de80beb161": "strong_proxy",
+    "01a0dc55-f757-73fe-bcfc-254ca739f627": "strong_proxy",
+    "01a0dd31-e6c0-7e05-a648-a800e36ca04d": "strong_proxy",
+    "01a0dd54-be49-7664-b86f-670388f0cc43": "strong_proxy",
+    "01a0dd79-9ffb-7841-9ea2-c1787c2e1407": "strong_proxy",
+    "01a0dece-9229-7885-a6d1-a7fa3ffd047d": "strong_proxy",
+    "01a0dece-a734-729e-9c43-1c6598380dce": "strong_proxy",
+    "01a0e1c5-0172-77c2-893d-91562868482f": "strong_proxy",
+    "01a0e207-4429-7cae-88e2-cbc7fe0cab0c": "strong_proxy",
+    "01a0e26b-b289-77a9-bba9-f8c055815f01": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d3a9-fa8d-70fd-bcd0-f9a121a440ad",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d3a9-fc6d-7eaf-9f81-5a903f309caf": "on_topic_non_driver",
-    "01a0d3a9-fc75-72c8-a31a-a287e5986b6a": "misclustered",
+    "01a0d3a9-fc75-72c8-a31a-a287e5986b6a": "on_topic_non_driver",
     "01a0d3f1-e9b8-766b-9e57-bbae4e87e60f": "misclustered"
    },
-   "causes": {
-    "01a0d3a9-fc75-72c8-a31a-a287e5986b6a": "broad_event_reuse",
+   "causeProxies": {
     "01a0d3f1-e9b8-766b-9e57-bbae4e87e60f": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d3f1-e9b8-766b-9e57-bbae4e87e60f": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d3aa-015a-771e-9c56-3370111f97ef",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 36,
     "headline": 1
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d83e-2cea-7aa7-90eb-7278e861e3ff": "misclustered",
     "01a0d83e-3160-76ba-b1b0-462592f1f21b": "on_topic_non_driver",
@@ -1121,7 +1488,7 @@
     "01a0dc52-891c-7ae5-82ca-2a880c3b47c4": "misclustered",
     "01a0dc52-8dc6-7fbd-a93d-86ef3658b348": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d83e-2cea-7aa7-90eb-7278e861e3ff": "broad_event_reuse",
     "01a0d877-c96d-7aba-bd70-885852a936c3": "broad_event_reuse",
     "01a0d877-cd95-7e83-b1c6-bba7fab4ef49": "broad_event_reuse",
@@ -1139,13 +1506,13 @@
     "01a0da98-0a6f-7c39-b0c6-31f182e0555d": "broad_event_reuse",
     "01a0db17-1ecf-74a1-a1e5-9d5f0fde799a": "broad_event_reuse",
     "01a0db17-2253-73f1-87fc-061233311214": "broad_event_reuse",
-    "01a0db9f-aa49-726e-b462-edf444dd86bd": "extraction_wrong_grain",
-    "01a0db9f-ae85-7fa4-afba-6d019167808c": "extraction_wrong_grain",
+    "01a0db9f-aa49-726e-b462-edf444dd86bd": "broad_event_reuse",
+    "01a0db9f-ae85-7fa4-afba-6d019167808c": "broad_event_reuse",
     "01a0db9f-b2bc-7ad0-8dff-1795d7ffd375": "broad_event_reuse",
     "01a0db9f-bb2d-700b-8cba-2d19e523c073": "broad_event_reuse",
     "01a0db9f-bf60-7b53-8cd9-77b6a6f0c970": "broad_event_reuse",
     "01a0dbe9-54a3-7a50-97e1-34d5acaa3786": "broad_event_reuse",
-    "01a0dbe9-583c-7501-983e-b1ea620f5613": "extraction_wrong_grain",
+    "01a0dbe9-583c-7501-983e-b1ea620f5613": "broad_event_reuse",
     "01a0dbee-4bcc-7c02-9c1a-bf6d1f301a0e": "broad_event_reuse",
     "01a0dbee-4f64-732a-bcec-4606eaed2cfb": "broad_event_reuse",
     "01a0dbee-52ff-7a35-9517-107be1db1ea3": "broad_event_reuse",
@@ -1163,15 +1530,60 @@
     "01a0dc4b-33d5-7664-8a8e-5417ba2eca14": "broad_event_reuse",
     "01a0dc52-891c-7ae5-82ca-2a880c3b47c4": "broad_event_reuse",
     "01a0dc52-8dc6-7fbd-a93d-86ef3658b348": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d83e-2cea-7aa7-90eb-7278e861e3ff": "strong_proxy",
+    "01a0d877-c96d-7aba-bd70-885852a936c3": "strong_proxy",
+    "01a0d877-cd95-7e83-b1c6-bba7fab4ef49": "strong_proxy",
+    "01a0d877-d1bd-7b55-a0f1-086a1c6214d9": "strong_proxy",
+    "01a0d8f6-547b-7e3b-9627-14e6366ea371": "strong_proxy",
+    "01a0d8f6-5921-7864-b4de-5bf534ab2d0b": "strong_proxy",
+    "01a0d8f6-5dc2-7ff9-aee2-ffbdda921c7b": "strong_proxy",
+    "01a0d8f6-6261-760b-a20b-812503e35892": "strong_proxy",
+    "01a0d8f6-6707-701b-864c-526d9b30a749": "strong_proxy",
+    "01a0d8f6-6ba7-7c66-8fc0-165304ed736e": "strong_proxy",
+    "01a0d9eb-6fa1-7fb7-a03f-bc866bf9daed": "strong_proxy",
+    "01a0da97-ef7c-77ec-8689-ef39e221dde2": "strong_proxy",
+    "01a0da98-0177-7ba2-ba0d-e6f68a8566aa": "strong_proxy",
+    "01a0da98-05f3-7d92-ba40-418b085f9303": "strong_proxy",
+    "01a0da98-0a6f-7c39-b0c6-31f182e0555d": "strong_proxy",
+    "01a0db17-1ecf-74a1-a1e5-9d5f0fde799a": "strong_proxy",
+    "01a0db17-2253-73f1-87fc-061233311214": "strong_proxy",
+    "01a0db9f-aa49-726e-b462-edf444dd86bd": "strong_proxy",
+    "01a0db9f-ae85-7fa4-afba-6d019167808c": "strong_proxy",
+    "01a0db9f-b2bc-7ad0-8dff-1795d7ffd375": "strong_proxy",
+    "01a0db9f-bb2d-700b-8cba-2d19e523c073": "strong_proxy",
+    "01a0db9f-bf60-7b53-8cd9-77b6a6f0c970": "strong_proxy",
+    "01a0dbe9-54a3-7a50-97e1-34d5acaa3786": "strong_proxy",
+    "01a0dbe9-583c-7501-983e-b1ea620f5613": "strong_proxy",
+    "01a0dbee-4bcc-7c02-9c1a-bf6d1f301a0e": "strong_proxy",
+    "01a0dbee-4f64-732a-bcec-4606eaed2cfb": "strong_proxy",
+    "01a0dbee-52ff-7a35-9517-107be1db1ea3": "strong_proxy",
+    "01a0dbee-5694-75e3-a928-4a87e44e8dc3": "strong_proxy",
+    "01a0dbee-5a30-75dd-b4f7-8fb562d5e727": "strong_proxy",
+    "01a0dc05-9fc1-7a33-adff-0f5dc1c9c77d": "strong_proxy",
+    "01a0dc05-a8c9-724a-b01a-acb2023861f9": "strong_proxy",
+    "01a0dc0a-a6fc-74a1-848e-a84c44342730": "strong_proxy",
+    "01a0dc0a-b2d5-7e8a-b803-00f0a9f12272": "strong_proxy",
+    "01a0dc0a-bda6-7a4c-9e2d-d1c533d01826": "strong_proxy",
+    "01a0dc27-264b-7997-b1ce-9e3feb72aaa9": "strong_proxy",
+    "01a0dc27-2b08-7499-a0da-7a32e10288b1": "strong_proxy",
+    "01a0dc27-2fba-7963-b16b-5721bf780c93": "strong_proxy",
+    "01a0dc27-346e-7d7c-b2d7-b73b420d85eb": "strong_proxy",
+    "01a0dc4b-33d5-7664-8a8e-5417ba2eca14": "strong_proxy",
+    "01a0dc52-891c-7ae5-82ca-2a880c3b47c4": "strong_proxy",
+    "01a0dc52-8dc6-7fbd-a93d-86ef3658b348": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d3aa-1e1f-7fa2-be33-1af697eaec0a",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "bigram_entity": 2,
     "person": 1
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d3aa-1efb-7f27-b645-9f18608047d0": "on_topic_non_driver",
     "01a0d4be-1eaf-7722-9ae2-1992554f6434": "misclustered",
@@ -1208,7 +1620,7 @@
     "01a0e04b-b309-7d57-afed-3e2c5da257f6": "misclustered",
     "01a0e04b-b40c-7410-a500-391b0b28171f": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d4be-1eaf-7722-9ae2-1992554f6434": "broad_event_reuse",
     "01a0d704-de1a-7ca1-a261-91980aa462a2": "broad_event_reuse",
     "01a0d90d-001a-7df0-a084-3c699e2934ce": "broad_event_reuse",
@@ -1224,11 +1636,29 @@
     "01a0e04b-b208-7faf-a390-6d56f89102b5": "broad_event_reuse",
     "01a0e04b-b309-7d57-afed-3e2c5da257f6": "broad_event_reuse",
     "01a0e04b-b40c-7410-a500-391b0b28171f": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d4be-1eaf-7722-9ae2-1992554f6434": "strong_proxy",
+    "01a0d704-de1a-7ca1-a261-91980aa462a2": "strong_proxy",
+    "01a0d90d-001a-7df0-a084-3c699e2934ce": "strong_proxy",
+    "01a0d90d-049c-74e6-b901-dfb8984e883c": "strong_proxy",
+    "01a0d90d-182b-75ca-a3e0-e9d49806a3bb": "strong_proxy",
+    "01a0d90d-1c99-7962-b03a-2b78d47f1c57": "strong_proxy",
+    "01a0da9e-78ea-78d5-99c9-c7e13dd8ad38": "strong_proxy",
+    "01a0da9e-7d5b-7ba8-925a-c5a7fc22151d": "strong_proxy",
+    "01a0da9e-81cb-780b-9e37-c6c1fe7b325a": "strong_proxy",
+    "01a0da9e-863c-7648-b7cb-47d42f6faf7f": "strong_proxy",
+    "01a0da9e-8aad-7ea4-83bf-58ec193dd8ed": "strong_proxy",
+    "01a0da9e-8f1e-7a41-9a14-ca9949a1bb24": "strong_proxy",
+    "01a0e04b-b208-7faf-a390-6d56f89102b5": "strong_proxy",
+    "01a0e04b-b309-7d57-afed-3e2c5da257f6": "strong_proxy",
+    "01a0e04b-b40c-7410-a500-391b0b28171f": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "bigram_entity": 23,
     "cross_lingual": 73,
@@ -1238,6 +1668,7 @@
     "rare_token": 20,
     "semantic_anchored": 4
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0db29-ad78-7b21-906e-c3e0f71591bd": "on_topic_non_driver",
     "01a0dba2-6d07-7141-9557-eec794377764": "on_topic_non_driver",
@@ -1280,7 +1711,7 @@
     "01a0e702-b33c-7133-a375-66993f07b3a8": "on_topic_non_driver",
     "01a0e702-b75a-7214-8c2e-5f7fdaa64c5c": "on_topic_non_driver"
    },
-   "causes": {
+   "causeProxies": {
     "01a0dba2-713a-7af5-9b7b-9ff035b9af74": "broad_event_reuse",
     "01a0dba2-756c-765e-b4b5-c61f4798f3cd": "broad_event_reuse",
     "01a0dba2-799e-712c-9fd7-18e27c5eef93": "broad_event_reuse",
@@ -1291,21 +1722,41 @@
     "01a0dc29-fea2-7dbb-be60-874f2d82033c": "broad_event_reuse",
     "01a0e6da-6e0d-78b8-ad13-b14ef939cdf8": "doc_cluster_contamination",
     "01a0e702-a6e3-7191-accc-0a04ef64f335": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0dba2-713a-7af5-9b7b-9ff035b9af74": "strong_proxy",
+    "01a0dba2-756c-765e-b4b5-c61f4798f3cd": "strong_proxy",
+    "01a0dba2-799e-712c-9fd7-18e27c5eef93": "strong_proxy",
+    "01a0dc07-17e1-7c6f-a4cd-9f63b8193fab": "strong_proxy",
+    "01a0dc29-d80b-7075-b989-d70c5a2f0310": "weak_proxy",
+    "01a0dc29-ef97-732f-a3cf-5fca3b3a5e9a": "strong_proxy",
+    "01a0dc29-f9ef-78de-b0df-e8598f0fd900": "strong_proxy",
+    "01a0dc29-fea2-7dbb-be60-874f2d82033c": "strong_proxy",
+    "01a0e6da-6e0d-78b8-ad13-b14ef939cdf8": "strong_proxy",
+    "01a0e702-a6e3-7191-accc-0a04ef64f335": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d45b-31f3-75a7-9095-fe6d4d20eff6",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
-    "01a0d45b-3304-7463-a2d5-ce37fa52f072": "on_topic_non_driver",
+    "01a0d45b-3304-7463-a2d5-ce37fa52f072": "misclustered",
     "01a0d4f1-cd84-7b9a-8c1d-22ab59878305": "on_topic_non_driver"
    },
-   "causes": {}
+   "causeProxies": {
+    "01a0d45b-3304-7463-a2d5-ce37fa52f072": "doc_cluster_contamination"
+   },
+   "causeConfidence": {
+    "01a0d45b-3304-7463-a2d5-ce37fa52f072": "strong_proxy"
+   }
   },
   {
    "eventId": "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "cross_lingual": 32,
     "distinctive_claim": 28,
@@ -1317,6 +1768,48 @@
     "semantic_facet": 5,
     "semantic_xlang": 1
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0d4e6-e903-7146-944d-c3d4102c986c",
+     "evidenceVersionId": "01a0d4e6-e905-70fb-8705-894627f5eb0b",
+     "title": "White House restores CNN, MS NOW, Politico access after hours of chaos"
+    },
+    {
+     "documentId": "01a0d4e6-e908-7d28-87f8-0e78736c43cd",
+     "evidenceVersionId": "01a0d4e6-e90b-7a71-88f4-c7b652a1161f",
+     "title": "White House reinstates access to CNN, MS NOW and Politico"
+    },
+    {
+     "documentId": "01a0d4e6-e912-7878-914e-86f20ca97dde",
+     "evidenceVersionId": "01a0d4e6-e915-7908-8ed2-9074fccfe4b0",
+     "title": "🔴 CNN, MS NOW, Politico still barred from White House despite court ruling"
+    },
+    {
+     "documentId": "01a0d3a5-8166-7f72-bb2e-4d73e34455b5",
+     "evidenceVersionId": "01a0d3a5-8169-7b27-b507-03ba6bb676a1",
+     "title": "Thẩm phán Mỹ bác lệnh cấm của ông Trump với CNN, MS NOW và Politico"
+    },
+    {
+     "documentId": "01a0d46d-8319-7c84-9eb5-c264fb552ec8",
+     "evidenceVersionId": "01a0d46d-831b-74d2-a26e-5b109a1c188e",
+     "title": "CNN, MS NOW, Politico regain access to White House"
+    },
+    {
+     "documentId": "01a0dc47-8256-77b4-9f4f-ce6adcf8faf3",
+     "evidenceVersionId": "01a0dc47-842c-7825-b4c3-3e7d0fe15779",
+     "title": "White House bars CNN from travelling with Trump on Air Force One"
+    },
+    {
+     "documentId": "01a0dfb4-2610-7519-9670-fed925936d38",
+     "evidenceVersionId": "01a0dfb4-27a9-78a7-9293-1901e78a8f85",
+     "title": "CNN Says White House Didn't Allow It To Board Trump's Air Force One"
+    },
+    {
+     "documentId": "01a0dbe6-9e0c-75d9-86a8-32dbe1948cb9",
+     "evidenceVersionId": "01a0dbe6-9f7d-7243-9b64-2694407f5d3f",
+     "title": "CNN blocked from Trump’s trip as White House signals new media curb"
+    }
+   ],
    "claims": {
     "01a0e081-61fa-7635-a5d7-26c38291df41": "misclustered",
     "01a0e081-632c-7b13-acba-e63b62e0a484": "misclustered",
@@ -1418,7 +1911,7 @@
     "01a0e94c-dffe-789f-9b32-480ef3f57027": "misclustered",
     "01a0ea89-b1d8-7cca-96cb-148da640ed16": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e081-61fa-7635-a5d7-26c38291df41": "broad_event_reuse",
     "01a0e081-632c-7b13-acba-e63b62e0a484": "broad_event_reuse",
     "01a0e081-67c7-76f4-ad50-72f84487e0f6": "broad_event_reuse",
@@ -1439,7 +1932,7 @@
     "01a0e0c9-4b52-71cf-af60-941805803970": "multilingual_merge",
     "01a0e0c9-4f3a-7a6f-943e-230d35bad45b": "multilingual_merge",
     "01a0e0c9-531e-7d50-a1a6-cc0dfd2dfbad": "multilingual_merge",
-    "01a0e19d-2daa-7ef3-8286-be8a6b1616b2": "doc_cluster_contamination",
+    "01a0e19d-2daa-7ef3-8286-be8a6b1616b2": "multilingual_merge",
     "01a0e19d-390c-7a7b-bf13-4b1a9f589f3e": "multilingual_merge",
     "01a0e19d-3d6c-7129-ad4e-662324877a21": "multilingual_merge",
     "01a0e19e-ef65-7494-acd7-45c765b86a0b": "multilingual_merge",
@@ -1465,18 +1958,18 @@
     "01a0e227-1cae-7150-9d21-7ae6c7a2a5cf": "multilingual_merge",
     "01a0e227-27a4-7744-90e8-11c36d849e5b": "multilingual_merge",
     "01a0e24a-26af-7399-9f81-b8d4490b5cb3": "multilingual_merge",
-    "01a0e24a-3631-75d5-b1cd-8065ac03fc2f": "doc_cluster_contamination",
+    "01a0e24a-3631-75d5-b1cd-8065ac03fc2f": "multilingual_merge",
     "01a0e26a-2de7-70e2-9246-1692c98f4c68": "multilingual_merge",
     "01a0e26a-31c4-73b3-a226-eb44745d7604": "multilingual_merge",
     "01a0e26a-3a87-7740-9b37-fddbc1035bdb": "multilingual_merge",
     "01a0e283-95b9-7ca6-b611-035ff26003e5": "multilingual_merge",
-    "01a0e2a4-0700-7efa-92d6-09f6032eda1c": "doc_cluster_contamination",
+    "01a0e2a4-0700-7efa-92d6-09f6032eda1c": "multilingual_merge",
     "01a0e2a4-1127-796a-a66b-9ee42021023c": "multilingual_merge",
     "01a0e2a4-1507-7d67-a57f-64da22afab98": "multilingual_merge",
     "01a0e2a8-f369-72db-9fa2-6aae1b8feba2": "multilingual_merge",
     "01a0e2a9-009a-749a-acff-b8ecdb7a9934": "multilingual_merge",
     "01a0e2dc-1388-7705-b2a2-008097785241": "multilingual_merge",
-    "01a0e2dc-14a6-7b14-9747-8f6d8807c9ef": "doc_cluster_contamination",
+    "01a0e2dc-14a6-7b14-9747-8f6d8807c9ef": "multilingual_merge",
     "01a0e2dc-15c4-765c-b5f3-750c8c64d412": "multilingual_merge",
     "01a0e2df-6241-734f-a0b4-0227ad06cc69": "multilingual_merge",
     "01a0e2fa-52c5-7d17-91c3-94c107ac7ecd": "multilingual_merge",
@@ -1498,7 +1991,7 @@
     "01a0e3ee-960e-75f7-8017-e1ccaef70c0a": "multilingual_merge",
     "01a0e427-c17e-7540-87be-5983e1a6bfe6": "multilingual_merge",
     "01a0e427-cee5-7fb3-867a-200f050780e6": "multilingual_merge",
-    "01a0e445-69ff-7d70-806a-6af33c8d3a62": "doc_cluster_contamination",
+    "01a0e445-69ff-7d70-806a-6af33c8d3a62": "multilingual_merge",
     "01a0e445-757d-7250-aac7-a6cf1a267bb2": "multilingual_merge",
     "01a0e46f-4926-702c-9796-e5d5721faf39": "broad_event_reuse",
     "01a0e4cb-d7ee-77ed-b92c-ca96db50602b": "multilingual_merge",
@@ -1515,14 +2008,116 @@
     "01a0e6ff-1bc1-723a-b8b9-bde6d4cca192": "multilingual_merge",
     "01a0e94c-c6ec-7688-92e4-622e507f0b1e": "multilingual_merge",
     "01a0e94c-cc7e-7071-a9f7-01d437eb6b0b": "broad_event_reuse",
-    "01a0e94c-d210-71b7-a2fb-7e12a3967cf7": "doc_cluster_contamination",
+    "01a0e94c-d210-71b7-a2fb-7e12a3967cf7": "broad_event_reuse",
     "01a0e94c-dffe-789f-9b32-480ef3f57027": "multilingual_merge",
     "01a0ea89-b1d8-7cca-96cb-148da640ed16": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e081-61fa-7635-a5d7-26c38291df41": "strong_proxy",
+    "01a0e081-632c-7b13-acba-e63b62e0a484": "strong_proxy",
+    "01a0e081-67c7-76f4-ad50-72f84487e0f6": "strong_proxy",
+    "01a0e081-6a8a-7089-9ff4-a25d99803f99": "weak_proxy",
+    "01a0e081-6bb0-7e7f-a290-184eefddd283": "weak_proxy",
+    "01a0e081-6ea8-7788-85e3-01fd00dbc3b3": "weak_proxy",
+    "01a0e081-716c-78a1-838e-fabc233fe877": "weak_proxy",
+    "01a0e081-728e-7f55-9523-fa5f658eca7a": "weak_proxy",
+    "01a0e081-73b4-7910-8e62-e0f3464c8fbd": "weak_proxy",
+    "01a0e085-4cb8-75ca-8b54-a5d1a534a9ef": "weak_proxy",
+    "01a0e085-4dde-7f8d-b5f9-9a9bfb517b6b": "weak_proxy",
+    "01a0e085-50dc-7f99-a150-362d9c951097": "strong_proxy",
+    "01a0e085-5205-7919-ab16-63cea17694c5": "strong_proxy",
+    "01a0e08f-f8a9-7b8b-ae62-ae12388469b5": "weak_proxy",
+    "01a0e08f-fae2-7966-a856-da08f0b0ca13": "weak_proxy",
+    "01a0e08f-fd4c-7c93-bc74-ab7bf91abe06": "weak_proxy",
+    "01a0e0c9-4766-717e-8729-371cc9ea1d27": "weak_proxy",
+    "01a0e0c9-4b52-71cf-af60-941805803970": "weak_proxy",
+    "01a0e0c9-4f3a-7a6f-943e-230d35bad45b": "weak_proxy",
+    "01a0e0c9-531e-7d50-a1a6-cc0dfd2dfbad": "weak_proxy",
+    "01a0e19d-2daa-7ef3-8286-be8a6b1616b2": "weak_proxy",
+    "01a0e19d-390c-7a7b-bf13-4b1a9f589f3e": "weak_proxy",
+    "01a0e19d-3d6c-7129-ad4e-662324877a21": "weak_proxy",
+    "01a0e19e-ef65-7494-acd7-45c765b86a0b": "weak_proxy",
+    "01a0e19e-f3c4-7ed4-8e60-ec47fc839252": "weak_proxy",
+    "01a0e19e-f822-7eeb-8d1b-1a9a5001e2c7": "weak_proxy",
+    "01a0e19e-fc7f-7061-972f-5c3ccbee848e": "weak_proxy",
+    "01a0e19f-00df-79af-bdeb-6c3f394e9cda": "weak_proxy",
+    "01a0e1c2-b305-7448-bebc-7c1fc81f3c25": "weak_proxy",
+    "01a0e1c2-bdb7-7dce-9452-ea1bc2e6e204": "weak_proxy",
+    "01a0e1c2-c22b-7ec3-95d0-81db44934705": "weak_proxy",
+    "01a0e1c2-c69f-7064-82c4-2d10c8c6f3ef": "weak_proxy",
+    "01a0e1e2-fb15-7560-a72f-d31b5d8d4160": "weak_proxy",
+    "01a0e1e2-ffd2-727c-a734-51ebddf1b785": "weak_proxy",
+    "01a0e1e3-14de-795e-be1e-4f06c118456b": "weak_proxy",
+    "01a0e1e7-bd6f-76b5-80f9-7824a1320807": "weak_proxy",
+    "01a0e1e7-c1ff-730c-b8ac-b9ed5d5ecd68": "weak_proxy",
+    "01a0e1e7-c68d-7119-ab5e-704d909fec7e": "weak_proxy",
+    "01a0e1e7-cb1a-769e-93e6-0d3dba84cf5a": "weak_proxy",
+    "01a0e1e7-cfa6-792d-b0aa-1f298e5efd54": "weak_proxy",
+    "01a0e1e7-d43a-779b-a510-1c50b7e09a0c": "weak_proxy",
+    "01a0e205-de88-7caa-abbe-cbe9a8895a94": "weak_proxy",
+    "01a0e205-ed5e-7687-82da-316f43173ee6": "weak_proxy",
+    "01a0e227-1cae-7150-9d21-7ae6c7a2a5cf": "weak_proxy",
+    "01a0e227-27a4-7744-90e8-11c36d849e5b": "weak_proxy",
+    "01a0e24a-26af-7399-9f81-b8d4490b5cb3": "weak_proxy",
+    "01a0e24a-3631-75d5-b1cd-8065ac03fc2f": "weak_proxy",
+    "01a0e26a-2de7-70e2-9246-1692c98f4c68": "weak_proxy",
+    "01a0e26a-31c4-73b3-a226-eb44745d7604": "weak_proxy",
+    "01a0e26a-3a87-7740-9b37-fddbc1035bdb": "weak_proxy",
+    "01a0e283-95b9-7ca6-b611-035ff26003e5": "weak_proxy",
+    "01a0e2a4-0700-7efa-92d6-09f6032eda1c": "weak_proxy",
+    "01a0e2a4-1127-796a-a66b-9ee42021023c": "weak_proxy",
+    "01a0e2a4-1507-7d67-a57f-64da22afab98": "weak_proxy",
+    "01a0e2a8-f369-72db-9fa2-6aae1b8feba2": "weak_proxy",
+    "01a0e2a9-009a-749a-acff-b8ecdb7a9934": "weak_proxy",
+    "01a0e2dc-1388-7705-b2a2-008097785241": "weak_proxy",
+    "01a0e2dc-14a6-7b14-9747-8f6d8807c9ef": "weak_proxy",
+    "01a0e2dc-15c4-765c-b5f3-750c8c64d412": "weak_proxy",
+    "01a0e2df-6241-734f-a0b4-0227ad06cc69": "weak_proxy",
+    "01a0e2fa-52c5-7d17-91c3-94c107ac7ecd": "weak_proxy",
+    "01a0e2fb-c51d-7bc6-84f1-a1a68844a76d": "weak_proxy",
+    "01a0e2fb-d288-7927-9666-5de9f1d91ad2": "weak_proxy",
+    "01a0e2fb-d60d-7fbc-977f-b4612ee789c8": "weak_proxy",
+    "01a0e311-86d0-70a3-8290-5df8957ff5cc": "weak_proxy",
+    "01a0e311-90fc-7a6e-8cee-2d99bbc75560": "weak_proxy",
+    "01a0e311-9595-721e-85a0-ce57fb33a25b": "weak_proxy",
+    "01a0e332-4d2b-7dcf-a4f8-ef8e1f70bd7c": "weak_proxy",
+    "01a0e332-5520-78d4-bd7d-c75ded66b1bd": "weak_proxy",
+    "01a0e34d-d545-73f4-9cd9-850f53eac351": "weak_proxy",
+    "01a0e36b-637f-7400-91fd-9f9bd4e972d6": "weak_proxy",
+    "01a0e36b-726a-7afc-acf1-a01958d06c58": "weak_proxy",
+    "01a0e3c3-2610-731d-ab52-44dd327d8160": "weak_proxy",
+    "01a0e3c3-3130-75b7-91b7-b3f5cd4c6b31": "weak_proxy",
+    "01a0e3c3-41d4-72bc-a51c-1053deb63b90": "weak_proxy",
+    "01a0e3ee-9271-71ec-8c91-66f25898025d": "weak_proxy",
+    "01a0e3ee-960e-75f7-8017-e1ccaef70c0a": "weak_proxy",
+    "01a0e427-c17e-7540-87be-5983e1a6bfe6": "weak_proxy",
+    "01a0e427-cee5-7fb3-867a-200f050780e6": "weak_proxy",
+    "01a0e445-69ff-7d70-806a-6af33c8d3a62": "weak_proxy",
+    "01a0e445-757d-7250-aac7-a6cf1a267bb2": "weak_proxy",
+    "01a0e46f-4926-702c-9796-e5d5721faf39": "strong_proxy",
+    "01a0e4cb-d7ee-77ed-b92c-ca96db50602b": "weak_proxy",
+    "01a0e55d-7b93-74da-9251-0bd1cde635f9": "weak_proxy",
+    "01a0e55d-9550-766e-9bb9-93d94afb7658": "weak_proxy",
+    "01a0e671-edef-7ec4-8298-766a7f8caafb": "weak_proxy",
+    "01a0e671-f267-7e8f-b46e-b14a815c8670": "weak_proxy",
+    "01a0e672-15b7-71d0-b7fe-c764fbeccb1f": "weak_proxy",
+    "01a0e698-ef61-791b-8249-da18f7515446": "weak_proxy",
+    "01a0e698-ff05-73a5-8d7b-ffddf6bbc954": "weak_proxy",
+    "01a0e6ff-0f73-77fc-90b3-0b97f4ffff72": "weak_proxy",
+    "01a0e6ff-1391-78e2-92db-56593635b0a5": "weak_proxy",
+    "01a0e6ff-17a9-7375-8d62-f1a4c4c99e31": "weak_proxy",
+    "01a0e6ff-1bc1-723a-b8b9-bde6d4cca192": "weak_proxy",
+    "01a0e94c-c6ec-7688-92e4-622e507f0b1e": "weak_proxy",
+    "01a0e94c-cc7e-7071-a9f7-01d437eb6b0b": "strong_proxy",
+    "01a0e94c-d210-71b7-a2fb-7e12a3967cf7": "strong_proxy",
+    "01a0e94c-dffe-789f-9b32-480ef3f57027": "weak_proxy",
+    "01a0ea89-b1d8-7cca-96cb-148da640ed16": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d705-3297-788d-8cef-837eac649a7a",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "cross_lingual": 3,
     "distinctive_claim": 1,
@@ -1532,6 +2127,7 @@
     "rare_token": 32,
     "semantic_anchored": 1
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d7d1-6cbc-7d95-b102-c2c38daaff57": "on_topic_non_driver",
     "01a0d7d1-70f8-7438-b8f0-a4d8e8128e28": "on_topic_non_driver",
@@ -1582,7 +2178,7 @@
     "01a0e352-67dc-7e61-80b0-312d6a1f062b": "misclustered",
     "01a0e352-6c0e-7111-bf50-b5aa186d455d": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d9f2-1b56-7927-ad95-9b4fded6e5a6": "multilingual_merge",
     "01a0dbec-1709-7562-b093-4ee946bd77f6": "broad_event_reuse",
     "01a0dc2d-0b47-70e8-ab74-60d4aa24958b": "broad_event_reuse",
@@ -1596,25 +2192,53 @@
     "01a0e352-63aa-777a-951c-1df7a79be056": "broad_event_reuse",
     "01a0e352-67dc-7e61-80b0-312d6a1f062b": "broad_event_reuse",
     "01a0e352-6c0e-7111-bf50-b5aa186d455d": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d9f2-1b56-7927-ad95-9b4fded6e5a6": "weak_proxy",
+    "01a0dbec-1709-7562-b093-4ee946bd77f6": "strong_proxy",
+    "01a0dc2d-0b47-70e8-ab74-60d4aa24958b": "strong_proxy",
+    "01a0dc2d-0ffa-7251-b0ff-892949853863": "strong_proxy",
+    "01a0dcf1-d306-772f-b316-f305aaf9828c": "strong_proxy",
+    "01a0de3b-301e-76e3-b850-24bd7eb9d01a": "strong_proxy",
+    "01a0de3b-34ce-7358-bcc7-0303936cce51": "strong_proxy",
+    "01a0e0f3-c983-7cc9-9215-e50d6d4a7034": "strong_proxy",
+    "01a0e352-5b43-7db4-a071-db87421562e6": "strong_proxy",
+    "01a0e352-5f78-72a0-87f0-130140dd62ba": "strong_proxy",
+    "01a0e352-63aa-777a-951c-1df7a79be056": "strong_proxy",
+    "01a0e352-67dc-7e61-80b0-312d6a1f062b": "strong_proxy",
+    "01a0e352-6c0e-7111-bf50-b5aa186d455d": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d788-fa78-7d20-b18e-65f6bf4ede9d",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0d788-f9c8-709f-903b-f7f2c17dc56f",
+     "evidenceVersionId": "01a0d788-f9cb-72a5-9500-b032f4712e2e",
+     "title": "Giá vàng chạm mức thấp nhất 1 tuần do kỳ vọng lãi suất tiếp tục tăng cao"
+    }
+   ],
    "claims": {
     "01a0d788-fb43-7161-a66a-cb886f2528ce": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d788-fb43-7161-a66a-cb886f2528ce": "doc_cluster_contamination"
+   },
+   "causeConfidence": {
+    "01a0d788-fb43-7161-a66a-cb886f2528ce": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d789-101b-70b2-bad9-a1da266ee752",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "rare_token": 10
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d789-1100-7029-aa91-913e3dcd92e2": "on_topic_non_driver",
     "01a0da9f-af5c-7f2e-aa44-f4e22fd23206": "misclustered",
@@ -1624,32 +2248,45 @@
     "01a0da9f-c124-7337-af37-d18adb3700f3": "misclustered",
     "01a0da9f-c594-7160-b99b-c1a6a8010acf": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0da9f-af5c-7f2e-aa44-f4e22fd23206": "broad_event_reuse",
     "01a0da9f-b3d1-78bf-b14b-193c9a5db93f": "broad_event_reuse",
     "01a0da9f-b843-7b2e-b676-570114e689d9": "broad_event_reuse",
     "01a0da9f-bcb4-701a-b12e-074e00653b97": "broad_event_reuse",
     "01a0da9f-c124-7337-af37-d18adb3700f3": "broad_event_reuse",
     "01a0da9f-c594-7160-b99b-c1a6a8010acf": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0da9f-af5c-7f2e-aa44-f4e22fd23206": "strong_proxy",
+    "01a0da9f-b3d1-78bf-b14b-193c9a5db93f": "strong_proxy",
+    "01a0da9f-b843-7b2e-b676-570114e689d9": "strong_proxy",
+    "01a0da9f-bcb4-701a-b12e-074e00653b97": "strong_proxy",
+    "01a0da9f-c124-7337-af37-d18adb3700f3": "strong_proxy",
+    "01a0da9f-c594-7160-b99b-c1a6a8010acf": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d828-177d-7bd6-92bd-63a13d497844",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d828-42b9-7088-9b37-573e8a66b3ad": "driver",
     "01a0d828-46f7-759b-881f-7f8de2937d30": "on_topic_non_driver",
     "01a0d828-4b31-7f50-af2c-759dc17ba580": "on_topic_non_driver"
    },
-   "causes": {}
+   "causeProxies": {},
+   "causeConfidence": {}
   },
   {
    "eventId": "01a0d851-8d2d-722b-b960-8b17e38d64a0",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "rare_token": 9
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0e00d-3b9f-7628-8dca-1d982bb3a061": "driver",
     "01a0e00d-3e4d-711f-be94-b6697dd2a312": "on_topic_non_driver",
@@ -1686,15 +2323,21 @@
     "01a0e092-7d3a-7a06-a8c9-1d1c4d95a0e5": "driver",
     "01a0e092-864b-7c7c-8b04-2aa805aa06f4": "on_topic_non_driver"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e01d-c198-7dff-9794-a466d417aa32": "broad_event_reuse",
     "01a0e022-4064-79d3-981c-8e4a1f78e432": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e01d-c198-7dff-9794-a466d417aa32": "strong_proxy",
+    "01a0e022-4064-79d3-981c-8e4a1f78e432": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d87d-635f-780e-aa70-815d5292d3f4",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {},
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0d87d-91ac-7b09-8576-36eaea557250": "misclustered",
     "01a0d87d-95d8-7d30-acd7-3358ee542cfd": "misclustered",
@@ -1716,10 +2359,10 @@
     "01a0daa3-151d-770d-893c-84439e11f682": "on_topic_non_driver",
     "01a0daa3-198d-719a-a0c0-3131f7b014b3": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0d87d-91ac-7b09-8576-36eaea557250": "broad_event_reuse",
     "01a0d87d-95d8-7d30-acd7-3358ee542cfd": "broad_event_reuse",
-    "01a0d8d4-95c0-7a05-8442-e14fce48610e": "extraction_wrong_grain",
+    "01a0d8d4-95c0-7a05-8442-e14fce48610e": "broad_event_reuse",
     "01a0d8f7-330c-7e25-ab79-2579e68317fa": "broad_event_reuse",
     "01a0d8f7-37ab-7a73-b646-e4b73828f490": "broad_event_reuse",
     "01a0d8f7-3c49-766d-836c-a4bf2a169726": "broad_event_reuse",
@@ -1729,16 +2372,53 @@
     "01a0daa3-0c3a-7c2f-b41e-611fcf645e9c": "broad_event_reuse",
     "01a0daa3-10ab-76b8-b74e-a9ebab87f1c2": "broad_event_reuse",
     "01a0daa3-198d-719a-a0c0-3131f7b014b3": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0d87d-91ac-7b09-8576-36eaea557250": "strong_proxy",
+    "01a0d87d-95d8-7d30-acd7-3358ee542cfd": "strong_proxy",
+    "01a0d8d4-95c0-7a05-8442-e14fce48610e": "strong_proxy",
+    "01a0d8f7-330c-7e25-ab79-2579e68317fa": "strong_proxy",
+    "01a0d8f7-37ab-7a73-b646-e4b73828f490": "strong_proxy",
+    "01a0d8f7-3c49-766d-836c-a4bf2a169726": "strong_proxy",
+    "01a0d93a-9507-73b4-b9c1-68413fadd338": "strong_proxy",
+    "01a0d93a-99b2-7dcc-b875-00c7fb95d135": "strong_proxy",
+    "01a0daa3-0358-7912-b320-7fbcb58d56c5": "strong_proxy",
+    "01a0daa3-0c3a-7c2f-b41e-611fcf645e9c": "strong_proxy",
+    "01a0daa3-10ab-76b8-b74e-a9ebab87f1c2": "strong_proxy",
+    "01a0daa3-198d-719a-a0c0-3131f7b014b3": "strong_proxy"
    }
   },
   {
    "eventId": "01a0d905-4143-7802-a5fa-764f39def80c",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 24,
     "headline": 1,
     "rare_token": 12
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0d846-7d9b-7cda-953b-3ff571fe0961",
+     "evidenceVersionId": "01a0d846-7f5f-74ff-922e-2e750e920f62",
+     "title": "Colombia cắt đứt quan hệ ngoại giao với Iran"
+    },
+    {
+     "documentId": "01a0d704-e052-7f3c-8d22-4b419e8c7b45",
+     "evidenceVersionId": "01a0d704-e05b-7e32-92ac-3c1408816409",
+     "title": "Colombia cắt quan hệ ngoại giao với Iran"
+    },
+    {
+     "documentId": "01a0d905-35b8-7d99-afd2-4c70543378b1",
+     "evidenceVersionId": "01a0d905-379b-773a-832a-5e9f2e583481",
+     "title": "Colombia cắt đứt quan hệ ngoại giao với Iran"
+    },
+    {
+     "documentId": "01a0d704-e102-7354-bf4c-d93ab8251717",
+     "evidenceVersionId": "01a0d704-e109-7616-8a0a-3e2a4f3015fb",
+     "title": "Colombia severs diplomatic relations with Iran — Foreign Ministry"
+    }
+   ],
    "claims": {
     "01a0e26c-b170-7e3a-aace-bd0b892c9c72": "misclustered",
     "01a0e26c-b517-7b61-b4a8-589d7c9aae0b": "misclustered",
@@ -1764,7 +2444,7 @@
     "01a0e4d3-65a3-7aa7-9932-c34659a4db17": "misclustered",
     "01a0e4d3-6a35-71ba-9876-01b234f5cc2f": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e26c-b170-7e3a-aace-bd0b892c9c72": "broad_event_reuse",
     "01a0e26c-b517-7b61-b4a8-589d7c9aae0b": "broad_event_reuse",
     "01a0e26c-b8c9-77e0-99b2-1d839d5cc262": "broad_event_reuse",
@@ -1788,17 +2468,50 @@
     "01a0e4d3-6114-7cd5-adb9-029cd5fa364c": "broad_event_reuse",
     "01a0e4d3-65a3-7aa7-9932-c34659a4db17": "broad_event_reuse",
     "01a0e4d3-6a35-71ba-9876-01b234f5cc2f": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e26c-b170-7e3a-aace-bd0b892c9c72": "strong_proxy",
+    "01a0e26c-b517-7b61-b4a8-589d7c9aae0b": "strong_proxy",
+    "01a0e26c-b8c9-77e0-99b2-1d839d5cc262": "strong_proxy",
+    "01a0e26c-bc6e-7eb3-873f-00f88179e88e": "strong_proxy",
+    "01a0e26c-c013-7cda-98a7-a6c702631410": "strong_proxy",
+    "01a0e26c-c3b9-7d78-afc6-67f0d912fec4": "strong_proxy",
+    "01a0e26c-c769-7110-a070-c7b1e1957092": "strong_proxy",
+    "01a0e26c-cb0e-7579-8fc9-e7f93112e2ce": "strong_proxy",
+    "01a0e315-a45f-75ed-83c6-49115bd7dab7": "strong_proxy",
+    "01a0e44b-542a-7b60-8d7c-b414139e3b29": "strong_proxy",
+    "01a0e44b-5fa2-76cc-a7b7-a8125ade7063": "strong_proxy",
+    "01a0e44b-646c-72f8-baca-fa2c2428e1c8": "strong_proxy",
+    "01a0e473-ce6a-712c-bd33-4065e1b97f18": "strong_proxy",
+    "01a0e473-d252-7378-bab8-51947767bedd": "strong_proxy",
+    "01a0e473-dbb1-71dd-955f-bde51896d66a": "strong_proxy",
+    "01a0e4d1-99c2-7e6b-b492-b8c5ededd472": "strong_proxy",
+    "01a0e4d1-a4c0-75a8-9216-e46b04ce2248": "strong_proxy",
+    "01a0e4d1-aec8-7904-b556-787363b117e7": "strong_proxy",
+    "01a0e4d1-b357-75a0-bc3e-93e95e3b5769": "strong_proxy",
+    "01a0e4d3-5c7b-7cfa-bf29-314c0410c256": "strong_proxy",
+    "01a0e4d3-6114-7cd5-adb9-029cd5fa364c": "strong_proxy",
+    "01a0e4d3-65a3-7aa7-9932-c34659a4db17": "strong_proxy",
+    "01a0e4d3-6a35-71ba-9876-01b234f5cc2f": "strong_proxy"
    }
   },
   {
    "eventId": "01a0dc10-2dd3-7268-9926-68bc0251d560",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "distinctive_claim": 1,
     "generic_claim": 22,
     "headline": 21,
     "rare_token": 3
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0db1f-1365-77fe-a088-59b4adf2b114",
+     "evidenceVersionId": "01a0db1f-14d4-72a3-bab3-4718e21fc1e3",
+     "title": "Cơ trưởng kể về chuyến bay đặc biệt đưa chiếc A330 từ Mỹ về Việt Nam"
+    }
+   ],
    "claims": {
     "01a0dc10-5a55-7c02-9202-6588d14c1145": "misclustered",
     "01a0dc10-5ed7-7680-9bbe-de69c409d988": "misclustered",
@@ -1831,7 +2544,7 @@
     "01a0e2e2-598d-7fb4-ab2c-a6d22c2536a7": "misclustered",
     "01a0e2e2-5c87-72c8-a3a9-5bca77beec1e": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0dc10-5a55-7c02-9202-6588d14c1145": "broad_event_reuse",
     "01a0dc10-5ed7-7680-9bbe-de69c409d988": "broad_event_reuse",
     "01a0dc10-68c0-7ee1-b870-5628f2af5711": "broad_event_reuse",
@@ -1845,7 +2558,7 @@
     "01a0dc4f-a12a-725e-bc26-c80dea032a4e": "broad_event_reuse",
     "01a0dc4f-a5c2-7e27-a7cf-10f09cb01a96": "broad_event_reuse",
     "01a0dcce-8c96-7370-87ba-9d9190aea18f": "broad_event_reuse",
-    "01a0dcce-90f0-704f-b90f-ae055ba7bfdc": "doc_cluster_contamination",
+    "01a0dcce-90f0-704f-b90f-ae055ba7bfdc": "broad_event_reuse",
     "01a0dcce-a795-7384-ac48-b410575330ca": "broad_event_reuse",
     "01a0dcce-abef-792e-8498-2cdcd2a03d17": "broad_event_reuse",
     "01a0e101-0404-7067-85ec-1d97b6ba0cf8": "broad_event_reuse",
@@ -1862,18 +2575,58 @@
     "01a0e2e2-5874-7c68-8922-00073ab0edd6": "broad_event_reuse",
     "01a0e2e2-598d-7fb4-ab2c-a6d22c2536a7": "broad_event_reuse",
     "01a0e2e2-5c87-72c8-a3a9-5bca77beec1e": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0dc10-5a55-7c02-9202-6588d14c1145": "strong_proxy",
+    "01a0dc10-5ed7-7680-9bbe-de69c409d988": "strong_proxy",
+    "01a0dc10-68c0-7ee1-b870-5628f2af5711": "strong_proxy",
+    "01a0dc10-6d43-7294-894e-0db315749f3c": "strong_proxy",
+    "01a0dc10-71c4-7267-8f68-26d76df49fc9": "strong_proxy",
+    "01a0dc10-7645-7d1b-82c6-fc9d160f3b19": "strong_proxy",
+    "01a0dc32-3f5e-7530-8bc8-beb4d5001c28": "strong_proxy",
+    "01a0dc4f-8643-77fa-baa8-91cb30844a01": "strong_proxy",
+    "01a0dc4f-97f7-7315-a6bf-6eb9de8d8b8b": "strong_proxy",
+    "01a0dc4f-9c91-7e23-9fd2-d0d1c50c9270": "strong_proxy",
+    "01a0dc4f-a12a-725e-bc26-c80dea032a4e": "strong_proxy",
+    "01a0dc4f-a5c2-7e27-a7cf-10f09cb01a96": "strong_proxy",
+    "01a0dcce-8c96-7370-87ba-9d9190aea18f": "strong_proxy",
+    "01a0dcce-90f0-704f-b90f-ae055ba7bfdc": "strong_proxy",
+    "01a0dcce-a795-7384-ac48-b410575330ca": "strong_proxy",
+    "01a0dcce-abef-792e-8498-2cdcd2a03d17": "strong_proxy",
+    "01a0e101-0404-7067-85ec-1d97b6ba0cf8": "strong_proxy",
+    "01a0e2a7-7b2f-7af4-9b8e-e4ebbcfdb74b": "strong_proxy",
+    "01a0e2a7-7f0f-78da-a4b0-a82ca65ad6dc": "strong_proxy",
+    "01a0e2a7-8794-7bda-820c-95b5d1b4ffc6": "strong_proxy",
+    "01a0e2a7-8b73-7ce6-b360-7398bd301a0a": "strong_proxy",
+    "01a0e2a7-8f51-70e7-9daa-8d5ba45c0fa0": "strong_proxy",
+    "01a0e2a7-9332-71a0-842c-d33c4de37543": "strong_proxy",
+    "01a0e2a7-9710-79f1-acac-b4192e761867": "strong_proxy",
+    "01a0e2a7-9aef-7ca0-83c8-e3a2da54011d": "strong_proxy",
+    "01a0e2e0-820b-7a14-991c-44ee82842ed9": "strong_proxy",
+    "01a0e2e0-8564-7c7f-9f4f-6e8cbdc7cbc7": "strong_proxy",
+    "01a0e2e2-5874-7c68-8922-00073ab0edd6": "strong_proxy",
+    "01a0e2e2-598d-7fb4-ab2c-a6d22c2536a7": "strong_proxy",
+    "01a0e2e2-5c87-72c8-a3a9-5bca77beec1e": "strong_proxy"
    }
   },
   {
    "eventId": "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "bigram_entity": 3,
     "cross_lingual": 13,
-    "generic_claim": 23,
+    "generic_claim": 26,
     "person": 3,
     "rare_token": 11
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0dc3c-839d-7955-a2f6-60e462d259b3",
+     "evidenceVersionId": "01a0dc3c-857f-77a5-8476-41a883ba9c61",
+     "title": "The tricky tests awaiting Andy Burnham after Labour conference"
+    }
+   ],
    "claims": {
     "01a0e036-3983-75b1-9f1d-171f60f82f62": "misclustered",
     "01a0e036-3dc6-7051-a14f-aebdfd4a57a3": "misclustered",
@@ -1925,16 +2678,21 @@
     "01a0ebb9-1bec-78dd-97a1-d979c485528d": "misclustered",
     "01a0ebb9-204f-7981-8001-0084b76a9572": "misclustered",
     "01a0ebb9-24d5-7de1-b29d-9bb326827131": "misclustered",
-    "01a0ebb9-2967-7e12-a3ea-ad42601603ed": "misclustered"
+    "01a0ebb9-2967-7e12-a3ea-ad42601603ed": "misclustered",
+    "01a0ebef-732d-7c54-bdc3-6f045c2a8930": "misclustered",
+    "01a0ebef-7875-7fae-8790-0551f72d961e": "misclustered",
+    "01a0ebef-7dbb-7a9d-9397-8dc911da8fe2": "misclustered",
+    "01a0ebef-8301-731c-9832-778484cebf78": "misclustered",
+    "01a0ebef-884a-7ad8-9b3f-7ef8aab3323f": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e036-3983-75b1-9f1d-171f60f82f62": "multilingual_merge",
     "01a0e036-3dc6-7051-a14f-aebdfd4a57a3": "broad_event_reuse",
     "01a0e036-485d-7326-a0d9-043cbddc802e": "broad_event_reuse",
-    "01a0e750-ff58-76f2-bdc3-d62336d1014e": "multilingual_merge",
+    "01a0e750-ff58-76f2-bdc3-d62336d1014e": "broad_event_reuse",
     "01a0e751-033f-7b76-904b-366d92e4f396": "multilingual_merge",
     "01a0e751-070e-7dd9-bcb7-8c3ce8f3bfc0": "broad_event_reuse",
-    "01a0e751-1c5c-7e32-aa1b-4ce370e25078": "doc_cluster_contamination",
+    "01a0e751-1c5c-7e32-aa1b-4ce370e25078": "broad_event_reuse",
     "01a0e751-2025-769c-b2ba-bbce04389c45": "multilingual_merge",
     "01a0e751-23f2-7511-a0e8-9a591c1ccd72": "multilingual_merge",
     "01a0e751-27be-7972-903f-19f1e4d98bfd": "multilingual_merge",
@@ -1943,7 +2701,7 @@
     "01a0e751-331d-73f0-9205-6841158fba69": "multilingual_merge",
     "01a0e751-36e8-776a-99d3-45a57672b264": "multilingual_merge",
     "01a0e751-3abc-7b80-b67d-b21de8d89844": "multilingual_merge",
-    "01a0e77d-0bb8-7421-9816-5cf37b770fb2": "doc_cluster_contamination",
+    "01a0e77d-0bb8-7421-9816-5cf37b770fb2": "multilingual_merge",
     "01a0e77d-1064-7cdf-b087-f238e743559b": "multilingual_merge",
     "01a0e77d-1b9e-7550-8e3e-1a12ddfb01a8": "multilingual_merge",
     "01a0e77d-204a-770a-b2e4-8cabf2ebdc0b": "multilingual_merge",
@@ -1961,7 +2719,7 @@
     "01a0e7d3-bbc8-7c8e-ae68-1d4ac0c70ad2": "multilingual_merge",
     "01a0e7d3-bf5f-7b7f-b8dc-0234245d8cf5": "multilingual_merge",
     "01a0e7d3-c2f7-79b4-9f2b-f96841481fc7": "multilingual_merge",
-    "01a0e7df-168f-7596-bc01-7d87f6197d63": "doc_cluster_contamination",
+    "01a0e7df-168f-7596-bc01-7d87f6197d63": "broad_event_reuse",
     "01a0ea85-65ac-7221-87ef-d32cf62f9816": "multilingual_merge",
     "01a0ea85-6a81-74d5-84ef-42d7226ee805": "multilingual_merge",
     "01a0ea85-6f4b-7857-939c-382baa6aadbd": "multilingual_merge",
@@ -1978,16 +2736,81 @@
     "01a0ebb9-1bec-78dd-97a1-d979c485528d": "multilingual_merge",
     "01a0ebb9-204f-7981-8001-0084b76a9572": "multilingual_merge",
     "01a0ebb9-24d5-7de1-b29d-9bb326827131": "multilingual_merge",
-    "01a0ebb9-2967-7e12-a3ea-ad42601603ed": "multilingual_merge"
+    "01a0ebb9-2967-7e12-a3ea-ad42601603ed": "multilingual_merge",
+    "01a0ebef-732d-7c54-bdc3-6f045c2a8930": "multilingual_merge",
+    "01a0ebef-7875-7fae-8790-0551f72d961e": "multilingual_merge",
+    "01a0ebef-7dbb-7a9d-9397-8dc911da8fe2": "multilingual_merge",
+    "01a0ebef-8301-731c-9832-778484cebf78": "multilingual_merge",
+    "01a0ebef-884a-7ad8-9b3f-7ef8aab3323f": "multilingual_merge"
+   },
+   "causeConfidence": {
+    "01a0e036-3983-75b1-9f1d-171f60f82f62": "weak_proxy",
+    "01a0e036-3dc6-7051-a14f-aebdfd4a57a3": "strong_proxy",
+    "01a0e036-485d-7326-a0d9-043cbddc802e": "strong_proxy",
+    "01a0e750-ff58-76f2-bdc3-d62336d1014e": "strong_proxy",
+    "01a0e751-033f-7b76-904b-366d92e4f396": "weak_proxy",
+    "01a0e751-070e-7dd9-bcb7-8c3ce8f3bfc0": "strong_proxy",
+    "01a0e751-1c5c-7e32-aa1b-4ce370e25078": "strong_proxy",
+    "01a0e751-2025-769c-b2ba-bbce04389c45": "weak_proxy",
+    "01a0e751-23f2-7511-a0e8-9a591c1ccd72": "weak_proxy",
+    "01a0e751-27be-7972-903f-19f1e4d98bfd": "weak_proxy",
+    "01a0e751-2b87-73e5-92a7-41706b957c48": "weak_proxy",
+    "01a0e751-2f53-727b-ae7f-3ceb8f1a9369": "weak_proxy",
+    "01a0e751-331d-73f0-9205-6841158fba69": "weak_proxy",
+    "01a0e751-36e8-776a-99d3-45a57672b264": "weak_proxy",
+    "01a0e751-3abc-7b80-b67d-b21de8d89844": "weak_proxy",
+    "01a0e77d-0bb8-7421-9816-5cf37b770fb2": "weak_proxy",
+    "01a0e77d-1064-7cdf-b087-f238e743559b": "weak_proxy",
+    "01a0e77d-1b9e-7550-8e3e-1a12ddfb01a8": "weak_proxy",
+    "01a0e77d-204a-770a-b2e4-8cabf2ebdc0b": "weak_proxy",
+    "01a0e77d-24f5-7990-b624-09ce49f2102a": "weak_proxy",
+    "01a0e77d-29a6-73f7-a46d-dcf88de85372": "weak_proxy",
+    "01a0e7a7-d784-72be-b4e4-f9266aab22fb": "strong_proxy",
+    "01a0e7a7-e16d-7219-a20a-cbb4e997d80b": "weak_proxy",
+    "01a0e7a7-ea79-7d84-a5c8-262f97c2a9e8": "weak_proxy",
+    "01a0e7a7-f52d-7571-8384-adb70537cd7f": "weak_proxy",
+    "01a0e7a7-f94a-7de8-bb5c-72bc1bc164f9": "weak_proxy",
+    "01a0e7a7-fd68-790d-a9e8-5d471889604a": "weak_proxy",
+    "01a0e7d3-b102-79f1-ab8a-a7f926bef197": "weak_proxy",
+    "01a0e7d3-b499-7f13-a0ae-dd2c8ece8ca5": "weak_proxy",
+    "01a0e7d3-b831-74a1-ab70-f34bdc633dd6": "weak_proxy",
+    "01a0e7d3-bbc8-7c8e-ae68-1d4ac0c70ad2": "weak_proxy",
+    "01a0e7d3-bf5f-7b7f-b8dc-0234245d8cf5": "weak_proxy",
+    "01a0e7d3-c2f7-79b4-9f2b-f96841481fc7": "weak_proxy",
+    "01a0e7df-168f-7596-bc01-7d87f6197d63": "strong_proxy",
+    "01a0ea85-65ac-7221-87ef-d32cf62f9816": "weak_proxy",
+    "01a0ea85-6a81-74d5-84ef-42d7226ee805": "weak_proxy",
+    "01a0ea85-6f4b-7857-939c-382baa6aadbd": "weak_proxy",
+    "01a0ea85-7415-7a63-99d8-bba24a1c8de8": "weak_proxy",
+    "01a0ea85-7e75-7710-999d-4baf24069764": "weak_proxy",
+    "01a0ea85-833e-7edc-9ddb-0931c44287ef": "weak_proxy",
+    "01a0eb72-010b-7c67-a0cc-c92d94f37f45": "weak_proxy",
+    "01a0eb72-066e-770e-baaa-8ad57f6fe78d": "weak_proxy",
+    "01a0eb72-0bcc-711d-b9be-3eb754663e33": "weak_proxy",
+    "01a0eb72-112b-788d-8666-139866641d9f": "weak_proxy",
+    "01a0eb72-168a-7367-8ae4-245f49623d44": "weak_proxy",
+    "01a0eb72-1be9-7d14-88a5-fe93fb49910c": "weak_proxy",
+    "01a0ebb9-177f-7edc-8f0d-7260902f4836": "weak_proxy",
+    "01a0ebb9-1bec-78dd-97a1-d979c485528d": "weak_proxy",
+    "01a0ebb9-204f-7981-8001-0084b76a9572": "weak_proxy",
+    "01a0ebb9-24d5-7de1-b29d-9bb326827131": "weak_proxy",
+    "01a0ebb9-2967-7e12-a3ea-ad42601603ed": "weak_proxy",
+    "01a0ebef-732d-7c54-bdc3-6f045c2a8930": "weak_proxy",
+    "01a0ebef-7875-7fae-8790-0551f72d961e": "weak_proxy",
+    "01a0ebef-7dbb-7a9d-9397-8dc911da8fe2": "weak_proxy",
+    "01a0ebef-8301-731c-9832-778484cebf78": "weak_proxy",
+    "01a0ebef-884a-7ad8-9b3f-7ef8aab3323f": "weak_proxy"
    }
   },
   {
    "eventId": "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 2,
     "headline": 1
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0dd9f-1dce-78db-b06b-6c81836fb4ff": "on_topic_non_driver",
     "01a0dd9f-2193-712c-9eab-78a1233292e1": "on_topic_non_driver",
@@ -2012,18 +2835,25 @@
     "01a0e24b-90c7-7583-9ed5-f94a5b197b68": "driver",
     "01a0e24b-9ad3-7d4d-a342-66de144dde9b": "driver"
    },
-   "causes": {
+   "causeProxies": {
     "01a0df99-b2bd-75cc-ba4f-149925122fa9": "broad_event_reuse",
     "01a0df99-b6ad-7a4a-8006-2b57d063f7ae": "broad_event_reuse",
     "01a0df99-be86-73bb-bf3d-1cc7f2b3eee4": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0df99-b2bd-75cc-ba4f-149925122fa9": "strong_proxy",
+    "01a0df99-b6ad-7a4a-8006-2b57d063f7ae": "strong_proxy",
+    "01a0df99-be86-73bb-bf3d-1cc7f2b3eee4": "strong_proxy"
    }
   },
   {
    "eventId": "01a0de40-df4a-7ad2-94ab-8a2fa08ef6c2",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "rare_token": 1
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0dfdd-9bbe-7414-86c6-06238e9f0cfb": "misclustered",
     "01a0dfdd-a802-7462-9293-d8a235de6591": "misclustered",
@@ -2040,7 +2870,7 @@
     "01a0e066-d298-7600-9fd0-42ea18e20b9f": "misclustered",
     "01a0e066-d38f-71e8-b7fc-836344040f54": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0dfdd-9bbe-7414-86c6-06238e9f0cfb": "broad_event_reuse",
     "01a0dfdd-a802-7462-9293-d8a235de6591": "broad_event_reuse",
     "01a0dfdd-acb6-711d-ab12-8eb277c2228c": "broad_event_reuse",
@@ -2054,13 +2884,29 @@
     "01a0e066-d041-77b5-a379-15558e4ae380": "broad_event_reuse",
     "01a0e066-d298-7600-9fd0-42ea18e20b9f": "broad_event_reuse",
     "01a0e066-d38f-71e8-b7fc-836344040f54": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0dfdd-9bbe-7414-86c6-06238e9f0cfb": "strong_proxy",
+    "01a0dfdd-a802-7462-9293-d8a235de6591": "strong_proxy",
+    "01a0dfdd-acb6-711d-ab12-8eb277c2228c": "strong_proxy",
+    "01a0dfdd-b170-779e-903b-23da78174dfb": "strong_proxy",
+    "01a0dfdd-b624-7189-8f57-d933395a8866": "strong_proxy",
+    "01a0e058-d466-7f08-a246-a40b75ee3e73": "strong_proxy",
+    "01a0e058-d590-7c31-99fd-865a60a4315b": "strong_proxy",
+    "01a0e058-d6b6-7b26-b68f-fd1cd2d45d7f": "strong_proxy",
+    "01a0e058-d7dc-7a65-b5d3-6165ccb635b0": "strong_proxy",
+    "01a0e058-d902-748e-bf02-93bb621dc88b": "strong_proxy",
+    "01a0e066-d041-77b5-a379-15558e4ae380": "strong_proxy",
+    "01a0e066-d298-7600-9fd0-42ea18e20b9f": "strong_proxy",
+    "01a0e066-d38f-71e8-b7fc-836344040f54": "strong_proxy"
    }
   },
   {
    "eventId": "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
-    "bigram_entity": 13,
+    "bigram_entity": 14,
     "cross_lingual": 42,
     "generic_claim": 9,
     "headline": 16,
@@ -2068,6 +2914,7 @@
     "semantic_anchored": 33,
     "semantic_xlang": 1
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0e077-3d80-7cd1-875b-6bd86cf9e1df": "on_topic_non_driver",
     "01a0e093-db2a-7f66-a9fe-fb0e0d897c49": "on_topic_non_driver",
@@ -2082,19 +2929,36 @@
     "01a0e42e-3879-7f46-83f4-ac260bfab7a0": "misclustered",
     "01a0e42e-3c2f-70b9-9d01-7c5c3d614002": "driver",
     "01a0eb78-44ad-7357-a8f1-5a915f1ea59f": "on_topic_non_driver",
-    "01a0eb78-5056-7706-9735-3fa3a75ccab0": "on_topic_non_driver"
+    "01a0eb78-5056-7706-9735-3fa3a75ccab0": "on_topic_non_driver",
+    "01a0ebf0-6ec1-71ad-97b9-7a42703af76a": "on_topic_non_driver",
+    "01a0ebf0-7409-76ee-bbe1-f31d352c285f": "on_topic_non_driver",
+    "01a0ebf0-794d-7a80-8ec3-5023568e494b": "on_topic_non_driver",
+    "01a0ebf0-7e91-73b3-b4b5-3a9d436bd536": "on_topic_non_driver",
+    "01a0ebf0-98e9-7df1-bd80-a6431b9b6b78": "on_topic_non_driver"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e42e-34c1-7491-ab5d-6cd6f4c8308c": "broad_event_reuse",
     "01a0e42e-3879-7f46-83f4-ac260bfab7a0": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e42e-34c1-7491-ab5d-6cd6f4c8308c": "strong_proxy",
+    "01a0e42e-3879-7f46-83f4-ac260bfab7a0": "strong_proxy"
    }
   },
   {
    "eventId": "01a0def9-6ee3-79f7-bc38-ad39db99bb61",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "headline": 1
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0decc-914a-7bc8-b06f-f65aef383fd7",
+     "evidenceVersionId": "01a0decc-9333-7e82-b88a-fce4362d36b5",
+     "title": "Palestine bắt đầu tiếp nhận danh sách ứng cử viên cho bầu cử lập pháp"
+    }
+   ],
    "claims": {
     "01a0def9-9544-746e-97c5-d60ad826f16e": "misclustered",
     "01a0def9-98f1-7614-9221-8aa9db34b964": "misclustered",
@@ -2104,23 +2968,34 @@
     "01a0df5a-419b-754a-99d5-dacd8c261dcb": "misclustered",
     "01a0df5a-453a-7f18-8bb1-1af11a647182": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0def9-9544-746e-97c5-d60ad826f16e": "broad_event_reuse",
     "01a0def9-98f1-7614-9221-8aa9db34b964": "doc_cluster_contamination",
     "01a0df5a-233e-7f61-a113-d288703ae4f2": "broad_event_reuse",
-    "01a0df5a-2bec-72b9-9bbc-600afae320e7": "doc_cluster_contamination",
+    "01a0df5a-2bec-72b9-9bbc-600afae320e7": "broad_event_reuse",
     "01a0df5a-33e0-7b0f-9b31-26bd3f85e885": "broad_event_reuse",
     "01a0df5a-419b-754a-99d5-dacd8c261dcb": "broad_event_reuse",
     "01a0df5a-453a-7f18-8bb1-1af11a647182": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0def9-9544-746e-97c5-d60ad826f16e": "strong_proxy",
+    "01a0def9-98f1-7614-9221-8aa9db34b964": "strong_proxy",
+    "01a0df5a-233e-7f61-a113-d288703ae4f2": "strong_proxy",
+    "01a0df5a-2bec-72b9-9bbc-600afae320e7": "strong_proxy",
+    "01a0df5a-33e0-7b0f-9b31-26bd3f85e885": "strong_proxy",
+    "01a0df5a-419b-754a-99d5-dacd8c261dcb": "strong_proxy",
+    "01a0df5a-453a-7f18-8bb1-1af11a647182": "strong_proxy"
    }
   },
   {
    "eventId": "01a0e182-0bd0-7e12-a4c9-b535b95ede43",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 6,
     "headline": 2
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0e182-12ea-7756-a3c6-0eed9f20661f": "driver",
     "01a0e182-143d-71d7-a71b-75f7285d8db4": "driver",
@@ -2129,35 +3004,51 @@
     "01a0e1ee-97f3-7411-95aa-a154c6c4045f": "driver",
     "01a0e1ee-9c81-71ce-a842-b17e1b429d5d": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e1ee-8ed8-7902-9f62-55304f0b50ed": "broad_event_reuse",
     "01a0e1ee-9c81-71ce-a842-b17e1b429d5d": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e1ee-8ed8-7902-9f62-55304f0b50ed": "strong_proxy",
+    "01a0e1ee-9c81-71ce-a842-b17e1b429d5d": "strong_proxy"
    }
   },
   {
    "eventId": "01a0e1ab-f2b6-7f55-92f4-acd72e137419",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 2,
     "rare_token": 4
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0e1ac-0ab0-7bcd-83ae-f5e3ce1dedfc": "on_topic_non_driver",
-    "01a0e1ac-0f13-7147-a67c-9a0cb0ff16f2": "misclustered",
+    "01a0e1ac-0f13-7147-a67c-9a0cb0ff16f2": "on_topic_non_driver",
     "01a0e1ac-1371-7867-9179-533b53e3bb50": "misclustered"
    },
-   "causes": {
-    "01a0e1ac-0f13-7147-a67c-9a0cb0ff16f2": "broad_event_reuse",
+   "causeProxies": {
     "01a0e1ac-1371-7867-9179-533b53e3bb50": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e1ac-1371-7867-9179-533b53e3bb50": "strong_proxy"
    }
   },
   {
    "eventId": "01a0e257-82a7-7221-94ce-6f38cf80692a",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "headline": 7,
-    "rare_token": 22
+    "rare_token": 25
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0e18b-a2fe-7d14-8a1f-75fa695e3de3",
+     "evidenceVersionId": "01a0e18b-a365-7b1d-896b-f9ce4fec17c7",
+     "title": "FPT hiến kế đào tạo nhân tài cho các công nghệ chiến lược"
+    }
+   ],
    "claims": {
     "01a0e7fc-d4d9-753b-a422-ff802d9829fd": "misclustered",
     "01a0e7fc-ea0a-75bb-a3db-1db1fe685e53": "misclustered",
@@ -2185,9 +3076,13 @@
     "01a0ebb6-3f81-7ccc-8037-a65af1678d75": "misclustered",
     "01a0ebb6-43c4-7c9d-bbb1-5246de924fc9": "misclustered",
     "01a0ebb6-4807-7c0a-b460-363c75538ef6": "misclustered",
-    "01a0ebb6-4c53-7988-808a-cc3d0e553242": "misclustered"
+    "01a0ebb6-4c53-7988-808a-cc3d0e553242": "misclustered",
+    "01a0ebea-a561-72fd-a97f-0205aabfb9cf": "misclustered",
+    "01a0ebea-aaa9-7f24-8907-a29565359488": "misclustered",
+    "01a0ebea-c287-7cc2-9524-6e0f1db3455c": "misclustered",
+    "01a0ebea-c7cd-77e1-8b0a-411c0102b736": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e7fc-d4d9-753b-a422-ff802d9829fd": "broad_event_reuse",
     "01a0e7fc-ea0a-75bb-a3db-1db1fe685e53": "broad_event_reuse",
     "01a0e7fd-133c-71e8-9052-81f5def25855": "broad_event_reuse",
@@ -2204,7 +3099,7 @@
     "01a0eb74-81d6-7b11-b76e-d0b7f3c90bdb": "doc_cluster_contamination",
     "01a0eb74-8735-71eb-8825-22e624a6e08d": "doc_cluster_contamination",
     "01a0eb74-8c93-70a3-aa67-175515f2c188": "broad_event_reuse",
-    "01a0eb74-91f4-7a54-b6e5-85ed2bae6d0b": "doc_cluster_contamination",
+    "01a0eb74-91f4-7a54-b6e5-85ed2bae6d0b": "broad_event_reuse",
     "01a0eb74-9757-78e3-b067-fc967e056dfe": "doc_cluster_contamination",
     "01a0eb74-a4c9-7dec-bc0f-bf75c05e3205": "broad_event_reuse",
     "01a0ebb6-2e71-7b35-b44b-88319cafb3bc": "broad_event_reuse",
@@ -2214,16 +3109,55 @@
     "01a0ebb6-3f81-7ccc-8037-a65af1678d75": "doc_cluster_contamination",
     "01a0ebb6-43c4-7c9d-bbb1-5246de924fc9": "broad_event_reuse",
     "01a0ebb6-4807-7c0a-b460-363c75538ef6": "broad_event_reuse",
-    "01a0ebb6-4c53-7988-808a-cc3d0e553242": "doc_cluster_contamination"
+    "01a0ebb6-4c53-7988-808a-cc3d0e553242": "doc_cluster_contamination",
+    "01a0ebea-a561-72fd-a97f-0205aabfb9cf": "broad_event_reuse",
+    "01a0ebea-aaa9-7f24-8907-a29565359488": "doc_cluster_contamination",
+    "01a0ebea-c287-7cc2-9524-6e0f1db3455c": "doc_cluster_contamination",
+    "01a0ebea-c7cd-77e1-8b0a-411c0102b736": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e7fc-d4d9-753b-a422-ff802d9829fd": "strong_proxy",
+    "01a0e7fc-ea0a-75bb-a3db-1db1fe685e53": "strong_proxy",
+    "01a0e7fd-133c-71e8-9052-81f5def25855": "strong_proxy",
+    "01a0e7fd-1745-7835-b5f2-49a5e4e9ae1d": "strong_proxy",
+    "01a0e7fd-1b4e-7bd6-8ee7-8ccf563e65d9": "strong_proxy",
+    "01a0e7fd-1f57-7099-830a-7da476f45dee": "strong_proxy",
+    "01a0e7fd-2362-721b-8ba3-773ba3f8f2f2": "strong_proxy",
+    "01a0e7fd-276c-703b-9434-e319728687d8": "strong_proxy",
+    "01a0e7fd-2b76-7d47-ae07-363861d51e03": "strong_proxy",
+    "01a0e8be-50dd-7998-816e-305cededb463": "strong_proxy",
+    "01a0e949-d0b7-7516-8af5-c106d6f769a2": "strong_proxy",
+    "01a0e949-ddcd-7954-a4ba-2161beeb7260": "strong_proxy",
+    "01a0e949-e907-7067-aedf-78f42062e4e7": "strong_proxy",
+    "01a0eb74-81d6-7b11-b76e-d0b7f3c90bdb": "strong_proxy",
+    "01a0eb74-8735-71eb-8825-22e624a6e08d": "strong_proxy",
+    "01a0eb74-8c93-70a3-aa67-175515f2c188": "strong_proxy",
+    "01a0eb74-91f4-7a54-b6e5-85ed2bae6d0b": "strong_proxy",
+    "01a0eb74-9757-78e3-b067-fc967e056dfe": "strong_proxy",
+    "01a0eb74-a4c9-7dec-bc0f-bf75c05e3205": "strong_proxy",
+    "01a0ebb6-2e71-7b35-b44b-88319cafb3bc": "strong_proxy",
+    "01a0ebb6-32b9-744a-8282-c86bd92ed7fa": "strong_proxy",
+    "01a0ebb6-36fb-7492-969b-091b3499c5c7": "strong_proxy",
+    "01a0ebb6-3b3f-7b92-af25-b8db2dba06e5": "strong_proxy",
+    "01a0ebb6-3f81-7ccc-8037-a65af1678d75": "strong_proxy",
+    "01a0ebb6-43c4-7c9d-bbb1-5246de924fc9": "strong_proxy",
+    "01a0ebb6-4807-7c0a-b460-363c75538ef6": "strong_proxy",
+    "01a0ebb6-4c53-7988-808a-cc3d0e553242": "strong_proxy",
+    "01a0ebea-a561-72fd-a97f-0205aabfb9cf": "strong_proxy",
+    "01a0ebea-aaa9-7f24-8907-a29565359488": "strong_proxy",
+    "01a0ebea-c287-7cc2-9524-6e0f1db3455c": "strong_proxy",
+    "01a0ebea-c7cd-77e1-8b0a-411c0102b736": "strong_proxy"
    }
   },
   {
    "eventId": "01a0e25c-a5c6-7caf-803b-0b09f0b70b83",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "headline": 7,
     "semantic_facet": 2
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0e352-e623-7950-894b-1f83fdc4c487": "on_topic_non_driver",
     "01a0e352-ea54-7601-93f7-f0f48e3ad728": "on_topic_non_driver",
@@ -2245,34 +3179,51 @@
     "01a0e3f4-2153-75c9-9de7-872cf2624e1e": "misclustered",
     "01a0e3f4-24e9-70bd-bf1a-bb96e5fe3655": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e352-ee86-77c9-84b6-bf664c718af4": "broad_event_reuse",
     "01a0e352-f6ed-7dcc-80d1-f206d8b0ca8f": "broad_event_reuse",
     "01a0e371-6ad9-780b-ba1e-1dcba90c8ee2": "broad_event_reuse",
     "01a0e371-725a-74ef-b8e4-2e5ff8729e12": "broad_event_reuse",
     "01a0e371-761a-73f9-afcd-890d64c5c748": "broad_event_reuse",
-    "01a0e3f3-f85e-7a89-96d7-6bebc74133d1": "extraction_wrong_grain",
+    "01a0e3f3-f85e-7a89-96d7-6bebc74133d1": "broad_event_reuse",
     "01a0e3f4-01b8-7066-8811-bda558ea9556": "broad_event_reuse",
-    "01a0e3f4-054f-7028-8f7a-a26c28052f48": "extraction_wrong_grain",
+    "01a0e3f4-054f-7028-8f7a-a26c28052f48": "broad_event_reuse",
     "01a0e3f4-168f-7ba8-b742-df73f7fb0137": "broad_event_reuse",
     "01a0e3f4-1a26-7fd9-a5de-d827be277da1": "broad_event_reuse",
     "01a0e3f4-1dbc-78b7-849a-a67aa64a5953": "broad_event_reuse",
     "01a0e3f4-2153-75c9-9de7-872cf2624e1e": "broad_event_reuse",
     "01a0e3f4-24e9-70bd-bf1a-bb96e5fe3655": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e352-ee86-77c9-84b6-bf664c718af4": "strong_proxy",
+    "01a0e352-f6ed-7dcc-80d1-f206d8b0ca8f": "strong_proxy",
+    "01a0e371-6ad9-780b-ba1e-1dcba90c8ee2": "strong_proxy",
+    "01a0e371-725a-74ef-b8e4-2e5ff8729e12": "strong_proxy",
+    "01a0e371-761a-73f9-afcd-890d64c5c748": "strong_proxy",
+    "01a0e3f3-f85e-7a89-96d7-6bebc74133d1": "strong_proxy",
+    "01a0e3f4-01b8-7066-8811-bda558ea9556": "strong_proxy",
+    "01a0e3f4-054f-7028-8f7a-a26c28052f48": "strong_proxy",
+    "01a0e3f4-168f-7ba8-b742-df73f7fb0137": "strong_proxy",
+    "01a0e3f4-1a26-7fd9-a5de-d827be277da1": "strong_proxy",
+    "01a0e3f4-1dbc-78b7-849a-a67aa64a5953": "strong_proxy",
+    "01a0e3f4-2153-75c9-9de7-872cf2624e1e": "strong_proxy",
+    "01a0e3f4-24e9-70bd-bf1a-bb96e5fe3655": "strong_proxy"
    }
   },
   {
    "eventId": "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "distinctive_claim": 1,
     "entity": 2,
-    "generic_claim": 95,
+    "generic_claim": 98,
     "headline": 7,
     "rare_token": 16,
     "semantic_facet": 1,
     "semantic_xlang": 2
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0e2e3-3b06-7a25-9374-733ca41faa64": "on_topic_non_driver",
     "01a0e2e3-3c3b-7227-8c18-41a71d6053f4": "on_topic_non_driver",
@@ -2283,7 +3234,7 @@
     "01a0e2e3-4374-72e6-bedc-09d5b63e80dc": "on_topic_non_driver",
     "01a0e35b-e891-7f70-ac94-28a387691879": "misclustered",
     "01a0e3c4-8465-7b9c-a22d-0c7ff732d6b5": "misclustered",
-    "01a0e3c4-890c-7dc7-be22-1fa69222cd9d": "misclustered",
+    "01a0e3c4-890c-7dc7-be22-1fa69222cd9d": "on_topic_non_driver",
     "01a0e3c4-9337-7c35-afde-ffea64119caf": "on_topic_non_driver",
     "01a0e3c4-97d5-79d5-8841-636af2b91017": "on_topic_non_driver",
     "01a0e3c4-9c74-7326-affe-8bfdde2bf32a": "on_topic_non_driver",
@@ -2345,12 +3296,14 @@
     "01a0eb76-9563-7eb9-9a31-5b053e2266f6": "misclustered",
     "01a0eb76-9ac0-71dc-b786-a58a8698a562": "misclustered",
     "01a0eb76-a01e-71da-b8ad-4190f3e78b3d": "misclustered",
-    "01a0eb76-a57d-7622-a62b-b0d011d0dc30": "misclustered"
+    "01a0eb76-a57d-7622-a62b-b0d011d0dc30": "misclustered",
+    "01a0ebec-f209-7483-b24b-74f6d358896a": "misclustered",
+    "01a0ebec-f74e-7ec7-8c26-734d3746a7cf": "misclustered",
+    "01a0ebec-fc93-7e58-9549-b598501ff71e": "misclustered"
    },
-   "causes": {
-    "01a0e35b-e891-7f70-ac94-28a387691879": "extraction_wrong_grain",
-    "01a0e3c4-8465-7b9c-a22d-0c7ff732d6b5": "extraction_wrong_grain",
-    "01a0e3c4-890c-7dc7-be22-1fa69222cd9d": "multilingual_merge",
+   "causeProxies": {
+    "01a0e35b-e891-7f70-ac94-28a387691879": "broad_event_reuse",
+    "01a0e3c4-8465-7b9c-a22d-0c7ff732d6b5": "doc_cluster_contamination",
     "01a0e4d0-1b47-74d5-b476-aad9fbfbec7d": "broad_event_reuse",
     "01a0e4d0-1fd8-78b8-ba2f-4f3973aad823": "broad_event_reuse",
     "01a0e4d0-2466-7b61-b696-677f8dba080a": "broad_event_reuse",
@@ -2396,16 +3349,80 @@
     "01a0eb76-9563-7eb9-9a31-5b053e2266f6": "broad_event_reuse",
     "01a0eb76-9ac0-71dc-b786-a58a8698a562": "broad_event_reuse",
     "01a0eb76-a01e-71da-b8ad-4190f3e78b3d": "broad_event_reuse",
-    "01a0eb76-a57d-7622-a62b-b0d011d0dc30": "broad_event_reuse"
+    "01a0eb76-a57d-7622-a62b-b0d011d0dc30": "broad_event_reuse",
+    "01a0ebec-f209-7483-b24b-74f6d358896a": "broad_event_reuse",
+    "01a0ebec-f74e-7ec7-8c26-734d3746a7cf": "broad_event_reuse",
+    "01a0ebec-fc93-7e58-9549-b598501ff71e": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e35b-e891-7f70-ac94-28a387691879": "strong_proxy",
+    "01a0e3c4-8465-7b9c-a22d-0c7ff732d6b5": "strong_proxy",
+    "01a0e4d0-1b47-74d5-b476-aad9fbfbec7d": "strong_proxy",
+    "01a0e4d0-1fd8-78b8-ba2f-4f3973aad823": "strong_proxy",
+    "01a0e4d0-2466-7b61-b696-677f8dba080a": "strong_proxy",
+    "01a0e4d0-28fa-7813-863c-5ded17ee8a2e": "strong_proxy",
+    "01a0e4d0-2d8b-70ff-95e0-84a06b690ef4": "strong_proxy",
+    "01a0e560-8acc-7fd9-9e7e-98e773b549b9": "strong_proxy",
+    "01a0e560-8eee-73fc-95b1-bb034495811f": "strong_proxy",
+    "01a0e677-1255-7eb1-9efe-cfc45127b6a8": "weak_proxy",
+    "01a0e677-1d07-79bd-b592-1fb9ccc96424": "strong_proxy",
+    "01a0e677-2d0b-7c4d-bc30-bd58acd5d4fd": "strong_proxy",
+    "01a0e677-317d-7598-ad1a-a378c04620eb": "strong_proxy",
+    "01a0e704-69ec-7f10-a605-99a09e375ee2": "strong_proxy",
+    "01a0e704-722f-7961-a099-a9ac7a1be27f": "strong_proxy",
+    "01a0e704-764b-7216-8c82-cb3c9c155d3b": "strong_proxy",
+    "01a0e704-7a68-7992-b3cc-8e2731040083": "strong_proxy",
+    "01a0e72c-8de3-7b90-8811-fb415e33877e": "strong_proxy",
+    "01a0e72c-9d8e-75ac-9267-34acadb6d017": "strong_proxy",
+    "01a0e72c-a1ac-75b3-8157-de09e0d7aef5": "strong_proxy",
+    "01a0e72c-a5ce-7527-8513-0e0aeaa7b1e9": "strong_proxy",
+    "01a0e72c-a9ec-748c-9e62-0361f935dab0": "strong_proxy",
+    "01a0e757-9c57-78a4-bbcb-92154d133420": "strong_proxy",
+    "01a0e757-a025-7c74-a189-a254c84eee80": "strong_proxy",
+    "01a0e757-a3ef-7449-ab1c-b0cf3620b78a": "strong_proxy",
+    "01a0e757-b25c-710b-84a1-c423ded8f733": "strong_proxy",
+    "01a0e781-cfbc-7035-8182-54d1e01a186e": "weak_proxy",
+    "01a0e781-d468-75b8-9804-996c66fe2709": "weak_proxy",
+    "01a0e781-d919-7d65-b4e4-cb39d81bb03b": "weak_proxy",
+    "01a0e7aa-08b8-779a-b12a-3490ca96770d": "strong_proxy",
+    "01a0e7aa-0cd8-79c6-92e5-45404b95cb3e": "strong_proxy",
+    "01a0e7aa-10f4-7f36-8a31-f3e9906f15be": "strong_proxy",
+    "01a0e7aa-1512-792f-adee-488c6bfc2d6d": "strong_proxy",
+    "01a0e7aa-1930-77d1-812a-948b13d82adb": "strong_proxy",
+    "01a0e7d0-24cb-7b25-b053-827f9e262a41": "strong_proxy",
+    "01a0e7d0-2867-7f56-82de-cedf71ea632c": "strong_proxy",
+    "01a0e7d0-2bff-7fba-9753-54973cfd7f39": "strong_proxy",
+    "01a0e7d0-2f96-7e3f-af1a-63f8cf76c01f": "strong_proxy",
+    "01a0ea87-6b84-775a-9dfa-409064402079": "strong_proxy",
+    "01a0ea87-704f-7735-b281-75da63a78ee7": "strong_proxy",
+    "01a0ea87-7519-7dd8-bcba-6fcce9b118ee": "strong_proxy",
+    "01a0ea87-79ea-71b6-a854-bbbd242fb1a7": "strong_proxy",
+    "01a0ea87-7eb5-74c4-aaf2-b45ff4e9a8ac": "strong_proxy",
+    "01a0eb76-9005-7b03-b089-b82dd26a0228": "strong_proxy",
+    "01a0eb76-9563-7eb9-9a31-5b053e2266f6": "strong_proxy",
+    "01a0eb76-9ac0-71dc-b786-a58a8698a562": "strong_proxy",
+    "01a0eb76-a01e-71da-b8ad-4190f3e78b3d": "strong_proxy",
+    "01a0eb76-a57d-7622-a62b-b0d011d0dc30": "strong_proxy",
+    "01a0ebec-f209-7483-b24b-74f6d358896a": "strong_proxy",
+    "01a0ebec-f74e-7ec7-8c26-734d3746a7cf": "strong_proxy",
+    "01a0ebec-fc93-7e58-9549-b598501ff71e": "strong_proxy"
    }
   },
   {
    "eventId": "01a0e335-42c9-7cc7-9184-6588ec172c91",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 9,
     "headline": 1
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0e2a4-46fc-723b-a0c9-84e4c165318d",
+     "evidenceVersionId": "01a0e2a4-4897-7395-a67c-9d8e55744ffd",
+     "title": "Nâng tầm hợp tác an ninh toàn cầu, bảo vệ Tổ quốc từ sớm, từ xa"
+    }
+   ],
    "claims": {
     "01a0e55e-de1d-7d53-a814-dfa90ae3f763": "misclustered",
     "01a0e55e-e955-768e-97c3-cec7d908f62a": "misclustered",
@@ -2418,9 +3435,9 @@
     "01a0e780-586f-7388-8b33-13f7877a2af4": "misclustered",
     "01a0e780-5d1d-79b3-9d08-360f61b1f6c6": "misclustered"
    },
-   "causes": {
-    "01a0e55e-de1d-7d53-a814-dfa90ae3f763": "doc_cluster_contamination",
-    "01a0e55e-e955-768e-97c3-cec7d908f62a": "doc_cluster_contamination",
+   "causeProxies": {
+    "01a0e55e-de1d-7d53-a814-dfa90ae3f763": "broad_event_reuse",
+    "01a0e55e-e955-768e-97c3-cec7d908f62a": "broad_event_reuse",
     "01a0e55e-f9d7-7383-a573-e9876a5bae39": "doc_cluster_contamination",
     "01a0e55e-fdf6-7d26-85e9-5fa078b4803e": "broad_event_reuse",
     "01a0e55f-0217-7f7f-99a8-698f5735fb14": "broad_event_reuse",
@@ -2429,25 +3446,42 @@
     "01a0e780-53c1-707b-b973-865c010ca640": "broad_event_reuse",
     "01a0e780-586f-7388-8b33-13f7877a2af4": "broad_event_reuse",
     "01a0e780-5d1d-79b3-9d08-360f61b1f6c6": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e55e-de1d-7d53-a814-dfa90ae3f763": "strong_proxy",
+    "01a0e55e-e955-768e-97c3-cec7d908f62a": "strong_proxy",
+    "01a0e55e-f9d7-7383-a573-e9876a5bae39": "strong_proxy",
+    "01a0e55e-fdf6-7d26-85e9-5fa078b4803e": "strong_proxy",
+    "01a0e55f-0217-7f7f-99a8-698f5735fb14": "strong_proxy",
+    "01a0e55f-0639-7581-97e5-84c7ecf2993b": "strong_proxy",
+    "01a0e780-4f14-71d4-9e87-b170c92dce46": "strong_proxy",
+    "01a0e780-53c1-707b-b973-865c010ca640": "strong_proxy",
+    "01a0e780-586f-7388-8b33-13f7877a2af4": "strong_proxy",
+    "01a0e780-5d1d-79b3-9d08-360f61b1f6c6": "strong_proxy"
    }
   },
   {
    "eventId": "01a0e572-0057-7c2c-acbc-642717deac97",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "rare_token": 1
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0e572-10eb-7c2a-9c5e-9d9123d2f546": "driver"
    },
-   "causes": {}
+   "causeProxies": {},
+   "causeConfidence": {}
   },
   {
    "eventId": "01a0e755-6e23-70e2-848e-013f32f5a0ed",
    "extractionGap": false,
+   "fullyForeign": false,
    "mergePaths": {
     "headline": 3
    },
+   "onStoryEventEvidence": [],
    "claims": {
     "01a0e755-e81b-7e61-ae67-49ab3820c309": "misclustered",
     "01a0e755-f5c3-7644-8980-22b0c094098f": "on_topic_non_driver",
@@ -2466,7 +3500,7 @@
     "01a0e7a3-675e-7a19-bd83-449371c5e9b8": "misclustered",
     "01a0e7a3-6b7d-783f-b4a2-da77756b85f5": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e755-e81b-7e61-ae67-49ab3820c309": "broad_event_reuse",
     "01a0e756-264e-7d08-8427-e8bf781abc9d": "broad_event_reuse",
     "01a0e756-2a1c-71bc-9a5f-541f12f4af26": "broad_event_reuse",
@@ -2476,11 +3510,23 @@
     "01a0e7a3-5d83-743b-b376-fb3ee8846f1a": "broad_event_reuse",
     "01a0e7a3-675e-7a19-bd83-449371c5e9b8": "broad_event_reuse",
     "01a0e7a3-6b7d-783f-b4a2-da77756b85f5": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e755-e81b-7e61-ae67-49ab3820c309": "strong_proxy",
+    "01a0e756-264e-7d08-8427-e8bf781abc9d": "strong_proxy",
+    "01a0e756-2a1c-71bc-9a5f-541f12f4af26": "strong_proxy",
+    "01a0e77e-e3e7-7109-9ea7-0d3602e36348": "strong_proxy",
+    "01a0e77e-ee2e-718c-b4f8-dda2dd51d4d3": "strong_proxy",
+    "01a0e7a3-5968-7f54-b158-eabe379d353b": "strong_proxy",
+    "01a0e7a3-5d83-743b-b376-fb3ee8846f1a": "strong_proxy",
+    "01a0e7a3-675e-7a19-bd83-449371c5e9b8": "strong_proxy",
+    "01a0e7a3-6b7d-783f-b4a2-da77756b85f5": "strong_proxy"
    }
   },
   {
    "eventId": "01a0e769-b127-76f7-a595-c270c6d9b100",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "bigram_entity": 1,
     "generic_claim": 8,
@@ -2488,6 +3534,23 @@
     "person": 2,
     "rare_token": 14
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0e769-9c5a-7a07-87c9-ce6afefd12fe",
+     "evidenceVersionId": "01a0e769-9dde-7e76-92b1-33ed95b92f42",
+     "title": "Thủ tướng chủ trì phiên họp Ban Chỉ đạo 57 chuyên đề phát triển kinh tế-xã hội"
+    },
+    {
+     "documentId": "01a0e769-a948-78fd-b632-0536ac9b7677",
+     "evidenceVersionId": "01a0e769-aace-73a1-83a0-1e141271efd9",
+     "title": "Thủ tướng Lê Minh Hưng chủ trì phiên họp Ban Chỉ đạo 57 Trung ương"
+    },
+    {
+     "documentId": "01a0e7e3-456b-762f-a7f6-aef2c3b8dc6a",
+     "evidenceVersionId": "01a0e7e3-46dd-7636-ae01-2defe4269092",
+     "title": "[Ảnh] Thủ tướng Lê Minh Hưng chủ trì Phiên họp Ban Chỉ đạo 57 chuyên đề về phát triển kinh tế-xã hội"
+    }
+   ],
    "claims": {
     "01a0e8c4-7923-737a-b5df-3d7ec69172c2": "misclustered",
     "01a0e8c4-7d91-7a5c-8266-f448e7ec30ba": "misclustered",
@@ -2496,22 +3559,38 @@
     "01a0e8c4-90b2-7f30-8b17-2db3d2225f00": "misclustered",
     "01a0e8c4-a0e3-7e36-a24b-a4d48e6b7b3c": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e8c4-7923-737a-b5df-3d7ec69172c2": "broad_event_reuse",
     "01a0e8c4-7d91-7a5c-8266-f448e7ec30ba": "broad_event_reuse",
     "01a0e8c4-81fb-7178-bb89-54dc83e29db8": "broad_event_reuse",
     "01a0e8c4-8665-7a73-86ee-e633ed82adca": "broad_event_reuse",
     "01a0e8c4-90b2-7f30-8b17-2db3d2225f00": "broad_event_reuse",
     "01a0e8c4-a0e3-7e36-a24b-a4d48e6b7b3c": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e8c4-7923-737a-b5df-3d7ec69172c2": "strong_proxy",
+    "01a0e8c4-7d91-7a5c-8266-f448e7ec30ba": "strong_proxy",
+    "01a0e8c4-81fb-7178-bb89-54dc83e29db8": "strong_proxy",
+    "01a0e8c4-8665-7a73-86ee-e633ed82adca": "strong_proxy",
+    "01a0e8c4-90b2-7f30-8b17-2db3d2225f00": "strong_proxy",
+    "01a0e8c4-a0e3-7e36-a24b-a4d48e6b7b3c": "strong_proxy"
    }
   },
   {
    "eventId": "01a0e8f9-d4b1-7f76-ab50-499917f64d29",
    "extractionGap": true,
+   "fullyForeign": false,
    "mergePaths": {
     "generic_claim": 2,
     "headline": 1
    },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0e854-a7c1-7b29-a8ff-75d4d21a295f",
+     "evidenceVersionId": "01a0e854-a94a-7b77-85fa-9e30631345f5",
+     "title": "SHB cung cấp giải pháp tài chính toàn diện cho doanh nghiệp xuất nhập khẩu"
+    }
+   ],
    "claims": {
     "01a0e94d-d18f-7bd7-8d52-4fd022d2ece9": "misclustered",
     "01a0e94d-d72d-7fbb-a79a-be0ab34766c4": "misclustered",
@@ -2522,7 +3601,7 @@
     "01a0e94d-f305-7431-98f6-4b67ac65eb49": "misclustered",
     "01a0e94d-f898-7dc1-baf9-ae91b3eabd1f": "misclustered"
    },
-   "causes": {
+   "causeProxies": {
     "01a0e94d-d18f-7bd7-8d52-4fd022d2ece9": "doc_cluster_contamination",
     "01a0e94d-d72d-7fbb-a79a-be0ab34766c4": "doc_cluster_contamination",
     "01a0e94d-dcbf-7031-9011-47100eadadcb": "broad_event_reuse",
@@ -2531,6 +3610,16 @@
     "01a0e94d-ed74-710e-a818-a9933ad65b5e": "broad_event_reuse",
     "01a0e94d-f305-7431-98f6-4b67ac65eb49": "broad_event_reuse",
     "01a0e94d-f898-7dc1-baf9-ae91b3eabd1f": "broad_event_reuse"
+   },
+   "causeConfidence": {
+    "01a0e94d-d18f-7bd7-8d52-4fd022d2ece9": "strong_proxy",
+    "01a0e94d-d72d-7fbb-a79a-be0ab34766c4": "strong_proxy",
+    "01a0e94d-dcbf-7031-9011-47100eadadcb": "strong_proxy",
+    "01a0e94d-e250-7ec9-9c18-fe2134878524": "strong_proxy",
+    "01a0e94d-e7e2-7e47-816e-7619fe4d14a7": "strong_proxy",
+    "01a0e94d-ed74-710e-a818-a9933ad65b5e": "strong_proxy",
+    "01a0e94d-f305-7431-98f6-4b67ac65eb49": "strong_proxy",
+    "01a0e94d-f898-7dc1-baf9-ae91b3eabd1f": "strong_proxy"
    }
   }
  ]
