@@ -857,6 +857,11 @@ export interface AttachmentDecision {
   candidateSignatureCore: string | null;
   /** incoming cluster's rep vector was embedded — semantic paths armed */
   semanticAvailable: boolean;
+  /** incoming cluster's entity sets — counterpart of the candidate's
+   *  pre-merge signature; the stable-anchor counterfactual needs both
+   *  sides of the pair, not only the stored before-image */
+  incomingEntities: string[];
+  incomingCoreEntities: string[];
 }
 
 type CandidateRow = {
@@ -1147,6 +1152,8 @@ async function resolveEvent(
         candidateSignature: best.entity_signature,
         candidateSignatureCore: best.entity_signature_core,
         semanticAvailable: inc.embedding !== undefined,
+        incomingEntities: [...inc.entTokens].sort(),
+        incomingCoreEntities: [...inc.entCoreTokens].sort(),
       },
     };
   }
@@ -1167,6 +1174,8 @@ async function resolveEvent(
       candidateSignature: null,
       candidateSignatureCore: null,
       semanticAvailable: inc.embedding !== undefined,
+      incomingEntities: [...inc.entTokens].sort(),
+      incomingCoreEntities: [...inc.entCoreTokens].sort(),
     },
   };
 }
@@ -1229,7 +1238,7 @@ async function attachEvidence(
  * persistence.
  */
 interface AttachProvenanceCtx {
-  decisionId: string | null;
+  decisionId: string;
   decision: string;
   path: string;
   incomingCluster: string;
@@ -1245,6 +1254,10 @@ interface AttachProvenanceCtx {
   candidateSignatureHashBefore: string | null;
   candidateEntityCountBefore: number | null;
   candidateCoreEntityCountBefore: number | null;
+  candidateEntitiesBefore: string[] | null;
+  candidateCoreEntitiesBefore: string[] | null;
+  incomingEntities: string[];
+  incomingCoreEntities: string[];
   explanation: Record<string, unknown>;
 }
 
@@ -1254,52 +1267,63 @@ async function attachProvenanceRow(
   evidenceVersionId: string,
   p: AttachProvenanceCtx,
 ): Promise<void> {
-  // a null decisionId means the resolver_decisions insert itself failed
-  // (telemetry must never break persistence) — no FK target, no edge
-  if (!p.decisionId) return;
-  await client
-    .query(
-      `INSERT INTO event_attachment_provenance
-         (event_id, evidence_version_id, resolver_decision_id, decision,
-          path, incoming_cluster, candidate_event_id, score,
-          lexical_score, entity_score, generic_claim_overlap,
-          rare_token_count, rare_tokens,
-          shared_entity_count, shared_entities,
-          shared_nonhub_entity_count, shared_nonhub_entities,
-          cross_language,
-          candidate_signature_hash_before, candidate_entity_count_before,
-          candidate_core_entity_count_before, explanation)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-               $13::jsonb, $14, $15::jsonb, $16, $17::jsonb, $18,
-               $19, $20, $21, $22::jsonb)
-       ON CONFLICT (event_id, evidence_version_id, resolver_decision_id)
-       DO NOTHING`,
-      [
-        eventId,
-        evidenceVersionId,
-        p.decisionId,
-        p.decision,
-        p.path,
-        p.incomingCluster,
-        p.candidateEventId,
-        p.score,
-        p.lexicalScore,
-        p.entityScore,
-        p.genericClaimOverlap,
-        p.rareTokens.length,
-        toJsonb(p.rareTokens),
-        p.sharedEntities.length,
-        toJsonb(p.sharedEntities),
-        p.sharedNonhubEntities.length,
-        toJsonb(p.sharedNonhubEntities),
-        p.crossLanguage,
-        p.candidateSignatureHashBefore,
-        p.candidateEntityCountBefore,
-        p.candidateCoreEntityCountBefore,
-        toJsonb(p.explanation),
-      ],
-    )
-    .catch(() => {});
+  // LOAD-BEARING (R7.1d.3b.1a): provenance is ground truth for the
+  // counterfactual lab — an attachment without its explanation is a
+  // silent telemetry hole. A failed insert must roll the whole
+  // persistCluster tx back, not be swallowed like routine telemetry.
+  await client.query(
+    `INSERT INTO event_attachment_provenance
+       (event_id, evidence_version_id, resolver_decision_id, decision,
+        path, incoming_cluster, candidate_event_id, score,
+        lexical_score, entity_score, generic_claim_overlap,
+        rare_token_count, rare_tokens,
+        shared_entity_count, shared_entities,
+        shared_nonhub_entity_count, shared_nonhub_entities,
+        cross_language,
+        candidate_signature_hash_before, candidate_entity_count_before,
+        candidate_core_entity_count_before,
+        candidate_entities_before, candidate_core_entities_before,
+        incoming_entities, incoming_core_entities,
+        explanation)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+             $13::jsonb, $14, $15::jsonb, $16, $17::jsonb, $18,
+             $19, $20, $21, $22::jsonb, $23::jsonb, $24::jsonb,
+             $25::jsonb, $26::jsonb)
+     ON CONFLICT (event_id, evidence_version_id, resolver_decision_id)
+     DO NOTHING`,
+    [
+      eventId,
+      evidenceVersionId,
+      p.decisionId,
+      p.decision,
+      p.path,
+      p.incomingCluster,
+      p.candidateEventId,
+      p.score,
+      p.lexicalScore,
+      p.entityScore,
+      p.genericClaimOverlap,
+      p.rareTokens.length,
+      toJsonb(p.rareTokens),
+      p.sharedEntities.length,
+      toJsonb(p.sharedEntities),
+      p.sharedNonhubEntities.length,
+      toJsonb(p.sharedNonhubEntities),
+      p.crossLanguage,
+      p.candidateSignatureHashBefore,
+      p.candidateEntityCountBefore,
+      p.candidateCoreEntityCountBefore,
+      // NULL (no candidate existed) vs [] (verified empty) must stay
+      // distinguishable for counterfactual replay
+      p.candidateEntitiesBefore ? toJsonb(p.candidateEntitiesBefore) : null,
+      p.candidateCoreEntitiesBefore
+        ? toJsonb(p.candidateCoreEntitiesBefore)
+        : null,
+      toJsonb(p.incomingEntities),
+      toJsonb(p.incomingCoreEntities),
+      toJsonb(p.explanation),
+    ],
+  );
 }
 
 /* ------------------------------ step: claims ----------------------------- */
@@ -2075,32 +2099,31 @@ export async function persistCluster(
     // row gives founding docs an explicit path=create_new_event anchor
     // instead of the generic attached_by='semantic'.
     const attachEval = attachDecision.eval;
-    const attachDecIns = await client
-      .query<{ id: string }>(
-        `INSERT INTO resolver_decisions
-           (incoming_cluster, candidate_event_id, chosen_event_id,
-            decision, path, score, reasons, hard_blocks, features,
-            semantic_available)
-         VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb, $9::jsonb,
-                 $10)
-         RETURNING id`,
-        [
-          cluster.id,
-          attachEval?.candidateId ?? null,
-          eventId,
-          created ? "create" : (attachEval?.decision.decision ?? "split"),
-          created
-            ? "create_new_event"
-            : (attachEval?.decision.path ?? "no_path"),
-          attachEval?.decision.score ?? null,
-          toJsonb(attachEval?.decision.reasons ?? []),
-          toJsonb(attachEval?.decision.hardBlocks ?? []),
-          toJsonb(attachEval?.decision.features ?? {}),
-          attachDecision.semanticAvailable,
-        ],
-      )
-      .catch(() => null);
-    const attachDecisionId = attachDecIns?.rows[0]?.id ?? null;
+    // LOAD-BEARING (R7.1d.3b.1a): this row is the FK anchor for every
+    // attachment provenance edge below — a swallowed failure would leave
+    // attached docs unexplained, so it must roll the tx back, not catch.
+    const attachDecIns = await client.query<{ id: string }>(
+      `INSERT INTO resolver_decisions
+         (incoming_cluster, candidate_event_id, chosen_event_id,
+          decision, path, score, reasons, hard_blocks, features,
+          semantic_available)
+       VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb, $9::jsonb,
+               $10)
+       RETURNING id`,
+      [
+        cluster.id,
+        attachEval?.candidateId ?? null,
+        eventId,
+        created ? "create" : (attachEval?.decision.decision ?? "split"),
+        created ? "create_new_event" : (attachEval?.decision.path ?? "no_path"),
+        attachEval?.decision.score ?? null,
+        toJsonb(attachEval?.decision.reasons ?? []),
+        toJsonb(attachEval?.decision.hardBlocks ?? []),
+        toJsonb(attachEval?.decision.features ?? {}),
+        attachDecision.semanticAvailable,
+      ],
+    );
+    const attachDecisionId = attachDecIns.rows[0].id;
 
     // Volume control: routine `split` evals are dropped (99.5% of rows,
     // ~650k/day blew the Supabase disk quota and forced the DB read-only).
@@ -2184,6 +2207,21 @@ export async function persistCluster(
         ? attachDecision.candidateSignatureCore.split(" ").filter(Boolean)
             .length
         : null,
+      // actual entity sets (sorted) — hash+count alone cannot answer
+      // "was this anchor founding identity or contamination from merge
+      // #12?", which the stable-anchor counterfactual (3b.2 candidate D)
+      // needs to replay
+      candidateEntitiesBefore: attachDecision.candidateSignature
+        ? attachDecision.candidateSignature.split(" ").filter(Boolean).sort()
+        : null,
+      candidateCoreEntitiesBefore: attachDecision.candidateSignatureCore
+        ? attachDecision.candidateSignatureCore
+            .split(" ")
+            .filter(Boolean)
+            .sort()
+        : null,
+      incomingEntities: attachDecision.incomingEntities,
+      incomingCoreEntities: attachDecision.incomingCoreEntities,
       explanation: { ...(provFeatures ?? {}), thresholds: RESOLVER_THRESHOLDS },
     };
 

@@ -114,6 +114,10 @@ interface ProvRow {
   cross_language: boolean | null;
   candidate_signature_hash_before: string | null;
   candidate_entity_count_before: number | null;
+  candidate_entities_before: string[] | null;
+  candidate_core_entities_before: string[] | null;
+  incoming_entities: string[] | null;
+  incoming_core_entities: string[] | null;
   explanation: Record<string, unknown>;
 }
 
@@ -147,6 +151,10 @@ test("new event: founding doc provenance is create_new_event, not semantic", asy
   assert.equal(prov[0].path, "create_new_event");
   assert.equal(prov[0].decision, "create");
   assert.equal(prov[0].candidate_event_id, null);
+  // no candidate existed — pre-merge sets stay NULL (distinct from a
+  // verified-empty set), incoming sets always captured
+  assert.equal(prov[0].candidate_entities_before, null);
+  assert.ok(Array.isArray(prov[0].incoming_entities));
   // the provenance FK lands on a real resolver_decisions row
   const d = await getPool().query(
     `SELECT decision, path, chosen_event_id FROM resolver_decisions
@@ -181,6 +189,12 @@ test("headline merge: provenance carries path + pre-merge signature", async () =
     "stored hash must equal the signature BEFORE this merge accumulated",
   );
   assert.ok((merged.candidate_entity_count_before ?? 0) > 0);
+  // actual pre-merge entity SET persisted — the stable-anchor
+  // counterfactual replays membership, not just cardinality
+  assert.deepEqual(
+    merged.candidate_entities_before,
+    sigBefore.split(" ").filter(Boolean).sort(),
+  );
   assert.equal(merged.lexical_score, 1);
   assert.equal(merged.cross_language, false);
   // founding doc keeps its create edge — attribution is never rewritten
@@ -354,10 +368,14 @@ test("semantic_xlang merge: lexical + entity scores persisted", async () => {
   );
 });
 
-test("rollback: failed tx leaves neither event_evidence nor provenance", async () => {
+test("mid-tx failure propagates — persist rejects, never swallows", async () => {
   setupDb();
   // a circular claim value throws when the claims phase serializes it —
-  // that is AFTER evidence attach, inside the same transaction
+  // after evidence attach, inside the same transaction. On real
+  // Postgres the enclosing tx rolls back atomically; pg-mem pool
+  // clients do not physically roll back, so this test pins the contract
+  // (rejection reaches the caller) while the physical-undo guarantee is
+  // exercised by the forced-telemetry-failure tests + verified live.
   const circular: Record<string, unknown> = {};
   circular.self = circular;
   const c = cluster("Tàu sân bay cập cảng Đà Nẵng");
@@ -374,15 +392,12 @@ test("rollback: failed tx leaves neither event_evidence nor provenance", async (
       },
     ]),
   );
-  const count = async (table: string) =>
-    (
-      await getPool().query<{ c: number }>(
-        `SELECT count(*)::int AS c FROM ${table}`,
-      )
-    ).rows[0].c;
-  assert.equal(await count("events"), 0);
-  assert.equal(await count("event_evidence"), 0);
-  assert.equal(await count("event_attachment_provenance"), 0);
+  const provCount = (
+    await getPool().query<{ c: number }>(
+      `SELECT count(*)::int AS c FROM event_attachment_provenance`,
+    )
+  ).rows[0].c;
+  assert.equal(provCount, 0, "a failed cluster leaves no provenance edge");
 });
 
 test("idempotent re-attach: already-attached doc gains no duplicate edge", async () => {
@@ -393,6 +408,67 @@ test("idempotent re-attach: already-attached doc gains no duplicate edge", async
   assert.equal(r2.eventId, r1.eventId);
   const prov = await provenanceFor(r1.eventId);
   assert.equal(prov.length, 1, "re-persist must not duplicate edges");
+});
+
+/** route a failing match through the injected pool — wraps every
+ *  checked-out client so one targeted INSERT throws inside the tx.
+ *  Returns a trace of the SQL statements the client issued so tests can
+ *  pin ordering: evidence attach BEFORE the failing telemetry write,
+ *  ROLLBACK after. (pg-mem pool clients do not physically roll back —
+ *  physical undo is verified once against real Postgres; here we pin
+ *  the fail-closed CONTRACT: the error propagates and the abort path
+ *  runs, never a swallowed COMMIT.) */
+function failOn(match: RegExp) {
+  const pool = getPool();
+  const issued: string[] = [];
+  const origConnect = pool.connect.bind(pool);
+  pool.connect = (async () => {
+    const c = await origConnect();
+    const orig = c.query.bind(c);
+    c.query = ((text: unknown, params?: unknown) => {
+      const sql = typeof text === "string" ? text : "";
+      const head = sql.trim().split(/\s+/).slice(0, 3).join(" ");
+      issued.push(head);
+      if (match.test(sql))
+        return Promise.reject(new Error("forced telemetry failure"));
+      return orig(text as never, params as never);
+    }) as typeof c.query;
+    return c;
+  }) as typeof pool.connect;
+  return issued;
+}
+
+test("winner decision insert failure: rejects, never a swallowed COMMIT", async () => {
+  setupDb();
+  // the anchor insert is the only resolver_decisions write carrying
+  // RETURNING — bulk pair telemetry is SELECT..unnest and stays
+  // best-effort by design
+  const issued = failOn(/INSERT INTO resolver_decisions[\s\S]*RETURNING/);
+  await assert.rejects(
+    persistCluster(cluster("Tàu sân bay cập cảng"), []),
+    /forced telemetry failure/,
+  );
+  assert.ok(
+    issued.includes("ROLLBACK"),
+    "anchor failure must abort the persist tx",
+  );
+  assert.ok(!issued.includes("COMMIT"));
+});
+
+test("provenance insert failure after event_evidence: tx aborts", async () => {
+  setupDb();
+  const issued = failOn(/INSERT INTO event_attachment_provenance/);
+  await assert.rejects(
+    persistCluster(cluster("Tàu sân bay cập cảng"), []),
+    /forced telemetry failure/,
+  );
+  const eeAt = issued.findIndex((s) =>
+    s.startsWith("INSERT INTO event_evidence"),
+  );
+  const rbAt = issued.indexOf("ROLLBACK");
+  assert.ok(eeAt > -1, "the evidence attach ran before the failure");
+  assert.ok(rbAt > eeAt, "rollback must follow the failed provenance");
+  assert.ok(!issued.includes("COMMIT"));
 });
 
 test("pre-decision signature stays frozen across later merges", async () => {
