@@ -68,9 +68,15 @@ const controls = (
   )
 ).rows.map((r) => r.id);
 
-const eventIds = [...new Set([...reviewed, ...hifp, ...giants, ...controls])];
+/* 3b.2a — extra event ids (e.g. resolver goldSampling candidates) can be
+ * appended via argv so targeted gold review joins the same snapshot:
+ *   dump-attachments.mts [event-id ...] */
+const extra = process.argv.slice(2).filter((a) => /^[0-9a-f-]{36}$/i.test(a));
+const eventIds = [
+  ...new Set([...reviewed, ...hifp, ...giants, ...controls, ...extra]),
+];
 console.log(
-  `events: reviewed=${reviewed.length} hifp=${hifp.length} giants=${giants.length} controls=${controls.length} → union=${eventIds.length}`,
+  `events: reviewed=${reviewed.length} hifp=${hifp.length} giants=${giants.length} controls=${controls.length} extra=${extra.length} → union=${eventIds.length}`,
 );
 
 // ── dump ──

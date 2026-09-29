@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-29T07:48:49.737Z",
- "corpusHash": "78de09b47f824195",
+ "generatedAt": "2026-09-29T11:47:46.384Z",
+ "corpusHash": "0e8061ad4ad11638",
  "classes": [
   "driver",
   "on_topic_non_driver",
@@ -12,18 +12,18 @@
   "no_standing_evidence"
  ],
  "eventFlag": "extraction_gap",
- "labelCount": 1236,
+ "labelCount": 1325,
  "counts": {
   "driver": 67,
-  "on_topic_non_driver": 441,
-  "misclustered": 728
+  "on_topic_non_driver": 476,
+  "misclustered": 782
  },
  "topologyCounts": {
-  "broad_event_reuse": 668,
-  "single_event_attachment": 60
+  "broad_event_reuse": 720,
+  "single_event_attachment": 62
  },
- "xlangCount": 218,
- "contentOverrideCount": 26,
+ "xlangCount": 235,
+ "contentOverrideCount": 27,
  "extractionGapEvents": [
   "01a0d176-5af1-785f-98a9-ea4ea5930c39",
   "01a0d176-5b5d-7c6f-a212-90a74dcb225b",
@@ -38,8 +38,12 @@
   "01a0def9-6ee3-79f7-bc38-ad39db99bb61",
   "01a0e257-82a7-7221-94ce-6f38cf80692a",
   "01a0e335-42c9-7cc7-9184-6588ec172c91",
+  "01a0e67e-3094-7caa-8fe0-c1fc8f59f9c9",
   "01a0e769-b127-76f7-a595-c270c6d9b100",
-  "01a0e8f9-d4b1-7f76-ab50-499917f64d29"
+  "01a0e8f9-d4b1-7f76-ab50-499917f64d29",
+  "01a0e9ad-539e-7751-9a79-ed9f55c59c2b",
+  "01a0ec31-3064-7818-9ac1-c79e0ceb4b8d",
+  "01a0eca0-3fc4-7438-9555-d8b9cd612497"
  ],
  "fullyForeignEvents": [],
  "events": [
@@ -48,15 +52,15 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "bigram_entity": 42,
-    "cross_lingual": 111,
-    "distinctive_claim": 2,
-    "entity": 7,
-    "generic_claim": 278,
-    "headline": 4,
+    "semantic_anchored": 29,
+    "cross_lingual": 123,
     "person": 9,
-    "rare_token": 33,
-    "semantic_anchored": 24
+    "entity": 7,
+    "headline": 4,
+    "bigram_entity": 44,
+    "distinctive_claim": 2,
+    "generic_claim": 290,
+    "rare_token": 33
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -418,10 +422,10 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "cross_lingual": 20,
-    "entity": 1,
     "rare_token": 5,
-    "semantic_anchored": 4
+    "semantic_anchored": 4,
+    "cross_lingual": 20,
+    "entity": 1
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -460,9 +464,9 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "cross_lingual": 2,
     "person": 2,
-    "rare_token": 2
+    "rare_token": 2,
+    "cross_lingual": 2
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -561,8 +565,8 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "cross_lingual": 20,
-    "entity": 4
+    "entity": 7,
+    "cross_lingual": 38
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -774,13 +778,13 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "cross_lingual": 64,
-    "distinctive_claim": 21,
     "entity": 17,
-    "generic_claim": 32,
     "rare_token": 29,
     "semantic_anchored": 2,
-    "semantic_xlang": 2
+    "distinctive_claim": 21,
+    "generic_claim": 32,
+    "semantic_xlang": 2,
+    "cross_lingual": 64
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -883,8 +887,8 @@
    "extractionGap": true,
    "fullyForeign": false,
    "mergePaths": {
-    "generic_claim": 2,
     "headline": 26,
+    "generic_claim": 2,
     "rare_token": 2
    },
    "onStoryEventEvidence": [
@@ -937,8 +941,8 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "generic_claim": 48,
-    "rare_token": 11
+    "rare_token": 11,
+    "generic_claim": 48
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -1044,11 +1048,11 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "distinctive_claim": 14,
-    "generic_claim": 81,
-    "headline": 2,
+    "generic_claim": 106,
     "rare_token": 88,
-    "semantic_facet": 4
+    "semantic_facet": 4,
+    "headline": 2,
+    "distinctive_claim": 14
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -1370,8 +1374,8 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "bigram_entity": 2,
-    "person": 1
+    "person": 1,
+    "bigram_entity": 2
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -1439,13 +1443,13 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "bigram_entity": 23,
+    "person": 8,
+    "generic_claim": 5,
+    "rare_token": 20,
     "cross_lingual": 73,
     "distinctive_claim": 1,
-    "generic_claim": 5,
-    "person": 8,
-    "rare_token": 20,
-    "semantic_anchored": 4
+    "semantic_anchored": 4,
+    "bigram_entity": 23
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -1528,15 +1532,15 @@
    "extractionGap": true,
    "fullyForeign": false,
    "mergePaths": {
-    "cross_lingual": 32,
-    "distinctive_claim": 28,
-    "generic_claim": 116,
-    "headline": 1,
+    "semantic_xlang": 1,
     "person": 1,
     "rare_token": 9,
     "semantic_anchored": 4,
+    "cross_lingual": 32,
     "semantic_facet": 5,
-    "semantic_xlang": 1
+    "headline": 1,
+    "distinctive_claim": 28,
+    "generic_claim": 120
    },
    "onStoryEventEvidence": [
     {
@@ -1881,13 +1885,13 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "cross_lingual": 3,
     "distinctive_claim": 1,
+    "person": 1,
+    "semantic_anchored": 1,
+    "rare_token": 32,
     "generic_claim": 81,
     "headline": 1,
-    "person": 1,
-    "rare_token": 32,
-    "semantic_anchored": 1
+    "cross_lingual": 3
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -2128,8 +2132,8 @@
    "extractionGap": true,
    "fullyForeign": false,
    "mergePaths": {
-    "generic_claim": 24,
     "headline": 1,
+    "generic_claim": 24,
     "rare_token": 12
    },
    "onStoryEventEvidence": [
@@ -2215,10 +2219,10 @@
    "extractionGap": true,
    "fullyForeign": false,
    "mergePaths": {
-    "distinctive_claim": 1,
+    "rare_token": 3,
     "generic_claim": 22,
-    "headline": 21,
-    "rare_token": 3
+    "distinctive_claim": 1,
+    "headline": 21
    },
    "onStoryEventEvidence": [
     {
@@ -2302,12 +2306,12 @@
    "extractionGap": true,
    "fullyForeign": false,
    "mergePaths": {
-    "bigram_entity": 3,
-    "cross_lingual": 14,
     "entity": 1,
-    "generic_claim": 31,
+    "cross_lingual": 17,
+    "bigram_entity": 3,
+    "generic_claim": 40,
     "person": 3,
-    "rare_token": 11
+    "rare_token": 12
    },
    "onStoryEventEvidence": [
     {
@@ -2376,7 +2380,17 @@
     "01a0ec17-e884-7f97-9004-2cd0b88c189f": "misclustered",
     "01a0ec17-ed99-78a0-88ae-bfa624f71ab6": "misclustered",
     "01a0ec17-f2a5-73e6-9b63-844388593e23": "misclustered",
-    "01a0ec17-f7b0-7d1c-814b-0b51785c4fae": "misclustered"
+    "01a0ec17-f7b0-7d1c-814b-0b51785c4fae": "misclustered",
+    "01a0ec42-4a23-7b73-b181-04732bda97c7": "misclustered",
+    "01a0ec42-4f80-7148-a03c-3f832334a876": "misclustered",
+    "01a0ec42-54db-7d03-a468-aa70d1a07a0e": "misclustered",
+    "01a0ec42-6158-7c3a-9477-844b047b4ab2": "misclustered",
+    "01a0ec42-66b4-7a14-9d23-6419e70bc3fc": "misclustered",
+    "01a0ec6b-820c-779e-9722-e7c29ad16817": "misclustered",
+    "01a0ec6b-877e-7899-bd73-ae30d5987bab": "misclustered",
+    "01a0ec6b-8ce6-771e-83fe-ad8a3d49992a": "misclustered",
+    "01a0ec6b-998b-7641-be75-36154e8eb9ef": "misclustered",
+    "01a0ec71-f916-72dd-8de7-0d9bf1c97990": "misclustered"
    },
    "topology": {
     "01a0e036-3983-75b1-9f1d-171f60f82f62": "broad_event_reuse",
@@ -2397,7 +2411,7 @@
     "01a0e77d-0bb8-7421-9816-5cf37b770fb2": "broad_event_reuse",
     "01a0e77d-1064-7cdf-b087-f238e743559b": "broad_event_reuse",
     "01a0e77d-1b9e-7550-8e3e-1a12ddfb01a8": "broad_event_reuse",
-    "01a0e77d-204a-770a-b2e4-8cabf2ebdc0b": "single_event_attachment",
+    "01a0e77d-204a-770a-b2e4-8cabf2ebdc0b": "broad_event_reuse",
     "01a0e77d-24f5-7990-b624-09ce49f2102a": "broad_event_reuse",
     "01a0e77d-29a6-73f7-a46d-dcf88de85372": "broad_event_reuse",
     "01a0e7a7-d784-72be-b4e4-f9266aab22fb": "broad_event_reuse",
@@ -2429,16 +2443,26 @@
     "01a0ebb9-1bec-78dd-97a1-d979c485528d": "single_event_attachment",
     "01a0ebb9-204f-7981-8001-0084b76a9572": "single_event_attachment",
     "01a0ebb9-24d5-7de1-b29d-9bb326827131": "broad_event_reuse",
-    "01a0ebb9-2967-7e12-a3ea-ad42601603ed": "single_event_attachment",
+    "01a0ebb9-2967-7e12-a3ea-ad42601603ed": "broad_event_reuse",
     "01a0ebef-732d-7c54-bdc3-6f045c2a8930": "single_event_attachment",
     "01a0ebef-7875-7fae-8790-0551f72d961e": "broad_event_reuse",
-    "01a0ebef-7dbb-7a9d-9397-8dc911da8fe2": "single_event_attachment",
+    "01a0ebef-7dbb-7a9d-9397-8dc911da8fe2": "broad_event_reuse",
     "01a0ebef-8301-731c-9832-778484cebf78": "broad_event_reuse",
     "01a0ebef-884a-7ad8-9b3f-7ef8aab3323f": "single_event_attachment",
     "01a0ec17-e884-7f97-9004-2cd0b88c189f": "broad_event_reuse",
     "01a0ec17-ed99-78a0-88ae-bfa624f71ab6": "broad_event_reuse",
     "01a0ec17-f2a5-73e6-9b63-844388593e23": "single_event_attachment",
-    "01a0ec17-f7b0-7d1c-814b-0b51785c4fae": "single_event_attachment"
+    "01a0ec17-f7b0-7d1c-814b-0b51785c4fae": "broad_event_reuse",
+    "01a0ec42-4a23-7b73-b181-04732bda97c7": "broad_event_reuse",
+    "01a0ec42-4f80-7148-a03c-3f832334a876": "broad_event_reuse",
+    "01a0ec42-54db-7d03-a468-aa70d1a07a0e": "broad_event_reuse",
+    "01a0ec42-6158-7c3a-9477-844b047b4ab2": "broad_event_reuse",
+    "01a0ec42-66b4-7a14-9d23-6419e70bc3fc": "broad_event_reuse",
+    "01a0ec6b-820c-779e-9722-e7c29ad16817": "broad_event_reuse",
+    "01a0ec6b-877e-7899-bd73-ae30d5987bab": "broad_event_reuse",
+    "01a0ec6b-8ce6-771e-83fe-ad8a3d49992a": "broad_event_reuse",
+    "01a0ec6b-998b-7641-be75-36154e8eb9ef": "broad_event_reuse",
+    "01a0ec71-f916-72dd-8de7-0d9bf1c97990": "broad_event_reuse"
    },
    "xlang": [
     "01a0e036-3983-75b1-9f1d-171f60f82f62",
@@ -2493,7 +2517,16 @@
     "01a0ec17-e884-7f97-9004-2cd0b88c189f",
     "01a0ec17-ed99-78a0-88ae-bfa624f71ab6",
     "01a0ec17-f2a5-73e6-9b63-844388593e23",
-    "01a0ec17-f7b0-7d1c-814b-0b51785c4fae"
+    "01a0ec17-f7b0-7d1c-814b-0b51785c4fae",
+    "01a0ec42-4a23-7b73-b181-04732bda97c7",
+    "01a0ec42-4f80-7148-a03c-3f832334a876",
+    "01a0ec42-54db-7d03-a468-aa70d1a07a0e",
+    "01a0ec42-6158-7c3a-9477-844b047b4ab2",
+    "01a0ec42-66b4-7a14-9d23-6419e70bc3fc",
+    "01a0ec6b-820c-779e-9722-e7c29ad16817",
+    "01a0ec6b-877e-7899-bd73-ae30d5987bab",
+    "01a0ec6b-8ce6-771e-83fe-ad8a3d49992a",
+    "01a0ec6b-998b-7641-be75-36154e8eb9ef"
    ],
    "contentOverride": []
   },
@@ -2502,8 +2535,8 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "generic_claim": 2,
-    "headline": 1
+    "headline": 1,
+    "generic_claim": 2
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -2535,6 +2568,21 @@
     "01a0df99-b6ad-7a4a-8006-2b57d063f7ae": "broad_event_reuse",
     "01a0df99-be86-73bb-bf3d-1cc7f2b3eee4": "broad_event_reuse"
    },
+   "xlang": [],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0ddb1-212f-75b2-94db-dc448bad6076",
+   "extractionGap": false,
+   "fullyForeign": false,
+   "mergePaths": {
+    "rare_token": 31,
+    "semantic_xlang": 12,
+    "headline": 6
+   },
+   "onStoryEventEvidence": [],
+   "claims": {},
+   "topology": {},
    "xlang": [],
    "contentOverride": []
   },
@@ -2589,13 +2637,13 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "bigram_entity": 15,
-    "cross_lingual": 43,
+    "bigram_entity": 16,
+    "rare_token": 2,
+    "semantic_xlang": 1,
+    "semantic_anchored": 39,
     "generic_claim": 9,
     "headline": 16,
-    "rare_token": 2,
-    "semantic_anchored": 36,
-    "semantic_xlang": 1
+    "cross_lingual": 44
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -2618,7 +2666,9 @@
     "01a0ebf0-794d-7a80-8ec3-5023568e494b": "on_topic_non_driver",
     "01a0ebf0-7e91-73b3-b4b5-3a9d436bd536": "on_topic_non_driver",
     "01a0ebf0-98e9-7df1-bd80-a6431b9b6b78": "on_topic_non_driver",
-    "01a0ec1a-b3c3-7aa0-bb71-77df19ec02ea": "on_topic_non_driver"
+    "01a0ec1a-b3c3-7aa0-bb71-77df19ec02ea": "on_topic_non_driver",
+    "01a0ec47-1fc2-7cba-b05c-d403350ec99c": "on_topic_non_driver",
+    "01a0ec47-3b41-7609-9a27-5e87b1a4f75f": "on_topic_non_driver"
    },
    "topology": {
     "01a0e42e-34c1-7491-ab5d-6cd6f4c8308c": "broad_event_reuse",
@@ -2716,7 +2766,7 @@
    "fullyForeign": false,
    "mergePaths": {
     "headline": 7,
-    "rare_token": 28
+    "rare_token": 31
    },
    "onStoryEventEvidence": [
     {
@@ -2759,7 +2809,14 @@
     "01a0ebea-c7cd-77e1-8b0a-411c0102b736": "misclustered",
     "01a0ec19-bb72-7e31-9fa1-2f9ea7cac53e": "misclustered",
     "01a0ec19-c07e-7b6d-9a86-06f6d2bd8e56": "misclustered",
-    "01a0ec19-d3d6-7bef-8a98-ca053ac9352a": "misclustered"
+    "01a0ec19-d3d6-7bef-8a98-ca053ac9352a": "misclustered",
+    "01a0ec44-1d74-7e99-b02c-e8b3d693da5f": "misclustered",
+    "01a0ec44-22da-7c1a-bab1-95aa89736514": "misclustered",
+    "01a0ec44-2837-7b4b-b563-5b70cf492336": "misclustered",
+    "01a0ec44-34bc-7359-b34f-965c88d9b381": "misclustered",
+    "01a0ec44-3a16-7690-9599-f6e07bc45a3f": "misclustered",
+    "01a0ec44-3f70-7fd3-9f97-223185b35685": "misclustered",
+    "01a0ec44-44cb-745e-a63b-e2269a706337": "misclustered"
    },
    "topology": {
     "01a0e7fc-d4d9-753b-a422-ff802d9829fd": "broad_event_reuse",
@@ -2773,29 +2830,36 @@
     "01a0e7fd-2b76-7d47-ae07-363861d51e03": "broad_event_reuse",
     "01a0e8be-50dd-7998-816e-305cededb463": "single_event_attachment",
     "01a0e949-d0b7-7516-8af5-c106d6f769a2": "single_event_attachment",
-    "01a0e949-ddcd-7954-a4ba-2161beeb7260": "single_event_attachment",
+    "01a0e949-ddcd-7954-a4ba-2161beeb7260": "broad_event_reuse",
     "01a0e949-e907-7067-aedf-78f42062e4e7": "broad_event_reuse",
-    "01a0eb74-81d6-7b11-b76e-d0b7f3c90bdb": "single_event_attachment",
-    "01a0eb74-8735-71eb-8825-22e624a6e08d": "single_event_attachment",
+    "01a0eb74-81d6-7b11-b76e-d0b7f3c90bdb": "broad_event_reuse",
+    "01a0eb74-8735-71eb-8825-22e624a6e08d": "broad_event_reuse",
     "01a0eb74-8c93-70a3-aa67-175515f2c188": "broad_event_reuse",
     "01a0eb74-91f4-7a54-b6e5-85ed2bae6d0b": "broad_event_reuse",
-    "01a0eb74-9757-78e3-b067-fc967e056dfe": "single_event_attachment",
+    "01a0eb74-9757-78e3-b067-fc967e056dfe": "broad_event_reuse",
     "01a0eb74-a4c9-7dec-bc0f-bf75c05e3205": "broad_event_reuse",
     "01a0ebb6-2e71-7b35-b44b-88319cafb3bc": "broad_event_reuse",
     "01a0ebb6-32b9-744a-8282-c86bd92ed7fa": "single_event_attachment",
     "01a0ebb6-36fb-7492-969b-091b3499c5c7": "single_event_attachment",
     "01a0ebb6-3b3f-7b92-af25-b8db2dba06e5": "single_event_attachment",
-    "01a0ebb6-3f81-7ccc-8037-a65af1678d75": "single_event_attachment",
+    "01a0ebb6-3f81-7ccc-8037-a65af1678d75": "broad_event_reuse",
     "01a0ebb6-43c4-7c9d-bbb1-5246de924fc9": "broad_event_reuse",
     "01a0ebb6-4807-7c0a-b460-363c75538ef6": "broad_event_reuse",
-    "01a0ebb6-4c53-7988-808a-cc3d0e553242": "single_event_attachment",
+    "01a0ebb6-4c53-7988-808a-cc3d0e553242": "broad_event_reuse",
     "01a0ebea-a561-72fd-a97f-0205aabfb9cf": "broad_event_reuse",
     "01a0ebea-aaa9-7f24-8907-a29565359488": "single_event_attachment",
-    "01a0ebea-c287-7cc2-9524-6e0f1db3455c": "single_event_attachment",
+    "01a0ebea-c287-7cc2-9524-6e0f1db3455c": "broad_event_reuse",
     "01a0ebea-c7cd-77e1-8b0a-411c0102b736": "broad_event_reuse",
     "01a0ec19-bb72-7e31-9fa1-2f9ea7cac53e": "broad_event_reuse",
     "01a0ec19-c07e-7b6d-9a86-06f6d2bd8e56": "broad_event_reuse",
-    "01a0ec19-d3d6-7bef-8a98-ca053ac9352a": "broad_event_reuse"
+    "01a0ec19-d3d6-7bef-8a98-ca053ac9352a": "broad_event_reuse",
+    "01a0ec44-1d74-7e99-b02c-e8b3d693da5f": "broad_event_reuse",
+    "01a0ec44-22da-7c1a-bab1-95aa89736514": "broad_event_reuse",
+    "01a0ec44-2837-7b4b-b563-5b70cf492336": "broad_event_reuse",
+    "01a0ec44-34bc-7359-b34f-965c88d9b381": "broad_event_reuse",
+    "01a0ec44-3a16-7690-9599-f6e07bc45a3f": "broad_event_reuse",
+    "01a0ec44-3f70-7fd3-9f97-223185b35685": "broad_event_reuse",
+    "01a0ec44-44cb-745e-a63b-e2269a706337": "broad_event_reuse"
    },
    "xlang": [],
    "contentOverride": []
@@ -2861,13 +2925,13 @@
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
-    "distinctive_claim": 1,
-    "entity": 2,
-    "generic_claim": 101,
+    "semantic_xlang": 2,
     "headline": 7,
-    "rare_token": 16,
     "semantic_facet": 1,
-    "semantic_xlang": 2
+    "entity": 2,
+    "distinctive_claim": 5,
+    "generic_claim": 121,
+    "rare_token": 16
    },
    "onStoryEventEvidence": [],
    "claims": {
@@ -2945,7 +3009,17 @@
     "01a0eb76-a57d-7622-a62b-b0d011d0dc30": "misclustered",
     "01a0ebec-f209-7483-b24b-74f6d358896a": "misclustered",
     "01a0ebec-f74e-7ec7-8c26-734d3746a7cf": "misclustered",
-    "01a0ebec-fc93-7e58-9549-b598501ff71e": "misclustered"
+    "01a0ebec-fc93-7e58-9549-b598501ff71e": "misclustered",
+    "01a0ec45-f1c7-7b5e-9ff0-3c13b8207059": "misclustered",
+    "01a0ec46-0732-729a-b3b0-edbb22e7f696": "misclustered",
+    "01a0ec6f-a9d2-717f-953a-d67016bce6ee": "misclustered",
+    "01a0ec6f-af55-7902-b411-dab30c93d6f7": "misclustered",
+    "01a0ec97-5088-72c2-b8b8-f5fa167975e8": "misclustered",
+    "01a0ec97-54b0-778e-8e81-96aeca2c3b97": "misclustered",
+    "01a0ecc7-2305-79ad-a162-6c15a5b381f9": "on_topic_non_driver",
+    "01a0ecc7-2fb1-705d-93d1-bbf34a440176": "misclustered",
+    "01a0ecc7-351e-72e7-b581-eb6cf4c97a55": "misclustered",
+    "01a0ecf1-61f5-7637-977c-5ae0e4f8bcdb": "on_topic_non_driver"
    },
    "topology": {
     "01a0e35b-e891-7f70-ac94-28a387691879": "broad_event_reuse",
@@ -2960,7 +3034,7 @@
     "01a0e677-1255-7eb1-9efe-cfc45127b6a8": "single_event_attachment",
     "01a0e677-1d07-79bd-b592-1fb9ccc96424": "broad_event_reuse",
     "01a0e677-2d0b-7c4d-bc30-bd58acd5d4fd": "broad_event_reuse",
-    "01a0e677-317d-7598-ad1a-a378c04620eb": "broad_event_reuse",
+    "01a0e677-317d-7598-ad1a-a378c04620eb": "single_event_attachment",
     "01a0e704-69ec-7f10-a605-99a09e375ee2": "broad_event_reuse",
     "01a0e704-722f-7961-a099-a9ac7a1be27f": "broad_event_reuse",
     "01a0e704-764b-7216-8c82-cb3c9c155d3b": "broad_event_reuse",
@@ -2998,13 +3072,22 @@
     "01a0eb76-a57d-7622-a62b-b0d011d0dc30": "broad_event_reuse",
     "01a0ebec-f209-7483-b24b-74f6d358896a": "broad_event_reuse",
     "01a0ebec-f74e-7ec7-8c26-734d3746a7cf": "broad_event_reuse",
-    "01a0ebec-fc93-7e58-9549-b598501ff71e": "broad_event_reuse"
+    "01a0ebec-fc93-7e58-9549-b598501ff71e": "broad_event_reuse",
+    "01a0ec45-f1c7-7b5e-9ff0-3c13b8207059": "single_event_attachment",
+    "01a0ec46-0732-729a-b3b0-edbb22e7f696": "single_event_attachment",
+    "01a0ec6f-a9d2-717f-953a-d67016bce6ee": "broad_event_reuse",
+    "01a0ec6f-af55-7902-b411-dab30c93d6f7": "broad_event_reuse",
+    "01a0ec97-5088-72c2-b8b8-f5fa167975e8": "broad_event_reuse",
+    "01a0ec97-54b0-778e-8e81-96aeca2c3b97": "broad_event_reuse",
+    "01a0ecc7-2fb1-705d-93d1-bbf34a440176": "broad_event_reuse",
+    "01a0ecc7-351e-72e7-b581-eb6cf4c97a55": "broad_event_reuse"
    },
    "xlang": [
     "01a0e677-1255-7eb1-9efe-cfc45127b6a8",
     "01a0e781-cfbc-7035-8182-54d1e01a186e",
     "01a0e781-d468-75b8-9804-996c66fe2709",
-    "01a0e781-d919-7d65-b4e4-cb39d81bb03b"
+    "01a0e781-d919-7d65-b4e4-cb39d81bb03b",
+    "01a0ec45-f1c7-7b5e-9ff0-3c13b8207059"
    ],
    "contentOverride": [
     "01a0e35b-e891-7f70-ac94-28a387691879",
@@ -3071,10 +3154,79 @@
    "contentOverride": []
   },
   {
+   "eventId": "01a0e675-3001-7a38-bf2e-edf8d0fc2c50",
+   "extractionGap": false,
+   "fullyForeign": false,
+   "mergePaths": {
+    "rare_token": 9,
+    "headline": 7,
+    "generic_claim": 4
+   },
+   "onStoryEventEvidence": [],
+   "claims": {
+    "01a0e675-b63f-7ed8-8589-da6a8fce7dba": "misclustered",
+    "01a0e675-bab2-71e0-a9e0-3af8efa3e8f8": "misclustered",
+    "01a0e675-c55c-7089-bb42-2711b3978c2d": "on_topic_non_driver",
+    "01a0e675-c9cd-7bfb-8e0f-6380f7f33ed4": "on_topic_non_driver",
+    "01a0e675-ce3e-7dc6-ab4d-b7525ade6694": "on_topic_non_driver",
+    "01a0e675-d2af-7599-a402-244d0377d188": "on_topic_non_driver",
+    "01a0e675-d722-70cc-bd35-9a93fbe2c4eb": "misclustered",
+    "01a0e675-db93-7271-87fc-bce255f2cddb": "misclustered",
+    "01a0e675-e003-7548-84c9-b9885837694b": "on_topic_non_driver",
+    "01a0e675-e473-71bb-9f61-f3526535779d": "on_topic_non_driver",
+    "01a0e69a-92ea-7ccb-b0ec-1ddd589e070e": "on_topic_non_driver",
+    "01a0e69a-9782-7aa2-8b31-3aef69cca360": "misclustered",
+    "01a0e69a-9c19-767d-9789-92372851692c": "misclustered",
+    "01a0e69a-a0af-701f-ae01-6fec64ca4cd7": "misclustered"
+   },
+   "topology": {
+    "01a0e675-b63f-7ed8-8589-da6a8fce7dba": "broad_event_reuse",
+    "01a0e675-bab2-71e0-a9e0-3af8efa3e8f8": "broad_event_reuse",
+    "01a0e675-d722-70cc-bd35-9a93fbe2c4eb": "broad_event_reuse",
+    "01a0e675-db93-7271-87fc-bce255f2cddb": "broad_event_reuse",
+    "01a0e69a-9782-7aa2-8b31-3aef69cca360": "broad_event_reuse",
+    "01a0e69a-9c19-767d-9789-92372851692c": "broad_event_reuse",
+    "01a0e69a-a0af-701f-ae01-6fec64ca4cd7": "broad_event_reuse"
+   },
+   "xlang": [
+    "01a0e675-b63f-7ed8-8589-da6a8fce7dba",
+    "01a0e675-bab2-71e0-a9e0-3af8efa3e8f8"
+   ],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0e67e-3094-7caa-8fe0-c1fc8f59f9c9",
+   "extractionGap": true,
+   "fullyForeign": false,
+   "mergePaths": {
+    "semantic_strong": 19,
+    "semantic_xlang": 4
+   },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0e67d-d56a-7f9b-8f78-0807d2682206",
+     "evidenceVersionId": "01a0e67d-d73f-7dd7-b663-5917b6f91dff",
+     "title": "525"
+    }
+   ],
+   "claims": {
+    "01a0e67e-5de5-75d2-9f08-cb4ad8f3fe1a": "misclustered"
+   },
+   "topology": {
+    "01a0e67e-5de5-75d2-9f08-cb4ad8f3fe1a": "broad_event_reuse"
+   },
+   "xlang": [],
+   "contentOverride": []
+  },
+  {
    "eventId": "01a0e755-6e23-70e2-848e-013f32f5a0ed",
    "extractionGap": false,
    "fullyForeign": false,
    "mergePaths": {
+    "rare_token": 1,
+    "semantic_facet": 4,
+    "distinctive_claim": 2,
+    "generic_claim": 8,
     "headline": 3
    },
    "onStoryEventEvidence": [],
@@ -3094,7 +3246,36 @@
     "01a0e7a3-5968-7f54-b158-eabe379d353b": "misclustered",
     "01a0e7a3-5d83-743b-b376-fb3ee8846f1a": "misclustered",
     "01a0e7a3-675e-7a19-bd83-449371c5e9b8": "misclustered",
-    "01a0e7a3-6b7d-783f-b4a2-da77756b85f5": "misclustered"
+    "01a0e7a3-6b7d-783f-b4a2-da77756b85f5": "misclustered",
+    "01a0ec6d-b31e-7e33-a9b3-3bae6f006264": "misclustered",
+    "01a0ec6d-b886-7cd0-a7d6-174eae215f09": "misclustered",
+    "01a0ec6d-bdf1-741d-b8ae-64bbb6e70050": "misclustered",
+    "01a0ec6d-c359-771f-a034-73463a885387": "on_topic_non_driver",
+    "01a0ec6d-c8c1-7a53-b300-ed9276516af8": "on_topic_non_driver",
+    "01a0ec6d-ce2b-7008-8dcb-75b081bde936": "on_topic_non_driver",
+    "01a0ec94-590b-7ce6-852c-6de6a48e0a23": "misclustered",
+    "01a0ec94-5d33-7653-bd56-c8db4ab3fc40": "on_topic_non_driver",
+    "01a0ec94-615a-78c4-9183-fe66f5551de3": "on_topic_non_driver",
+    "01a0ec94-6b0a-7599-9789-d2036ec9fdd7": "on_topic_non_driver",
+    "01a0ecc2-ee70-722c-b3ee-d9accda7b363": "on_topic_non_driver",
+    "01a0ecc3-172d-7a5e-ba72-f4b604554774": "on_topic_non_driver",
+    "01a0ecc3-1c9a-796a-a396-5ee851134f83": "on_topic_non_driver",
+    "01a0ecc3-2206-76f6-8a5c-89efa293c144": "on_topic_non_driver",
+    "01a0ecc3-2772-72d3-8cf7-457215766295": "misclustered",
+    "01a0ecc3-2cde-7cd8-91fa-0bd8aa9a3d45": "on_topic_non_driver",
+    "01a0ecc3-3249-779d-88b2-9231d005404f": "on_topic_non_driver",
+    "01a0ecc3-37b5-70ac-b9a7-af61b3669dc7": "on_topic_non_driver",
+    "01a0ecc8-573d-7857-a498-19be50f0f24c": "on_topic_non_driver",
+    "01a0ecc8-5ca9-7195-8ee3-66a4fff967b3": "misclustered",
+    "01a0ecc8-6217-7423-b9b8-fd3f75a8a198": "misclustered",
+    "01a0ecc8-6783-75d9-96ea-0fead9da0ead": "on_topic_non_driver",
+    "01a0ecc8-6cef-78e8-ac1a-2d0b7319f2e7": "on_topic_non_driver",
+    "01a0eced-58b7-749b-8f27-06c028e897bc": "misclustered",
+    "01a0eced-5e07-770d-ba25-d0a28b3cc6b9": "on_topic_non_driver",
+    "01a0eced-6358-76c6-8311-cefd1137c413": "on_topic_non_driver",
+    "01a0eced-68ac-7985-bdf3-f2107deb50d8": "on_topic_non_driver",
+    "01a0eced-6dfc-7b29-be7f-da89faad2ada": "on_topic_non_driver",
+    "01a0eced-734c-77d4-a49d-5addc20928f1": "on_topic_non_driver"
    },
    "topology": {
     "01a0e755-e81b-7e61-ae67-49ab3820c309": "broad_event_reuse",
@@ -3105,7 +3286,15 @@
     "01a0e7a3-5968-7f54-b158-eabe379d353b": "broad_event_reuse",
     "01a0e7a3-5d83-743b-b376-fb3ee8846f1a": "broad_event_reuse",
     "01a0e7a3-675e-7a19-bd83-449371c5e9b8": "broad_event_reuse",
-    "01a0e7a3-6b7d-783f-b4a2-da77756b85f5": "broad_event_reuse"
+    "01a0e7a3-6b7d-783f-b4a2-da77756b85f5": "broad_event_reuse",
+    "01a0ec6d-b31e-7e33-a9b3-3bae6f006264": "single_event_attachment",
+    "01a0ec6d-b886-7cd0-a7d6-174eae215f09": "broad_event_reuse",
+    "01a0ec6d-bdf1-741d-b8ae-64bbb6e70050": "broad_event_reuse",
+    "01a0ec94-590b-7ce6-852c-6de6a48e0a23": "single_event_attachment",
+    "01a0ecc3-2772-72d3-8cf7-457215766295": "broad_event_reuse",
+    "01a0ecc8-5ca9-7195-8ee3-66a4fff967b3": "broad_event_reuse",
+    "01a0ecc8-6217-7423-b9b8-fd3f75a8a198": "broad_event_reuse",
+    "01a0eced-58b7-749b-8f27-06c028e897bc": "single_event_attachment"
    },
    "xlang": [],
    "contentOverride": []
@@ -3115,11 +3304,11 @@
    "extractionGap": true,
    "fullyForeign": false,
    "mergePaths": {
-    "bigram_entity": 1,
-    "generic_claim": 8,
     "headline": 4,
+    "rare_token": 14,
     "person": 2,
-    "rare_token": 14
+    "generic_claim": 8,
+    "bigram_entity": 1
    },
    "onStoryEventEvidence": [
     {
@@ -3161,12 +3350,26 @@
    "contentOverride": []
   },
   {
+   "eventId": "01a0e865-33c9-7bfd-8e31-bc711843d7da",
+   "extractionGap": false,
+   "fullyForeign": false,
+   "mergePaths": {
+    "semantic_facet": 10,
+    "headline": 5
+   },
+   "onStoryEventEvidence": [],
+   "claims": {},
+   "topology": {},
+   "xlang": [],
+   "contentOverride": []
+  },
+  {
    "eventId": "01a0e8f9-d4b1-7f76-ab50-499917f64d29",
    "extractionGap": true,
    "fullyForeign": false,
    "mergePaths": {
-    "generic_claim": 2,
-    "headline": 1
+    "headline": 1,
+    "generic_claim": 2
    },
    "onStoryEventEvidence": [
     {
@@ -3199,6 +3402,199 @@
     "01a0e94d-d18f-7bd7-8d52-4fd022d2ece9",
     "01a0e94d-d72d-7fbb-a79a-be0ab34766c4"
    ],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0e9ad-539e-7751-9a79-ed9f55c59c2b",
+   "extractionGap": true,
+   "fullyForeign": false,
+   "mergePaths": {
+    "cross_lingual": 18
+   },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0e968-0106-75e2-8c52-f10cefcbf10d",
+     "evidenceVersionId": "01a0e968-02f0-760d-a08f-09a0f9e6a8a5",
+     "title": "Russia on top in building nuclear power units overseas — Putin"
+    }
+   ],
+   "claims": {
+    "01a0eb83-7f05-7ff1-915b-c6960dc89445": "misclustered"
+   },
+   "topology": {
+    "01a0eb83-7f05-7ff1-915b-c6960dc89445": "single_event_attachment"
+   },
+   "xlang": [
+    "01a0eb83-7f05-7ff1-915b-c6960dc89445"
+   ],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0eb83-e5e7-7be7-8c0f-ea995240ba8a",
+   "extractionGap": false,
+   "fullyForeign": false,
+   "mergePaths": {
+    "semantic_anchored": 4,
+    "headline": 1
+   },
+   "onStoryEventEvidence": [],
+   "claims": {
+    "01a0ec97-dc94-7575-b3e2-081ab5d83fe6": "on_topic_non_driver",
+    "01a0ec97-ebcd-74d9-8035-78cfa8378dd7": "misclustered",
+    "01a0ec97-eff3-7095-9b59-55e529af1d2a": "misclustered"
+   },
+   "topology": {
+    "01a0ec97-ebcd-74d9-8035-78cfa8378dd7": "broad_event_reuse",
+    "01a0ec97-eff3-7095-9b59-55e529af1d2a": "single_event_attachment"
+   },
+   "xlang": [
+    "01a0ec97-ebcd-74d9-8035-78cfa8378dd7"
+   ],
+   "contentOverride": [
+    "01a0ec97-eff3-7095-9b59-55e529af1d2a"
+   ]
+  },
+  {
+   "eventId": "01a0ec2c-a1d6-70d7-9696-156b0272ad23",
+   "extractionGap": false,
+   "fullyForeign": false,
+   "mergePaths": {
+    "headline": 4
+   },
+   "onStoryEventEvidence": [],
+   "claims": {},
+   "topology": {},
+   "xlang": [],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0ec2f-baa8-790b-ba61-43e5c858ee80",
+   "extractionGap": false,
+   "fullyForeign": false,
+   "mergePaths": {
+    "headline": 4
+   },
+   "onStoryEventEvidence": [],
+   "claims": {
+    "01a0ec2f-d673-7604-a62a-b40cfa7b37a0": "on_topic_non_driver"
+   },
+   "topology": {},
+   "xlang": [],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0ec31-3064-7818-9ac1-c79e0ceb4b8d",
+   "extractionGap": true,
+   "fullyForeign": false,
+   "mergePaths": {
+    "entity": 1,
+    "generic_claim": 1,
+    "cross_lingual": 2,
+    "headline": 2
+   },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0e4cc-818f-7d97-ae04-70cea1290d6a",
+     "evidenceVersionId": "01a0e4cc-8379-7849-becd-6c579bf5088c",
+     "title": "Tỉ phú Bill Gates cảnh báo AI có thể gây thảm họa quy mô chưa từng có"
+    }
+   ],
+   "claims": {
+    "01a0ec31-56ac-783d-9c60-1b730ec6b2ff": "misclustered",
+    "01a0ecf3-4463-76a2-a7f0-1f7f553ad840": "misclustered"
+   },
+   "topology": {
+    "01a0ec31-56ac-783d-9c60-1b730ec6b2ff": "single_event_attachment",
+    "01a0ecf3-4463-76a2-a7f0-1f7f553ad840": "broad_event_reuse"
+   },
+   "xlang": [
+    "01a0ec31-56ac-783d-9c60-1b730ec6b2ff"
+   ],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0ec87-3b45-7771-a785-9811d6cce89e",
+   "extractionGap": false,
+   "fullyForeign": false,
+   "mergePaths": {
+    "headline": 2
+   },
+   "onStoryEventEvidence": [],
+   "claims": {
+    "01a0ec99-90ea-7ab4-8d1b-db5d03e93ba3": "on_topic_non_driver",
+    "01a0ec99-9511-70f1-aa46-a6bb04636817": "misclustered",
+    "01a0ec99-9936-774f-b585-9c04b84d72d2": "misclustered",
+    "01a0ec99-9d5c-79c4-9639-5d7424032e20": "misclustered",
+    "01a0ec99-a182-7063-b801-a5fedc882374": "misclustered",
+    "01a0ec99-a5a8-7e7b-a51a-43134ab266bf": "misclustered",
+    "01a0eccd-0d1b-7584-8b07-b859af82dd57": "misclustered"
+   },
+   "topology": {
+    "01a0ec99-9511-70f1-aa46-a6bb04636817": "broad_event_reuse",
+    "01a0ec99-9936-774f-b585-9c04b84d72d2": "broad_event_reuse",
+    "01a0ec99-9d5c-79c4-9639-5d7424032e20": "single_event_attachment",
+    "01a0ec99-a182-7063-b801-a5fedc882374": "single_event_attachment",
+    "01a0ec99-a5a8-7e7b-a51a-43134ab266bf": "single_event_attachment",
+    "01a0eccd-0d1b-7584-8b07-b859af82dd57": "single_event_attachment"
+   },
+   "xlang": [],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0eca0-3fc4-7438-9555-d8b9cd612497",
+   "extractionGap": true,
+   "fullyForeign": false,
+   "mergePaths": {
+    "headline": 1,
+    "generic_claim": 2
+   },
+   "onStoryEventEvidence": [
+    {
+     "documentId": "01a0ec73-e91c-7461-a112-cf5d60cc8a78",
+     "evidenceVersionId": "01a0ec73-eaf4-7871-9538-f7b5f0b21cce",
+     "title": "Cây nhạc đại ngàn mãi xanh"
+    }
+   ],
+   "claims": {
+    "01a0ecc4-dabb-771f-aefe-e3ecc1387827": "misclustered",
+    "01a0ecc4-f5e2-79cc-b2bf-59ec6b3495b8": "misclustered"
+   },
+   "topology": {
+    "01a0ecc4-dabb-771f-aefe-e3ecc1387827": "broad_event_reuse",
+    "01a0ecc4-f5e2-79cc-b2bf-59ec6b3495b8": "broad_event_reuse"
+   },
+   "xlang": [
+    "01a0ecc4-dabb-771f-aefe-e3ecc1387827",
+    "01a0ecc4-f5e2-79cc-b2bf-59ec6b3495b8"
+   ],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0eca3-3c5b-7e33-ba2a-d8b5c6125b60",
+   "extractionGap": false,
+   "fullyForeign": false,
+   "mergePaths": {
+    "cross_lingual": 1,
+    "bigram_entity": 1,
+    "semantic_facet": 1
+   },
+   "onStoryEventEvidence": [],
+   "claims": {},
+   "topology": {},
+   "xlang": [],
+   "contentOverride": []
+  },
+  {
+   "eventId": "01a0eca5-beb6-79b9-9edf-6aab3b255bf2",
+   "extractionGap": false,
+   "fullyForeign": false,
+   "mergePaths": {
+    "rare_token": 1
+   },
+   "onStoryEventEvidence": [],
+   "claims": {},
+   "topology": {},
+   "xlang": [],
    "contentOverride": []
   }
  ]
