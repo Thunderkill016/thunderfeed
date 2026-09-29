@@ -2196,30 +2196,37 @@ export async function persistCluster(
       sharedNonhubEntities: provFeatures?.nonHubSharedCore ?? [],
       crossLanguage: provFeatures ? !provFeatures.sameLanguage : null,
       // pre-merge candidate signature — the union UPDATE in resolveEvent
-      // already ran; these are what the resolver actually evaluated
-      candidateSignatureHashBefore: attachDecision.candidateSignature
-        ? repHash(attachDecision.candidateSignature)
-        : null,
-      candidateEntityCountBefore: attachDecision.candidateSignature
-        ? attachDecision.candidateSignature.split(" ").filter(Boolean).length
-        : null,
-      candidateCoreEntityCountBefore: attachDecision.candidateSignatureCore
-        ? attachDecision.candidateSignatureCore.split(" ").filter(Boolean)
-            .length
-        : null,
+      // already ran; these are what the resolver actually evaluated.
+      // NULL is reserved for "no candidate" (create); a merge candidate
+      // with an EMPTY signature is verified-empty → [] / 0, never NULL
+      candidateSignatureHashBefore: created
+        ? null
+        : repHash(attachDecision.candidateSignature ?? ""),
+      candidateEntityCountBefore: created
+        ? null
+        : (attachDecision.candidateSignature ?? "").split(" ").filter(Boolean)
+            .length,
+      candidateCoreEntityCountBefore: created
+        ? null
+        : (attachDecision.candidateSignatureCore ?? "")
+            .split(" ")
+            .filter(Boolean).length,
       // actual entity sets (sorted) — hash+count alone cannot answer
       // "was this anchor founding identity or contamination from merge
       // #12?", which the stable-anchor counterfactual (3b.2 candidate D)
       // needs to replay
-      candidateEntitiesBefore: attachDecision.candidateSignature
-        ? attachDecision.candidateSignature.split(" ").filter(Boolean).sort()
-        : null,
-      candidateCoreEntitiesBefore: attachDecision.candidateSignatureCore
-        ? attachDecision.candidateSignatureCore
+      candidateEntitiesBefore: created
+        ? null
+        : (attachDecision.candidateSignature ?? "")
             .split(" ")
             .filter(Boolean)
-            .sort()
-        : null,
+            .sort(),
+      candidateCoreEntitiesBefore: created
+        ? null
+        : (attachDecision.candidateSignatureCore ?? "")
+            .split(" ")
+            .filter(Boolean)
+            .sort(),
       incomingEntities: attachDecision.incomingEntities,
       incomingCoreEntities: attachDecision.incomingCoreEntities,
       explanation: { ...(provFeatures ?? {}), thresholds: RESOLVER_THRESHOLDS },
