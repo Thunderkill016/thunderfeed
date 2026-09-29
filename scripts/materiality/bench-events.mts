@@ -26,6 +26,7 @@ import {
   scoreEventMateriality,
   type EventEntity,
 } from "../../lib/materiality.ts";
+import { setIoU, setPR } from "./metrics.ts";
 
 const LEVELS = ["none", "limited", "meaningful", "major", "systemic"];
 const rank = (m: string) => (m === "unknown" ? -1 : LEVELS.indexOf(m));
@@ -138,6 +139,12 @@ interface EventLabel {
   driverClaimIds: string[];
   /** high-FP cause: upstream_miscluster | claim_scorer | aggregation | label_abstention | other */
   fpCause: string | null;
+  /* independence gates — derived-but-unreviewed gold fields are excluded
+   * from metrics; only *Reviewed rows count toward channel/target/driver
+   * accuracy so the bench can't validate predictions with their own output */
+  driversReviewed: boolean;
+  channelsReviewed: boolean;
+  targetsReviewed: boolean;
   reviewed: boolean;
   note: string;
 }
@@ -229,33 +236,34 @@ for (const it of corpus.items) {
     } else if (gs === null && ps !== null) scopeOver++;
     else scopeUnder++;
   }
-  if (gold.channels && gold.channels.length + out.channels.length > 0) {
-    const gs = new Set<string>(gold.channels),
-      ps = new Set<string>(out.channels);
-    const inter = [...gs].filter((x) => ps.has(x)).length;
-    chIouSum += inter / (gs.size + ps.size - inter || 1);
-    chN++;
+  if (gold.channelsReviewed && (gold.channels.length || out.channels.length)) {
+    const v = setIoU(out.channels, gold.channels);
+    if (v !== null) {
+      chIouSum += v;
+      chN++;
+    }
   }
   if (
-    gold.driverClaimIds &&
+    gold.driversReviewed &&
     (gold.driverClaimIds.length || out.driverClaimIds.length)
   ) {
-    const gs = new Set(gold.driverClaimIds),
-      ps = new Set(out.driverClaimIds);
-    drvTP += [...gs].filter((x) => ps.has(x)).length;
-    drvP += ps.size;
-    drvR += gs.size;
+    const { tp } = setPR(out.driverClaimIds, gold.driverClaimIds);
+    drvTP += tp;
+    drvP += out.driverClaimIds.length;
+    drvR += gold.driverClaimIds.length;
     drvN++;
   }
   if (
-    gold.affectedTargets &&
+    gold.targetsReviewed &&
     (gold.affectedTargets.length || out.affectedTargets.length)
   ) {
-    const gk = new Set(gold.affectedTargets),
-      pk = new Set(out.affectedTargets.map((t) => `${t.type}:${t.key}`));
-    tgTP += [...gk].filter((x) => pk.has(x)).length;
-    tgP += pk.size;
-    tgR += gk.size;
+    const { tp } = setPR(
+      out.affectedTargets.map((t) => `${t.type}:${t.key}`),
+      gold.affectedTargets,
+    );
+    tgTP += tp;
+    tgP += out.affectedTargets.length;
+    tgR += gold.affectedTargets.length;
     tgN++;
   }
   /* legacy R7.0 baseline on the same event */
@@ -294,13 +302,13 @@ console.log(
   `weak-evidence-elev ${weakEvidenceElev}  (≥2-level over gold, weak evidence only)`,
 );
 console.log(
-  `channel IoU     ${chN ? (chIouSum / chN).toFixed(3) : "-"} over ${chN}`,
+  `channel IoU     ${chN ? (chIouSum / chN).toFixed(3) : "-"} over ${chN} reviewed`,
 );
 console.log(
-  `driver P/R      ${drvR ? (drvTP / drvP).toFixed(3) : "-"}/${drvR ? (drvTP / drvR).toFixed(3) : "-"} over ${drvN}`,
+  `driver P/R      ${drvP ? (drvTP / drvP).toFixed(3) : "-"}/${drvR ? (drvTP / drvR).toFixed(3) : "-"} over ${drvN} reviewed`,
 );
 console.log(
-  `target P/R      ${tgR ? (tgTP / tgP).toFixed(3) : "-"}/${tgR ? (tgTP / tgR).toFixed(3) : "-"} over ${tgN}`,
+  `target P/R      ${tgP ? (tgTP / tgP).toFixed(3) : "-"}/${tgR ? (tgTP / tgR).toFixed(3) : "-"} over ${tgN} reviewed`,
 );
 console.log(
   `scope           exact=${scopeN ? (scopeExact / scopeN).toFixed(3) : "-"} over-broad=${scopeOver} under-broad=${scopeUnder} on ${scopeN} reviewed`,

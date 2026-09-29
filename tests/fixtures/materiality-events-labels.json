@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T04:43:50.886Z",
-  "methodVersion": "r7.1d.1b",
+  "generatedAt": "2026-09-29T04:58:14.188Z",
+  "methodVersion": "r7.1d.1c",
   "selectionVersion": "events-v1",
   "corpusHash": "e665f9961cd6ea51",
   "labelCount": 80,
@@ -12,12 +12,12 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "external",
-        "policy_regulatory"
+        "policy_regulatory",
+        "external"
       ],
       "affectedTargets": [
-        "country_exposure:cn",
-        "country_exposure:us"
+        "country_exposure:us",
+        "country_exposure:cn"
       ],
       "driverClaimIds": [
         "01a0dd77-21ac-7ae3-b6b6-8cc88603d07f",
@@ -28,6 +28,9 @@
         "01a0e056-8f1c-7cf3-ab67-74d04d5b5249"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "US-China tariff truce; tariff_change+trade_agreement legit"
     },
@@ -41,6 +44,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "Tô Lâm meets US envoy NY"
     },
@@ -51,18 +57,21 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "external",
-        "policy_regulatory"
+        "policy_regulatory",
+        "external"
       ],
       "affectedTargets": [
-        "country_exposure:cn",
-        "country_exposure:us"
+        "country_exposure:us",
+        "country_exposure:cn"
       ],
       "driverClaimIds": [
         "01a0d788-21b0-7c31-b515-3ff6bcd67e0f",
         "01a0d788-21b5-75d1-a83c-c22b81fbfe41"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "Xi arrival; trade_agreement claims legit"
     },
@@ -73,13 +82,9 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "discounting",
-        "fundamental",
         "funding_liquidity"
       ],
-      "affectedTargets": [
-        "country_exposure:us"
-      ],
+      "affectedTargets": [],
       "driverClaimIds": [
         "01a0d3a9-e388-746e-8c30-a70861452faa",
         "01a0d470-961d-776d-960f-efeece77a14e",
@@ -87,6 +92,9 @@
         "01a0d7c9-e7bf-7d61-999e-c047a7b0753f"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "$2.45bn Gaza reconstruction"
     },
@@ -97,11 +105,10 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "fundamental",
-        "funding_liquidity"
+        "fundamental"
       ],
       "affectedTargets": [
-        "country_exposure:us"
+        "country_exposure:ir"
       ],
       "driverClaimIds": [
         "01a0e1c0-123a-72db-92fc-929febf0f45b",
@@ -111,6 +118,9 @@
         "01a0e2f8-c831-7f49-88a0-fa0f35f83353"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "Hormuz ultimatum; oil supply channel"
     },
@@ -124,6 +134,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -134,9 +147,11 @@
       "scope": "vietnam",
       "scopeReviewed": true,
       "channels": [
-        "fundamental"
+        "policy_regulatory"
       ],
-      "affectedTargets": [],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
       "driverClaimIds": [
         "01a0d3e3-4ef0-7891-ae7a-802fdd369aca",
         "01a0d7d5-9bf9-7ecc-89dd-32e832e50761",
@@ -144,6 +159,9 @@
         "01a0def9-0371-7ad9-92f4-bb96ac62bdcf"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "VN rejects transshipment in tariff talks"
     },
@@ -154,13 +172,18 @@
       "scope": "vietnam",
       "scopeReviewed": true,
       "channels": [
-        "fundamental"
+        "funding_liquidity"
       ],
-      "affectedTargets": [],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
       "driverClaimIds": [
         "01a0d188-819c-716d-b3cf-a53c9544aee9"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "US dioxin project $430M"
     },
@@ -174,6 +197,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -187,6 +213,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -196,10 +225,17 @@
       "materiality": "meaningful",
       "scope": "vietnam",
       "scopeReviewed": true,
-      "channels": [],
-      "affectedTargets": [],
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "ADB raises VN GDP forecast 7.8%"
     },
@@ -213,6 +249,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -223,11 +262,10 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "fundamental",
         "funding_liquidity"
       ],
       "affectedTargets": [
-        "country_exposure:eu"
+        "country_exposure:ua"
       ],
       "driverClaimIds": [
         "01a0dba5-8145-7b14-8c3a-a2d53e0507f4",
@@ -239,6 +277,9 @@
         "01a0e2e2-f330-75e8-af48-378b16f6ab98"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "strike + €6.6B military-aid disbursement context"
     },
@@ -256,6 +297,9 @@
         "01a0d3f1-e9b8-766b-9e57-bbae4e87e60f"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "VietJet-Starlink; issuer"
     },
@@ -266,18 +310,21 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "external",
-        "policy_regulatory"
+        "policy_regulatory",
+        "external"
       ],
       "affectedTargets": [
-        "country_exposure:cn",
-        "country_exposure:us"
+        "country_exposure:us",
+        "country_exposure:cn"
       ],
       "driverClaimIds": [
         "01a0db17-25d3-74bc-8b45-fd458ce809d5",
         "01a0dbee-5a30-75dd-b4f7-8fb562d5e727"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "Trump-Xi summit; trade_agreement+sanction_change legit"
     },
@@ -288,13 +335,18 @@
       "scope": "vietnam",
       "scopeReviewed": true,
       "channels": [
-        "fundamental"
+        "external"
       ],
-      "affectedTargets": [],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
       "driverClaimIds": [
         "01a0d4be-1eaf-7722-9ae2-1992554f6434"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "VN leader Canada state visit"
     },
@@ -305,18 +357,21 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "external",
-        "policy_regulatory"
+        "policy_regulatory",
+        "external"
       ],
       "affectedTargets": [
-        "country_exposure:cn",
-        "country_exposure:us"
+        "country_exposure:us",
+        "country_exposure:cn"
       ],
       "driverClaimIds": [
         "01a0dbed-1f06-7654-8d5d-e2cdbe67ee93",
         "01a0dc2a-0356-7c6c-9714-451d410cc6d5"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "Xi US visit; trade_agreement claims legit"
     },
@@ -330,6 +385,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "QL13 toll change"
     },
@@ -343,6 +401,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "possible US-Russia economic deal"
     },
@@ -356,6 +417,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -369,6 +433,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -386,6 +453,9 @@
         "01a0d45b-3304-7463-a2d5-ce37fa52f072"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "EU diesel record; fuel channel indirect"
     },
@@ -399,6 +469,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": "upstream_miscluster",
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "media-access story; $30B tariff claims mis-clustered US-China content"
     },
@@ -412,6 +485,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "Hormuz navigation calls"
     },
@@ -425,6 +501,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -438,6 +517,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -448,13 +530,18 @@
       "scope": "vietnam",
       "scopeReviewed": true,
       "channels": [
-        "fundamental"
+        "external"
       ],
-      "affectedTargets": [],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
       "driverClaimIds": [
         "01a0e0f3-c983-7cc9-9215-e50d6d4a7034"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "VN-Canada trade stats"
     },
@@ -467,13 +554,14 @@
       "channels": [
         "discounting"
       ],
-      "affectedTargets": [
-        "country_exposure:vn"
-      ],
+      "affectedTargets": [],
       "driverClaimIds": [
         "01a0d788-fb43-7161-a66a-cb886f2528ce"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "gold one-week low on rate expectations"
     },
@@ -483,10 +571,18 @@
       "materiality": "meaningful",
       "scope": "vietnam",
       "scopeReviewed": true,
-      "channels": [],
-      "affectedTargets": [],
+      "channels": [
+        "external",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "VN-Malaysia $20B trade target"
     },
@@ -500,6 +596,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -513,6 +612,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "Iran rhetoric"
     },
@@ -530,6 +632,9 @@
         "01a0d828-42b9-7088-9b37-573e8a66b3ad"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "oil spike after Houthi claims"
     },
@@ -543,6 +648,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -553,19 +661,19 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "external",
-        "policy_regulatory"
+        "fundamental"
       ],
-      "affectedTargets": [
-        "country_exposure:us"
-      ],
+      "affectedTargets": [],
       "driverClaimIds": [
         "01a0e033-b66c-7758-a586-1a2b70691eb6",
         "01a0e067-a700-7bc8-be1a-1f43aa5bb133"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
-      "note": "Hormuz reopening roadmap; sanction_change"
+      "note": "Hormuz reopening roadmap"
     },
     {
       "eventId": "01a0d87d-635f-780e-aa70-815d5292d3f4",
@@ -577,13 +685,16 @@
         "fundamental"
       ],
       "affectedTargets": [
-        "country_exposure:us"
+        "country_exposure:vn"
       ],
       "driverClaimIds": [
         "01a0d8d4-95c0-7a05-8442-e14fce48610e",
         "01a0daa3-151d-770d-893c-84439e11f682"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "VN chip workforce"
     },
@@ -597,6 +708,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "trade-ministry deputy appointment"
     },
@@ -607,18 +721,20 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "external",
         "policy_regulatory"
       ],
       "affectedTargets": [
-        "country_exposure:us"
+        "country_exposure:ir"
       ],
       "driverClaimIds": [
         "01a0e26c-c013-7cda-98a7-a6c702631410"
       ],
       "fpCause": "claim_scorer",
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
-      "note": "diplomatic break scored sanction_change meaningful — over-elevation at claim layer"
+      "note": "diplomatic break scored sanction_change meaningful — claim-layer over-elevation"
     },
     {
       "eventId": "01a0d91d-b74c-7ea3-af1e-ec579c30dbbc",
@@ -630,6 +746,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -643,6 +762,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "VN-Canada tech cooperation"
     },
@@ -656,6 +778,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "double-digit growth target"
     },
@@ -669,6 +794,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "Netanyahu pager theatrics"
     },
@@ -682,6 +810,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -695,6 +826,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -708,6 +842,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "agentic AI in VN ops"
     },
@@ -726,6 +863,9 @@
         "01a0dc10-71c4-7267-8f68-26d76df49fc9"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "aircraft delivery; aviation"
     },
@@ -739,6 +879,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "charity; indicator claims are extraction noise"
     },
@@ -752,6 +895,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -765,6 +911,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "UK Labour politics"
     },
@@ -778,6 +927,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -791,6 +943,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -804,6 +959,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -817,6 +975,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "Bangkok flood disaster"
     },
@@ -830,6 +991,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "local cadre voter meeting"
     },
@@ -840,16 +1004,16 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "fundamental",
-        "funding_liquidity"
+        "fundamental"
       ],
-      "affectedTargets": [
-        "country_exposure:eu"
-      ],
+      "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": "upstream_miscluster",
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
-      "note": "roundup video; €6.6B aid claims tangential to food-supply story"
+      "note": "roundup video; €6.6B aid claims tangential"
     },
     {
       "eventId": "01a0ddae-c404-7f13-ba5c-326b8031694f",
@@ -861,6 +1025,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -871,7 +1038,6 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "external",
         "policy_regulatory"
       ],
       "affectedTargets": [],
@@ -880,6 +1046,9 @@
         "01a0e066-d38f-71e8-b7fc-836344040f54"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "US-Iraq military→economic shift"
     },
@@ -897,6 +1066,9 @@
         "01a0e17e-5a4a-7b14-b685-117d3fee8661"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "AI/cyber sector"
     },
@@ -910,6 +1082,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": "upstream_miscluster",
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "election candidates; military-aid claim mis-clustered"
     },
@@ -923,6 +1098,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -936,6 +1114,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "Thai tourist support amid floods"
     },
@@ -949,6 +1130,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -962,6 +1146,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "VN MICE tourism cooperation"
     },
@@ -972,13 +1159,18 @@
       "scope": "vietnam",
       "scopeReviewed": true,
       "channels": [
-        "fundamental"
+        "funding_liquidity"
       ],
-      "affectedTargets": [],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
       "driverClaimIds": [
         "01a0e182-12ea-7756-a3c6-0eed9f20661f"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "$5.7B cumulative HCMC industrial zones"
     },
@@ -988,10 +1180,17 @@
       "materiality": "meaningful",
       "scope": "vietnam",
       "scopeReviewed": true,
-      "channels": [],
-      "affectedTargets": [],
+      "channels": [
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "rice import/export decree — sector policy"
     },
@@ -1005,6 +1204,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "EU €710M crisis aid"
     },
@@ -1018,6 +1220,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -1031,6 +1236,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "robots as production force CN"
     },
@@ -1041,18 +1249,16 @@
       "scope": "issuer",
       "scopeReviewed": true,
       "channels": [
-        "external",
-        "fundamental",
-        "policy_regulatory"
+        "fundamental"
       ],
-      "affectedTargets": [
-        "country_exposure:cn",
-        "country_exposure:us"
-      ],
+      "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": "upstream_miscluster",
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
-      "note": "FPT strategic-tech talent proposal = issuer news; tariff claims mis-clustered"
+      "note": "FPT talent proposal = issuer news; tariff claims mis-clustered"
     },
     {
       "eventId": "01a0e25c-a5c6-7caf-803b-0b09f0b70b83",
@@ -1064,6 +1270,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": "upstream_miscluster",
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "Swiss neutrality referendum; aid claim mis-clustered"
     },
@@ -1074,15 +1283,10 @@
       "scope": "global_systemic",
       "scopeReviewed": true,
       "channels": [
-        "external",
-        "fundamental",
-        "funding_liquidity",
         "policy_regulatory"
       ],
       "affectedTargets": [
-        "country_exposure:eu",
-        "country_exposure:ir",
-        "country_exposure:us"
+        "country_exposure:ir"
       ],
       "driverClaimIds": [
         "01a0e2e3-3d53-78df-ba8d-97a3409b9d9e",
@@ -1091,6 +1295,9 @@
         "01a0e7aa-1930-77d1-812a-948b13d82adb"
       ],
       "fpCause": "upstream_miscluster",
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "Iran sanctions-track tension; aid claims partially tangential"
     },
@@ -1104,6 +1311,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": "upstream_miscluster",
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "VN security cooperation; aid claim mis-clustered"
     },
@@ -1117,6 +1327,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -1136,8 +1349,11 @@
         "01a0e572-10eb-7c2a-9c5e-9d9123d2f546"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
-      "note": "US poverty record low + income up = real macro print"
+      "note": "US poverty record low = real macro print"
     },
     {
       "eventId": "01a0e675-3001-7a38-bf2e-edf8d0fc2c50",
@@ -1149,6 +1365,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -1162,6 +1381,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -1175,6 +1397,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": ""
     },
@@ -1188,8 +1413,11 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": "upstream_miscluster",
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
-      "note": "panda diplomacy; $60B tariff claim is summit content mis-clustered"
+      "note": "panda diplomacy; $60B tariff claim mis-clustered"
     },
     {
       "eventId": "01a0e769-b127-76f7-a595-c270c6d9b100",
@@ -1198,13 +1426,18 @@
       "scope": "vietnam",
       "scopeReviewed": true,
       "channels": [
-        "fundamental"
+        "policy_regulatory"
       ],
-      "affectedTargets": [],
+      "affectedTargets": [
+        "country_exposure:vn"
+      ],
       "driverClaimIds": [
         "01a0e8c4-90b2-7f30-8b17-2db3d2225f00"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "PM socio-economic committee"
     },
@@ -1218,6 +1451,9 @@
       "affectedTargets": [],
       "driverClaimIds": [],
       "fpCause": null,
+      "driversReviewed": false,
+      "channelsReviewed": false,
+      "targetsReviewed": false,
       "reviewed": true,
       "note": "data-artifact title"
     },
@@ -1235,6 +1471,9 @@
         "01a0e94d-d18f-7bd7-8d52-4fd022d2ece9"
       ],
       "fpCause": null,
+      "driversReviewed": true,
+      "channelsReviewed": true,
+      "targetsReviewed": true,
       "reviewed": true,
       "note": "SHB import-export finance; issuer"
     }

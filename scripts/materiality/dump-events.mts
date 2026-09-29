@@ -117,7 +117,7 @@ async function main() {
     .map((e) => ({
       ...e,
       entities: (entsByEvent.get(e.eventId) ?? []).sort((a, b) =>
-        a.slug.localeCompare(b.slug),
+        `${a.slug}:${a.type}`.localeCompare(`${b.slug}:${b.type}`),
       ),
       predicates: [...e.predicates].sort(),
     }))
