@@ -1,0 +1,1082 @@
+{
+  "generatedAt": "2026-09-29T04:18:48.370Z",
+  "methodVersion": "r7.1d",
+  "selectionVersion": "events-v1",
+  "corpusIdsHash": "f987096a63d00bad",
+  "labelCount": 80,
+  "labels": [
+    {
+      "eventId": "01a0d176-5a20-722f-a77b-4850e91ead78",
+      "title": "Ông Trump đón ông Tập tại sân bay, Mỹ - Trung gia hạn đình chiến thương mại",
+      "materiality": "meaningful",
+      "scope": null,
+      "channels": [
+        "external",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "cn",
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0dd77-21ac-7ae3-b6b6-8cc88603d07f",
+        "01a0dd9d-56eb-7a99-a5a3-da3710bc8d29",
+        "01a0ddbb-6e85-7573-aa68-fa0dede4fbb6",
+        "01a0dff7-ec59-7a37-8c40-7e68e3ab136a",
+        "01a0e00a-5760-7bc6-878c-c0bd94bdf4fc",
+        "01a0e056-8f1c-7cf3-ab67-74d04d5b5249"
+      ],
+      "reviewed": true,
+      "note": "US-China tariff truce extension; tariff_change+trade_agreement legit"
+    },
+    {
+      "eventId": "01a0d176-5a45-7db6-bd9d-a116caf76918",
+      "title": "Ông Tô Lâm tiếp ông Hùng Cao tại New York: Có gì đáng chú ý?",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "Tô Lâm meets US envoy in NY"
+    },
+    {
+      "eventId": "01a0d176-5b1c-79e6-90fe-d3e1cfabedc5",
+      "title": "Chủ tịch Tập Cận Bình đến Mỹ: Tổng thống Donald Trump ra sân bay đón, 'lằn ranh đỏ' Đài Lo",
+      "materiality": "meaningful",
+      "scope": null,
+      "channels": [
+        "external",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "cn",
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0d788-21b0-7c31-b515-3ff6bcd67e0f",
+        "01a0d788-21b5-75d1-a83c-c22b81fbfe41"
+      ],
+      "reviewed": true,
+      "note": "Xi arrival; trade_agreement claims legit"
+    },
+    {
+      "eventId": "01a0d176-5c4d-71f9-9e35-23b0a3059aab",
+      "title": "Trump's Board of Peace unveils $2.45bn plan to begin Gaza's reconstruction",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "discounting",
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0d3a9-e388-746e-8c30-a70861452faa",
+        "01a0d470-961d-776d-960f-efeece77a14e",
+        "01a0d556-0f1a-727d-b438-be51b90959ab",
+        "01a0d7c9-e7bf-7d61-999e-c047a7b0753f"
+      ],
+      "reviewed": true,
+      "note": "$2.45bn Gaza reconstruction = real fiscal_spending"
+    },
+    {
+      "eventId": "01a0d176-5d58-771d-811d-3201b483f2d9",
+      "title": "Iran nói Mỹ còn 5 ngày để mở cửa Hormuz, phủ nhận việc đàm phán ở New York",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0e1c0-123a-72db-92fc-929febf0f45b",
+        "01a0e247-97b3-7ff2-9d0f-c1297184aff7",
+        "01a0e287-e5b3-7721-877e-11ea59808363",
+        "01a0e2f8-bc29-7308-8365-0a64a16223c7",
+        "01a0e2f8-c831-7f49-88a0-fa0f35f83353"
+      ],
+      "reviewed": true,
+      "note": "Hormuz ultimatum; oil supply channel"
+    },
+    {
+      "eventId": "01a0d188-533f-7167-a050-354368c4c025",
+      "title": "Triều Tiên bắn thử nghiệm đạn rocket bay xa tới 115km",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d188-7dc2-7886-866d-ef42359284ff",
+      "title": "Ông Tô Lâm: Việt Nam không chấp nhận 'trung chuyển' hàng xuất khẩu",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0d3e3-4ef0-7891-ae7a-802fdd369aca",
+        "01a0d7d5-9bf9-7ecc-89dd-32e832e50761",
+        "01a0d7d5-a02e-7814-a6e7-8ae022d608a4",
+        "01a0def9-0371-7ad9-92f4-bb96ac62bdcf"
+      ],
+      "reviewed": true,
+      "note": "VN rejects transshipment in tariff talks"
+    },
+    {
+      "eventId": "01a0d188-812a-727b-b1f1-e6023a6da011",
+      "title": "Mỹ nâng tổng mức vốn cho dự án xử lý dioxin tại sân bay Biên Hòa lên 430 triệu USD",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0d188-819c-716d-b3cf-a53c9544aee9"
+      ],
+      "reviewed": true,
+      "note": "US raises dioxin project to $430M"
+    },
+    {
+      "eventId": "01a0d188-86b6-7a5c-8554-4df6767b71c8",
+      "title": "Sáng tạo trong số hóa Không gian văn hóa Hồ Chí Minh",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d188-882c-79b9-91be-8888eb349717",
+      "title": "Đội trưởng Hàn Quốc: 'Không được xem thường Việt Nam'",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d188-895c-7c23-9297-812882b10f63",
+      "title": "ADB nâng dự báo GDP Việt Nam lên 7,8%",
+      "materiality": "meaningful",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "ADB raises VN GDP forecast 7.8% — direct VN macro signal"
+    },
+    {
+      "eventId": "01a0d1ab-6385-70f4-9c05-a1176594ecec",
+      "title": "Xác định 8 đội vào tứ kết bóng đá nam ASIAD 2026",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d3a9-e534-7981-90d2-b204e1f75ea4",
+      "title": "Bầu trời Kiev sáng rực trong đòn tập kích tên lửa đạn đạo của Nga",
+      "materiality": "meaningful",
+      "scope": null,
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "eu"
+      ],
+      "driverClaimIds": [
+        "01a0dba5-8145-7b14-8c3a-a2d53e0507f4",
+        "01a0dc2f-7cf4-7ca0-9d12-2ca5b56b88a9",
+        "01a0dcf3-498d-76fb-95a8-1771fa18e70b",
+        "01a0dd31-e2b0-73cb-a410-91fbdd3cd8ef",
+        "01a0dd54-ae30-761d-a04b-ea4a3a7ccc51",
+        "01a0dddd-8f3e-789d-afed-eb2bd525043d",
+        "01a0e2e2-f330-75e8-af48-378b16f6ab98"
+      ],
+      "reviewed": true,
+      "note": "strike + €6.6B military-aid disbursement context"
+    },
+    {
+      "eventId": "01a0d3a9-fa8d-70fd-bcd0-f9a121a440ad",
+      "title": "Vietjet đón tin vui hợp tác với Starlink, tung triệu vé 0 đồng",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0d3f1-e9b8-766b-9e57-bbae4e87e60f"
+      ],
+      "reviewed": true,
+      "note": "VietJet-Starlink; issuer"
+    },
+    {
+      "eventId": "01a0d3aa-015a-771e-9c56-3370111f97ef",
+      "title": "Biểu cảm trái ngược của ông Trump và ông Tập khi oanh tạc cơ B-1 lướt qua",
+      "materiality": "meaningful",
+      "scope": null,
+      "channels": [
+        "external",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "cn",
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0db17-25d3-74bc-8b45-fd458ce809d5",
+        "01a0dbee-5a30-75dd-b4f7-8fb562d5e727"
+      ],
+      "reviewed": true,
+      "note": "Trump-Xi summit; trade_agreement+sanction_change legit"
+    },
+    {
+      "eventId": "01a0d3aa-1e1f-7fa2-be33-1af697eaec0a",
+      "title": "Tổng Bí thư, Chủ tịch nước Tô Lâm bắt đầu thăm cấp Nhà nước Canada",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0d4be-1eaf-7722-9ae2-1992554f6434"
+      ],
+      "reviewed": true,
+      "note": "VN leader Canada state visit; trade diplomacy"
+    },
+    {
+      "eventId": "01a0d3aa-33dd-771d-9f98-8b83048ca6a5",
+      "title": "Ông Tập tới Mỹ: Thảm đỏ, AI, đình chiến thương mại và rủi ro từ MAGA",
+      "materiality": "meaningful",
+      "scope": null,
+      "channels": [
+        "external",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "cn",
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0dbed-1f06-7654-8d5d-e2cdbe67ee93",
+        "01a0dc2a-0356-7c6c-9714-451d410cc6d5"
+      ],
+      "reviewed": true,
+      "note": "Xi US visit; trade_agreement claims legit"
+    },
+    {
+      "eventId": "01a0d3aa-386c-7f64-9d71-85b9c59df1d4",
+      "title": "Mở lại giao lộ dẫn vào cầu Phú Long - quốc lộ 13, đổi cách thu phí trạm Lái Thiêu",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "QL13 toll change; local infra"
+    },
+    {
+      "eventId": "01a0d3aa-4b01-7480-b3d6-d9a0bd1f3f64",
+      "title": "Mỹ có thể ký thỏa thuận kinh tế với Nga trước khi xung đột Ukraine kết thúc",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "possible US-Russia economic deal"
+    },
+    {
+      "eventId": "01a0d3ad-b0ca-7dcf-aa6a-5cd00825e1c3",
+      "title": "Nga đẩy lùi đợt tấn công dữ dội của UAV Ukraine vào Moscow",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d412-dd75-7057-bbe7-a90a27e18f01",
+      "title": "4 người Trung Quốc vận chuyển hàng cấm qua đường sân bay Tân Sơn Nhất",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d45b-31f3-75a7-9095-fe6d4d20eff6",
+      "title": "Giá dầu diesel trung bình tại Liên minh châu Âu xác lập mức cao kỷ lục",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0d45b-3304-7463-a2d5-ce37fa52f072"
+      ],
+      "reviewed": true,
+      "note": "EU diesel record; fuel channel indirect"
+    },
+    {
+      "eventId": "01a0d4ed-0a02-7cc4-af0e-1deec3aad21d",
+      "title": "White House restores CNN, MS NOW, Politico access after hours of chaos",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "media-access story; $30B tariff claims mis-clustered US-China content"
+    },
+    {
+      "eventId": "01a0d6f3-34f4-7d7b-9cb8-68310104ceca",
+      "title": "Nhiều quốc gia kêu gọi khôi phục tự do hàng hải tại eo biển Hormuz",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "Hormuz navigation calls; energy channel"
+    },
+    {
+      "eventId": "01a0d6f3-8843-7b91-9c17-1d1ce9a583d0",
+      "title": "Pháp hứa gửi quân, vũ khí tới Ảrập Xêút giữa căng thẳng với nhóm thân Iran",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d6f4-102e-7e64-920f-709158acb804",
+      "title": "Binh lính Ukraine nói về vai trò của xe tăng trong bối cảnh UAV lên ngôi",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d705-3297-788d-8cef-837eac649a7a",
+      "title": "Thương mại Việt Nam - Canada: Đo tiềm năng bằng những đơn hàng thật",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0e0f3-c983-7cc9-9215-e50d6d4a7034"
+      ],
+      "reviewed": true,
+      "note": "VN-Canada trade growth stats"
+    },
+    {
+      "eventId": "01a0d788-fa78-7d20-b18e-65f6bf4ede9d",
+      "title": "Giá vàng chạm mức thấp nhất 1 tuần do kỳ vọng lãi suất tiếp tục tăng cao",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "discounting"
+      ],
+      "affectedTargets": [
+        "vn"
+      ],
+      "driverClaimIds": [
+        "01a0d788-fb43-7161-a66a-cb886f2528ce"
+      ],
+      "reviewed": true,
+      "note": "gold one-week low on rate expectations"
+    },
+    {
+      "eventId": "01a0d789-101b-70b2-bad9-a1da266ee752",
+      "title": "Thương mại Việt Nam-Malaysia hướng tới mốc 20 tỷ USD",
+      "materiality": "meaningful",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "VN-Malaysia $20B trade target"
+    },
+    {
+      "eventId": "01a0d7cd-7714-75ee-a451-f310fbaedefe",
+      "title": "Việt Nam giành HC bạc đầu tiên tại ASIAD 2026",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d7ec-cac4-7478-bbdd-b7ddd60dc0d3",
+      "title": "Tổng thống Pezeshkian: Iran không muốn tiếp tục giao tranh",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "Iran rhetoric"
+    },
+    {
+      "eventId": "01a0d828-177d-7bd6-92bd-63a13d497844",
+      "title": "Giá dầu tăng vọt sau khi Houthi tuyên bố tấn công các cơ sở tại Saudi Arabia",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0d828-42b9-7088-9b37-573e8a66b3ad"
+      ],
+      "reviewed": true,
+      "note": "oil spike after Houthi claims"
+    },
+    {
+      "eventId": "01a0d84e-573b-719c-8cff-0236ae45f541",
+      "title": "Saudi Arabia, Thổ Nhĩ Kỳ và Pakistan họp khẩn về Hiệp ước Mecaa",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d851-8d2d-722b-b960-8b17e38d64a0",
+      "title": "Mỹ, Iran xem xét một lộ trình từng bước nhằm mở lại eo biển Hormuz",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "external",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0e033-b66c-7758-a586-1a2b70691eb6",
+        "01a0e067-a700-7bc8-be1a-1f43aa5bb133"
+      ],
+      "reviewed": true,
+      "note": "Hormuz reopening roadmap; sanction_change"
+    },
+    {
+      "eventId": "01a0d87d-635f-780e-aa70-815d5292d3f4",
+      "title": "Nhìn từ bài toán nhân lực vi mạch quốc tế: Hạ tầng tỷ USD không thể vắng bóng lực lượng kỹ",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0d8d4-95c0-7a05-8442-e14fce48610e",
+        "01a0daa3-151d-770d-893c-84439e11f682"
+      ],
+      "reviewed": true,
+      "note": "VN chip workforce infrastructure"
+    },
+    {
+      "eventId": "01a0d8dd-3a91-7ea9-a159-8ad65e7a8b45",
+      "title": "Ông Lương Hoàng Thái được bổ nhiệm Thứ trưởng Bộ Công Thương",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "trade-ministry deputy appointment"
+    },
+    {
+      "eventId": "01a0d905-4143-7802-a5fa-764f39def80c",
+      "title": "Colombia cắt đứt quan hệ ngoại giao với Iran",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "external",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0e26c-c013-7cda-98a7-a6c702631410"
+      ],
+      "reviewed": true,
+      "note": "Colombia-Iran diplomatic break; sanction claim attached, near-zero investor relevance"
+    },
+    {
+      "eventId": "01a0d91d-b74c-7ea3-af1e-ec579c30dbbc",
+      "title": "HLV Philippines: 'Chúng tôi không sợ Việt Nam'",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0d91e-9a8b-7bb0-9d65-c8ff71b0a33a",
+      "title": "Việt Nam đề nghị tăng cường hợp tác công nghệ mới với Canada",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "VN-Canada tech cooperation proposal"
+    },
+    {
+      "eventId": "01a0d942-d946-786f-a1dd-0c746380307c",
+      "title": "Kiên định mục tiêu phấn đấu tăng trưởng hai con số",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "double-digit growth target rhetoric"
+    },
+    {
+      "eventId": "01a0d9fa-e457-73cb-babd-4d0517c3a23c",
+      "title": "Thủ tướng Israel mang máy nhắn tin đến Liên Hợp Quốc, gợi nhớ đòn tấn công chết chóc nhằm ",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "Netanyahu pager theatrics"
+    },
+    {
+      "eventId": "01a0db21-0198-799e-8fa5-9726c8919404",
+      "title": "Tại diễn đàn LHQ, thủ tướng Israel một lần nữa bác bỏ cáo buộc diệt chủng tại Gaza",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0dbf2-1f6c-708d-96ba-a111ec2f58e4",
+      "title": "Dấu ấn 30 năm hữu nghị-hợp tác giữa Việt Nam và phái đoàn Wallonie-Bruxelles (Bỉ)",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0dbfd-0aa0-75af-9359-b8fa163eccf2",
+      "title": "Agentic AI bắt đầu đi vào vận hành thực tế ở Việt Nam",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "agentic AI in VN operations"
+    },
+    {
+      "eventId": "01a0dc10-2dd3-7268-9926-68bc0251d560",
+      "title": "Cơ trưởng kể về chuyến bay đặc biệt đưa chiếc A330 từ Mỹ về Việt Nam",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0dc10-6d43-7294-894e-0db315749f3c",
+        "01a0dc10-71c4-7267-8f68-26d76df49fc9"
+      ],
+      "reviewed": true,
+      "note": "aircraft delivery"
+    },
+    {
+      "eventId": "01a0dc34-0bed-7ce2-af57-34e726fc6e96",
+      "title": "Tuổi trẻ VTV mang Trung thu yêu thương đến Bệnh viện Đại học Y Hà Nội",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "charity; indicator claims are extraction noise"
+    },
+    {
+      "eventId": "01a0dc36-a173-7df9-a692-0b1fafe97ca7",
+      "title": "Mỹ cấm vận hàng không, phái đoàn Iran về nước bằng cách nào?",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0dc3c-a3e1-759d-9053-3b46d41e8def",
+      "title": "The tricky tests awaiting Andy Burnham after Labour conference",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "UK Labour politics"
+    },
+    {
+      "eventId": "01a0dc5d-fb67-77eb-97c7-067b659fd8b7",
+      "title": "Hàng loạt đại biểu bỏ ra ngoài khi Thủ tướng Israel lên phát biểu",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0dc64-678c-7497-8dff-31dcfe1abef9",
+      "title": "PM Modi’s SCO visit is loaded with expectations on BRICS Summit and UNSC election",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0dcde-d7ee-7286-9a9b-6ed117cd3818",
+      "title": "Thanh niên giả danh Cảnh sát cơ động cưỡng đoạt tài sản, khiến 1 người tử vong",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0dd07-5795-7d8d-aef2-a7f7114bb2fd",
+      "title": "Bangkok roads submerged as flood disaster declared",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "Bangkok flood disaster declared"
+    },
+    {
+      "eventId": "01a0dd8e-7b72-7acd-8210-d6ba02b82621",
+      "title": "Phó Thủ tướng Thường trực Chính phủ Phạm Gia Túc tiếp xúc cử tri tại Hà Tĩnh",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "local cadre voter meeting"
+    },
+    {
+      "eventId": "01a0dd9e-9a77-7fb7-baf2-9374db95b650",
+      "title": "[Video] Tiêu điểm 26/9: Biển Đen dậy sóng - Rủi ro với nguồn cung lương thực toàn cầu",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental",
+        "funding_liquidity"
+      ],
+      "affectedTargets": [
+        "eu"
+      ],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "roundup video; €6.6B aid claims tangential to food-supply-risk story"
+    },
+    {
+      "eventId": "01a0ddae-c404-7f13-ba5c-326b8031694f",
+      "title": "Tạm giữ tài xế Lexus dừng đột ngột, gây tai nạn liên hoàn trên cao tốc",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0de40-df4a-7ad2-94ab-8a2fa08ef6c2",
+      "title": "Mỹ-Iraq chuyển trọng tâm hợp tác từ quân sự sang kinh tế",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "external",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0e058-d902-748e-bf02-93bb621dc88b",
+        "01a0e066-d38f-71e8-b7fc-836344040f54"
+      ],
+      "reviewed": true,
+      "note": "US-Iraq military→economic shift"
+    },
+    {
+      "eventId": "01a0dede-2efb-7cd5-af3f-05f87cf95e64",
+      "title": "Mô hình của OpenAI tấn công cả trang web chính phủ Mỹ",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0e17e-5a4a-7b14-b685-117d3fee8661"
+      ],
+      "reviewed": true,
+      "note": "OpenAI models vs gov sites; AI/cyber"
+    },
+    {
+      "eventId": "01a0def9-6ee3-79f7-bc38-ad39db99bb61",
+      "title": "Palestine bắt đầu tiếp nhận danh sách ứng cử viên cho bầu cử lập pháp",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "election candidates; military-aid claim mis-clustered"
+    },
+    {
+      "eventId": "01a0e047-bd69-73e3-be6e-34a144a583a9",
+      "title": "Đè bẹp U23 Thái Lan, Trung Quốc lần đầu tiên vào bán kết Asiad sau 28 năm",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0e05f-0a5e-744e-97bc-087afeadf3c4",
+      "title": "Thái Lan mở các kênh khẩn cấp hỗ trợ du khách trong vùng lụt Bangkok",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "Thai emergency tourist support"
+    },
+    {
+      "eventId": "01a0e0a6-d387-76be-bb4a-f1bb231fa53f",
+      "title": "Lý do Ngoại trưởng Costa Rica bị cách chức",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0e0e7-7e5f-7354-9ad9-6feeee85d305",
+      "title": "MICE mở ra không gian hợp tác, động lực tăng trưởng mới cho du lịch Việt",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "VN MICE tourism cooperation"
+    },
+    {
+      "eventId": "01a0e182-0bd0-7e12-a4c9-b535b95ede43",
+      "title": "[INFOGRAPHIC] 5,7 tỷ USD vào các khu chế xuất, khu công nghiệp TP.HCM",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0e182-12ea-7756-a3c6-0eed9f20661f"
+      ],
+      "reviewed": true,
+      "note": "$5.7B cumulative into HCMC industrial zones"
+    },
+    {
+      "eventId": "01a0e1ab-f2b6-7f55-92f4-acd72e137419",
+      "title": "Ban hành Nghị định về kinh doanh xuất, nhập khẩu gạo",
+      "materiality": "meaningful",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "new rice import/export decree — sector policy"
+    },
+    {
+      "eventId": "01a0e1db-410a-79f5-9749-350f5bbfd89a",
+      "title": "EU giải ngân 710 triệu euro viện trợ cho các cộng đồng gặp khủng hoảng",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "EU €710M crisis aid"
+    },
+    {
+      "eventId": "01a0e1f7-6006-7e18-a679-08728f895c5f",
+      "title": "Gunmen kill 27 people in two mass shootings in South Africa",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0e1fa-84a5-74b2-a23c-34a1ccda7b30",
+      "title": "Robot trở thành lực lượng sản xuất mới tại Trung Quốc",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "robots as production force in China"
+    },
+    {
+      "eventId": "01a0e257-82a7-7221-94ce-6f38cf80692a",
+      "title": "FPT hiến kế đào tạo nhân tài cho các công nghệ chiến lược",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "external",
+        "fundamental",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "cn",
+        "us"
+      ],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "FPT strategic-tech talent proposal = issuer news; tariff claims mis-clustered"
+    },
+    {
+      "eventId": "01a0e25c-a5c6-7caf-803b-0b09f0b70b83",
+      "title": "Người dân Thụy Sĩ đi bỏ phiếu về chính sách trung lập lịch sử của đất nước",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "Swiss neutrality referendum; aid claim mis-clustered"
+    },
+    {
+      "eventId": "01a0e2aa-dc8e-7647-b6e2-42844c27e366",
+      "title": "Iran không còn tin tưởng vào đàm phán với Mỹ",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "external",
+        "fundamental",
+        "funding_liquidity",
+        "policy_regulatory"
+      ],
+      "affectedTargets": [
+        "eu",
+        "ir",
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0e2e3-3d53-78df-ba8d-97a3409b9d9e",
+        "01a0e4d0-1b47-74d5-b476-aad9fbfbec7d",
+        "01a0e560-8eee-73fc-95b1-bb034495811f",
+        "01a0e7aa-1930-77d1-812a-948b13d82adb"
+      ],
+      "reviewed": true,
+      "note": "Iran sanctions-track tension; aid claims partially tangential"
+    },
+    {
+      "eventId": "01a0e335-42c9-7cc7-9184-6588ec172c91",
+      "title": "Nâng tầm hợp tác an ninh toàn cầu, bảo vệ Tổ quốc từ sớm, từ xa",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "VN security cooperation; aid claim mis-clustered"
+    },
+    {
+      "eventId": "01a0e33f-d55a-7bd0-a9be-9e0a13364ef7",
+      "title": "Xung đột tại Trung Đông: Giao tranh nóng lên ở Yemen",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0e572-0057-7c2c-acbc-642717deac97",
+      "title": "Tỷ lệ nghèo tại Mỹ giảm xuống mức thấp kỷ lục, thu nhập hộ gia đình tăng",
+      "materiality": "meaningful",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [
+        "us"
+      ],
+      "driverClaimIds": [
+        "01a0e572-10eb-7c2a-9c5e-9d9123d2f546"
+      ],
+      "reviewed": true,
+      "note": "US poverty record low + income up = real macro print"
+    },
+    {
+      "eventId": "01a0e675-3001-7a38-bf2e-edf8d0fc2c50",
+      "title": "Đêm đoàn tụ của người lính mũ nồi xanh trở về từ Nam Sudan",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0e6e1-8abf-7cf8-b5e2-8ea6ddfb5dbc",
+      "title": "Số người thiệt mạng ở Dải Gaza vượt 74.000",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0e72f-2945-7acf-ae3d-d1387c73d7c9",
+      "title": "[GALLERY] Hiền Thục dạo chơi Nhật Bản, sắc vóc trẻ trung ở tuổi 45",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": ""
+    },
+    {
+      "eventId": "01a0e755-6e23-70e2-848e-013f32f5a0ed",
+      "title": "\"Ngoại giao gấu trúc” kết nối Mỹ - Trung Quốc",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "panda diplomacy; $60B tariff claim is summit content mis-clustered"
+    },
+    {
+      "eventId": "01a0e769-b127-76f7-a595-c270c6d9b100",
+      "title": "Thủ tướng chủ trì phiên họp Ban Chỉ đạo 57 chuyên đề phát triển kinh tế-xã hội",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0e8c4-90b2-7f30-8b17-2db3d2225f00"
+      ],
+      "reviewed": true,
+      "note": "PM chairs socio-economic committee"
+    },
+    {
+      "eventId": "01a0e805-3079-7f62-983a-200e90f350d8",
+      "title": "525",
+      "materiality": "none",
+      "scope": null,
+      "channels": [],
+      "affectedTargets": [],
+      "driverClaimIds": [],
+      "reviewed": true,
+      "note": "data-artifact title"
+    },
+    {
+      "eventId": "01a0e8f9-d4b1-7f76-ab50-499917f64d29",
+      "title": "SHB cung cấp giải pháp tài chính toàn diện cho doanh nghiệp xuất nhập khẩu",
+      "materiality": "limited",
+      "scope": null,
+      "channels": [
+        "fundamental"
+      ],
+      "affectedTargets": [],
+      "driverClaimIds": [
+        "01a0e94d-d18f-7bd7-8d52-4fd022d2ece9"
+      ],
+      "reviewed": true,
+      "note": "SHB import-export finance; issuer"
+    }
+  ]
+}

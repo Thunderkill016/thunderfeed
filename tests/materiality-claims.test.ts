@@ -414,7 +414,91 @@ describe("event aggregation — max credible claim, not average", () => {
       scoreClaimMateriality(claim({ predicate: "dividend" })),
     ]);
     assert.equal(agg.materiality, "limited");
-    assert.equal(agg.contributingClaimIds.length, 0); // nothing ≥ meaningful
+    // sub-meaningful event explains itself through its own drivers
+    assert.equal(agg.contributingClaimIds.length, 2);
+  });
+
+  it("event scope = broadest driver scope, independent of input order", () => {
+    const a = scoreClaimMateriality(
+      claim({
+        claimId: "issuer-claim",
+        predicate: "fund_disbursement",
+        current: { ...claim().current, value: 8_000_000_000, unit: "usd" },
+        subject: {
+          qualifierText: "Vinamilk",
+
+          entityId: null,
+          type: "company",
+        },
+      }),
+    );
+    const b = scoreClaimMateriality(
+      claim({
+        claimId: "global-claim",
+        predicate: "fund_disbursement",
+        current: { ...claim().current, value: 8_000_000_000, unit: "usd" },
+        subject: { qualifierText: "Federal Reserve", entityId: null },
+      }),
+    );
+    assert.equal(a.materiality, b.materiality); // both must be drivers
+    assert.equal(a.scope, "issuer");
+    assert.equal(b.scope, "global_systemic");
+    const fwd = aggregateClaimsToEvent([a, b]);
+    const rev = aggregateClaimsToEvent([b, a]);
+    assert.deepEqual(rev, fwd, "reversed input → identical output");
+    assert.equal(fwd.scope, "global_systemic"); // broadest wins, not [0]
+    assert.deepEqual(
+      fwd.driverClaimIds.sort(),
+      ["global-claim", "issuer-claim"].sort(),
+    );
+  });
+
+  it("shuffle-invariance: same claim set → byte-identical aggregation", () => {
+    const mk = (id: string, pred: string, v: number) =>
+      scoreClaimMateriality(
+        claim({
+          claimId: id,
+          predicate: pred,
+          current: { ...claim().current, value: v, unit: "usd" },
+        }),
+      );
+    const claims = [
+      mk("c1", "fund_disbursement", 6e9),
+      mk("c2", "fund_disbursement", 7e9),
+      mk("c3", "dividend", 100),
+      mk("c4", "debt_to_gdp", 40),
+      mk("c5", "net_profit", 5e6),
+    ];
+    const base = JSON.stringify(aggregateClaimsToEvent(claims));
+    for (let i = 0; i < 25; i++) {
+      // deterministic shuffle via rotation + reversal
+      const sh = [...claims.slice(i % 5), ...claims.slice(0, i % 5)];
+      if (i % 2) sh.reverse();
+      assert.equal(JSON.stringify(aggregateClaimsToEvent(sh)), base);
+    }
+  });
+
+  it("coverage audits unknowns without changing the materiality call", () => {
+    const claims = [
+      scoreClaimMateriality(
+        claim({
+          claimId: "m",
+          predicate: "fund_disbursement",
+          current: { ...claim().current, value: 6e9, unit: "usd" },
+        }),
+      ),
+      ...Array.from({ length: 30 }, (_, i) =>
+        scoreClaimMateriality(
+          claim({ claimId: `u${i}`, predicate: "mystery" }),
+        ),
+      ),
+    ];
+    const agg = aggregateClaimsToEvent(claims);
+    assert.equal(agg.materiality, "meaningful"); // 30 unknowns don't drag it
+    assert.equal(agg.coverage.totalClaims, 31);
+    assert.equal(agg.coverage.unknownClaims, 30);
+    assert.equal(agg.coverage.materialClaims, 1);
+    assert.equal(agg.coverage.classifiedClaims, 1);
   });
 });
 

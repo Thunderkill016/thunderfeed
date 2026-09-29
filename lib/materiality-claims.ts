@@ -1011,6 +1011,14 @@ export function scoreClaimMateriality(
 
 /* ── claim → event aggregation ──────────────────────────────── */
 
+/* scope lattice — event scope is the BROADEST driver scope, never
+ * drivers[0]: two same-level drivers with different scopes must produce
+ * the same event regardless of claim input order (path invariance). */
+const SCOPE_RANK: Scope[] = ["issuer", "sector", "vietnam", "global_systemic"];
+
+const EVENT_METHOD = "deterministic-event";
+const EVENT_METHOD_VERSION = "r7.1d.1";
+
 export interface EventClaimAggregation {
   materiality: MaterialityLevel | "unknown";
   scope: Scope | null;
@@ -1021,12 +1029,22 @@ export interface EventClaimAggregation {
   contributingClaimIds: string[];
   confidence: "low" | "medium" | "high" | null;
   cautions: string[];
+  /** audit-only coverage — NEVER feeds the materiality decision */
+  coverage: {
+    totalClaims: number;
+    classifiedClaims: number;
+    unknownClaims: number;
+    excludedClaims: number;
+    materialClaims: number;
+  };
   method: string;
   methodVersion: string;
 }
 
-/** event materiality = max credible material claim. Not an average —
- * 60 trivia claims + 1 major policy claim ⇒ major event. */
+/** event materiality = max credible live claim. Not an average —
+ * 60 trivia claims + 1 major policy claim ⇒ major event. Retracted and
+ * excluded claims never participate; unknown never drags a known
+ * material level down; all-unknown ⇒ unknown; all-none ⇒ none. */
 export function aggregateClaimsToEvent(
   claims: ClaimMaterialityAssessment[],
 ): EventClaimAggregation {
@@ -1034,8 +1052,19 @@ export function aggregateClaimsToEvent(
     (c) =>
       !c.excluded && c.materiality !== "none" && c.materiality !== "unknown",
   );
+  const coverage = {
+    totalClaims: claims.length,
+    classifiedClaims: claims.filter(
+      (c) => !c.excluded && c.materiality !== "unknown",
+    ).length,
+    unknownClaims: claims.filter((c) => c.materiality === "unknown").length,
+    excludedClaims: claims.filter((c) => c.excluded).length,
+    materialClaims: live.length,
+  };
   if (live.length === 0) {
-    const anyUnknown = claims.some((c) => c.materiality === "unknown");
+    const anyUnknown = claims.some(
+      (c) => !c.excluded && c.materiality === "unknown",
+    );
     return {
       materiality: anyUnknown ? "unknown" : "none",
       scope: null,
@@ -1045,8 +1074,9 @@ export function aggregateClaimsToEvent(
       contributingClaimIds: [],
       confidence: null,
       cautions: [],
-      method: METHOD,
-      methodVersion: METHOD_VERSION,
+      coverage,
+      method: EVENT_METHOD,
+      methodVersion: EVENT_METHOD_VERSION,
     };
   }
   const maxRank = Math.max(
@@ -1055,14 +1085,23 @@ export function aggregateClaimsToEvent(
   const drivers = live.filter(
     (c) => LEVEL_RANK.indexOf(c.materiality as MaterialityLevel) === maxRank,
   );
-  const contributors = live.filter(
-    (c) =>
-      LEVEL_RANK.indexOf(c.materiality as MaterialityLevel) >=
-      LEVEL_RANK.indexOf("meaningful"),
-  );
-  const channels = [...new Set(contributors.flatMap((c) => c.channels))];
-  const targets = dedupeTargets(contributors.flatMap((c) => c.affectedTargets));
-  const cautions = [...new Set(drivers.flatMap((c) => c.cautions))];
+  /* contributors: a material event reads channels/targets only from
+   * claims at the meaningful+ band so tens of limited claims can't pollute
+   * a major's transmission; a sub-meaningful event still explains itself
+   * through its own drivers */
+  const contributors =
+    maxRank >= LEVEL_RANK.indexOf("meaningful")
+      ? live.filter(
+          (c) =>
+            LEVEL_RANK.indexOf(c.materiality as MaterialityLevel) >=
+            LEVEL_RANK.indexOf("meaningful"),
+        )
+      : drivers;
+  const channels = [...new Set(contributors.flatMap((c) => c.channels))].sort();
+  const targets = dedupeTargets(
+    contributors.flatMap((c) => c.affectedTargets),
+  ).sort((a, b) => `${a.type}:${a.key}`.localeCompare(`${b.type}:${b.key}`));
+  const cautions = [...new Set(drivers.flatMap((c) => c.cautions))].sort();
   // event confidence = worst cap among drivers: a major carried only by
   // disputed/reported claims stays publishable but visibly cautioned.
   const confOrder = ["low", "medium", "high"] as const;
@@ -1075,17 +1114,26 @@ export function aggregateClaimsToEvent(
     },
     null,
   );
+  const driverScopes = drivers
+    .map((c) => c.scope)
+    .filter((s): s is Scope => s !== null);
+  const scope = driverScopes.length
+    ? driverScopes.reduce((a, b) =>
+        SCOPE_RANK.indexOf(b) > SCOPE_RANK.indexOf(a) ? b : a,
+      )
+    : null;
   return {
     materiality: LEVEL_RANK[maxRank],
-    scope: drivers[0].scope,
+    scope,
     channels,
     affectedTargets: targets,
-    driverClaimIds: drivers.map((c) => c.claimId),
-    contributingClaimIds: contributors.map((c) => c.claimId),
+    driverClaimIds: drivers.map((c) => c.claimId).sort(),
+    contributingClaimIds: contributors.map((c) => c.claimId).sort(),
     confidence,
     cautions,
-    method: METHOD,
-    methodVersion: METHOD_VERSION,
+    coverage,
+    method: EVENT_METHOD,
+    methodVersion: EVENT_METHOD_VERSION,
   };
 }
 
